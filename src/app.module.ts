@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { databaseConfig } from './config/database.config';
 import { HealthController } from './health.controller';
 import { AtendimentoModule } from './modulos/atendimento/atendimento.module';
+import { AuditoriaModule } from './modules/auditoria/auditoria.module';
 
 @Module({
   imports: [
@@ -19,12 +20,12 @@ import { AtendimentoModule } from './modulos/atendimento/atendimento.module';
     
     // Módulos do Sistema ERP
     AtendimentoModule,
+    AuditoriaModule,
     
     // Próximos módulos a serem implementados:
     // ExamesModule,
     // FinanceiroModule,
     // CrmModule,
-    // AuditoriaModule,
     // EstoqueModule,
     // TissModule,
     // TarefasModule,
