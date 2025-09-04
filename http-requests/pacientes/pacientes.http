@@ -1,0 +1,251 @@
+### ============================================
+### PACIENTES API - Exemplos de Requisições
+### ============================================
+
+### 1. Criar novo paciente
+POST http://localhost:3000/pacientes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nome": "João da Silva Santos",
+  "nome_social": "João Santos", 
+  "usar_nome_social": "sim",
+  "sexo": "M",
+  "data_nascimento": "1990-01-15",
+  "nome_mae": "Maria da Silva Santos",
+  "rg": "12.345.678-9",
+  "cpf": "12345678901",
+  "estado_civil": "solteiro",
+  "email": "joao.silva@email.com",
+  "contatos": "11999999999",
+  "whatsapp": "11888888888",
+  "profissao": "Engenheiro Civil",
+  "observacao": "Paciente com histórico de alergia a dipirona",
+  "convenio_id": 1,
+  "plano": "Plus",
+  "validade": "2025-12-31",
+  "matricula": "123456789012",
+  "nome_titular": "João da Silva Santos",
+  "cartao_sus": "123456789012345",
+  "cep": "01310100",
+  "rua": "Av. Paulista",
+  "numero": "1000",
+  "bairro": "Bela Vista",
+  "complemento": "Sala 101",
+  "cidade": "São Paulo",
+  "estado": "SP",
+  "empresa_id": 1
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "message": "Paciente criado com sucesso",
+#   "data": {
+#     "id": 1,
+#     "codigo_interno": "PAC1693847520123",
+#     "nome": "João da Silva Santos",
+#     "nome_social": "João Santos",
+#     "usar_nome_social": "sim",
+#     "sexo": "M",
+#     "data_nascimento": "1990-01-15T00:00:00.000Z",
+#     "nome_mae": "Maria da Silva Santos",
+#     "cpf": "12345678901",
+#     "email": "joao.silva@email.com",
+#     "status": "ativo",
+#     "empresa_id": 1,
+#     "criado_em": "2024-09-03T19:00:00.000Z",
+#     "atualizado_em": "2024-09-03T19:00:00.000Z"
+#   }
+# }
+
+### ============================================
+
+### 2. Listar pacientes (com paginação)
+GET http://localhost:3000/pacientes?page=1&limit=10
+Authorization: Bearer {{token}}
+
+### ============================================
+
+### 3. Listar pacientes com filtros
+GET http://localhost:3000/pacientes?page=1&limit=5&nome=João&status=ativo
+Authorization: Bearer {{token}}
+
+### ============================================
+
+### 4. Buscar paciente por ID
+GET http://localhost:3000/pacientes/1
+Authorization: Bearer {{token}}
+
+### ============================================
+
+### 5. Buscar paciente por CPF
+GET http://localhost:3000/pacientes/cpf/12345678901
+Authorization: Bearer {{token}}
+
+### ============================================
+
+### 6. Buscar pacientes por nome (autocomplete)
+GET http://localhost:3000/pacientes/search?nome=João&limit=5
+Authorization: Bearer {{token}}
+
+### ============================================
+
+### 7. Obter estatísticas dos pacientes
+GET http://localhost:3000/pacientes/stats
+Authorization: Bearer {{token}}
+
+### Expected Response
+# {
+#   "total": 100,
+#   "status": {
+#     "ativo": 80,
+#     "inativo": 15,
+#     "bloqueado": 5
+#   },
+#   "convenio": {
+#     "com_convenio": 60,
+#     "sem_convenio": 40
+#   }
+# }
+
+### ============================================
+
+### 8. Atualizar paciente
+PATCH http://localhost:3000/pacientes/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nome": "João Santos Silva",
+  "email": "joao.santos@email.com",
+  "contatos": "11888888888",
+  "observacao": "Paciente com alergia a dipirona - atualizado"
+}
+
+### Expected Response
+# {
+#   "message": "Paciente atualizado com sucesso",
+#   "data": {
+#     "id": 1,
+#     "nome": "João Santos Silva",
+#     "email": "joao.santos@email.com",
+#     ...
+#   }
+# }
+
+### ============================================
+
+### 9. Ativar paciente
+PATCH http://localhost:3000/pacientes/1/activate
+Authorization: Bearer {{token}}
+
+### Expected Response
+# {
+#   "message": "Paciente ativado com sucesso",
+#   "data": {
+#     "id": 1,
+#     "status": "ativo",
+#     ...
+#   }
+# }
+
+### ============================================
+
+### 10. Bloquear paciente
+PATCH http://localhost:3000/pacientes/1/block
+Authorization: Bearer {{token}}
+
+### Expected Response
+# {
+#   "message": "Paciente bloqueado com sucesso",
+#   "data": {
+#     "id": 1,
+#     "status": "bloqueado",
+#     ...
+#   }
+# }
+
+### ============================================
+
+### 11. Remover paciente (soft delete)
+DELETE http://localhost:3000/pacientes/1
+Authorization: Bearer {{token}}
+
+### Expected Response
+# {
+#   "message": "Paciente removido com sucesso"
+# }
+
+### ============================================
+### CASOS DE ERRO
+### ============================================
+
+### 12. Erro - CPF já cadastrado
+POST http://localhost:3000/pacientes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Maria Silva",
+  "sexo": "F",
+  "data_nascimento": "1985-05-20",
+  "nome_mae": "Ana Silva",
+  "rg": "987654321",
+  "cpf": "12345678901",
+  "estado_civil": "casada",
+  "email": "maria@email.com",
+  "contatos": "11888888888",
+  "profissao": "Médica",
+  "cep": "01310100",
+  "numero": "200",
+  "bairro": "Centro",
+  "cidade": "São Paulo",
+  "estado": "SP",
+  "empresa_id": 1
+}
+
+### Expected Response
+# Status: 409 Conflict
+# {
+#   "message": "Já existe um paciente cadastrado com este CPF nesta empresa"
+# }
+
+### ============================================
+
+### 13. Erro - Paciente não encontrado
+GET http://localhost:3000/pacientes/999
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "message": "Paciente não encontrado"
+# }
+
+### ============================================
+
+### 14. Erro - Dados inválidos
+POST http://localhost:3000/pacientes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nome": "",
+  "sexo": "X",
+  "cpf": "123",
+  "email": "email-inválido",
+  "empresa_id": 1
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "message": [
+#     "Nome é obrigatório",
+#     "Sexo deve ser: M (Masculino), F (Feminino) ou O (Outro)",
+#     "CPF deve conter exatamente 11 dígitos",
+#     "E-mail deve ter um formato válido"
+#   ]
+# }
