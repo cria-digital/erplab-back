@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner, Table, Index } from "typeorm";
+import { MigrationInterface, QueryRunner, Table } from "typeorm";
 
 export class CreatePacientesTable1756931316461 implements MigrationInterface {
 
@@ -205,12 +205,12 @@ export class CreatePacientesTable1756931316461 implements MigrationInterface {
                 }
             ],
             indices: [
-                new Index("IDX_PACIENTE_CPF_EMPRESA", ["cpf", "empresa_id"]),
-                new Index("IDX_PACIENTE_NOME", ["nome"]),
-                new Index("IDX_PACIENTE_STATUS", ["status"]),
-                new Index("IDX_PACIENTE_EMPRESA", ["empresa_id"]),
-                new Index("IDX_PACIENTE_EMAIL", ["email"]),
-                new Index("IDX_PACIENTE_CONVENIO", ["convenio_id"])
+                { name: "IDX_PACIENTE_CPF_EMPRESA", columnNames: ["cpf", "empresa_id"] },
+                { name: "IDX_PACIENTE_NOME", columnNames: ["nome"] },
+                { name: "IDX_PACIENTE_STATUS", columnNames: ["status"] },
+                { name: "IDX_PACIENTE_EMPRESA", columnNames: ["empresa_id"] },
+                { name: "IDX_PACIENTE_EMAIL", columnNames: ["email"] },
+                { name: "IDX_PACIENTE_CONVENIO", columnNames: ["convenio_id"] }
             ]
         }), true);
     }
