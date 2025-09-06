@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import * as fs from 'fs';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -54,12 +55,17 @@ async function bootstrap() {
     },
   });
 
+  // Gerar arquivo OpenAPI/Swagger JSON para importação no Postman e documentação
+  const outputPath = './openapi.json';
+  fs.writeFileSync(outputPath, JSON.stringify(document, null, 2));
+
   const port = process.env.PORT || 10016;
   await app.listen(port);
 
   console.log(`🚀 Servidor ERP Laboratório rodando na porta ${port}`);
   console.log(`📖 Documentação da API: http://localhost:${port}/api/docs`);
   console.log(`💚 Health Check: http://localhost:${port}/api/v1/health`);
+  console.log(`📄 OpenAPI/Postman: ./openapi.json`);
 }
 
 bootstrap();

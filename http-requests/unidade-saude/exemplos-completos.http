@@ -1,0 +1,207 @@
+### ===== CENÁRIO COMPLETO: CRIAR MÚLTIPLAS UNIDADES =====
+
+### 1. Criar Unidade São Roque
+POST http://localhost:10016/api/v1/unidades-saude
+Content-Type: application/json
+
+{
+  "nomeUnidade": "Laboratório São Roque",
+  "codigoInterno": "LSR001",
+  "cnpj": "11111111000111",
+  "razaoSocial": "Laboratório São Roque LTDA",
+  "nomeFantasia": "Lab São Roque",
+  "cnes": "1111111",
+  "email": "contato@labsaoroque.com.br",
+  "contatosUnidade": "(11) 4712-1111",
+  "cep": "18130000",
+  "rua": "Rua São Paulo",
+  "numero": "100",
+  "bairro": "Centro",
+  "cidade": "São Roque",
+  "estado": "SP",
+  "nomeResponsavel": "Dr. Carlos Santos",
+  "emailResponsavel": "carlos@labsaoroque.com.br",
+  "issPercentual": 5,
+  "optanteSimplesNacional": false,
+  "ativo": true,
+  "horariosAtendimento": [
+    {
+      "diaSemana": "SEGUNDA",
+      "horarioInicio": "06:00",
+      "horarioFim": "18:00",
+      "intervaloInicio": "12:00",
+      "intervaloFim": "13:00"
+    }
+  ],
+  "dadosBancarios": [
+    {
+      "banco": "Santander",
+      "codigoBanco": "033",
+      "agencia": "1234",
+      "contaCorrente": "11111",
+      "principal": true
+    }
+  ]
+}
+
+###
+
+### 2. Criar Unidade Ibiúna
+POST http://localhost:10016/api/v1/unidades-saude
+Content-Type: application/json
+
+{
+  "nomeUnidade": "Laboratório Ibiúna",
+  "codigoInterno": "LIB001",
+  "cnpj": "22222222000222",
+  "razaoSocial": "Laboratório Ibiúna LTDA",
+  "nomeFantasia": "Lab Ibiúna",
+  "cnes": "2222222",
+  "email": "contato@labibiuna.com.br",
+  "contatosUnidade": "(11) 4241-2222",
+  "cep": "18150000",
+  "rua": "Avenida São Sebastião",
+  "numero": "200",
+  "bairro": "Centro",
+  "cidade": "Ibiúna",
+  "estado": "SP",
+  "nomeResponsavel": "Dra. Maria Oliveira",
+  "emailResponsavel": "maria@labibiuna.com.br",
+  "issPercentual": 5,
+  "optanteSimplesNacional": false,
+  "ativo": true
+}
+
+###
+
+### 3. Criar Unidade Araçariguama
+POST http://localhost:10016/api/v1/unidades-saude
+Content-Type: application/json
+
+{
+  "nomeUnidade": "Laboratório Araçariguama",
+  "codigoInterno": "LAR001",
+  "cnpj": "33333333000333",
+  "razaoSocial": "Laboratório Araçariguama LTDA",
+  "nomeFantasia": "Lab Araçariguama",
+  "cnes": "3333333",
+  "email": "contato@labaracariguama.com.br",
+  "contatosUnidade": "(11) 4136-3333",
+  "cep": "18147000",
+  "rua": "Rua São Bento",
+  "numero": "300",
+  "bairro": "Centro",
+  "cidade": "Araçariguama",
+  "estado": "SP",
+  "nomeResponsavel": "Dr. Pedro Costa",
+  "emailResponsavel": "pedro@labaracariguama.com.br",
+  "issPercentual": 5,
+  "optanteSimplesNacional": true,
+  "ativo": true
+}
+
+###
+
+### 4. Criar Unidade Vargem Grande Paulista
+POST http://localhost:10016/api/v1/unidades-saude
+Content-Type: application/json
+
+{
+  "nomeUnidade": "Laboratório Vargem Grande",
+  "codigoInterno": "LVG001",
+  "cnpj": "44444444000444",
+  "razaoSocial": "Laboratório Vargem Grande Paulista LTDA",
+  "nomeFantasia": "Lab VGP",
+  "cnes": "4444444",
+  "email": "contato@labvgp.com.br",
+  "contatosUnidade": "(11) 4158-4444",
+  "cep": "06730000",
+  "rua": "Avenida Elias Alves da Costa",
+  "numero": "400",
+  "bairro": "Centro",
+  "cidade": "Vargem Grande Paulista",
+  "estado": "SP",
+  "nomeResponsavel": "Dra. Ana Silva",
+  "emailResponsavel": "ana@labvgp.com.br",
+  "issPercentual": 5,
+  "optanteSimplesNacional": false,
+  "ativo": true
+}
+
+###
+
+### 5. Criar Unidade Cotia
+POST http://localhost:10016/api/v1/unidades-saude
+Content-Type: application/json
+
+{
+  "nomeUnidade": "Laboratório Cotia",
+  "codigoInterno": "LCT001",
+  "cnpj": "55555555000555",
+  "razaoSocial": "Laboratório Cotia LTDA",
+  "nomeFantasia": "Lab Cotia",
+  "cnes": "5555555",
+  "email": "contato@labcotia.com.br",
+  "contatosUnidade": "(11) 4702-5555",
+  "cep": "06700000",
+  "rua": "Rua Senador Feijó",
+  "numero": "500",
+  "bairro": "Centro",
+  "cidade": "Cotia",
+  "estado": "SP",
+  "nomeResponsavel": "Dr. Roberto Lima",
+  "emailResponsavel": "roberto@labcotia.com.br",
+  "issPercentual": 5,
+  "optanteSimplesNacional": false,
+  "ativo": true
+}
+
+###
+
+### 6. Criar Unidade Itapecerica da Serra
+POST http://localhost:10016/api/v1/unidades-saude
+Content-Type: application/json
+
+{
+  "nomeUnidade": "Laboratório Itapecerica",
+  "codigoInterno": "LIT001",
+  "cnpj": "66666666000666",
+  "razaoSocial": "Laboratório Itapecerica da Serra LTDA",
+  "nomeFantasia": "Lab Itapecerica",
+  "cnes": "6666666",
+  "email": "contato@labitapecerica.com.br",
+  "contatosUnidade": "(11) 4666-6666",
+  "cep": "06850000",
+  "rua": "Avenida XV de Novembro",
+  "numero": "600",
+  "bairro": "Centro",
+  "cidade": "Itapecerica da Serra",
+  "estado": "SP",
+  "nomeResponsavel": "Dra. Juliana Martins",
+  "emailResponsavel": "juliana@labitapecerica.com.br",
+  "issPercentual": 5,
+  "optanteSimplesNacional": false,
+  "ativo": true
+}
+
+###
+
+### ===== CONSULTAS ÚTEIS =====
+
+### Listar Todas as Unidades Criadas
+GET http://localhost:10016/api/v1/unidades-saude?limit=10
+
+###
+
+### Buscar Unidades da Região (por Estado)
+GET http://localhost:10016/api/v1/unidades-saude?estado=SP&ativo=true
+
+###
+
+### Buscar Unidade Específica por CNPJ
+GET http://localhost:10016/api/v1/unidades-saude/cnpj/11111111000111
+
+###
+
+### Listar Unidades para Dropdown (apenas id, nome e cnpj)
+GET http://localhost:10016/api/v1/unidades-saude/ativas

@@ -1,0 +1,71 @@
+### Ativar Unidade de Saúde
+# Substitua {id} pelo UUID real da unidade
+PATCH http://localhost:10016/api/v1/unidades-saude/123e4567-e89b-12d3-a456-426614174000/ativar
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "123e4567-e89b-12d3-a456-426614174000",
+#   "nomeUnidade": "Laboratório Central São Roque",
+#   "ativo": true,
+#   ...
+# }
+
+###
+
+### Desativar Unidade de Saúde
+# Substitua {id} pelo UUID real da unidade
+PATCH http://localhost:10016/api/v1/unidades-saude/123e4567-e89b-12d3-a456-426614174000/desativar
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "123e4567-e89b-12d3-a456-426614174000",
+#   "nomeUnidade": "Laboratório Central São Roque",
+#   "ativo": false,
+#   ...
+# }
+
+###
+
+### Remover Unidade de Saúde (Soft Delete)
+# Substitua {id} pelo UUID real da unidade
+DELETE http://localhost:10016/api/v1/unidades-saude/123e4567-e89b-12d3-a456-426614174000
+
+### Expected Response
+# Status: 204 No Content
+# (Sem corpo de resposta)
+
+###
+
+### Tentar Buscar Unidade Inexistente (Erro)
+GET http://localhost:10016/api/v1/unidades-saude/99999999-9999-9999-9999-999999999999
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Unidade de saúde com ID 99999999-9999-9999-9999-999999999999 não encontrada",
+#   "error": "Not Found"
+# }
+
+###
+
+### Tentar Criar Unidade com CNPJ Duplicado (Erro)
+POST http://localhost:10016/api/v1/unidades-saude
+Content-Type: application/json
+
+{
+  "nomeUnidade": "Tentativa Duplicada",
+  "cnpj": "12345678000190",
+  "razaoSocial": "Duplicada LTDA",
+  "nomeFantasia": "Duplicada"
+}
+
+### Expected Response
+# Status: 409 Conflict
+# {
+#   "statusCode": 409,
+#   "message": "Já existe uma unidade com o CNPJ 12345678000190",
+#   "error": "Conflict"
+# }

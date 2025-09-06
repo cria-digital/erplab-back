@@ -2,6 +2,8 @@
 ### PACIENTES API - Exemplos de Requisições
 ### ============================================
 
+@token = {{seu_token_jwt_aqui}}
+
 ### 1. Criar novo paciente
 POST http://localhost:3000/pacientes
 Content-Type: application/json

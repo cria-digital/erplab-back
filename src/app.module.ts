@@ -5,6 +5,8 @@ import { databaseConfig } from './config/database.config';
 import { HealthController } from './health.controller';
 import { AtendimentoModule } from './modules/atendimento/atendimento.module';
 import { AuditoriaModule } from './modules/auditoria/auditoria.module';
+import { PacientesModule } from './modules/pacientes/pacientes.module';
+import { UnidadeSaudeModule } from './modules/unidade-saude/unidade-saude.module';
 
 @Module({
   imports: [
@@ -21,6 +23,8 @@ import { AuditoriaModule } from './modules/auditoria/auditoria.module';
     // Módulos do Sistema ERP
     AtendimentoModule,
     AuditoriaModule,
+    PacientesModule,
+    UnidadeSaudeModule,
     
     // Próximos módulos a serem implementados:
     // ExamesModule,

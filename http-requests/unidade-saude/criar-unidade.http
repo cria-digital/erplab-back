@@ -1,0 +1,135 @@
+### Criar Nova Unidade de Saúde
+POST http://localhost:10016/api/v1/unidades-saude
+Content-Type: application/json
+
+{
+  "nomeUnidade": "Laboratório Central São Roque",
+  "codigoInterno": "LAB001",
+  "cnpj": "12345678000190",
+  "razaoSocial": "Laboratório São Roque LTDA",
+  "nomeFantasia": "LabSR Central",
+  "inscricaoMunicipal": "123456",
+  "inscricaoEstadual": "789456123",
+  "cnes": "1234567",
+  "contatosUnidade": "(11) 4712-3456",
+  "email": "contato@labsr.com.br",
+  "codigoServicoPrincipal": "001",
+  "codigoServicoSecundario": "002",
+  "cnaePrincipal": "8640201",
+  "cep": "18130000",
+  "rua": "Rua São Paulo",
+  "numero": "123",
+  "bairro": "Centro",
+  "complemento": "Sala 10",
+  "estado": "SP",
+  "cidade": "São Roque",
+  "nomeResponsavel": "Dr. João Silva",
+  "contatoResponsavel": "(11) 98765-4321",
+  "emailResponsavel": "dr.joao@labsr.com.br",
+  "irrfPercentual": 1.5,
+  "pisPercentual": 0.65,
+  "cofinsPercentual": 3,
+  "csllPercentual": 1,
+  "issPercentual": 5,
+  "ibsPercentual": 0,
+  "cbsPercentual": 0,
+  "reterIss": false,
+  "reterIr": false,
+  "reterPcc": false,
+  "reterIbs": false,
+  "reterCbs": false,
+  "optanteSimplesNacional": false,
+  "certificadoDigitalVinculado": false,
+  "ativo": true,
+  "horariosAtendimento": [
+    {
+      "diaSemana": "SEGUNDA",
+      "horarioInicio": "07:00",
+      "horarioFim": "18:00",
+      "intervaloInicio": "12:00",
+      "intervaloFim": "13:00",
+      "semIntervalo": false
+    },
+    {
+      "diaSemana": "TERCA",
+      "horarioInicio": "07:00",
+      "horarioFim": "18:00",
+      "intervaloInicio": "12:00",
+      "intervaloFim": "13:00",
+      "semIntervalo": false
+    },
+    {
+      "diaSemana": "QUARTA",
+      "horarioInicio": "07:00",
+      "horarioFim": "18:00",
+      "intervaloInicio": "12:00",
+      "intervaloFim": "13:00",
+      "semIntervalo": false
+    },
+    {
+      "diaSemana": "QUINTA",
+      "horarioInicio": "07:00",
+      "horarioFim": "18:00",
+      "intervaloInicio": "12:00",
+      "intervaloFim": "13:00",
+      "semIntervalo": false
+    },
+    {
+      "diaSemana": "SEXTA",
+      "horarioInicio": "07:00",
+      "horarioFim": "18:00",
+      "intervaloInicio": "12:00",
+      "intervaloFim": "13:00",
+      "semIntervalo": false
+    },
+    {
+      "diaSemana": "SABADO",
+      "horarioInicio": "07:00",
+      "horarioFim": "12:00",
+      "semIntervalo": true
+    }
+  ],
+  "dadosBancarios": [
+    {
+      "banco": "Banco do Brasil",
+      "codigoBanco": "001",
+      "agencia": "1234",
+      "digitoAgencia": "5",
+      "contaCorrente": "12345",
+      "digitoConta": "6",
+      "tipoConta": "CORRENTE",
+      "principal": true,
+      "observacoes": "Conta principal para recebimentos"
+    },
+    {
+      "banco": "Santander",
+      "codigoBanco": "033",
+      "agencia": "4567",
+      "digitoAgencia": "0",
+      "contaCorrente": "67890",
+      "digitoConta": "1",
+      "tipoConta": "CORRENTE",
+      "principal": false,
+      "observacoes": "Conta secundária"
+    }
+  ],
+  "cnaeSecundarios": [
+    {
+      "codigoCnae": "8640202",
+      "descricao": "Laboratórios clínicos"
+    },
+    {
+      "codigoCnae": "8640203",
+      "descricao": "Serviços de diálise e nefrologia"
+    }
+  ]
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "id": "uuid-gerado",
+#   "nomeUnidade": "Laboratório Central São Roque",
+#   "cnpj": "12345678000190",
+#   ...
+# }

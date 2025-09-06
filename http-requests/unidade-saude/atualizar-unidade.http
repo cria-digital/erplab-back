@@ -1,0 +1,98 @@
+### Atualizar Unidade de Saúde (Parcial)
+# Substitua {id} pelo UUID real da unidade
+PATCH http://localhost:10016/api/v1/unidades-saude/123e4567-e89b-12d3-a456-426614174000
+Content-Type: application/json
+
+{
+  "nomeFantasia": "LabSR Central - Atualizado",
+  "email": "novo.email@labsr.com.br",
+  "contatosUnidade": "(11) 4712-9999"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "123e4567-e89b-12d3-a456-426614174000",
+#   "nomeFantasia": "LabSR Central - Atualizado",
+#   "email": "novo.email@labsr.com.br",
+#   ...
+# }
+
+###
+
+### Atualizar Horários de Atendimento
+PATCH http://localhost:10016/api/v1/unidades-saude/123e4567-e89b-12d3-a456-426614174000
+Content-Type: application/json
+
+{
+  "horariosAtendimento": [
+    {
+      "diaSemana": "SEGUNDA",
+      "horarioInicio": "06:00",
+      "horarioFim": "20:00",
+      "intervaloInicio": "12:00",
+      "intervaloFim": "13:00",
+      "semIntervalo": false
+    },
+    {
+      "diaSemana": "TERCA",
+      "horarioInicio": "06:00",
+      "horarioFim": "20:00",
+      "intervaloInicio": "12:00",
+      "intervaloFim": "13:00",
+      "semIntervalo": false
+    }
+  ]
+}
+
+###
+
+### Atualizar Dados Bancários
+PATCH http://localhost:10016/api/v1/unidades-saude/123e4567-e89b-12d3-a456-426614174000
+Content-Type: application/json
+
+{
+  "dadosBancarios": [
+    {
+      "banco": "Bradesco",
+      "codigoBanco": "237",
+      "agencia": "3456",
+      "digitoAgencia": "7",
+      "contaCorrente": "98765",
+      "digitoConta": "4",
+      "tipoConta": "CORRENTE",
+      "principal": true,
+      "observacoes": "Nova conta principal"
+    }
+  ]
+}
+
+###
+
+### Atualizar Impostos
+PATCH http://localhost:10016/api/v1/unidades-saude/123e4567-e89b-12d3-a456-426614174000
+Content-Type: application/json
+
+{
+  "issPercentual": 3,
+  "pisPercentual": 0.65,
+  "cofinsPercentual": 3,
+  "csllPercentual": 1,
+  "optanteSimplesNacional": true
+}
+
+###
+
+### Atualizar Endereço Completo
+PATCH http://localhost:10016/api/v1/unidades-saude/123e4567-e89b-12d3-a456-426614174000
+Content-Type: application/json
+
+{
+  "cep": "18135000",
+  "rua": "Avenida Brasil",
+  "numero": "500",
+  "bairro": "Vila Nova",
+  "complemento": "Prédio B, 2º andar",
+  "cidade": "São Roque",
+  "estado": "SP"
+}

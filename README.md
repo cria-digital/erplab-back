@@ -13,12 +13,12 @@ Sistema ERP modular para laboratórios de análises clínicas e imagens, desenvo
 ## 📋 Pré-requisitos
 
 - Node.js 20 ou superior
-- PostgreSQL em execução (Docker recomendado)
-- Usuário e banco configurados: `nestuser:nestpass` com banco `erplab`
+- Docker e Docker Compose
+- Git
 
 ## 🛠️ Configuração e Instalação
 
-### 1. Clone e instale dependências
+### 1. Clone o repositório e instale dependências
 ```bash
 cd erplab-back
 npm install
@@ -27,22 +27,39 @@ npm install
 ### 2. Configure as variáveis de ambiente
 ```bash
 cp .env.example .env
-# Edite o arquivo .env conforme necessário
+# O arquivo .env já está configurado com as credenciais corretas
+# Caso necessário, ajuste conforme seu ambiente
 ```
 
-### 3. Crie o banco de dados
-```sql
--- Conecte-se ao PostgreSQL como usuário nestuser
-CREATE DATABASE erplab;
+### 3. Inicie o banco de dados PostgreSQL via Docker
+```bash
+# Subir o banco de dados PostgreSQL
+docker-compose up -d
+
+# Verificar se o container está rodando
+docker ps
+
+# Verificar logs do banco (opcional)
+docker-compose logs -f erplab-db
 ```
+
+**Credenciais do banco:**
+- Host: localhost
+- Porta: 5432
+- Banco: erplab_db
+- Usuário: erplab_user
+- Senha: erplab_pass_2024
 
 ### 4. Execute as migrations
 ```bash
-# Gerar uma nova migration
-npm run migration:generate -- src/database/migrations/InitialMigration
+# Gerar uma nova migration (quando necessário)
+npm run migration:generate -- src/database/migrations/NomeDaMigration
 
-# Executar migrations
+# Executar migrations pendentes
 npm run migration:run
+
+# Reverter última migration (se necessário)
+npm run migration:revert
 ```
 
 ### 5. Execute o projeto
@@ -91,6 +108,31 @@ src/
     ├── portal-cliente/      # RF023-RF025: Portal do cliente
     ├── portal-medico/       # RF026-RF027: Portal médico
     └── integracoes/         # RF028-RF035: Integrações externas
+```
+
+## 🐳 Docker - Comandos Úteis
+
+```bash
+# Iniciar banco de dados
+docker-compose up -d
+
+# Parar banco de dados
+docker-compose down
+
+# Parar e remover volumes (CUIDADO: apaga todos os dados)
+docker-compose down -v
+
+# Ver logs do banco
+docker-compose logs -f erplab-db
+
+# Acessar o PostgreSQL via CLI
+docker exec -it erplab-postgres psql -U erplab_user -d erplab_db
+
+# Fazer backup do banco
+docker exec erplab-postgres pg_dump -U erplab_user erplab_db > backup.sql
+
+# Restaurar backup
+docker exec -i erplab-postgres psql -U erplab_user erplab_db < backup.sql
 ```
 
 ## 🔧 Scripts Disponíveis

@@ -1,0 +1,68 @@
+### Buscar Unidade por ID
+# Substitua {id} pelo UUID real da unidade
+GET http://localhost:10016/api/v1/unidades-saude/123e4567-e89b-12d3-a456-426614174000
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "123e4567-e89b-12d3-a456-426614174000",
+#   "nomeUnidade": "Laboratório Central São Roque",
+#   "cnpj": "12345678000190",
+#   "horariosAtendimento": [...],
+#   "dadosBancarios": [...],
+#   "cnaeSecundarios": [...],
+#   ...
+# }
+
+###
+
+### Buscar Unidade por CNPJ
+GET http://localhost:10016/api/v1/unidades-saude/cnpj/12345678000190
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "nomeUnidade": "Laboratório Central São Roque",
+#   "cnpj": "12345678000190",
+#   ...
+# }
+
+###
+
+### Buscar Unidades por Cidade
+GET http://localhost:10016/api/v1/unidades-saude/cidade/São Roque
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid",
+#     "nomeUnidade": "Laboratório Central São Roque",
+#     "cidade": "São Roque",
+#     "horariosAtendimento": [...],
+#     ...
+#   }
+# ]
+
+###
+
+### Listar Apenas Unidades Ativas (para dropdowns)
+GET http://localhost:10016/api/v1/unidades-saude/ativas
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid",
+#     "nomeUnidade": "Laboratório Central São Roque",
+#     "nomeFantasia": "LabSR Central",
+#     "cnpj": "12345678000190"
+#   },
+#   {
+#     "id": "uuid2",
+#     "nomeUnidade": "Laboratório Ibiúna",
+#     "nomeFantasia": "Lab Ibiúna",
+#     "cnpj": "98765432000199"
+#   }
+# ]
