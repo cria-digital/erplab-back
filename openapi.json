@@ -1,0 +1,2733 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/v1/health": {
+      "get": {
+        "description": "Endpoint para verificar se a API e banco de dados estão funcionando corretamente",
+        "operationId": "HealthController_check",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Sistema funcionando corretamente",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "ok",
+                  "message": "ERP Laboratório Backend está funcionando!",
+                  "timestamp": "2025-09-02T20:01:27.483Z",
+                  "database": "erplab - conectado",
+                  "port": 10016
+                }
+              }
+            }
+          }
+        },
+        "summary": "Verificação de saúde do sistema",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/api/v1/atendimento": {
+      "get": {
+        "description": "RF001-RF004: Sistema de contato multi-canal, auto-atendimento, gestão de filas e OS",
+        "operationId": "AtendimentoController_listarAtendimentos",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de atendimentos retornada com sucesso"
+          }
+        },
+        "summary": "Listar atendimentos",
+        "tags": [
+          "atendimento"
+        ]
+      }
+    },
+    "/api/v1/atendimento/fila": {
+      "get": {
+        "description": "RF003: Gestão de fila de atendimento com Kanban visual",
+        "operationId": "AtendimentoController_obterFilaAtendimento",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Fila de atendimento atual"
+          }
+        },
+        "summary": "Obter fila de atendimento",
+        "tags": [
+          "atendimento"
+        ]
+      }
+    },
+    "/api/v1/atendimento/ordem-servico": {
+      "post": {
+        "description": "RF004: Geração automática de OS com dados do paciente e exames",
+        "operationId": "AtendimentoController_gerarOrdemServico",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "OS criada com sucesso"
+          }
+        },
+        "summary": "Gerar Ordem de Serviço",
+        "tags": [
+          "atendimento"
+        ]
+      }
+    },
+    "/api/v1/atendimento/ocr/pedido-medico": {
+      "post": {
+        "description": "RF002: Auto-atendimento com OCR para leitura de pedidos médicos",
+        "operationId": "AtendimentoController_processarPedidoOCR",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Pedido médico processado com sucesso"
+          }
+        },
+        "summary": "Processar pedido médico com OCR",
+        "tags": [
+          "atendimento"
+        ]
+      }
+    },
+    "/api/v1/auditoria/logs": {
+      "get": {
+        "description": "Retorna os logs de auditoria do sistema com filtros opcionais",
+        "operationId": "AuditoriaController_consultarLogs",
+        "parameters": [
+          {
+            "name": "usuarioId",
+            "required": false,
+            "in": "query",
+            "description": "ID do usuário que executou a operação",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          },
+          {
+            "name": "modulo",
+            "required": false,
+            "in": "query",
+            "description": "Módulo do sistema onde ocorreu a operação",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "auth",
+                "atendimento",
+                "exames",
+                "financeiro",
+                "crm",
+                "auditoria",
+                "estoque",
+                "tiss",
+                "tarefas",
+                "bi",
+                "portal_cliente",
+                "portal_medico",
+                "integracoes",
+                "admin"
+              ]
+            }
+          },
+          {
+            "name": "tabela",
+            "required": false,
+            "in": "query",
+            "description": "Nome da tabela/entidade afetada",
+            "schema": {
+              "example": "usuarios",
+              "type": "string"
+            }
+          },
+          {
+            "name": "tipoOperacao",
+            "required": false,
+            "in": "query",
+            "description": "Tipo de operação realizada",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "CREATE",
+                "UPDATE",
+                "DELETE",
+                "SELECT",
+                "LOGIN",
+                "LOGOUT",
+                "EXPORT",
+                "IMPORT",
+                "APPROVE",
+                "REJECT",
+                "SIGN"
+              ]
+            }
+          },
+          {
+            "name": "dataInicio",
+            "required": false,
+            "in": "query",
+            "description": "Data de início do filtro (ISO 8601)",
+            "schema": {
+              "example": "2024-01-01T00:00:00Z",
+              "type": "string"
+            }
+          },
+          {
+            "name": "dataFim",
+            "required": false,
+            "in": "query",
+            "description": "Data de fim do filtro (ISO 8601)",
+            "schema": {
+              "example": "2024-12-31T23:59:59Z",
+              "type": "string"
+            }
+          },
+          {
+            "name": "operacaoSensivel",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar apenas operações sensíveis",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "falhaOperacao",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar apenas operações que falharam",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Número da página",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Quantidade de registros por página",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de logs de auditoria retornada com sucesso"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "403": {
+            "description": "Acesso negado - permissão insuficiente"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Consultar logs de auditoria",
+        "tags": [
+          "Auditoria"
+        ]
+      }
+    },
+    "/api/v1/auditoria/historico": {
+      "get": {
+        "description": "Retorna o histórico detalhado de alterações nos registros do sistema",
+        "operationId": "AuditoriaController_consultarHistorico",
+        "parameters": [
+          {
+            "name": "usuarioId",
+            "required": false,
+            "in": "query",
+            "description": "ID do usuário que fez a alteração",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          },
+          {
+            "name": "tabelaOrigem",
+            "required": false,
+            "in": "query",
+            "description": "Nome da tabela origem da alteração",
+            "schema": {
+              "example": "usuarios",
+              "type": "string"
+            }
+          },
+          {
+            "name": "registroId",
+            "required": false,
+            "in": "query",
+            "description": "ID do registro que foi alterado",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          },
+          {
+            "name": "campoAlterado",
+            "required": false,
+            "in": "query",
+            "description": "Nome do campo que foi alterado",
+            "schema": {
+              "example": "email",
+              "type": "string"
+            }
+          },
+          {
+            "name": "dataInicio",
+            "required": false,
+            "in": "query",
+            "description": "Data de início do filtro (ISO 8601)",
+            "schema": {
+              "example": "2024-01-01T00:00:00Z",
+              "type": "string"
+            }
+          },
+          {
+            "name": "dataFim",
+            "required": false,
+            "in": "query",
+            "description": "Data de fim do filtro (ISO 8601)",
+            "schema": {
+              "example": "2024-12-31T23:59:59Z",
+              "type": "string"
+            }
+          },
+          {
+            "name": "alteracaoCritica",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar apenas alterações críticas",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "requerAprovacao",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar apenas alterações que requerem aprovação",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "aprovada",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por status de aprovação",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Número da página",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Quantidade de registros por página",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Histórico de alterações retornado com sucesso"
+          },
+          "401": {
+            "description": "Não autorizado"
+          },
+          "403": {
+            "description": "Acesso negado - permissão insuficiente"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Consultar histórico de alterações",
+        "tags": [
+          "Auditoria"
+        ]
+      }
+    },
+    "/api/v1/auditoria/estatisticas": {
+      "get": {
+        "description": "Retorna estatísticas e métricas dos logs de auditoria",
+        "operationId": "AuditoriaController_obterEstatisticas",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Estatísticas retornadas com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Obter estatísticas de auditoria",
+        "tags": [
+          "Auditoria"
+        ]
+      }
+    },
+    "/api/v1/pacientes": {
+      "post": {
+        "description": "Cria um novo paciente no sistema. O código interno será gerado automaticamente se não fornecido.",
+        "operationId": "PacientesController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePacienteDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Paciente criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Paciente"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos"
+          },
+          "409": {
+            "description": "CPF já cadastrado na empresa"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Criar um novo paciente",
+        "tags": [
+          "Pacientes"
+        ]
+      },
+      "get": {
+        "description": "Lista todos os pacientes da empresa com filtros opcionais e paginação.",
+        "operationId": "PacientesController_findAll",
+        "parameters": [
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por status",
+            "schema": {
+              "enum": [
+                "ativo",
+                "inativo",
+                "bloqueado"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "email",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por email",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cpf",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por CPF",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "nome",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por nome",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Itens por página",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Número da página",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de pacientes retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Paciente"
+                      }
+                    },
+                    "total": {
+                      "type": "number",
+                      "example": 100
+                    },
+                    "page": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "limit": {
+                      "type": "number",
+                      "example": 10
+                    },
+                    "totalPages": {
+                      "type": "number",
+                      "example": 10
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar pacientes",
+        "tags": [
+          "Pacientes"
+        ]
+      }
+    },
+    "/api/v1/pacientes/search": {
+      "get": {
+        "description": "Busca pacientes por nome parcial para autocomplete.",
+        "operationId": "PacientesController_search",
+        "parameters": [
+          {
+            "name": "nome",
+            "required": true,
+            "in": "query",
+            "description": "Nome para busca",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Limite de resultados (padrão: 10)",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de pacientes encontrados",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Paciente"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar pacientes por nome",
+        "tags": [
+          "Pacientes"
+        ]
+      }
+    },
+    "/api/v1/pacientes/stats": {
+      "get": {
+        "description": "Retorna estatísticas dos pacientes por empresa.",
+        "operationId": "PacientesController_getStats",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Estatísticas retornadas com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "total": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "object",
+                      "properties": {
+                        "ativo": {
+                          "type": "number"
+                        },
+                        "inativo": {
+                          "type": "number"
+                        },
+                        "bloqueado": {
+                          "type": "number"
+                        }
+                      }
+                    },
+                    "convenio": {
+                      "type": "object",
+                      "properties": {
+                        "com_convenio": {
+                          "type": "number"
+                        },
+                        "sem_convenio": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Estatísticas dos pacientes",
+        "tags": [
+          "Pacientes"
+        ]
+      }
+    },
+    "/api/v1/pacientes/cpf/{cpf}": {
+      "get": {
+        "description": "Busca um paciente específico pelo CPF.",
+        "operationId": "PacientesController_findByCpf",
+        "parameters": [
+          {
+            "name": "cpf",
+            "required": true,
+            "in": "path",
+            "description": "CPF do paciente (apenas números)",
+            "schema": {
+              "example": "12345678901",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paciente encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Paciente"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Paciente não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar paciente por CPF",
+        "tags": [
+          "Pacientes"
+        ]
+      }
+    },
+    "/api/v1/pacientes/{id}": {
+      "get": {
+        "description": "Busca um paciente específico pelo ID.",
+        "operationId": "PacientesController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do paciente",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paciente encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Paciente"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Paciente não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar paciente por ID",
+        "tags": [
+          "Pacientes"
+        ]
+      },
+      "patch": {
+        "description": "Atualiza os dados de um paciente existente.",
+        "operationId": "PacientesController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do paciente",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePacienteDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Paciente atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Paciente"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos"
+          },
+          "404": {
+            "description": "Paciente não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Atualizar paciente",
+        "tags": [
+          "Pacientes"
+        ]
+      },
+      "delete": {
+        "description": "Remove um paciente (soft delete - torna inativo).",
+        "operationId": "PacientesController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do paciente",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paciente removido com sucesso"
+          },
+          "404": {
+            "description": "Paciente não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Remover paciente",
+        "tags": [
+          "Pacientes"
+        ]
+      }
+    },
+    "/api/v1/pacientes/{id}/activate": {
+      "patch": {
+        "description": "Ativa um paciente inativo.",
+        "operationId": "PacientesController_activate",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do paciente",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paciente ativado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Paciente"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Paciente não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Ativar paciente",
+        "tags": [
+          "Pacientes"
+        ]
+      }
+    },
+    "/api/v1/pacientes/{id}/block": {
+      "patch": {
+        "description": "Bloqueia um paciente ativo.",
+        "operationId": "PacientesController_block",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do paciente",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paciente bloqueado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Paciente"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Paciente não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Bloquear paciente",
+        "tags": [
+          "Pacientes"
+        ]
+      }
+    },
+    "/api/v1/unidades-saude": {
+      "post": {
+        "description": "Cria uma nova unidade de saúde com todos os dados relacionados (horários, dados bancários, CNAEs)",
+        "operationId": "UnidadeSaudeController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUnidadeSaudeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Unidade de saúde criada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnidadeSaudeResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos"
+          },
+          "409": {
+            "description": "CNPJ já cadastrado"
+          }
+        },
+        "summary": "Criar nova unidade de saúde",
+        "tags": [
+          "Unidades de Saúde"
+        ]
+      },
+      "get": {
+        "description": "Lista todas as unidades de saúde com paginação e filtros opcionais",
+        "operationId": "UnidadeSaudeController_findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Número da página (default: 1)",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Limite de registros por página (default: 10)",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Busca por nome, fantasia, CNPJ ou razão social",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ativo",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por status ativo/inativo",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "cidade",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por cidade",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "estado",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por estado (UF)",
+            "schema": {
+              "example": "SP",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de unidades de saúde",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/UnidadeSaudeListResponseDto"
+                      }
+                    },
+                    "total": {
+                      "type": "number",
+                      "example": 100
+                    },
+                    "page": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "limit": {
+                      "type": "number",
+                      "example": 10
+                    },
+                    "totalPages": {
+                      "type": "number",
+                      "example": 10
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar unidades de saúde",
+        "tags": [
+          "Unidades de Saúde"
+        ]
+      }
+    },
+    "/api/v1/unidades-saude/ativas": {
+      "get": {
+        "description": "Lista apenas as unidades de saúde ativas (para dropdowns/selects)",
+        "operationId": "UnidadeSaudeController_listActive",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de unidades ativas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "nomeUnidade": {
+                        "type": "string"
+                      },
+                      "nomeFantasia": {
+                        "type": "string"
+                      },
+                      "cnpj": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar unidades ativas",
+        "tags": [
+          "Unidades de Saúde"
+        ]
+      }
+    },
+    "/api/v1/unidades-saude/cidade/{cidade}": {
+      "get": {
+        "description": "Lista todas as unidades de saúde ativas de uma cidade específica",
+        "operationId": "UnidadeSaudeController_findByCidade",
+        "parameters": [
+          {
+            "name": "cidade",
+            "required": true,
+            "in": "path",
+            "description": "Nome da cidade",
+            "schema": {
+              "example": "São Roque",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de unidades da cidade",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UnidadeSaudeResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Buscar unidades por cidade",
+        "tags": [
+          "Unidades de Saúde"
+        ]
+      }
+    },
+    "/api/v1/unidades-saude/cnpj/{cnpj}": {
+      "get": {
+        "description": "Busca uma unidade de saúde específica pelo CNPJ",
+        "operationId": "UnidadeSaudeController_findByCnpj",
+        "parameters": [
+          {
+            "name": "cnpj",
+            "required": true,
+            "in": "path",
+            "description": "CNPJ da unidade (apenas números)",
+            "schema": {
+              "example": "12345678000190",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Unidade de saúde encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnidadeSaudeResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unidade não encontrada"
+          }
+        },
+        "summary": "Buscar unidade por CNPJ",
+        "tags": [
+          "Unidades de Saúde"
+        ]
+      }
+    },
+    "/api/v1/unidades-saude/{id}": {
+      "get": {
+        "description": "Busca uma unidade de saúde específica com todos os dados relacionados",
+        "operationId": "UnidadeSaudeController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID da unidade de saúde",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Unidade de saúde encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnidadeSaudeResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unidade não encontrada"
+          }
+        },
+        "summary": "Buscar unidade por ID",
+        "tags": [
+          "Unidades de Saúde"
+        ]
+      },
+      "patch": {
+        "description": "Atualiza os dados de uma unidade de saúde existente",
+        "operationId": "UnidadeSaudeController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID da unidade de saúde",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUnidadeSaudeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Unidade de saúde atualizada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnidadeSaudeResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unidade não encontrada"
+          },
+          "409": {
+            "description": "CNPJ já cadastrado em outra unidade"
+          }
+        },
+        "summary": "Atualizar unidade de saúde",
+        "tags": [
+          "Unidades de Saúde"
+        ]
+      },
+      "delete": {
+        "description": "Remove (soft delete) uma unidade de saúde",
+        "operationId": "UnidadeSaudeController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID da unidade de saúde",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Unidade removida com sucesso"
+          },
+          "404": {
+            "description": "Unidade não encontrada"
+          }
+        },
+        "summary": "Remover unidade de saúde",
+        "tags": [
+          "Unidades de Saúde"
+        ]
+      }
+    },
+    "/api/v1/unidades-saude/{id}/ativar": {
+      "patch": {
+        "description": "Ativa uma unidade de saúde previamente desativada",
+        "operationId": "UnidadeSaudeController_activate",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID da unidade de saúde",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Unidade ativada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnidadeSaudeResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unidade não encontrada"
+          }
+        },
+        "summary": "Ativar unidade de saúde",
+        "tags": [
+          "Unidades de Saúde"
+        ]
+      }
+    },
+    "/api/v1/unidades-saude/{id}/desativar": {
+      "patch": {
+        "description": "Desativa uma unidade de saúde ativa",
+        "operationId": "UnidadeSaudeController_deactivate",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "UUID da unidade de saúde",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Unidade desativada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnidadeSaudeResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unidade não encontrada"
+          }
+        },
+        "summary": "Desativar unidade de saúde",
+        "tags": [
+          "Unidades de Saúde"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "ERP Laboratório API",
+    "description": "Sistema ERP modular para laboratórios de análises clínicas e imagens",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [
+    {
+      "name": "health",
+      "description": "Health Check"
+    },
+    {
+      "name": "atendimento",
+      "description": "Módulo de Atendimento e Agendamento"
+    },
+    {
+      "name": "exames",
+      "description": "Módulo de Gestão de Exames"
+    },
+    {
+      "name": "financeiro",
+      "description": "Módulo Financeiro"
+    },
+    {
+      "name": "crm",
+      "description": "Módulo CRM e WhatsApp"
+    },
+    {
+      "name": "auditoria",
+      "description": "Módulo de Auditoria e Qualidade"
+    },
+    {
+      "name": "estoque",
+      "description": "Módulo de Estoque e Compras"
+    },
+    {
+      "name": "tiss",
+      "description": "Módulo TISS e Convênios"
+    },
+    {
+      "name": "tarefas",
+      "description": "Módulo de Tarefas Internas"
+    },
+    {
+      "name": "bi",
+      "description": "Módulo de Business Intelligence"
+    },
+    {
+      "name": "portal-cliente",
+      "description": "Portal do Cliente"
+    },
+    {
+      "name": "portal-medico",
+      "description": "Portal Médico"
+    },
+    {
+      "name": "integracoes",
+      "description": "Módulo de Integrações"
+    }
+  ],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "CreatePacienteDto": {
+        "type": "object",
+        "properties": {
+          "codigo_interno": {
+            "type": "string",
+            "description": "Código interno do paciente (será gerado automaticamente se não fornecido)",
+            "example": "PAC123456",
+            "maxLength": 20
+          },
+          "nome": {
+            "type": "string",
+            "description": "Nome completo do paciente",
+            "example": "João da Silva Santos",
+            "maxLength": 255
+          },
+          "nome_social": {
+            "type": "string",
+            "description": "Nome social do paciente",
+            "example": "João Santos",
+            "maxLength": 255
+          },
+          "usar_nome_social": {
+            "type": "string",
+            "description": "Se deve usar o nome social",
+            "enum": [
+              "nao_se_aplica",
+              "sim",
+              "nao"
+            ],
+            "default": "nao_se_aplica"
+          },
+          "sexo": {
+            "type": "string",
+            "description": "Sexo do paciente",
+            "enum": [
+              "M",
+              "F",
+              "O"
+            ],
+            "example": "M"
+          },
+          "data_nascimento": {
+            "type": "string",
+            "description": "Data de nascimento no formato YYYY-MM-DD",
+            "example": "1990-01-15"
+          },
+          "nome_mae": {
+            "type": "string",
+            "description": "Nome completo da mãe",
+            "example": "Maria da Silva Santos",
+            "maxLength": 255
+          },
+          "prontuario": {
+            "type": "string",
+            "description": "Número do prontuário",
+            "example": "PRONT123456",
+            "maxLength": 50
+          },
+          "rg": {
+            "type": "string",
+            "description": "RG do paciente",
+            "example": "12.345.678-9",
+            "maxLength": 20
+          },
+          "cpf": {
+            "type": "string",
+            "description": "CPF do paciente (apenas números)",
+            "example": "12345678901",
+            "minLength": 11,
+            "maxLength": 11
+          },
+          "estado_civil": {
+            "type": "string",
+            "description": "Estado civil",
+            "example": "Solteiro",
+            "maxLength": 50
+          },
+          "email": {
+            "type": "string",
+            "description": "E-mail do paciente",
+            "example": "joao@email.com",
+            "maxLength": 255
+          },
+          "contatos": {
+            "type": "string",
+            "description": "Telefone de contato principal",
+            "example": "11999999999",
+            "maxLength": 20
+          },
+          "whatsapp": {
+            "type": "string",
+            "description": "WhatsApp (se diferente do contato principal)",
+            "example": "11888888888",
+            "maxLength": 20
+          },
+          "profissao": {
+            "type": "string",
+            "description": "Profissão",
+            "example": "Engenheiro Civil",
+            "maxLength": 100
+          },
+          "observacao": {
+            "type": "string",
+            "description": "Observações sobre o paciente",
+            "example": "Paciente com alergia a dipirona"
+          },
+          "convenio_id": {
+            "type": "number",
+            "description": "ID do convênio",
+            "example": 1
+          },
+          "plano": {
+            "type": "string",
+            "description": "Nome do plano",
+            "example": "Plus",
+            "maxLength": 100
+          },
+          "validade": {
+            "type": "string",
+            "description": "Validade do convênio no formato YYYY-MM-DD",
+            "example": "2025-12-31"
+          },
+          "matricula": {
+            "type": "string",
+            "description": "Matrícula do convênio",
+            "example": "123456789012",
+            "maxLength": 50
+          },
+          "nome_titular": {
+            "type": "string",
+            "description": "Nome do titular do convênio",
+            "example": "João da Silva Santos",
+            "maxLength": 255
+          },
+          "cartao_sus": {
+            "type": "string",
+            "description": "Número do cartão SUS",
+            "example": "123456789012345",
+            "maxLength": 50
+          },
+          "cep": {
+            "type": "string",
+            "description": "CEP (apenas números)",
+            "example": "01310100",
+            "minLength": 8,
+            "maxLength": 8
+          },
+          "rua": {
+            "type": "string",
+            "description": "Rua/Logradouro",
+            "example": "Rua das Flores",
+            "maxLength": 255
+          },
+          "numero": {
+            "type": "string",
+            "description": "Número do endereço",
+            "example": "123",
+            "maxLength": 20
+          },
+          "bairro": {
+            "type": "string",
+            "description": "Bairro",
+            "example": "Centro",
+            "maxLength": 100
+          },
+          "complemento": {
+            "type": "string",
+            "description": "Complemento do endereço",
+            "example": "Apto 101",
+            "maxLength": 100
+          },
+          "cidade": {
+            "type": "string",
+            "description": "Cidade",
+            "example": "São Paulo",
+            "maxLength": 100
+          },
+          "estado": {
+            "type": "string",
+            "description": "Estado (UF)",
+            "example": "SP",
+            "minLength": 2,
+            "maxLength": 2
+          },
+          "empresa_id": {
+            "type": "number",
+            "description": "ID da empresa/filial",
+            "example": 1
+          }
+        },
+        "required": [
+          "nome",
+          "sexo",
+          "data_nascimento",
+          "nome_mae",
+          "rg",
+          "cpf",
+          "estado_civil",
+          "email",
+          "contatos",
+          "profissao",
+          "cep",
+          "numero",
+          "bairro",
+          "cidade",
+          "estado",
+          "empresa_id"
+        ]
+      },
+      "Paciente": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdatePacienteDto": {
+        "type": "object",
+        "properties": {
+          "codigo_interno": {
+            "type": "string",
+            "description": "Código interno do paciente (será gerado automaticamente se não fornecido)",
+            "example": "PAC123456",
+            "maxLength": 20
+          },
+          "nome": {
+            "type": "string",
+            "description": "Nome completo do paciente",
+            "example": "João da Silva Santos",
+            "maxLength": 255
+          },
+          "nome_social": {
+            "type": "string",
+            "description": "Nome social do paciente",
+            "example": "João Santos",
+            "maxLength": 255
+          },
+          "usar_nome_social": {
+            "type": "string",
+            "description": "Se deve usar o nome social",
+            "enum": [
+              "nao_se_aplica",
+              "sim",
+              "nao"
+            ],
+            "default": "nao_se_aplica"
+          },
+          "sexo": {
+            "type": "string",
+            "description": "Sexo do paciente",
+            "enum": [
+              "M",
+              "F",
+              "O"
+            ],
+            "example": "M"
+          },
+          "data_nascimento": {
+            "type": "string",
+            "description": "Data de nascimento no formato YYYY-MM-DD",
+            "example": "1990-01-15"
+          },
+          "nome_mae": {
+            "type": "string",
+            "description": "Nome completo da mãe",
+            "example": "Maria da Silva Santos",
+            "maxLength": 255
+          },
+          "prontuario": {
+            "type": "string",
+            "description": "Número do prontuário",
+            "example": "PRONT123456",
+            "maxLength": 50
+          },
+          "rg": {
+            "type": "string",
+            "description": "RG do paciente",
+            "example": "12.345.678-9",
+            "maxLength": 20
+          },
+          "cpf": {
+            "type": "string",
+            "description": "CPF do paciente (apenas números)",
+            "example": "12345678901",
+            "minLength": 11,
+            "maxLength": 11
+          },
+          "estado_civil": {
+            "type": "string",
+            "description": "Estado civil",
+            "example": "Solteiro",
+            "maxLength": 50
+          },
+          "email": {
+            "type": "string",
+            "description": "E-mail do paciente",
+            "example": "joao@email.com",
+            "maxLength": 255
+          },
+          "contatos": {
+            "type": "string",
+            "description": "Telefone de contato principal",
+            "example": "11999999999",
+            "maxLength": 20
+          },
+          "whatsapp": {
+            "type": "string",
+            "description": "WhatsApp (se diferente do contato principal)",
+            "example": "11888888888",
+            "maxLength": 20
+          },
+          "profissao": {
+            "type": "string",
+            "description": "Profissão",
+            "example": "Engenheiro Civil",
+            "maxLength": 100
+          },
+          "observacao": {
+            "type": "string",
+            "description": "Observações sobre o paciente",
+            "example": "Paciente com alergia a dipirona"
+          },
+          "convenio_id": {
+            "type": "number",
+            "description": "ID do convênio",
+            "example": 1
+          },
+          "plano": {
+            "type": "string",
+            "description": "Nome do plano",
+            "example": "Plus",
+            "maxLength": 100
+          },
+          "validade": {
+            "type": "string",
+            "description": "Validade do convênio no formato YYYY-MM-DD",
+            "example": "2025-12-31"
+          },
+          "matricula": {
+            "type": "string",
+            "description": "Matrícula do convênio",
+            "example": "123456789012",
+            "maxLength": 50
+          },
+          "nome_titular": {
+            "type": "string",
+            "description": "Nome do titular do convênio",
+            "example": "João da Silva Santos",
+            "maxLength": 255
+          },
+          "cartao_sus": {
+            "type": "string",
+            "description": "Número do cartão SUS",
+            "example": "123456789012345",
+            "maxLength": 50
+          },
+          "cep": {
+            "type": "string",
+            "description": "CEP (apenas números)",
+            "example": "01310100",
+            "minLength": 8,
+            "maxLength": 8
+          },
+          "rua": {
+            "type": "string",
+            "description": "Rua/Logradouro",
+            "example": "Rua das Flores",
+            "maxLength": 255
+          },
+          "numero": {
+            "type": "string",
+            "description": "Número do endereço",
+            "example": "123",
+            "maxLength": 20
+          },
+          "bairro": {
+            "type": "string",
+            "description": "Bairro",
+            "example": "Centro",
+            "maxLength": 100
+          },
+          "complemento": {
+            "type": "string",
+            "description": "Complemento do endereço",
+            "example": "Apto 101",
+            "maxLength": 100
+          },
+          "cidade": {
+            "type": "string",
+            "description": "Cidade",
+            "example": "São Paulo",
+            "maxLength": 100
+          },
+          "estado": {
+            "type": "string",
+            "description": "Estado (UF)",
+            "example": "SP",
+            "minLength": 2,
+            "maxLength": 2
+          },
+          "empresa_id": {
+            "type": "number",
+            "description": "ID da empresa/filial",
+            "example": 1
+          }
+        }
+      },
+      "CreateHorarioAtendimentoDto": {
+        "type": "object",
+        "properties": {
+          "diaSemana": {
+            "type": "string",
+            "enum": [
+              "SEGUNDA",
+              "TERCA",
+              "QUARTA",
+              "QUINTA",
+              "SEXTA",
+              "SABADO",
+              "DOMINGO",
+              "FERIADOS"
+            ],
+            "description": "Dia da semana"
+          },
+          "horarioInicio": {
+            "type": "string",
+            "example": "08:00",
+            "description": "Horário de início (HH:mm)"
+          },
+          "horarioFim": {
+            "type": "string",
+            "example": "18:00",
+            "description": "Horário de fim (HH:mm)"
+          },
+          "intervaloInicio": {
+            "type": "string",
+            "example": "12:00",
+            "description": "Início do intervalo (HH:mm)"
+          },
+          "intervaloFim": {
+            "type": "string",
+            "example": "13:00",
+            "description": "Fim do intervalo (HH:mm)"
+          },
+          "semIntervalo": {
+            "type": "boolean",
+            "default": false,
+            "description": "Indica se não há intervalo"
+          }
+        },
+        "required": [
+          "diaSemana",
+          "horarioInicio",
+          "horarioFim",
+          "semIntervalo"
+        ]
+      },
+      "CreateDadoBancarioDto": {
+        "type": "object",
+        "properties": {
+          "banco": {
+            "type": "string",
+            "example": "Banco do Brasil",
+            "description": "Nome do banco"
+          },
+          "codigoBanco": {
+            "type": "string",
+            "example": "001",
+            "description": "Código do banco"
+          },
+          "agencia": {
+            "type": "string",
+            "example": "1234",
+            "description": "Número da agência"
+          },
+          "digitoAgencia": {
+            "type": "string",
+            "example": "5",
+            "description": "Dígito da agência"
+          },
+          "contaCorrente": {
+            "type": "string",
+            "example": "12345",
+            "description": "Número da conta corrente"
+          },
+          "digitoConta": {
+            "type": "string",
+            "example": "6",
+            "description": "Dígito da conta"
+          },
+          "tipoConta": {
+            "type": "string",
+            "example": "CORRENTE",
+            "description": "Tipo da conta",
+            "default": "CORRENTE"
+          },
+          "principal": {
+            "type": "boolean",
+            "default": false,
+            "description": "Indica se é a conta principal"
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações sobre a conta bancária"
+          }
+        },
+        "required": [
+          "banco",
+          "agencia",
+          "contaCorrente",
+          "principal"
+        ]
+      },
+      "CreateCnaeSecundarioDto": {
+        "type": "object",
+        "properties": {
+          "codigoCnae": {
+            "type": "string",
+            "example": "8621601",
+            "description": "Código CNAE secundário"
+          },
+          "descricao": {
+            "type": "string",
+            "description": "Descrição do CNAE"
+          }
+        },
+        "required": [
+          "codigoCnae"
+        ]
+      },
+      "CreateUnidadeSaudeDto": {
+        "type": "object",
+        "properties": {
+          "nomeUnidade": {
+            "type": "string",
+            "example": "Laboratório Central",
+            "description": "Nome da unidade de saúde"
+          },
+          "codigoInterno": {
+            "type": "string",
+            "example": "LAB001",
+            "description": "Código interno da unidade"
+          },
+          "cnpj": {
+            "type": "string",
+            "example": "12345678000190",
+            "description": "CNPJ da unidade"
+          },
+          "razaoSocial": {
+            "type": "string",
+            "example": "Laboratório ABC Ltda",
+            "description": "Razão social"
+          },
+          "nomeFantasia": {
+            "type": "string",
+            "example": "Lab ABC",
+            "description": "Nome fantasia"
+          },
+          "inscricaoMunicipal": {
+            "type": "string",
+            "example": "123456",
+            "description": "Inscrição municipal"
+          },
+          "inscricaoEstadual": {
+            "type": "string",
+            "example": "789456123",
+            "description": "Inscrição estadual"
+          },
+          "cnes": {
+            "type": "string",
+            "example": "1234567",
+            "description": "Código CNES"
+          },
+          "contatosUnidade": {
+            "type": "string",
+            "example": "(11) 98765-4321",
+            "description": "Contatos da unidade"
+          },
+          "email": {
+            "type": "string",
+            "example": "contato@lab.com.br",
+            "description": "E-mail da unidade"
+          },
+          "codigoServicoPrincipal": {
+            "type": "string",
+            "example": "001",
+            "description": "Código do serviço principal"
+          },
+          "codigoServicoSecundario": {
+            "type": "string",
+            "example": "002",
+            "description": "Código do serviço secundário"
+          },
+          "cnaePrincipal": {
+            "type": "string",
+            "example": "8621601",
+            "description": "CNAE principal"
+          },
+          "cep": {
+            "type": "string",
+            "example": "01234567",
+            "description": "CEP"
+          },
+          "rua": {
+            "type": "string",
+            "example": "Rua das Flores",
+            "description": "Logradouro"
+          },
+          "numero": {
+            "type": "string",
+            "example": "123",
+            "description": "Número"
+          },
+          "bairro": {
+            "type": "string",
+            "example": "Centro",
+            "description": "Bairro"
+          },
+          "complemento": {
+            "type": "string",
+            "example": "Sala 10",
+            "description": "Complemento"
+          },
+          "estado": {
+            "type": "string",
+            "example": "SP",
+            "description": "Estado (UF)"
+          },
+          "cidade": {
+            "type": "string",
+            "example": "São Paulo",
+            "description": "Cidade"
+          },
+          "nomeResponsavel": {
+            "type": "string",
+            "example": "Dr. João Silva",
+            "description": "Nome do responsável"
+          },
+          "contatoResponsavel": {
+            "type": "string",
+            "example": "(11) 98765-4321",
+            "description": "Contato do responsável"
+          },
+          "emailResponsavel": {
+            "type": "string",
+            "example": "responsavel@lab.com.br",
+            "description": "E-mail do responsável"
+          },
+          "irrfPercentual": {
+            "type": "number",
+            "example": 1.5,
+            "description": "Percentual IRRF",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "pisPercentual": {
+            "type": "number",
+            "example": 0.65,
+            "description": "Percentual PIS",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "cofinsPercentual": {
+            "type": "number",
+            "example": 3,
+            "description": "Percentual COFINS",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "csllPercentual": {
+            "type": "number",
+            "example": 1,
+            "description": "Percentual CSLL",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "issPercentual": {
+            "type": "number",
+            "example": 5,
+            "description": "Percentual ISS",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "ibsPercentual": {
+            "type": "number",
+            "example": 0,
+            "description": "Percentual IBS",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "cbsPercentual": {
+            "type": "number",
+            "example": 0,
+            "description": "Percentual CBS",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "reterIss": {
+            "type": "boolean",
+            "default": false,
+            "description": "Reter ISS"
+          },
+          "reterIr": {
+            "type": "boolean",
+            "default": false,
+            "description": "Reter IR"
+          },
+          "reterPcc": {
+            "type": "boolean",
+            "default": false,
+            "description": "Reter PCC"
+          },
+          "reterIbs": {
+            "type": "boolean",
+            "default": false,
+            "description": "Reter IBS"
+          },
+          "reterCbs": {
+            "type": "boolean",
+            "default": false,
+            "description": "Reter CBS"
+          },
+          "optanteSimplesNacional": {
+            "type": "boolean",
+            "default": false,
+            "description": "Optante pelo Simples Nacional"
+          },
+          "certificadoDigitalVinculado": {
+            "type": "boolean",
+            "default": false,
+            "description": "Certificado digital vinculado"
+          },
+          "certificadoDigitalPath": {
+            "type": "string",
+            "description": "Caminho do arquivo do certificado digital"
+          },
+          "certificadoDigitalSenha": {
+            "type": "string",
+            "description": "Senha do certificado digital"
+          },
+          "certificadoDigitalValidade": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data de validade do certificado digital"
+          },
+          "horariosAtendimento": {
+            "description": "Horários de atendimento",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateHorarioAtendimentoDto"
+            }
+          },
+          "dadosBancarios": {
+            "description": "Dados bancários",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateDadoBancarioDto"
+            }
+          },
+          "cnaeSecundarios": {
+            "description": "CNAEs secundários",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateCnaeSecundarioDto"
+            }
+          },
+          "ativo": {
+            "type": "boolean",
+            "default": true,
+            "description": "Status ativo/inativo"
+          }
+        },
+        "required": [
+          "nomeUnidade",
+          "cnpj",
+          "razaoSocial",
+          "nomeFantasia"
+        ]
+      },
+      "HorarioAtendimentoResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "diaSemana": {
+            "type": "string"
+          },
+          "horarioInicio": {
+            "type": "string"
+          },
+          "horarioFim": {
+            "type": "string"
+          },
+          "intervaloInicio": {
+            "type": "string"
+          },
+          "intervaloFim": {
+            "type": "string"
+          },
+          "semIntervalo": {
+            "type": "boolean"
+          },
+          "ativo": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "diaSemana",
+          "horarioInicio",
+          "horarioFim",
+          "semIntervalo",
+          "ativo"
+        ]
+      },
+      "DadoBancarioResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "banco": {
+            "type": "string"
+          },
+          "codigoBanco": {
+            "type": "string"
+          },
+          "agencia": {
+            "type": "string"
+          },
+          "digitoAgencia": {
+            "type": "string"
+          },
+          "contaCorrente": {
+            "type": "string"
+          },
+          "digitoConta": {
+            "type": "string"
+          },
+          "tipoConta": {
+            "type": "string"
+          },
+          "principal": {
+            "type": "boolean"
+          },
+          "observacoes": {
+            "type": "string"
+          },
+          "ativo": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "banco",
+          "agencia",
+          "contaCorrente",
+          "tipoConta",
+          "principal",
+          "ativo"
+        ]
+      },
+      "CnaeSecundarioResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "codigoCnae": {
+            "type": "string"
+          },
+          "descricao": {
+            "type": "string"
+          },
+          "ativo": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "codigoCnae",
+          "ativo"
+        ]
+      },
+      "UnidadeSaudeResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "nomeUnidade": {
+            "type": "string"
+          },
+          "codigoInterno": {
+            "type": "string"
+          },
+          "cnpj": {
+            "type": "string"
+          },
+          "razaoSocial": {
+            "type": "string"
+          },
+          "nomeFantasia": {
+            "type": "string"
+          },
+          "inscricaoMunicipal": {
+            "type": "string"
+          },
+          "inscricaoEstadual": {
+            "type": "string"
+          },
+          "cnes": {
+            "type": "string"
+          },
+          "contatosUnidade": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "codigoServicoPrincipal": {
+            "type": "string"
+          },
+          "codigoServicoSecundario": {
+            "type": "string"
+          },
+          "cnaePrincipal": {
+            "type": "string"
+          },
+          "cep": {
+            "type": "string"
+          },
+          "rua": {
+            "type": "string"
+          },
+          "numero": {
+            "type": "string"
+          },
+          "bairro": {
+            "type": "string"
+          },
+          "complemento": {
+            "type": "string"
+          },
+          "estado": {
+            "type": "string"
+          },
+          "cidade": {
+            "type": "string"
+          },
+          "nomeResponsavel": {
+            "type": "string"
+          },
+          "contatoResponsavel": {
+            "type": "string"
+          },
+          "emailResponsavel": {
+            "type": "string"
+          },
+          "irrfPercentual": {
+            "type": "number"
+          },
+          "pisPercentual": {
+            "type": "number"
+          },
+          "cofinsPercentual": {
+            "type": "number"
+          },
+          "csllPercentual": {
+            "type": "number"
+          },
+          "issPercentual": {
+            "type": "number"
+          },
+          "ibsPercentual": {
+            "type": "number"
+          },
+          "cbsPercentual": {
+            "type": "number"
+          },
+          "reterIss": {
+            "type": "boolean"
+          },
+          "reterIr": {
+            "type": "boolean"
+          },
+          "reterPcc": {
+            "type": "boolean"
+          },
+          "reterIbs": {
+            "type": "boolean"
+          },
+          "reterCbs": {
+            "type": "boolean"
+          },
+          "optanteSimplesNacional": {
+            "type": "boolean"
+          },
+          "certificadoDigitalVinculado": {
+            "type": "boolean"
+          },
+          "certificadoDigitalValidade": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "horariosAtendimento": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HorarioAtendimentoResponseDto"
+            }
+          },
+          "dadosBancarios": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DadoBancarioResponseDto"
+            }
+          },
+          "cnaeSecundarios": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CnaeSecundarioResponseDto"
+            }
+          },
+          "ativo": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "nomeUnidade",
+          "cnpj",
+          "razaoSocial",
+          "nomeFantasia",
+          "reterIss",
+          "reterIr",
+          "reterPcc",
+          "reterIbs",
+          "reterCbs",
+          "optanteSimplesNacional",
+          "certificadoDigitalVinculado",
+          "horariosAtendimento",
+          "dadosBancarios",
+          "cnaeSecundarios",
+          "ativo",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "UpdateUnidadeSaudeDto": {
+        "type": "object",
+        "properties": {
+          "nomeUnidade": {
+            "type": "string",
+            "example": "Laboratório Central",
+            "description": "Nome da unidade de saúde"
+          },
+          "codigoInterno": {
+            "type": "string",
+            "example": "LAB001",
+            "description": "Código interno da unidade"
+          },
+          "cnpj": {
+            "type": "string",
+            "example": "12345678000190",
+            "description": "CNPJ da unidade"
+          },
+          "razaoSocial": {
+            "type": "string",
+            "example": "Laboratório ABC Ltda",
+            "description": "Razão social"
+          },
+          "nomeFantasia": {
+            "type": "string",
+            "example": "Lab ABC",
+            "description": "Nome fantasia"
+          },
+          "inscricaoMunicipal": {
+            "type": "string",
+            "example": "123456",
+            "description": "Inscrição municipal"
+          },
+          "inscricaoEstadual": {
+            "type": "string",
+            "example": "789456123",
+            "description": "Inscrição estadual"
+          },
+          "cnes": {
+            "type": "string",
+            "example": "1234567",
+            "description": "Código CNES"
+          },
+          "contatosUnidade": {
+            "type": "string",
+            "example": "(11) 98765-4321",
+            "description": "Contatos da unidade"
+          },
+          "email": {
+            "type": "string",
+            "example": "contato@lab.com.br",
+            "description": "E-mail da unidade"
+          },
+          "codigoServicoPrincipal": {
+            "type": "string",
+            "example": "001",
+            "description": "Código do serviço principal"
+          },
+          "codigoServicoSecundario": {
+            "type": "string",
+            "example": "002",
+            "description": "Código do serviço secundário"
+          },
+          "cnaePrincipal": {
+            "type": "string",
+            "example": "8621601",
+            "description": "CNAE principal"
+          },
+          "cep": {
+            "type": "string",
+            "example": "01234567",
+            "description": "CEP"
+          },
+          "rua": {
+            "type": "string",
+            "example": "Rua das Flores",
+            "description": "Logradouro"
+          },
+          "numero": {
+            "type": "string",
+            "example": "123",
+            "description": "Número"
+          },
+          "bairro": {
+            "type": "string",
+            "example": "Centro",
+            "description": "Bairro"
+          },
+          "complemento": {
+            "type": "string",
+            "example": "Sala 10",
+            "description": "Complemento"
+          },
+          "estado": {
+            "type": "string",
+            "example": "SP",
+            "description": "Estado (UF)"
+          },
+          "cidade": {
+            "type": "string",
+            "example": "São Paulo",
+            "description": "Cidade"
+          },
+          "nomeResponsavel": {
+            "type": "string",
+            "example": "Dr. João Silva",
+            "description": "Nome do responsável"
+          },
+          "contatoResponsavel": {
+            "type": "string",
+            "example": "(11) 98765-4321",
+            "description": "Contato do responsável"
+          },
+          "emailResponsavel": {
+            "type": "string",
+            "example": "responsavel@lab.com.br",
+            "description": "E-mail do responsável"
+          },
+          "irrfPercentual": {
+            "type": "number",
+            "example": 1.5,
+            "description": "Percentual IRRF",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "pisPercentual": {
+            "type": "number",
+            "example": 0.65,
+            "description": "Percentual PIS",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "cofinsPercentual": {
+            "type": "number",
+            "example": 3,
+            "description": "Percentual COFINS",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "csllPercentual": {
+            "type": "number",
+            "example": 1,
+            "description": "Percentual CSLL",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "issPercentual": {
+            "type": "number",
+            "example": 5,
+            "description": "Percentual ISS",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "ibsPercentual": {
+            "type": "number",
+            "example": 0,
+            "description": "Percentual IBS",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "cbsPercentual": {
+            "type": "number",
+            "example": 0,
+            "description": "Percentual CBS",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "reterIss": {
+            "type": "boolean",
+            "default": false,
+            "description": "Reter ISS"
+          },
+          "reterIr": {
+            "type": "boolean",
+            "default": false,
+            "description": "Reter IR"
+          },
+          "reterPcc": {
+            "type": "boolean",
+            "default": false,
+            "description": "Reter PCC"
+          },
+          "reterIbs": {
+            "type": "boolean",
+            "default": false,
+            "description": "Reter IBS"
+          },
+          "reterCbs": {
+            "type": "boolean",
+            "default": false,
+            "description": "Reter CBS"
+          },
+          "optanteSimplesNacional": {
+            "type": "boolean",
+            "default": false,
+            "description": "Optante pelo Simples Nacional"
+          },
+          "certificadoDigitalVinculado": {
+            "type": "boolean",
+            "default": false,
+            "description": "Certificado digital vinculado"
+          },
+          "certificadoDigitalPath": {
+            "type": "string",
+            "description": "Caminho do arquivo do certificado digital"
+          },
+          "certificadoDigitalSenha": {
+            "type": "string",
+            "description": "Senha do certificado digital"
+          },
+          "certificadoDigitalValidade": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data de validade do certificado digital"
+          },
+          "horariosAtendimento": {
+            "description": "Horários de atendimento",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateHorarioAtendimentoDto"
+            }
+          },
+          "dadosBancarios": {
+            "description": "Dados bancários",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateDadoBancarioDto"
+            }
+          },
+          "cnaeSecundarios": {
+            "description": "CNAEs secundários",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateCnaeSecundarioDto"
+            }
+          },
+          "ativo": {
+            "type": "boolean",
+            "default": true,
+            "description": "Status ativo/inativo"
+          }
+        }
+      }
+    }
+  }
+}
