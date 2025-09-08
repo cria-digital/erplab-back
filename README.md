@@ -32,31 +32,95 @@ cp .env.example .env
 ```
 
 ### 3. Inicie o banco de dados PostgreSQL via Docker
+
+#### 🐳 Tutorial Docker Compose - Banco de Dados
+
+O projeto utiliza Docker Compose para gerenciar o banco de dados PostgreSQL de forma simples e isolada.
+
+**Arquivo `docker-compose.yml` configurado:**
+```yaml
+version: '3.8'
+services:
+  erplab-db:
+    container_name: erplab-postgres
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: erplab_user
+      POSTGRES_PASSWORD: erplab_pass_2024
+      POSTGRES_DB: erplab_db
+    volumes:
+      - erplab_data:/var/lib/postgresql/data
+volumes:
+  erplab_data:
+```
+
+**Comandos básicos:**
+
 ```bash
-# Subir o banco de dados PostgreSQL
+# 1. INICIAR o banco de dados (primeira vez ou após parar)
 docker-compose up -d
+# -d significa "detached" (roda em background)
 
-# Verificar se o container está rodando
+# 2. VERIFICAR se está rodando
 docker ps
+# Deve mostrar o container "erplab-postgres" com status "Up"
 
-# Verificar logs do banco (opcional)
+# 3. VER LOGS do banco (útil para debug)
 docker-compose logs -f erplab-db
+# Ctrl+C para sair dos logs
+
+# 4. PARAR o banco (mantém os dados)
+docker-compose stop
+
+# 5. INICIAR novamente (após stop)
+docker-compose start
+
+# 6. PARAR e REMOVER containers (dados permanecem)
+docker-compose down
+
+# 7. RESETAR TUDO (CUIDADO: apaga todos os dados!)
+docker-compose down -v
+# -v remove os volumes (onde ficam os dados)
+```
+
+**Troubleshooting comum:**
+
+```bash
+# Porta 5432 já em uso?
+# Verifique se outro PostgreSQL está rodando:
+sudo lsof -i :5432
+
+# Container não inicia?
+# Veja os logs detalhados:
+docker-compose logs erplab-db
+
+# Permissão negada?
+# Execute com sudo (Linux) ou verifique se Docker Desktop está rodando (Windows/Mac)
+sudo docker-compose up -d
 ```
 
 **Credenciais do banco:**
-- Host: localhost
-- Porta: 5432
-- Banco: erplab_db
-- Usuário: erplab_user
-- Senha: erplab_pass_2024
+- **Host:** localhost
+- **Porta:** 5432
+- **Banco:** erplab_db
+- **Usuário:** erplab_user
+- **Senha:** erplab_pass_2024
 
 ### 4. Execute as migrations
 ```bash
-# Gerar uma nova migration (quando necessário)
-npm run migration:generate -- src/database/migrations/NomeDaMigration
+# Build do projeto (necessário antes das migrations)
+npm run build
 
 # Executar migrations pendentes
 npm run migration:run
+
+# Criar nova migration (quando necessário)
+npm run migration:create src/database/migrations/NomeDaMigration
+
+# Gerar migration baseada em mudanças nas entities
+npm run migration:generate src/database/migrations/NomeDaMigration
 
 # Reverter última migration (se necessário)
 npm run migration:revert
@@ -64,12 +128,21 @@ npm run migration:revert
 
 ### 5. Execute o projeto
 ```bash
-# Desenvolvimento
+# Desenvolvimento (com hot reload)
 npm run start:dev
 
 # Produção
 npm run build
 npm run start:prod
+```
+
+**Verificando se tudo está funcionando:**
+```bash
+# Teste a API
+curl http://localhost:10016/api/v1/health
+
+# Ou abra no navegador
+http://localhost:10016/api/v1/health
 ```
 
 ## 🌐 Endpoints

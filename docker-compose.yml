@@ -1,23 +1,16 @@
 version: '3.8'
 services:
-  erplab-db:
+  db:
     image: postgres:15
-    container_name: erplab-postgres
     restart: always
     environment:
-      POSTGRES_USER: erplab_user
-      POSTGRES_PASSWORD: erplab_pass_2024
+      POSTGRES_USER: nestuser
+      POSTGRES_PASSWORD: nestpass
       POSTGRES_DB: erplab_db
-      TZ: America/Sao_Paulo
     ports:
       - '5432:5432'
     volumes:
-      - erplab_postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U erplab_user -d erplab_db"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - postgres_data:/var/lib/postgresql/data
 
 volumes:
-  erplab_postgres_data:
+  postgres_data:

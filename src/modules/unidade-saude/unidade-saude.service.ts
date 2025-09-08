@@ -138,7 +138,7 @@ export class UnidadeSaudeService {
 
     const skip = (page - 1) * limit;
 
-    const where: any = {};
+    let where: any = {};
 
     if (ativo !== undefined) {
       where.ativo = ativo;
@@ -153,16 +153,17 @@ export class UnidadeSaudeService {
     }
 
     if (search) {
-      where.push(
-        { nomeUnidade: ILike(`%${search}%`) },
-        { nomeFantasia: ILike(`%${search}%`) },
-        { cnpj: ILike(`%${search}%`) },
-        { razaoSocial: ILike(`%${search}%`) },
-      );
+      // Se há search, cria um array de condições OR
+      where = [
+        { ...where, nomeUnidade: ILike(`%${search}%`) },
+        { ...where, nomeFantasia: ILike(`%${search}%`) },
+        { ...where, cnpj: ILike(`%${search}%`) },
+        { ...where, razaoSocial: ILike(`%${search}%`) },
+      ];
     }
 
     const queryOptions: FindManyOptions<UnidadeSaude> = {
-      where: search ? where : where,
+      where,
       relations: ['horariosAtendimento', 'dadosBancarios', 'cnaeSecundarios'],
       order: { nomeUnidade: 'ASC' },
       skip,
