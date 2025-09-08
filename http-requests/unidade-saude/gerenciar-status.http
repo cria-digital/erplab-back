@@ -1,6 +1,6 @@
 ### Ativar Unidade de Saúde
 # Substitua {id} pelo UUID real da unidade
-PATCH http://localhost:10016/api/v1/unidades-saude/123e4567-e89b-12d3-a456-426614174000/ativar
+PATCH {{baseUrl}}/unidades-saude/123e4567-e89b-12d3-a456-426614174000/ativar
 
 ### Expected Response
 # Status: 200 OK
@@ -15,7 +15,7 @@ PATCH http://localhost:10016/api/v1/unidades-saude/123e4567-e89b-12d3-a456-42661
 
 ### Desativar Unidade de Saúde
 # Substitua {id} pelo UUID real da unidade
-PATCH http://localhost:10016/api/v1/unidades-saude/123e4567-e89b-12d3-a456-426614174000/desativar
+PATCH {{baseUrl}}/unidades-saude/123e4567-e89b-12d3-a456-426614174000/desativar
 
 ### Expected Response
 # Status: 200 OK
@@ -30,7 +30,7 @@ PATCH http://localhost:10016/api/v1/unidades-saude/123e4567-e89b-12d3-a456-42661
 
 ### Remover Unidade de Saúde (Soft Delete)
 # Substitua {id} pelo UUID real da unidade
-DELETE http://localhost:10016/api/v1/unidades-saude/123e4567-e89b-12d3-a456-426614174000
+DELETE {{baseUrl}}/unidades-saude/123e4567-e89b-12d3-a456-426614174000
 
 ### Expected Response
 # Status: 204 No Content
@@ -39,7 +39,7 @@ DELETE http://localhost:10016/api/v1/unidades-saude/123e4567-e89b-12d3-a456-4266
 ###
 
 ### Tentar Buscar Unidade Inexistente (Erro)
-GET http://localhost:10016/api/v1/unidades-saude/99999999-9999-9999-9999-999999999999
+GET {{baseUrl}}/unidades-saude/99999999-9999-9999-9999-999999999999
 
 ### Expected Response
 # Status: 404 Not Found
@@ -52,8 +52,8 @@ GET http://localhost:10016/api/v1/unidades-saude/99999999-9999-9999-9999-9999999
 ###
 
 ### Tentar Criar Unidade com CNPJ Duplicado (Erro)
-POST http://localhost:10016/api/v1/unidades-saude
-Content-Type: application/json
+POST {{baseUrl}}/unidades-saude
+Content-Type: {{contentType}}
 
 {
   "nomeUnidade": "Tentativa Duplicada",

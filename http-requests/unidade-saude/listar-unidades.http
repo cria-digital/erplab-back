@@ -1,5 +1,5 @@
 ### Listar Todas as Unidades de Saúde
-GET http://localhost:10016/api/v1/unidades-saude
+GET {{baseUrl}}/unidades-saude
 
 ### Expected Response
 # Status: 200 OK
@@ -14,32 +14,32 @@ GET http://localhost:10016/api/v1/unidades-saude
 ###
 
 ### Listar com Paginação
-GET http://localhost:10016/api/v1/unidades-saude?page=1&limit=5
+GET {{baseUrl}}/unidades-saude?page=1&limit=5
 
 ###
 
 ### Listar com Filtro de Busca
-GET http://localhost:10016/api/v1/unidades-saude?search=São Roque
+GET {{baseUrl}}/unidades-saude?search=São Roque
 
 ###
 
 ### Listar Apenas Ativas
-GET http://localhost:10016/api/v1/unidades-saude?ativo=true
+GET {{baseUrl}}/unidades-saude?ativo=true
 
 ###
 
 ### Filtrar por Cidade
-GET http://localhost:10016/api/v1/unidades-saude?cidade=São Roque
+GET {{baseUrl}}/unidades-saude?cidade=São Roque
 
 ###
 
 ### Filtrar por Estado
-GET http://localhost:10016/api/v1/unidades-saude?estado=SP
+GET {{baseUrl}}/unidades-saude?estado=SP
 
 ###
 
 ### Combinação de Filtros
-GET http://localhost:10016/api/v1/unidades-saude?page=1&limit=10&ativo=true&cidade=São Roque&estado=SP
+GET {{baseUrl}}/unidades-saude?page=1&limit=10&ativo=true&cidade=São Roque&estado=SP
 
 ### Expected Response com Filtros
 # Status: 200 OK

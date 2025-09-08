@@ -1,6 +1,6 @@
 ### Buscar Unidade por ID
 # Substitua {id} pelo UUID real da unidade
-GET http://localhost:10016/api/v1/unidades-saude/123e4567-e89b-12d3-a456-426614174000
+GET {{baseUrl}}/unidades-saude/123e4567-e89b-12d3-a456-426614174000
 
 ### Expected Response
 # Status: 200 OK
@@ -17,7 +17,7 @@ GET http://localhost:10016/api/v1/unidades-saude/123e4567-e89b-12d3-a456-4266141
 ###
 
 ### Buscar Unidade por CNPJ
-GET http://localhost:10016/api/v1/unidades-saude/cnpj/12345678000190
+GET {{baseUrl}}/unidades-saude/cnpj/12345678000190
 
 ### Expected Response
 # Status: 200 OK
@@ -31,7 +31,7 @@ GET http://localhost:10016/api/v1/unidades-saude/cnpj/12345678000190
 ###
 
 ### Buscar Unidades por Cidade
-GET http://localhost:10016/api/v1/unidades-saude/cidade/São Roque
+GET {{baseUrl}}/unidades-saude/cidade/São Roque
 
 ### Expected Response
 # Status: 200 OK
@@ -48,7 +48,7 @@ GET http://localhost:10016/api/v1/unidades-saude/cidade/São Roque
 ###
 
 ### Listar Apenas Unidades Ativas (para dropdowns)
-GET http://localhost:10016/api/v1/unidades-saude/ativas
+GET {{baseUrl}}/unidades-saude/ativas
 
 ### Expected Response
 # Status: 200 OK

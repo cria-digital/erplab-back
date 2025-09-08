@@ -1,8 +1,8 @@
 ### ===== CENÁRIO COMPLETO: CRIAR MÚLTIPLAS UNIDADES =====
 
 ### 1. Criar Unidade São Roque
-POST http://localhost:10016/api/v1/unidades-saude
-Content-Type: application/json
+POST {{baseUrl}}/unidades-saude
+Content-Type: {{contentType}}
 
 {
   "nomeUnidade": "Laboratório São Roque",
@@ -47,8 +47,8 @@ Content-Type: application/json
 ###
 
 ### 2. Criar Unidade Ibiúna
-POST http://localhost:10016/api/v1/unidades-saude
-Content-Type: application/json
+POST {{baseUrl}}/unidades-saude
+Content-Type: {{contentType}}
 
 {
   "nomeUnidade": "Laboratório Ibiúna",
@@ -75,8 +75,8 @@ Content-Type: application/json
 ###
 
 ### 3. Criar Unidade Araçariguama
-POST http://localhost:10016/api/v1/unidades-saude
-Content-Type: application/json
+POST {{baseUrl}}/unidades-saude
+Content-Type: {{contentType}}
 
 {
   "nomeUnidade": "Laboratório Araçariguama",
@@ -103,8 +103,8 @@ Content-Type: application/json
 ###
 
 ### 4. Criar Unidade Vargem Grande Paulista
-POST http://localhost:10016/api/v1/unidades-saude
-Content-Type: application/json
+POST {{baseUrl}}/unidades-saude
+Content-Type: {{contentType}}
 
 {
   "nomeUnidade": "Laboratório Vargem Grande",
@@ -131,8 +131,8 @@ Content-Type: application/json
 ###
 
 ### 5. Criar Unidade Cotia
-POST http://localhost:10016/api/v1/unidades-saude
-Content-Type: application/json
+POST {{baseUrl}}/unidades-saude
+Content-Type: {{contentType}}
 
 {
   "nomeUnidade": "Laboratório Cotia",
@@ -159,8 +159,8 @@ Content-Type: application/json
 ###
 
 ### 6. Criar Unidade Itapecerica da Serra
-POST http://localhost:10016/api/v1/unidades-saude
-Content-Type: application/json
+POST {{baseUrl}}/unidades-saude
+Content-Type: {{contentType}}
 
 {
   "nomeUnidade": "Laboratório Itapecerica",
@@ -189,19 +189,19 @@ Content-Type: application/json
 ### ===== CONSULTAS ÚTEIS =====
 
 ### Listar Todas as Unidades Criadas
-GET http://localhost:10016/api/v1/unidades-saude?limit=10
+GET {{baseUrl}}/unidades-saude?limit=10
 
 ###
 
 ### Buscar Unidades da Região (por Estado)
-GET http://localhost:10016/api/v1/unidades-saude?estado=SP&ativo=true
+GET {{baseUrl}}/unidades-saude?estado=SP&ativo=true
 
 ###
 
 ### Buscar Unidade Específica por CNPJ
-GET http://localhost:10016/api/v1/unidades-saude/cnpj/11111111000111
+GET {{baseUrl}}/unidades-saude/cnpj/11111111000111
 
 ###
 
 ### Listar Unidades para Dropdown (apenas id, nome e cnpj)
-GET http://localhost:10016/api/v1/unidades-saude/ativas
+GET {{baseUrl}}/unidades-saude/ativas

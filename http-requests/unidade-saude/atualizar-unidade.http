@@ -1,7 +1,7 @@
 ### Atualizar Unidade de Saúde (Parcial)
 # Substitua {id} pelo UUID real da unidade
-PATCH http://localhost:10016/api/v1/unidades-saude/123e4567-e89b-12d3-a456-426614174000
-Content-Type: application/json
+PATCH {{baseUrl}}/unidades-saude/123e4567-e89b-12d3-a456-426614174000
+Content-Type: {{contentType}}
 
 {
   "nomeFantasia": "LabSR Central - Atualizado",
@@ -21,8 +21,8 @@ Content-Type: application/json
 ###
 
 ### Atualizar Horários de Atendimento
-PATCH http://localhost:10016/api/v1/unidades-saude/123e4567-e89b-12d3-a456-426614174000
-Content-Type: application/json
+PATCH {{baseUrl}}/unidades-saude/123e4567-e89b-12d3-a456-426614174000
+Content-Type: {{contentType}}
 
 {
   "horariosAtendimento": [
@@ -48,8 +48,8 @@ Content-Type: application/json
 ###
 
 ### Atualizar Dados Bancários
-PATCH http://localhost:10016/api/v1/unidades-saude/123e4567-e89b-12d3-a456-426614174000
-Content-Type: application/json
+PATCH {{baseUrl}}/unidades-saude/123e4567-e89b-12d3-a456-426614174000
+Content-Type: {{contentType}}
 
 {
   "dadosBancarios": [
@@ -70,8 +70,8 @@ Content-Type: application/json
 ###
 
 ### Atualizar Impostos
-PATCH http://localhost:10016/api/v1/unidades-saude/123e4567-e89b-12d3-a456-426614174000
-Content-Type: application/json
+PATCH {{baseUrl}}/unidades-saude/123e4567-e89b-12d3-a456-426614174000
+Content-Type: {{contentType}}
 
 {
   "issPercentual": 3,
@@ -84,8 +84,8 @@ Content-Type: application/json
 ###
 
 ### Atualizar Endereço Completo
-PATCH http://localhost:10016/api/v1/unidades-saude/123e4567-e89b-12d3-a456-426614174000
-Content-Type: application/json
+PATCH {{baseUrl}}/unidades-saude/123e4567-e89b-12d3-a456-426614174000
+Content-Type: {{contentType}}
 
 {
   "cep": "18135000",

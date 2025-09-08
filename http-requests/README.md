@@ -40,27 +40,89 @@ http-requests/
     └── exemplos-completos.http # Cenários completos de teste
 ```
 
-## 🔑 Variáveis de Ambiente
+## 🔑 Configuração de Variáveis de Ambiente
 
-Você pode criar um arquivo `http-client.env.json` na raiz para definir variáveis:
+### Configuração Inicial (IMPORTANTE)
 
-```json
+1. **Abra o VS Code na pasta raiz do projeto** (`/erplab`), não em subpastas
+2. **Instale a extensão REST Client** (humao.rest-client) se ainda não tiver
+3. **A configuração já está pronta** no arquivo `.vscode/settings.json` na raiz do projeto
+
+### Como Usar
+
+1. **Abra qualquer arquivo `.http`** em `erplab-back/http-requests/`
+2. **Selecione o ambiente**:
+   - Clique em "No Environment" ou "Environment" no **canto inferior direito** do VS Code
+   - Ou use o atalho `Ctrl+Alt+E`
+   - Ou `Ctrl+Shift+P` → "Rest Client: Switch Environment"
+3. **Escolha entre**:
+   - `dev`: Ambiente local (http://localhost:10016)
+   - `homolog`: Ambiente de homologação (https://homolog.erplab.com.br)
+
+### Variáveis Disponíveis
+
+```http
+{{baseUrl}}        # URL base da API (ex: http://localhost:10016/api/v1)
+{{contentType}}    # Tipo de conteúdo (application/json)
+{{token}}          # Token JWT para autenticação (quando implementado)
+{{host}}           # Host do servidor
+{{port}}           # Porta do servidor
+{{protocol}}       # Protocolo (http ou https)
+{{apiPath}}        # Caminho da API (/api/v1)
+```
+
+### Exemplo de Uso
+
+```http
+### Criar Unidade
+POST {{baseUrl}}/unidades-saude
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
 {
-  "dev": {
-    "baseUrl": "http://localhost:10016/api/v1",
-    "token": "seu-jwt-token-aqui"
-  },
-  "prod": {
-    "baseUrl": "https://api.erplab.com/api/v1",
-    "token": "token-producao"
-  }
+  "nomeUnidade": "Laboratório Teste"
 }
 ```
 
-Depois use as variáveis nos arquivos `.http`:
-```http
-GET {{baseUrl}}/unidades-saude
-Authorization: Bearer {{token}}
+### Adicionar Token de Autenticação
+
+Quando a autenticação for implementada, edite o arquivo `.vscode/settings.json` na raiz do projeto e adicione seu token:
+
+```json
+"dev": {
+  "baseUrl": "http://localhost:10016/api/v1",
+  "token": "seu-token-jwt-aqui"  // ← Adicione seu token aqui
+}
+```
+
+### Estrutura Completa do settings.json
+
+Exemplo completo do arquivo `.vscode/settings.json` na raiz do projeto:
+
+```json
+{
+  "rest-client.environmentVariables": {
+    "$shared": {
+      "contentType": "application/json"
+    },
+    "dev": {
+      "baseUrl": "http://localhost:10016/api/v1",
+      "host": "localhost",
+      "port": "10016",
+      "protocol": "http",
+      "apiPath": "/api/v1",
+      "token": ""
+    },
+    "homolog": {
+      "baseUrl": "https://homolog.erplab.com.br/api/v1",
+      "host": "homolog.erplab.com.br",
+      "port": "443",
+      "protocol": "https",
+      "apiPath": "/api/v1",
+      "token": ""
+    }
+  }
+}
 ```
 
 ## 🧪 Ordem de Teste Recomendada

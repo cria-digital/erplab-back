@@ -1,6 +1,6 @@
 ### Criar Nova Unidade de Saúde
-POST http://localhost:10016/api/v1/unidades-saude
-Content-Type: application/json
+POST {{baseUrl}}/unidades-saude
+Content-Type: {{contentType}}
 
 {
   "nomeUnidade": "Laboratório Central São Roque",
