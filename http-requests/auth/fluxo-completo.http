@@ -1,0 +1,190 @@
+### ============================================
+### FLUXO COMPLETO DE AUTENTICAÇÃO
+### ============================================
+
+### 1. Criar um Usuário de Teste (Admin cria)
+POST {{baseUrl}}/usuarios
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nomeCompleto": "Usuário Teste Auth",
+  "email": "teste.auth@erplab.com.br",
+  "senha": "Teste@123",
+  "cpf": "12345678901",
+  "telefone": "11999999999",
+  "celularWhatsapp": "11999999999",
+  "tipo": "USUARIO",
+  "cargoFuncao": "Analista",
+  "ativo": true,
+  "unidadesIds": ["{{unidadeSaudeId}}"],
+  "permissoesIds": []
+}
+
+###
+
+### 2. Fazer Login com o Novo Usuário
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "teste.auth@erplab.com.br",
+  "password": "Teste@123"
+}
+
+### Salvar o access_token e refresh_token da resposta
+
+###
+
+### 3. Acessar Perfil com o Token
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {access_token_do_passo_2}
+
+###
+
+### 4. Tentar Acessar Recurso Protegido
+GET {{baseUrl}}/usuarios
+Authorization: Bearer {access_token_do_passo_2}
+
+###
+
+### 5. Renovar Token (quando expirar)
+POST {{baseUrl}}/auth/refresh
+Content-Type: {{contentType}}
+
+{
+  "refresh_token": "{refresh_token_do_passo_2}"
+}
+
+###
+
+### 6. Fazer Logout
+POST {{baseUrl}}/auth/logout
+Authorization: Bearer {access_token_atual}
+
+###
+
+### ============================================
+### CENÁRIOS DE FALHA DE LOGIN
+### ============================================
+
+### 7. Primeira Tentativa com Senha Errada
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "teste.auth@erplab.com.br",
+  "password": "SenhaErrada1"
+}
+
+###
+
+### 8. Segunda Tentativa com Senha Errada
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "teste.auth@erplab.com.br",
+  "password": "SenhaErrada2"
+}
+
+###
+
+### 9. Terceira Tentativa com Senha Errada
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "teste.auth@erplab.com.br",
+  "password": "SenhaErrada3"
+}
+
+###
+
+### 10. Quarta Tentativa com Senha Errada
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "teste.auth@erplab.com.br",
+  "password": "SenhaErrada4"
+}
+
+###
+
+### 11. Quinta Tentativa - Usuário Será Bloqueado
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "teste.auth@erplab.com.br",
+  "password": "SenhaErrada5"
+}
+
+### Expected: Usuário bloqueado por 30 minutos
+
+###
+
+### 12. Tentativa com Senha Correta (mas bloqueado)
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "teste.auth@erplab.com.br",
+  "password": "Teste@123"
+}
+
+### Expected Response
+# Status: 401 Unauthorized
+# {
+#   "statusCode": 401,
+#   "message": "Usuário bloqueado temporariamente"
+# }
+
+###
+
+### ============================================
+### FLUXO DE ALTERAÇÃO DE SENHA
+### ============================================
+
+### 13. Admin Reseta Senha do Usuário
+PATCH {{baseUrl}}/usuarios/reset-password/{user_id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "novaSenha": "NovaSenha@456"
+}
+
+###
+
+### 14. Login com Nova Senha
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "teste.auth@erplab.com.br",
+  "password": "NovaSenha@456"
+}
+
+###
+
+### 15. Usuário Altera Própria Senha
+PATCH {{baseUrl}}/usuarios/change-password/{user_id}
+Content-Type: {{contentType}}
+Authorization: Bearer {token_do_usuario}
+
+{
+  "senhaAtual": "NovaSenha@456",
+  "novaSenha": "SenhaFinal@789"
+}
+
+###
+
+### ============================================
+### LIMPEZA - Remover Usuário de Teste
+### ============================================
+
+### 16. Deletar Usuário de Teste
+DELETE {{baseUrl}}/usuarios/{user_id}
+Authorization: Bearer {{token}}

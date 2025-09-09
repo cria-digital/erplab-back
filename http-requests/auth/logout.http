@@ -1,0 +1,32 @@
+### Logout - Com Token Válido
+POST {{baseUrl}}/auth/logout
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 204 No Content
+# (Sem corpo na resposta)
+
+###
+
+### Logout - Sem Token
+POST {{baseUrl}}/auth/logout
+
+### Expected Response
+# Status: 401 Unauthorized
+# {
+#   "statusCode": 401,
+#   "message": "Unauthorized"
+# }
+
+###
+
+### Logout - Token Inválido
+POST {{baseUrl}}/auth/logout
+Authorization: Bearer token-invalido
+
+### Expected Response
+# Status: 401 Unauthorized
+# {
+#   "statusCode": 401,
+#   "message": "Unauthorized"
+# }

@@ -7,7 +7,7 @@ import {
   CreateDateColumn,
   Index,
 } from 'typeorm';
-import { Usuario } from '../../auth/entities/usuario.entity';
+import { Usuario } from '../../usuarios/entities/usuario.entity';
 
 @Entity('historico_alteracoes')
 @Index(['tabela_origem', 'registro_id', 'criado_em'])

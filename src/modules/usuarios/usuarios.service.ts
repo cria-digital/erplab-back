@@ -602,4 +602,65 @@ export class UsuariosService {
       com2FA,
     };
   }
+
+  /**
+   * Incrementa tentativas de login falhas
+   * @param id ID do usuário
+   */
+  async incrementarTentativasLogin(id: string): Promise<void> {
+    const usuario = await this.findOne(id);
+    usuario.tentativasLoginFalhas = (usuario.tentativasLoginFalhas || 0) + 1;
+
+    // Bloqueia após 5 tentativas
+    if (usuario.tentativasLoginFalhas >= 5) {
+      const bloqueadoAte = new Date();
+      bloqueadoAte.setMinutes(bloqueadoAte.getMinutes() + 30); // Bloqueia por 30 minutos
+      usuario.bloqueadoAte = bloqueadoAte;
+    }
+
+    await this.usuariosRepository.save(usuario);
+  }
+
+  /**
+   * Reseta tentativas de login
+   * @param id ID do usuário
+   */
+  async resetarTentativasLogin(id: string): Promise<void> {
+    const usuario = await this.findOne(id);
+    usuario.tentativasLoginFalhas = 0;
+    usuario.bloqueadoAte = null;
+    await this.usuariosRepository.save(usuario);
+  }
+
+  /**
+   * Atualiza último login do usuário
+   * @param id ID do usuário
+   */
+  async atualizarUltimoLogin(id: string): Promise<void> {
+    const usuario = await this.findOne(id);
+    usuario.ultimoLogin = new Date();
+    await this.usuariosRepository.save(usuario);
+
+    // Registra acesso
+    await this.auditoriaService.registrarAcesso(
+      id,
+      'Login',
+      'Sistema',
+      'Login realizado com sucesso',
+    );
+  }
+
+  /**
+   * Registra logout do usuário
+   * @param id ID do usuário
+   */
+  async registrarLogout(id: string): Promise<void> {
+    // Registra acesso
+    await this.auditoriaService.registrarAcesso(
+      id,
+      'Logout',
+      'Sistema',
+      'Logout realizado',
+    );
+  }
 }

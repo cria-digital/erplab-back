@@ -1,0 +1,85 @@
+### Refresh Token - Token Válido
+POST {{baseUrl}}/auth/refresh
+Content-Type: {{contentType}}
+
+{
+  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjNlNDU2Ny1lODliLTEyZDMtYTQ1Ni00MjY2MTQxNzQwMDAiLCJlbWFpbCI6ImFkbWluQGVycGxhYi5jb20uYnIiLCJub21lIjoiQWRtaW5pc3RyYWRvciIsInRpcG8iOiJBRE1JTiIsInVuaWRhZGVTYXVkZUlkIjoidW5pZGFkZS11dWlkIiwiaWF0IjoxNjQyNDM0MDAwLCJleHAiOjE2NDMwMzg4MDB9.hash"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+#   "token_type": "Bearer",
+#   "expires_in": "24h"
+# }
+
+###
+
+### Refresh Token - Token Expirado
+POST {{baseUrl}}/auth/refresh
+Content-Type: {{contentType}}
+
+{
+  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+}
+
+### Expected Response
+# Status: 401 Unauthorized
+# {
+#   "statusCode": 401,
+#   "message": "Refresh token inválido ou expirado"
+# }
+
+###
+
+### Refresh Token - Token Inválido
+POST {{baseUrl}}/auth/refresh
+Content-Type: {{contentType}}
+
+{
+  "refresh_token": "token-invalido-formato-errado"
+}
+
+### Expected Response
+# Status: 401 Unauthorized
+# {
+#   "statusCode": 401,
+#   "message": "Refresh token inválido ou expirado"
+# }
+
+###
+
+### Refresh Token - Sem Token
+POST {{baseUrl}}/auth/refresh
+Content-Type: {{contentType}}
+
+{
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": [
+#     "Refresh token é obrigatório"
+#   ]
+# }
+
+###
+
+### Refresh Token - Usuário Inativo
+# Cenário: Refresh token válido mas usuário foi inativado
+POST {{baseUrl}}/auth/refresh
+Content-Type: {{contentType}}
+
+{
+  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.valid-but-user-inactive.hash"
+}
+
+### Expected Response
+# Status: 401 Unauthorized
+# {
+#   "statusCode": 401,
+#   "message": "Token inválido"
+# }

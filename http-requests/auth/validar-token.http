@@ -1,0 +1,76 @@
+### Validar Token JWT - Token Válido
+POST {{baseUrl}}/auth/validate
+Content-Type: {{contentType}}
+
+{
+  "token": "{{token}}"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "valid": true
+# }
+
+###
+
+### Validar Token JWT - Token Inválido
+POST {{baseUrl}}/auth/validate
+Content-Type: {{contentType}}
+
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.invalid.token"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "valid": false
+# }
+
+###
+
+### Validar Token JWT - Token Expirado
+POST {{baseUrl}}/auth/validate
+Content-Type: {{contentType}}
+
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyMzkwMjJ9.4Adcj3UFYzPUVaVF43FmMab6RlaQD8A9V8wFzzht-KQ"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "valid": false
+# }
+
+###
+
+### Validar Token JWT - Sem Token
+POST {{baseUrl}}/auth/validate
+Content-Type: {{contentType}}
+
+{
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "valid": false
+# }
+
+###
+
+### Validar Token JWT - Formato Inválido
+POST {{baseUrl}}/auth/validate
+Content-Type: {{contentType}}
+
+{
+  "token": "não-é-um-jwt"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "valid": false
+# }

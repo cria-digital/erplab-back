@@ -1,0 +1,52 @@
+### Obter Perfil do Usuário Autenticado
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "123e4567-e89b-12d3-a456-426614174000",
+#   "nome": "Administrador",
+#   "email": "admin@erplab.com.br",
+#   "tipo": "ADMIN",
+#   "unidadeSaudeId": "unidade-uuid",
+#   "permissoes": ["admin", "usuarios.gerenciar", "relatorios.visualizar"]
+# }
+
+###
+
+### Obter Perfil - Token Inválido
+GET {{baseUrl}}/auth/me
+Authorization: Bearer token-invalido
+
+### Expected Response
+# Status: 401 Unauthorized
+# {
+#   "statusCode": 401,
+#   "message": "Unauthorized"
+# }
+
+###
+
+### Obter Perfil - Sem Token
+GET {{baseUrl}}/auth/me
+
+### Expected Response
+# Status: 401 Unauthorized
+# {
+#   "statusCode": 401,
+#   "message": "Unauthorized"
+# }
+
+###
+
+### Obter Perfil - Token Expirado
+GET {{baseUrl}}/auth/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyMzkwMjJ9.4Adcj3UFYzPUVaVF43FmMab6RlaQD8A9V8wFzzht-KQ
+
+### Expected Response
+# Status: 401 Unauthorized
+# {
+#   "statusCode": 401,
+#   "message": "Unauthorized"
+# }

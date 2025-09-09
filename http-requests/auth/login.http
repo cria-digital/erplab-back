@@ -1,0 +1,119 @@
+### Login - Credenciais Válidas
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "admin@erplab.com.br",
+  "password": "Admin@123"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+#   "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+#   "token_type": "Bearer",
+#   "expires_in": "24h",
+#   "user": {
+#     "id": "uuid",
+#     "nome": "Administrador",
+#     "email": "admin@erplab.com.br",
+#     "tipo": "ADMIN",
+#     "unidade_saude_id": "uuid",
+#     "permissoes": ["admin"],
+#     "foto_url": null
+#   }
+# }
+
+###
+
+### Login - Email Inválido
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "usuario_inexistente@example.com",
+  "password": "SenhaQualquer123"
+}
+
+### Expected Response
+# Status: 401 Unauthorized
+# {
+#   "statusCode": 401,
+#   "message": "Credenciais inválidas"
+# }
+
+###
+
+### Login - Senha Incorreta
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "admin@erplab.com.br",
+  "password": "SenhaIncorreta123"
+}
+
+### Expected Response
+# Status: 401 Unauthorized
+# {
+#   "statusCode": 401,
+#   "message": "Credenciais inválidas"
+# }
+
+###
+
+### Login - Usuário Inativo
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "usuario.inativo@erplab.com.br",
+  "password": "Senha123"
+}
+
+### Expected Response
+# Status: 401 Unauthorized
+# {
+#   "statusCode": 401,
+#   "message": "Usuário inativo"
+# }
+
+###
+
+### Login - Usuário Bloqueado
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "usuario.bloqueado@erplab.com.br",
+  "password": "Senha123"
+}
+
+### Expected Response
+# Status: 401 Unauthorized
+# {
+#   "statusCode": 401,
+#   "message": "Usuário bloqueado temporariamente"
+# }
+
+###
+
+### Login - Validação de Dados
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "email-invalido",
+  "password": "123"
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": [
+#     "Email inválido",
+#     "Senha deve ter pelo menos 6 caracteres"
+#   ]
+# }

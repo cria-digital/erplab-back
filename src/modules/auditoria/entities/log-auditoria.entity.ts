@@ -7,7 +7,7 @@ import {
   CreateDateColumn,
   Index,
 } from 'typeorm';
-import { Usuario } from '../../auth/entities/usuario.entity';
+import { Usuario } from '../../usuarios/entities/usuario.entity';
 
 export enum TipoOperacao {
   CREATE = 'CREATE',

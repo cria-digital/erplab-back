@@ -28,67 +28,816 @@
         ]
       }
     },
-    "/api/v1/atendimento": {
-      "get": {
-        "description": "RF001-RF004: Sistema de contato multi-canal, auto-atendimento, gestão de filas e OS",
-        "operationId": "AtendimentoController_listarAtendimentos",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Lista de atendimentos retornada com sucesso"
-          }
-        },
-        "summary": "Listar atendimentos",
-        "tags": [
-          "atendimento"
-        ]
-      }
-    },
-    "/api/v1/atendimento/fila": {
-      "get": {
-        "description": "RF003: Gestão de fila de atendimento com Kanban visual",
-        "operationId": "AtendimentoController_obterFilaAtendimento",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Fila de atendimento atual"
-          }
-        },
-        "summary": "Obter fila de atendimento",
-        "tags": [
-          "atendimento"
-        ]
-      }
-    },
-    "/api/v1/atendimento/ordem-servico": {
+    "/api/v1/auth/login": {
       "post": {
-        "description": "RF004: Geração automática de OS com dados do paciente e exames",
-        "operationId": "AtendimentoController_gerarOrdemServico",
+        "operationId": "AuthController_login",
         "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login realizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "access_token": {
+                      "type": "string"
+                    },
+                    "refresh_token": {
+                      "type": "string"
+                    },
+                    "token_type": {
+                      "type": "string",
+                      "default": "Bearer"
+                    },
+                    "expires_in": {
+                      "type": "string"
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "nome": {
+                          "type": "string"
+                        },
+                        "email": {
+                          "type": "string"
+                        },
+                        "tipo": {
+                          "type": "string"
+                        },
+                        "unidade_saude_id": {
+                          "type": "string"
+                        },
+                        "permissoes": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "foto_url": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciais inválidas"
+          }
+        },
+        "summary": "Realizar login",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/refresh": {
+      "post": {
+        "operationId": "AuthController_refreshToken",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Token renovado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "access_token": {
+                      "type": "string"
+                    },
+                    "token_type": {
+                      "type": "string",
+                      "default": "Bearer"
+                    },
+                    "expires_in": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Refresh token inválido"
+          }
+        },
+        "summary": "Renovar access token",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "operationId": "AuthController_logout",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": "Logout realizado com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Realizar logout",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/me": {
+      "get": {
+        "operationId": "AuthController_getProfile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Dados do usuário",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "nome": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "tipo": {
+                      "type": "string"
+                    },
+                    "unidadeSaudeId": {
+                      "type": "string"
+                    },
+                    "permissoes": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Obter dados do usuário autenticado",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/validate": {
+      "post": {
+        "operationId": "AuthController_validateToken",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Status de validação do token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "valid": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Validar token JWT",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/usuarios": {
+      "post": {
+        "description": "Cria um novo usuário no sistema. O código interno será gerado automaticamente se não fornecido.",
+        "operationId": "UsuariosController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUsuarioDto"
+              }
+            }
+          }
+        },
         "responses": {
           "201": {
-            "description": "OS criada com sucesso"
+            "description": "Usuário criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Usuario"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos"
+          },
+          "409": {
+            "description": "E-mail ou CPF já cadastrado"
           }
         },
-        "summary": "Gerar Ordem de Serviço",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Criar um novo usuário",
         "tags": [
-          "atendimento"
+          "Usuários"
+        ]
+      },
+      "get": {
+        "description": "Lista todos os usuários com filtros opcionais e paginação.",
+        "operationId": "UsuariosController_findAll",
+        "parameters": [
+          {
+            "name": "unidadeId",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por unidade",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ativo",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por status ativo",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "cpf",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por CPF",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "email",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por e-mail",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "nome",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por nome",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Itens por página",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Número da página",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de usuários retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Usuario"
+                      }
+                    },
+                    "total": {
+                      "type": "number",
+                      "example": 100
+                    },
+                    "page": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "limit": {
+                      "type": "number",
+                      "example": 10
+                    },
+                    "totalPages": {
+                      "type": "number",
+                      "example": 10
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar usuários",
+        "tags": [
+          "Usuários"
         ]
       }
     },
-    "/api/v1/atendimento/ocr/pedido-medico": {
-      "post": {
-        "description": "RF002: Auto-atendimento com OCR para leitura de pedidos médicos",
-        "operationId": "AtendimentoController_processarPedidoOCR",
+    "/api/v1/usuarios/stats": {
+      "get": {
+        "description": "Retorna estatísticas dos usuários.",
+        "operationId": "UsuariosController_getStats",
         "parameters": [],
         "responses": {
           "200": {
-            "description": "Pedido médico processado com sucesso"
+            "description": "Estatísticas retornadas com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "total": {
+                      "type": "number"
+                    },
+                    "ativos": {
+                      "type": "number"
+                    },
+                    "inativos": {
+                      "type": "number"
+                    },
+                    "bloqueados": {
+                      "type": "number"
+                    },
+                    "com2FA": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
-        "summary": "Processar pedido médico com OCR",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Estatísticas dos usuários",
         "tags": [
-          "atendimento"
+          "Usuários"
+        ]
+      }
+    },
+    "/api/v1/usuarios/me": {
+      "get": {
+        "description": "Retorna os dados do usuário atualmente autenticado.",
+        "operationId": "UsuariosController_getMe",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Dados do usuário retornados com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Usuario"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Obter dados do usuário autenticado",
+        "tags": [
+          "Usuários"
+        ]
+      }
+    },
+    "/api/v1/usuarios/{id}": {
+      "get": {
+        "description": "Busca um usuário específico pelo ID.",
+        "operationId": "UsuariosController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do usuário",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuário encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Usuario"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuário não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar usuário por ID",
+        "tags": [
+          "Usuários"
+        ]
+      },
+      "patch": {
+        "description": "Atualiza os dados de um usuário existente.",
+        "operationId": "UsuariosController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do usuário",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUsuarioDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Usuário atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Usuario"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos"
+          },
+          "404": {
+            "description": "Usuário não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Atualizar usuário",
+        "tags": [
+          "Usuários"
+        ]
+      },
+      "delete": {
+        "description": "Remove um usuário (soft delete - torna inativo).",
+        "operationId": "UsuariosController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do usuário",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuário removido com sucesso"
+          },
+          "404": {
+            "description": "Usuário não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Remover usuário",
+        "tags": [
+          "Usuários"
+        ]
+      }
+    },
+    "/api/v1/usuarios/{id}/activate": {
+      "patch": {
+        "description": "Ativa um usuário inativo.",
+        "operationId": "UsuariosController_activate",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do usuário",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuário ativado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Usuario"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuário não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Ativar usuário",
+        "tags": [
+          "Usuários"
+        ]
+      }
+    },
+    "/api/v1/usuarios/{id}/block": {
+      "patch": {
+        "description": "Bloqueia um usuário por um período determinado.",
+        "operationId": "UsuariosController_block",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do usuário",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "minutos": {
+                    "type": "number",
+                    "example": 30,
+                    "description": "Minutos de bloqueio"
+                  }
+                },
+                "required": [
+                  "minutos"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Usuário bloqueado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Usuario"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuário não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Bloquear usuário",
+        "tags": [
+          "Usuários"
+        ]
+      }
+    },
+    "/api/v1/usuarios/{id}/unblock": {
+      "patch": {
+        "description": "Desbloqueia um usuário bloqueado.",
+        "operationId": "UsuariosController_unblock",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do usuário",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuário desbloqueado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Usuario"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuário não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Desbloquear usuário",
+        "tags": [
+          "Usuários"
+        ]
+      }
+    },
+    "/api/v1/usuarios/change-password": {
+      "post": {
+        "description": "Permite que o usuário autenticado altere sua própria senha.",
+        "operationId": "UsuariosController_changePassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Senha alterada com sucesso"
+          },
+          "400": {
+            "description": "Nova senha e confirmação não conferem"
+          },
+          "401": {
+            "description": "Senha atual incorreta"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Alterar senha",
+        "tags": [
+          "Usuários"
+        ]
+      }
+    },
+    "/api/v1/usuarios/{id}/reset-password": {
+      "patch": {
+        "description": "Reseta a senha de um usuário (admin only).",
+        "operationId": "UsuariosController_resetPassword",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do usuário",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "novaSenha": {
+                    "type": "string",
+                    "example": "NovaSenha123!",
+                    "description": "Nova senha temporária"
+                  }
+                },
+                "required": [
+                  "novaSenha"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Senha resetada com sucesso"
+          },
+          "404": {
+            "description": "Usuário não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Resetar senha",
+        "tags": [
+          "Usuários"
         ]
       }
     },
@@ -645,6 +1394,70 @@
         "summary": "Registrar erro",
         "tags": [
           "Auditoria"
+        ]
+      }
+    },
+    "/api/v1/atendimento": {
+      "get": {
+        "description": "RF001-RF004: Sistema de contato multi-canal, auto-atendimento, gestão de filas e OS",
+        "operationId": "AtendimentoController_listarAtendimentos",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de atendimentos retornada com sucesso"
+          }
+        },
+        "summary": "Listar atendimentos",
+        "tags": [
+          "atendimento"
+        ]
+      }
+    },
+    "/api/v1/atendimento/fila": {
+      "get": {
+        "description": "RF003: Gestão de fila de atendimento com Kanban visual",
+        "operationId": "AtendimentoController_obterFilaAtendimento",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Fila de atendimento atual"
+          }
+        },
+        "summary": "Obter fila de atendimento",
+        "tags": [
+          "atendimento"
+        ]
+      }
+    },
+    "/api/v1/atendimento/ordem-servico": {
+      "post": {
+        "description": "RF004: Geração automática de OS com dados do paciente e exames",
+        "operationId": "AtendimentoController_gerarOrdemServico",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "OS criada com sucesso"
+          }
+        },
+        "summary": "Gerar Ordem de Serviço",
+        "tags": [
+          "atendimento"
+        ]
+      }
+    },
+    "/api/v1/atendimento/ocr/pedido-medico": {
+      "post": {
+        "description": "RF002: Auto-atendimento com OCR para leitura de pedidos médicos",
+        "operationId": "AtendimentoController_processarPedidoOCR",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Pedido médico processado com sucesso"
+          }
+        },
+        "summary": "Processar pedido médico com OCR",
+        "tags": [
+          "atendimento"
         ]
       }
     },
@@ -1668,6 +2481,338 @@
       }
     },
     "schemas": {
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email do usuário",
+            "example": "usuario@example.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "Senha do usuário",
+            "example": "SenhaSegura123!",
+            "minLength": 6
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "RefreshTokenDto": {
+        "type": "object",
+        "properties": {
+          "refresh_token": {
+            "type": "string",
+            "description": "Refresh token para renovar o access token",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          }
+        },
+        "required": [
+          "refresh_token"
+        ]
+      },
+      "CreateUsuarioDto": {
+        "type": "object",
+        "properties": {
+          "codigoInterno": {
+            "type": "string",
+            "description": "Código interno do usuário (será gerado automaticamente se não fornecido)",
+            "example": "USR123456",
+            "maxLength": 50
+          },
+          "nomeCompleto": {
+            "type": "string",
+            "description": "Nome completo do usuário",
+            "example": "João da Silva Santos",
+            "maxLength": 255
+          },
+          "cpf": {
+            "type": "string",
+            "description": "CPF do usuário (apenas números)",
+            "example": "12345678901",
+            "minLength": 11,
+            "maxLength": 11
+          },
+          "telefone": {
+            "type": "string",
+            "description": "Telefone fixo",
+            "example": "1133334444",
+            "maxLength": 20
+          },
+          "celularWhatsapp": {
+            "type": "string",
+            "description": "Celular/WhatsApp",
+            "example": "11999998888",
+            "maxLength": 20
+          },
+          "cargoFuncao": {
+            "type": "string",
+            "description": "Cargo ou função do usuário",
+            "example": "Analista de Sistemas",
+            "maxLength": 100
+          },
+          "cnpjAssociado": {
+            "type": "string",
+            "description": "CNPJ associado ao usuário (apenas números)",
+            "example": "12345678000190",
+            "minLength": 14,
+            "maxLength": 14
+          },
+          "dadosAdmissao": {
+            "type": "string",
+            "description": "Dados de admissão",
+            "example": "Admitido em 01/01/2024 - CLT",
+            "maxLength": 255
+          },
+          "fotoUrl": {
+            "type": "string",
+            "description": "URL da foto do usuário",
+            "example": "https://example.com/photos/user123.jpg",
+            "maxLength": 500
+          },
+          "email": {
+            "type": "string",
+            "description": "E-mail do usuário (usado para login)",
+            "example": "joao.silva@example.com",
+            "maxLength": 255
+          },
+          "senha": {
+            "type": "string",
+            "description": "Senha do usuário (mínimo 8 caracteres)",
+            "example": "SenhaSegura123!",
+            "minLength": 8
+          },
+          "resetarSenha": {
+            "type": "boolean",
+            "description": "Se deve resetar a senha no próximo login",
+            "example": false,
+            "default": false
+          },
+          "validacao2Etapas": {
+            "type": "boolean",
+            "description": "Se deve habilitar validação em 2 etapas",
+            "example": false,
+            "default": false
+          },
+          "metodoValidacao": {
+            "type": "string",
+            "description": "Método de validação em 2 etapas",
+            "enum": [
+              "SMS",
+              "EMAIL",
+              "APP"
+            ],
+            "example": "EMAIL"
+          },
+          "perguntaRecuperacao": {
+            "type": "string",
+            "description": "Pergunta de recuperação de senha",
+            "example": "Qual o nome do seu primeiro animal de estimação?",
+            "maxLength": 255
+          },
+          "respostaRecuperacao": {
+            "type": "string",
+            "description": "Resposta da pergunta de recuperação",
+            "example": "Rex",
+            "maxLength": 255
+          },
+          "ativo": {
+            "type": "boolean",
+            "description": "Se o usuário está ativo",
+            "example": true,
+            "default": true
+          },
+          "unidadesIds": {
+            "description": "IDs das unidades de saúde associadas ao usuário",
+            "example": [
+              "uuid-unidade-1",
+              "uuid-unidade-2"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "permissoesIds": {
+            "description": "IDs das permissões do usuário",
+            "example": [
+              "uuid-permissao-1",
+              "uuid-permissao-2"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "nomeCompleto",
+          "email",
+          "senha"
+        ]
+      },
+      "Usuario": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateUsuarioDto": {
+        "type": "object",
+        "properties": {
+          "codigoInterno": {
+            "type": "string",
+            "description": "Código interno do usuário (será gerado automaticamente se não fornecido)",
+            "example": "USR123456",
+            "maxLength": 50
+          },
+          "nomeCompleto": {
+            "type": "string",
+            "description": "Nome completo do usuário",
+            "example": "João da Silva Santos",
+            "maxLength": 255
+          },
+          "cpf": {
+            "type": "string",
+            "description": "CPF do usuário (apenas números)",
+            "example": "12345678901",
+            "minLength": 11,
+            "maxLength": 11
+          },
+          "telefone": {
+            "type": "string",
+            "description": "Telefone fixo",
+            "example": "1133334444",
+            "maxLength": 20
+          },
+          "celularWhatsapp": {
+            "type": "string",
+            "description": "Celular/WhatsApp",
+            "example": "11999998888",
+            "maxLength": 20
+          },
+          "cargoFuncao": {
+            "type": "string",
+            "description": "Cargo ou função do usuário",
+            "example": "Analista de Sistemas",
+            "maxLength": 100
+          },
+          "cnpjAssociado": {
+            "type": "string",
+            "description": "CNPJ associado ao usuário (apenas números)",
+            "example": "12345678000190",
+            "minLength": 14,
+            "maxLength": 14
+          },
+          "dadosAdmissao": {
+            "type": "string",
+            "description": "Dados de admissão",
+            "example": "Admitido em 01/01/2024 - CLT",
+            "maxLength": 255
+          },
+          "fotoUrl": {
+            "type": "string",
+            "description": "URL da foto do usuário",
+            "example": "https://example.com/photos/user123.jpg",
+            "maxLength": 500
+          },
+          "resetarSenha": {
+            "type": "boolean",
+            "description": "Se deve resetar a senha no próximo login",
+            "example": false,
+            "default": false
+          },
+          "validacao2Etapas": {
+            "type": "boolean",
+            "description": "Se deve habilitar validação em 2 etapas",
+            "example": false,
+            "default": false
+          },
+          "metodoValidacao": {
+            "type": "string",
+            "description": "Método de validação em 2 etapas",
+            "enum": [
+              "SMS",
+              "EMAIL",
+              "APP"
+            ],
+            "example": "EMAIL"
+          },
+          "perguntaRecuperacao": {
+            "type": "string",
+            "description": "Pergunta de recuperação de senha",
+            "example": "Qual o nome do seu primeiro animal de estimação?",
+            "maxLength": 255
+          },
+          "respostaRecuperacao": {
+            "type": "string",
+            "description": "Resposta da pergunta de recuperação",
+            "example": "Rex",
+            "maxLength": 255
+          },
+          "ativo": {
+            "type": "boolean",
+            "description": "Se o usuário está ativo",
+            "example": true,
+            "default": true
+          },
+          "unidadesIds": {
+            "description": "IDs das unidades de saúde associadas ao usuário",
+            "example": [
+              "uuid-unidade-1",
+              "uuid-unidade-2"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "permissoesIds": {
+            "description": "IDs das permissões do usuário",
+            "example": [
+              "uuid-permissao-1",
+              "uuid-permissao-2"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "senha": {
+            "type": "string",
+            "description": "Nova senha do usuário (mínimo 8 caracteres)",
+            "example": "NovaSenhaSegura123!",
+            "minLength": 8
+          }
+        }
+      },
+      "ChangePasswordDto": {
+        "type": "object",
+        "properties": {
+          "senhaAtual": {
+            "type": "string",
+            "description": "Senha atual do usuário",
+            "example": "SenhaAtual123!"
+          },
+          "novaSenha": {
+            "type": "string",
+            "description": "Nova senha do usuário (mínimo 8 caracteres)",
+            "example": "NovaSenhaSegura123!",
+            "minLength": 8
+          },
+          "confirmacaoSenha": {
+            "type": "string",
+            "description": "Confirmação da nova senha",
+            "example": "NovaSenhaSegura123!"
+          }
+        },
+        "required": [
+          "senhaAtual",
+          "novaSenha",
+          "confirmacaoSenha"
+        ]
+      },
       "CreateAuditoriaLogDto": {
         "type": "object",
         "properties": {
