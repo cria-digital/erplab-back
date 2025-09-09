@@ -1,10 +1,12 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class CreateUnidadesSaudeTable1757363365715 implements MigrationInterface {
+export class CreateUnidadesSaudeTable1757363365715
+  implements MigrationInterface
+{
   public async up(queryRunner: QueryRunner): Promise<void> {
     // Criar extensão UUID se não existir
     await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
-    
+
     // Criar tabela unidades_saude
     await queryRunner.createTable(
       new Table({
@@ -290,9 +292,15 @@ export class CreateUnidadesSaudeTable1757363365715 implements MigrationInterface
     );
 
     // Criar índices
-    await queryRunner.query(`CREATE INDEX "IDX_UNIDADE_SAUDE_CNPJ" ON "unidades_saude" ("cnpj")`);
-    await queryRunner.query(`CREATE INDEX "IDX_UNIDADE_SAUDE_CIDADE" ON "unidades_saude" ("cidade")`);
-    await queryRunner.query(`CREATE INDEX "IDX_UNIDADE_SAUDE_ATIVO" ON "unidades_saude" ("ativo")`);
+    await queryRunner.query(
+      `CREATE INDEX "IDX_UNIDADE_SAUDE_CNPJ" ON "unidades_saude" ("cnpj")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_UNIDADE_SAUDE_CIDADE" ON "unidades_saude" ("cidade")`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_UNIDADE_SAUDE_ATIVO" ON "unidades_saude" ("ativo")`,
+    );
 
     // Criar enum para dia_semana
     await queryRunner.query(`
@@ -321,7 +329,16 @@ export class CreateUnidadesSaudeTable1757363365715 implements MigrationInterface
           {
             name: 'dia_semana',
             type: 'enum',
-            enum: ['SEGUNDA', 'TERCA', 'QUARTA', 'QUINTA', 'SEXTA', 'SABADO', 'DOMINGO', 'FERIADOS'],
+            enum: [
+              'SEGUNDA',
+              'TERCA',
+              'QUARTA',
+              'QUINTA',
+              'SEXTA',
+              'SABADO',
+              'DOMINGO',
+              'FERIADOS',
+            ],
           },
           {
             name: 'horario_inicio',
@@ -536,10 +553,10 @@ export class CreateUnidadesSaudeTable1757363365715 implements MigrationInterface
     await queryRunner.dropTable('cnae_secundarios');
     await queryRunner.dropTable('dados_bancarios');
     await queryRunner.dropTable('horarios_atendimento');
-    
+
     // Remover enum
     await queryRunner.query(`DROP TYPE IF EXISTS dia_semana_enum`);
-    
+
     await queryRunner.dropTable('unidades_saude');
   }
 }

@@ -40,7 +40,8 @@ export class UnidadeSaudeController {
   @Post()
   @ApiOperation({
     summary: 'Criar nova unidade de saúde',
-    description: 'Cria uma nova unidade de saúde com todos os dados relacionados (horários, dados bancários, CNAEs)',
+    description:
+      'Cria uma nova unidade de saúde com todos os dados relacionados (horários, dados bancários, CNAEs)',
   })
   @ApiBody({ type: CreateUnidadeSaudeDto })
   @ApiResponse({
@@ -59,14 +60,17 @@ export class UnidadeSaudeController {
   async create(
     @Body(ValidationPipe) createUnidadeSaudeDto: CreateUnidadeSaudeDto,
   ): Promise<UnidadeSaudeResponseDto> {
-    const unidade = await this.unidadeSaudeService.create(createUnidadeSaudeDto);
+    const unidade = await this.unidadeSaudeService.create(
+      createUnidadeSaudeDto,
+    );
     return unidade as UnidadeSaudeResponseDto;
   }
 
   @Get()
   @ApiOperation({
     summary: 'Listar unidades de saúde',
-    description: 'Lista todas as unidades de saúde com paginação e filtros opcionais',
+    description:
+      'Lista todas as unidades de saúde com paginação e filtros opcionais',
   })
   @ApiQuery({
     name: 'page',
@@ -147,7 +151,8 @@ export class UnidadeSaudeController {
   @Get('ativas')
   @ApiOperation({
     summary: 'Listar unidades ativas',
-    description: 'Lista apenas as unidades de saúde ativas (para dropdowns/selects)',
+    description:
+      'Lista apenas as unidades de saúde ativas (para dropdowns/selects)',
   })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -172,7 +177,8 @@ export class UnidadeSaudeController {
   @Get('cidade/:cidade')
   @ApiOperation({
     summary: 'Buscar unidades por cidade',
-    description: 'Lista todas as unidades de saúde ativas de uma cidade específica',
+    description:
+      'Lista todas as unidades de saúde ativas de uma cidade específica',
   })
   @ApiParam({
     name: 'cidade',
@@ -207,7 +213,9 @@ export class UnidadeSaudeController {
     status: HttpStatus.NOT_FOUND,
     description: 'Unidade não encontrada',
   })
-  async findByCnpj(@Param('cnpj') cnpj: string): Promise<UnidadeSaudeResponseDto> {
+  async findByCnpj(
+    @Param('cnpj') cnpj: string,
+  ): Promise<UnidadeSaudeResponseDto> {
     const unidade = await this.unidadeSaudeService.findByCnpj(cnpj);
     return unidade as UnidadeSaudeResponseDto;
   }
@@ -215,7 +223,8 @@ export class UnidadeSaudeController {
   @Get(':id')
   @ApiOperation({
     summary: 'Buscar unidade por ID',
-    description: 'Busca uma unidade de saúde específica com todos os dados relacionados',
+    description:
+      'Busca uma unidade de saúde específica com todos os dados relacionados',
   })
   @ApiParam({
     name: 'id',
@@ -266,7 +275,10 @@ export class UnidadeSaudeController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body(ValidationPipe) updateUnidadeSaudeDto: UpdateUnidadeSaudeDto,
   ): Promise<UnidadeSaudeResponseDto> {
-    const unidade = await this.unidadeSaudeService.update(id, updateUnidadeSaudeDto);
+    const unidade = await this.unidadeSaudeService.update(
+      id,
+      updateUnidadeSaudeDto,
+    );
     return unidade as UnidadeSaudeResponseDto;
   }
 

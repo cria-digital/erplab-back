@@ -1,0 +1,91 @@
+### Alterar Própria Senha
+POST {{baseUrl}}/usuarios/change-password
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "senhaAtual": "SenhaAtual123!",
+  "novaSenha": "NovaSenhaSegura456!",
+  "confirmacaoSenha": "NovaSenhaSegura456!"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Senha alterada com sucesso"
+# }
+
+###
+
+### Resetar Senha de Outro Usuário (Admin)
+PATCH {{baseUrl}}/usuarios/123e4567-e89b-12d3-a456-426614174000/reset-password
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "novaSenha": "SenhaTemporaria123!"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Senha resetada com sucesso. O usuário deverá alterar a senha no próximo login."
+# }
+
+###
+
+### Cenário de Erro: Senha Atual Incorreta
+POST {{baseUrl}}/usuarios/change-password
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "senhaAtual": "SenhaErrada123!",
+  "novaSenha": "NovaSenha456!",
+  "confirmacaoSenha": "NovaSenha456!"
+}
+
+### Expected Response
+# Status: 401 Unauthorized
+# {
+#   "statusCode": 401,
+#   "message": "Senha atual incorreta"
+# }
+
+###
+
+### Cenário de Erro: Confirmação Diferente
+POST {{baseUrl}}/usuarios/change-password
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "senhaAtual": "SenhaAtual123!",
+  "novaSenha": "NovaSenha456!",
+  "confirmacaoSenha": "SenhaDiferente789!"
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Nova senha e confirmação não conferem"
+# }
+
+###
+
+### Cenário de Erro: Senha Fraca
+PATCH {{baseUrl}}/usuarios/123e4567-e89b-12d3-a456-426614174000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "senha": "123456"
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Senha deve conter letras maiúsculas, minúsculas, números e caracteres especiais"
+# }

@@ -99,7 +99,10 @@ describe('PacientesService', () => {
 
       expect(result).toEqual(mockPaciente);
       expect(mockRepository.findOne).toHaveBeenCalledWith({
-        where: { cpf: createPacienteDto.cpf, empresa_id: createPacienteDto.empresa_id },
+        where: {
+          cpf: createPacienteDto.cpf,
+          empresa_id: createPacienteDto.empresa_id,
+        },
       });
       expect(mockRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -108,7 +111,7 @@ describe('PacientesService', () => {
           data_nascimento: new Date(createPacienteDto.data_nascimento),
           criado_por: 1,
           atualizado_por: 1,
-        })
+        }),
       );
       expect(mockRepository.save).toHaveBeenCalled();
     });
@@ -123,12 +126,15 @@ describe('PacientesService', () => {
       expect(mockRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({
           codigo_interno: expect.stringMatching(/^PAC\d+$/),
-        })
+        }),
       );
     });
 
     it('deve usar código interno fornecido quando presente', async () => {
-      const dtoComCodigo = { ...createPacienteDto, codigo_interno: 'PAC999999' };
+      const dtoComCodigo = {
+        ...createPacienteDto,
+        codigo_interno: 'PAC999999',
+      };
       mockRepository.findOne.mockResolvedValue(null);
       mockRepository.create.mockReturnValue(mockPaciente);
       mockRepository.save.mockResolvedValue(mockPaciente);
@@ -138,16 +144,21 @@ describe('PacientesService', () => {
       expect(mockRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({
           codigo_interno: 'PAC999999',
-        })
+        }),
       );
     });
 
     it('deve lançar ConflictException quando CPF já existir na empresa', async () => {
       mockRepository.findOne.mockResolvedValue(mockPaciente);
 
-      await expect(service.create(createPacienteDto, 1)).rejects.toThrow(ConflictException);
+      await expect(service.create(createPacienteDto, 1)).rejects.toThrow(
+        ConflictException,
+      );
       expect(mockRepository.findOne).toHaveBeenCalledWith({
-        where: { cpf: createPacienteDto.cpf, empresa_id: createPacienteDto.empresa_id },
+        where: {
+          cpf: createPacienteDto.cpf,
+          empresa_id: createPacienteDto.empresa_id,
+        },
       });
       expect(mockRepository.save).not.toHaveBeenCalled();
     });
@@ -162,7 +173,7 @@ describe('PacientesService', () => {
       expect(mockRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({
           data_nascimento: new Date('1990-01-01'),
-        })
+        }),
       );
     });
 
@@ -181,7 +192,7 @@ describe('PacientesService', () => {
       expect(mockRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({
           validade: new Date('2025-12-31'),
-        })
+        }),
       );
     });
   });
@@ -225,12 +236,16 @@ describe('PacientesService', () => {
 
       mockRepository.createQueryBuilder.mockReturnValue(mockQueryBuilder);
 
-      const result = await service.findAll(1, { page: 1, limit: 10, nome: 'João' });
+      const result = await service.findAll(1, {
+        page: 1,
+        limit: 10,
+        nome: 'João',
+      });
 
       expect(result.data).toEqual(pacientes);
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
         'paciente.nome ILIKE :nome',
-        { nome: '%João%' }
+        { nome: '%João%' },
       );
     });
 
@@ -251,7 +266,7 @@ describe('PacientesService', () => {
 
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
         'paciente.cpf = :cpf',
-        { cpf: '12345678901' }
+        { cpf: '12345678901' },
       );
     });
 
@@ -272,7 +287,7 @@ describe('PacientesService', () => {
 
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
         'paciente.status = :status',
-        { status: 'ativo' }
+        { status: 'ativo' },
       );
     });
   });
@@ -342,16 +357,16 @@ describe('PacientesService', () => {
           ...mockPaciente,
           ...updatePacienteDto,
           atualizado_por: 2,
-        })
+        }),
       );
     });
 
     it('deve lançar NotFoundException quando paciente não for encontrado', async () => {
       mockRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.update(999, 1, updatePacienteDto, 2)).rejects.toThrow(
-        NotFoundException
-      );
+      await expect(
+        service.update(999, 1, updatePacienteDto, 2),
+      ).rejects.toThrow(NotFoundException);
       expect(mockRepository.save).not.toHaveBeenCalled();
     });
 
@@ -365,7 +380,7 @@ describe('PacientesService', () => {
       expect(mockRepository.save).toHaveBeenCalledWith(
         expect.objectContaining({
           data_nascimento: new Date('1985-05-15'),
-        })
+        }),
       );
     });
   });
@@ -386,14 +401,16 @@ describe('PacientesService', () => {
           ...mockPaciente,
           status: 'inativo',
           atualizado_por: 2,
-        })
+        }),
       );
     });
 
     it('deve lançar NotFoundException quando paciente não for encontrado', async () => {
       mockRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.remove(999, 1, 2)).rejects.toThrow(NotFoundException);
+      await expect(service.remove(999, 1, 2)).rejects.toThrow(
+        NotFoundException,
+      );
       expect(mockRepository.save).not.toHaveBeenCalled();
     });
   });

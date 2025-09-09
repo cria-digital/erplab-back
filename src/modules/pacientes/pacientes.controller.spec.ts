@@ -121,7 +121,10 @@ describe('PacientesController', () => {
     it('deve criar um paciente com sucesso', async () => {
       mockPacientesService.create.mockResolvedValue(mockPaciente);
 
-      const result = await controller.create(createPacienteDto, mockRequest as any);
+      const result = await controller.create(
+        createPacienteDto,
+        mockRequest as any,
+      );
 
       expect(result).toEqual({
         message: 'Paciente criado com sucesso',
@@ -134,8 +137,9 @@ describe('PacientesController', () => {
       const conflictError = new ConflictException('CPF já cadastrado');
       mockPacientesService.create.mockRejectedValue(conflictError);
 
-      await expect(controller.create(createPacienteDto, mockRequest as any))
-        .rejects.toThrow(ConflictException);
+      await expect(
+        controller.create(createPacienteDto, mockRequest as any),
+      ).rejects.toThrow(ConflictException);
     });
   });
 
@@ -151,10 +155,10 @@ describe('PacientesController', () => {
 
       mockPacientesService.findAll.mockResolvedValue(paginatedResult);
 
-      const result = await controller.findAll(
-        mockRequest as any,
-        { page: 1, limit: 10 }
-      );
+      const result = await controller.findAll(mockRequest as any, {
+        page: 1,
+        limit: 10,
+      });
 
       expect(result).toEqual(paginatedResult);
       expect(service.findAll).toHaveBeenCalledWith(1, { page: 1, limit: 10 });
@@ -192,8 +196,9 @@ describe('PacientesController', () => {
       const notFoundError = new NotFoundException('Paciente não encontrado');
       mockPacientesService.findOne.mockRejectedValue(notFoundError);
 
-      await expect(controller.findOne('999', mockRequest as any))
-        .rejects.toThrow(NotFoundException);
+      await expect(
+        controller.findOne('999', mockRequest as any),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -201,7 +206,10 @@ describe('PacientesController', () => {
     it('deve retornar um paciente por CPF', async () => {
       mockPacientesService.findByCpf.mockResolvedValue(mockPaciente);
 
-      const result = await controller.findByCpf('12345678901', mockRequest as any);
+      const result = await controller.findByCpf(
+        '12345678901',
+        mockRequest as any,
+      );
 
       expect(result).toEqual(mockPaciente);
       expect(service.findByCpf).toHaveBeenCalledWith('12345678901', 1);
@@ -210,7 +218,10 @@ describe('PacientesController', () => {
     it('deve retornar null quando paciente não for encontrado por CPF', async () => {
       mockPacientesService.findByCpf.mockResolvedValue(null);
 
-      const result = await controller.findByCpf('99999999999', mockRequest as any);
+      const result = await controller.findByCpf(
+        '99999999999',
+        mockRequest as any,
+      );
 
       expect(result).toBeNull();
     });
@@ -226,7 +237,11 @@ describe('PacientesController', () => {
       const pacienteAtualizado = { ...mockPaciente, ...updatePacienteDto };
       mockPacientesService.update.mockResolvedValue(pacienteAtualizado);
 
-      const result = await controller.update('1', updatePacienteDto, mockRequest as any);
+      const result = await controller.update(
+        '1',
+        updatePacienteDto,
+        mockRequest as any,
+      );
 
       expect(result).toEqual({
         message: 'Paciente atualizado com sucesso',
@@ -239,8 +254,9 @@ describe('PacientesController', () => {
       const notFoundError = new NotFoundException('Paciente não encontrado');
       mockPacientesService.update.mockRejectedValue(notFoundError);
 
-      await expect(controller.update('999', updatePacienteDto, mockRequest as any))
-        .rejects.toThrow(NotFoundException);
+      await expect(
+        controller.update('999', updatePacienteDto, mockRequest as any),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -260,8 +276,9 @@ describe('PacientesController', () => {
       const notFoundError = new NotFoundException('Paciente não encontrado');
       mockPacientesService.remove.mockRejectedValue(notFoundError);
 
-      await expect(controller.remove('999', mockRequest as any))
-        .rejects.toThrow(NotFoundException);
+      await expect(
+        controller.remove('999', mockRequest as any),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -300,7 +317,9 @@ describe('PacientesController', () => {
       const pacientes = [mockPaciente];
       mockPacientesService.searchByName.mockResolvedValue(pacientes);
 
-      const result = await controller.search('João', mockRequest as any, { limit: 5 });
+      const result = await controller.search('João', mockRequest as any, {
+        limit: 5,
+      });
 
       expect(result).toEqual(pacientes);
       expect(service.searchByName).toHaveBeenCalledWith('João', 1, 5);

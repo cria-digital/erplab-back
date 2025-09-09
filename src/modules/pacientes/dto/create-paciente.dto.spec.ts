@@ -50,7 +50,7 @@ describe('CreatePacienteDto', () => {
 
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
-      expect(errors.find(error => error.property === 'nome')).toBeDefined();
+      expect(errors.find((error) => error.property === 'nome')).toBeDefined();
     });
 
     it('deve falhar quando CPF não for fornecido', async () => {
@@ -72,7 +72,7 @@ describe('CreatePacienteDto', () => {
 
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
-      expect(errors.find(error => error.property === 'cpf')).toBeDefined();
+      expect(errors.find((error) => error.property === 'cpf')).toBeDefined();
     });
 
     it('deve falhar quando empresa_id não for fornecido', async () => {
@@ -94,7 +94,9 @@ describe('CreatePacienteDto', () => {
 
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
-      expect(errors.find(error => error.property === 'empresa_id')).toBeDefined();
+      expect(
+        errors.find((error) => error.property === 'empresa_id'),
+      ).toBeDefined();
     });
   });
 
@@ -124,7 +126,7 @@ describe('CreatePacienteDto', () => {
 
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
-      expect(errors.find(error => error.property === 'email')).toBeDefined();
+      expect(errors.find((error) => error.property === 'email')).toBeDefined();
     });
 
     it('deve validar tamanho do CPF', async () => {
@@ -132,7 +134,7 @@ describe('CreatePacienteDto', () => {
 
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
-      expect(errors.find(error => error.property === 'cpf')).toBeDefined();
+      expect(errors.find((error) => error.property === 'cpf')).toBeDefined();
     });
 
     it('deve validar tamanho do CEP', async () => {
@@ -140,7 +142,7 @@ describe('CreatePacienteDto', () => {
 
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
-      expect(errors.find(error => error.property === 'cep')).toBeDefined();
+      expect(errors.find((error) => error.property === 'cep')).toBeDefined();
     });
 
     it('deve validar formato da data de nascimento', async () => {
@@ -148,7 +150,9 @@ describe('CreatePacienteDto', () => {
 
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
-      expect(errors.find(error => error.property === 'data_nascimento')).toBeDefined();
+      expect(
+        errors.find((error) => error.property === 'data_nascimento'),
+      ).toBeDefined();
     });
 
     it('deve validar valores de sexo permitidos', async () => {
@@ -156,7 +160,7 @@ describe('CreatePacienteDto', () => {
 
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
-      expect(errors.find(error => error.property === 'sexo')).toBeDefined();
+      expect(errors.find((error) => error.property === 'sexo')).toBeDefined();
     });
 
     it('deve validar valores de usar_nome_social permitidos', async () => {
@@ -164,7 +168,9 @@ describe('CreatePacienteDto', () => {
 
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
-      expect(errors.find(error => error.property === 'usar_nome_social')).toBeDefined();
+      expect(
+        errors.find((error) => error.property === 'usar_nome_social'),
+      ).toBeDefined();
     });
   });
 
@@ -217,7 +223,7 @@ describe('CreatePacienteDto', () => {
   describe('Limpeza de dados', () => {
     it('deve remover formatação do CPF', () => {
       dto.cpf = '123.456.789-01';
-      
+
       // Este método seria implementado no DTO ou service
       const cpfLimpo = dto.cpf?.replace(/\D/g, '');
       expect(cpfLimpo).toBe('12345678901');
@@ -225,7 +231,7 @@ describe('CreatePacienteDto', () => {
 
     it('deve remover formatação do CEP', () => {
       dto.cep = '01310-100';
-      
+
       // Este método seria implementado no DTO ou service
       const cepLimpo = dto.cep?.replace(/\D/g, '');
       expect(cepLimpo).toBe('01310100');
@@ -233,7 +239,7 @@ describe('CreatePacienteDto', () => {
 
     it('deve trimmar campos de texto', () => {
       dto.nome = '  João Silva  ';
-      
+
       // Este método seria implementado no DTO ou service
       const nomeLimpo = dto.nome?.trim();
       expect(nomeLimpo).toBe('João Silva');

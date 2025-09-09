@@ -1,4 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+} from 'typeorm';
 import { HorarioAtendimento } from './horario-atendimento.entity';
 import { DadoBancario } from './dado-bancario.entity';
 import { CnaeSecundario } from './cnae-secundario.entity';
@@ -12,7 +19,12 @@ export class UnidadeSaude {
   @Column({ name: 'nome_unidade', type: 'varchar', length: 255 })
   nomeUnidade: string;
 
-  @Column({ name: 'codigo_interno', type: 'varchar', length: 50, nullable: true })
+  @Column({
+    name: 'codigo_interno',
+    type: 'varchar',
+    length: 50,
+    nullable: true,
+  })
   codigoInterno: string;
 
   @Column({ type: 'varchar', length: 14, unique: true })
@@ -24,28 +36,58 @@ export class UnidadeSaude {
   @Column({ name: 'nome_fantasia', type: 'varchar', length: 255 })
   nomeFantasia: string;
 
-  @Column({ name: 'inscricao_municipal', type: 'varchar', length: 50, nullable: true })
+  @Column({
+    name: 'inscricao_municipal',
+    type: 'varchar',
+    length: 50,
+    nullable: true,
+  })
   inscricaoMunicipal: string;
 
-  @Column({ name: 'inscricao_estadual', type: 'varchar', length: 50, nullable: true })
+  @Column({
+    name: 'inscricao_estadual',
+    type: 'varchar',
+    length: 50,
+    nullable: true,
+  })
   inscricaoEstadual: string;
 
   @Column({ type: 'varchar', length: 15, nullable: true })
   cnes: string;
 
-  @Column({ name: 'contatos_unidade', type: 'varchar', length: 255, nullable: true })
+  @Column({
+    name: 'contatos_unidade',
+    type: 'varchar',
+    length: 255,
+    nullable: true,
+  })
   contatosUnidade: string;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   email: string;
 
-  @Column({ name: 'codigo_servico_principal', type: 'varchar', length: 50, nullable: true })
+  @Column({
+    name: 'codigo_servico_principal',
+    type: 'varchar',
+    length: 50,
+    nullable: true,
+  })
   codigoServicoPrincipal: string;
 
-  @Column({ name: 'codigo_servico_secundario', type: 'varchar', length: 50, nullable: true })
+  @Column({
+    name: 'codigo_servico_secundario',
+    type: 'varchar',
+    length: 50,
+    nullable: true,
+  })
   codigoServicoSecundario: string;
 
-  @Column({ name: 'cnae_principal', type: 'varchar', length: 10, nullable: true })
+  @Column({
+    name: 'cnae_principal',
+    type: 'varchar',
+    length: 10,
+    nullable: true,
+  })
   cnaePrincipal: string;
 
   // Imagem/Logo
@@ -75,35 +117,92 @@ export class UnidadeSaude {
   cidade: string;
 
   // Responsável
-  @Column({ name: 'nome_responsavel', type: 'varchar', length: 255, nullable: true })
+  @Column({
+    name: 'nome_responsavel',
+    type: 'varchar',
+    length: 255,
+    nullable: true,
+  })
   nomeResponsavel: string;
 
-  @Column({ name: 'contato_responsavel', type: 'varchar', length: 255, nullable: true })
+  @Column({
+    name: 'contato_responsavel',
+    type: 'varchar',
+    length: 255,
+    nullable: true,
+  })
   contatoResponsavel: string;
 
-  @Column({ name: 'email_responsavel', type: 'varchar', length: 255, nullable: true })
+  @Column({
+    name: 'email_responsavel',
+    type: 'varchar',
+    length: 255,
+    nullable: true,
+  })
   emailResponsavel: string;
 
   // Impostos (percentuais)
-  @Column({ name: 'irrf_percentual', type: 'decimal', precision: 5, scale: 2, nullable: true })
+  @Column({
+    name: 'irrf_percentual',
+    type: 'decimal',
+    precision: 5,
+    scale: 2,
+    nullable: true,
+  })
   irrfPercentual: number;
 
-  @Column({ name: 'pis_percentual', type: 'decimal', precision: 5, scale: 2, nullable: true })
+  @Column({
+    name: 'pis_percentual',
+    type: 'decimal',
+    precision: 5,
+    scale: 2,
+    nullable: true,
+  })
   pisPercentual: number;
 
-  @Column({ name: 'cofins_percentual', type: 'decimal', precision: 5, scale: 2, nullable: true })
+  @Column({
+    name: 'cofins_percentual',
+    type: 'decimal',
+    precision: 5,
+    scale: 2,
+    nullable: true,
+  })
   cofinsPercentual: number;
 
-  @Column({ name: 'csll_percentual', type: 'decimal', precision: 5, scale: 2, nullable: true })
+  @Column({
+    name: 'csll_percentual',
+    type: 'decimal',
+    precision: 5,
+    scale: 2,
+    nullable: true,
+  })
   csllPercentual: number;
 
-  @Column({ name: 'iss_percentual', type: 'decimal', precision: 5, scale: 2, nullable: true })
+  @Column({
+    name: 'iss_percentual',
+    type: 'decimal',
+    precision: 5,
+    scale: 2,
+    nullable: true,
+  })
   issPercentual: number;
 
-  @Column({ name: 'ibs_percentual', type: 'decimal', precision: 5, scale: 2, nullable: true })
+  @Column({
+    name: 'ibs_percentual',
+    type: 'decimal',
+    precision: 5,
+    scale: 2,
+    nullable: true,
+  })
   ibsPercentual: number;
 
-  @Column({ name: 'cbs_percentual', type: 'decimal', precision: 5, scale: 2, nullable: true })
+  @Column({
+    name: 'cbs_percentual',
+    type: 'decimal',
+    precision: 5,
+    scale: 2,
+    nullable: true,
+  })
   cbsPercentual: number;
 
   // Retenções fiscais
@@ -126,16 +225,34 @@ export class UnidadeSaude {
   optanteSimplesNacional: boolean;
 
   // Certificado Digital
-  @Column({ name: 'certificado_digital_vinculado', type: 'boolean', default: false })
+  @Column({
+    name: 'certificado_digital_vinculado',
+    type: 'boolean',
+    default: false,
+  })
   certificadoDigitalVinculado: boolean;
 
-  @Column({ name: 'certificado_digital_path', type: 'varchar', length: 500, nullable: true })
+  @Column({
+    name: 'certificado_digital_path',
+    type: 'varchar',
+    length: 500,
+    nullable: true,
+  })
   certificadoDigitalPath: string;
 
-  @Column({ name: 'certificado_digital_senha', type: 'varchar', length: 255, nullable: true })
+  @Column({
+    name: 'certificado_digital_senha',
+    type: 'varchar',
+    length: 255,
+    nullable: true,
+  })
   certificadoDigitalSenha: string;
 
-  @Column({ name: 'certificado_digital_validade', type: 'date', nullable: true })
+  @Column({
+    name: 'certificado_digital_validade',
+    type: 'date',
+    nullable: true,
+  })
   certificadoDigitalValidade: Date;
 
   // Status
@@ -150,12 +267,18 @@ export class UnidadeSaude {
   updatedAt: Date;
 
   // Relacionamentos
-  @OneToMany(() => HorarioAtendimento, horario => horario.unidadeSaude, { cascade: true })
+  @OneToMany(() => HorarioAtendimento, (horario) => horario.unidadeSaude, {
+    cascade: true,
+  })
   horariosAtendimento: HorarioAtendimento[];
 
-  @OneToMany(() => DadoBancario, dadoBancario => dadoBancario.unidadeSaude, { cascade: true })
+  @OneToMany(() => DadoBancario, (dadoBancario) => dadoBancario.unidadeSaude, {
+    cascade: true,
+  })
   dadosBancarios: DadoBancario[];
 
-  @OneToMany(() => CnaeSecundario, cnae => cnae.unidadeSaude, { cascade: true })
+  @OneToMany(() => CnaeSecundario, (cnae) => cnae.unidadeSaude, {
+    cascade: true,
+  })
   cnaeSecundarios: CnaeSecundario[];
 }

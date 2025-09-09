@@ -1,0 +1,218 @@
+### ============================================
+### USUÁRIOS API - Exemplos de Requisições
+### ============================================
+
+### 1. Criar novo usuário completo
+POST {{baseUrl}}/usuarios
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nomeCompleto": "João da Silva Santos",
+  "cpf": "12345678901",
+  "telefone": "1133334444",
+  "celularWhatsapp": "11999998888",
+  "cargoFuncao": "Analista de Sistemas",
+  "cnpjAssociado": "12345678000190",
+  "dadosAdmissao": "Admitido em 01/01/2024 - CLT",
+  "fotoUrl": "https://example.com/photos/joao-silva.jpg",
+  "email": "joao.silva@example.com",
+  "senha": "SenhaSegura123!",
+  "resetarSenha": false,
+  "validacao2Etapas": true,
+  "metodoValidacao": "EMAIL",
+  "perguntaRecuperacao": "Qual o nome do seu primeiro animal de estimação?",
+  "respostaRecuperacao": "Rex",
+  "ativo": true,
+  "unidadesIds": [
+    "uuid-unidade-1",
+    "uuid-unidade-2"
+  ],
+  "permissoesIds": [
+    "uuid-permissao-admin",
+    "uuid-permissao-relatorios"
+  ]
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "message": "Usuário criado com sucesso",
+#   "data": {
+#     "id": "uuid-gerado",
+#     "codigoInterno": "USR1693847520123",
+#     "nomeCompleto": "João da Silva Santos",
+#     "cpf": "12345678901",
+#     "email": "joao.silva@example.com",
+#     "ativo": true,
+#     "validacao2Etapas": true,
+#     "metodoValidacao": "EMAIL",
+#     ...
+#   }
+# }
+
+###
+
+### 2. Fluxo Completo de Gestão de Usuário
+### 2.1 - Criar usuário inicial
+POST {{baseUrl}}/usuarios
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nomeCompleto": "Maria Oliveira Santos",
+  "email": "maria.oliveira@example.com",
+  "senha": "TempPassword123!"
+}
+
+###
+
+### 2.2 - Buscar usuário criado
+GET {{baseUrl}}/usuarios?email=maria.oliveira
+Authorization: Bearer {{token}}
+
+###
+
+### 2.3 - Atualizar dados do usuário
+PATCH {{baseUrl}}/usuarios/{{userId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "cpf": "98765432100",
+  "telefone": "1133335555",
+  "cargoFuncao": "Analista Junior",
+  "unidadesIds": ["uuid-unidade-1"]
+}
+
+###
+
+### 2.4 - Configurar 2FA
+PATCH {{baseUrl}}/usuarios/{{userId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "validacao2Etapas": true,
+  "metodoValidacao": "APP",
+  "perguntaRecuperacao": "Qual o nome da sua primeira escola?",
+  "respostaRecuperacao": "Escola Municipal São Paulo"
+}
+
+###
+
+### 2.5 - Resetar senha (admin)
+PATCH {{baseUrl}}/usuarios/{{userId}}/reset-password
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "novaSenha": "NovaTemp123!"
+}
+
+###
+
+### 3. Cenários de Teste e Validação
+### 3.1 - Tentar criar usuário com email duplicado
+POST {{baseUrl}}/usuarios
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nomeCompleto": "Duplicado",
+  "email": "joao.silva@example.com",
+  "senha": "Senha123!"
+}
+
+### Expected Response
+# Status: 409 Conflict
+# {
+#   "statusCode": 409,
+#   "message": "Já existe um usuário cadastrado com este e-mail"
+# }
+
+###
+
+### 3.2 - Tentar criar usuário com CPF duplicado
+POST {{baseUrl}}/usuarios
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nomeCompleto": "Outro Nome",
+  "cpf": "12345678901",
+  "email": "outro@example.com",
+  "senha": "Senha123!"
+}
+
+### Expected Response
+# Status: 409 Conflict
+# {
+#   "statusCode": 409,
+#   "message": "Já existe um usuário cadastrado com este CPF"
+# }
+
+###
+
+### 4. Consultas Avançadas
+### 4.1 - Buscar usuários ativos de uma unidade específica
+GET {{baseUrl}}/usuarios?ativo=true&unidadeId=uuid-unidade-1&page=1&limit=20
+Authorization: Bearer {{token}}
+
+###
+
+### 4.2 - Buscar estatísticas dos usuários
+GET {{baseUrl}}/usuarios/stats
+Authorization: Bearer {{token}}
+
+### Expected Response
+# {
+#   "total": 150,
+#   "ativos": 120,
+#   "inativos": 25,
+#   "bloqueados": 5,
+#   "com2FA": 45
+# }
+
+###
+
+### 5. Gestão de Permissões e Unidades
+### 5.1 - Adicionar usuário a múltiplas unidades
+PATCH {{baseUrl}}/usuarios/{{userId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "unidadesIds": [
+    "uuid-unidade-1",
+    "uuid-unidade-2",
+    "uuid-unidade-3"
+  ]
+}
+
+###
+
+### 5.2 - Atualizar permissões do usuário
+PATCH {{baseUrl}}/usuarios/{{userId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "permissoesIds": [
+    "uuid-permissao-visualizar",
+    "uuid-permissao-criar",
+    "uuid-permissao-editar",
+    "uuid-permissao-deletar"
+  ]
+}
+
+###
+
+### 5.3 - Remover usuário de todas as unidades
+PATCH {{baseUrl}}/usuarios/{{userId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "unidadesIds": []
+}

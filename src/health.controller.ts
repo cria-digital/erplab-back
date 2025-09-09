@@ -5,20 +5,21 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 @Controller('health')
 export class HealthController {
   @Get()
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Verificação de saúde do sistema',
-    description: 'Endpoint para verificar se a API e banco de dados estão funcionando corretamente'
+    description:
+      'Endpoint para verificar se a API e banco de dados estão funcionando corretamente',
   })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiResponse({
+    status: 200,
     description: 'Sistema funcionando corretamente',
     example: {
       status: 'ok',
       message: 'ERP Laboratório Backend está funcionando!',
       timestamp: '2025-09-02T20:01:27.483Z',
       database: 'erplab - conectado',
-      port: 10016
-    }
+      port: 10016,
+    },
   })
   check() {
     return {

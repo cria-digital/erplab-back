@@ -15,7 +15,8 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreatePacienteDto {
   @ApiPropertyOptional({
-    description: 'Código interno do paciente (será gerado automaticamente se não fornecido)',
+    description:
+      'Código interno do paciente (será gerado automaticamente se não fornecido)',
     example: 'PAC123456',
     maxLength: 20,
   })
@@ -73,7 +74,10 @@ export class CreatePacienteDto {
     example: '1990-01-15',
   })
   @IsNotEmpty({ message: 'Data de nascimento é obrigatória' })
-  @IsDateString({}, { message: 'Data de nascimento deve estar no formato YYYY-MM-DD' })
+  @IsDateString(
+    {},
+    { message: 'Data de nascimento deve estar no formato YYYY-MM-DD' },
+  )
   data_nascimento: string;
 
   @ApiProperty({
@@ -226,7 +230,9 @@ export class CreatePacienteDto {
   })
   @IsOptional()
   @IsString()
-  @Length(2, 255, { message: 'Nome do titular deve ter entre 2 e 255 caracteres' })
+  @Length(2, 255, {
+    message: 'Nome do titular deve ter entre 2 e 255 caracteres',
+  })
   @Transform(({ value }) => value?.trim())
   nome_titular?: string;
 

@@ -46,9 +46,10 @@ export class PacientesController {
   constructor(private readonly pacientesService: PacientesService) {}
 
   @Post()
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Criar um novo paciente',
-    description: 'Cria um novo paciente no sistema. O código interno será gerado automaticamente se não fornecido.'
+    description:
+      'Cria um novo paciente no sistema. O código interno será gerado automaticamente se não fornecido.',
   })
   @ApiResponse({
     status: 201,
@@ -70,7 +71,7 @@ export class PacientesController {
   ): Promise<ApiResponse<Paciente>> {
     const paciente = await this.pacientesService.create(
       createPacienteDto,
-      req.user.id
+      req.user.id,
     );
 
     return {
@@ -80,9 +81,10 @@ export class PacientesController {
   }
 
   @Get()
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Listar pacientes',
-    description: 'Lista todos os pacientes da empresa com filtros opcionais e paginação.'
+    description:
+      'Lista todos os pacientes da empresa com filtros opcionais e paginação.',
   })
   @ApiResponse({
     status: 200,
@@ -92,7 +94,7 @@ export class PacientesController {
       properties: {
         data: {
           type: 'array',
-          items: { $ref: '#/components/schemas/Paciente' }
+          items: { $ref: '#/components/schemas/Paciente' },
         },
         total: { type: 'number', example: 100 },
         page: { type: 'number', example: 1 },
@@ -101,12 +103,42 @@ export class PacientesController {
       },
     },
   })
-  @ApiQuery({ name: 'page', required: false, type: Number, description: 'Número da página' })
-  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Itens por página' })
-  @ApiQuery({ name: 'nome', required: false, type: String, description: 'Filtrar por nome' })
-  @ApiQuery({ name: 'cpf', required: false, type: String, description: 'Filtrar por CPF' })
-  @ApiQuery({ name: 'email', required: false, type: String, description: 'Filtrar por email' })
-  @ApiQuery({ name: 'status', required: false, enum: ['ativo', 'inativo', 'bloqueado'], description: 'Filtrar por status' })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'Número da página',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Itens por página',
+  })
+  @ApiQuery({
+    name: 'nome',
+    required: false,
+    type: String,
+    description: 'Filtrar por nome',
+  })
+  @ApiQuery({
+    name: 'cpf',
+    required: false,
+    type: String,
+    description: 'Filtrar por CPF',
+  })
+  @ApiQuery({
+    name: 'email',
+    required: false,
+    type: String,
+    description: 'Filtrar por email',
+  })
+  @ApiQuery({
+    name: 'status',
+    required: false,
+    enum: ['ativo', 'inativo', 'bloqueado'],
+    description: 'Filtrar por status',
+  })
   async findAll(
     @Request() req: RequestWithUser,
     @Query() filters: PacientesFilters,
@@ -115,17 +147,27 @@ export class PacientesController {
   }
 
   @Get('search')
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Buscar pacientes por nome',
-    description: 'Busca pacientes por nome parcial para autocomplete.'
+    description: 'Busca pacientes por nome parcial para autocomplete.',
   })
   @ApiResponse({
     status: 200,
     description: 'Lista de pacientes encontrados',
     type: [Paciente],
   })
-  @ApiQuery({ name: 'nome', required: true, type: String, description: 'Nome para busca' })
-  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Limite de resultados (padrão: 10)' })
+  @ApiQuery({
+    name: 'nome',
+    required: true,
+    type: String,
+    description: 'Nome para busca',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Limite de resultados (padrão: 10)',
+  })
   async search(
     @Query('nome') nome: string,
     @Request() req: RequestWithUser,
@@ -136,9 +178,9 @@ export class PacientesController {
   }
 
   @Get('stats')
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Estatísticas dos pacientes',
-    description: 'Retorna estatísticas dos pacientes por empresa.'
+    description: 'Retorna estatísticas dos pacientes por empresa.',
   })
   @ApiResponse({
     status: 200,
@@ -170,9 +212,9 @@ export class PacientesController {
   }
 
   @Get('cpf/:cpf')
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Buscar paciente por CPF',
-    description: 'Busca um paciente específico pelo CPF.'
+    description: 'Busca um paciente específico pelo CPF.',
   })
   @ApiResponse({
     status: 200,
@@ -183,7 +225,11 @@ export class PacientesController {
     status: 404,
     description: 'Paciente não encontrado',
   })
-  @ApiParam({ name: 'cpf', description: 'CPF do paciente (apenas números)', example: '12345678901' })
+  @ApiParam({
+    name: 'cpf',
+    description: 'CPF do paciente (apenas números)',
+    example: '12345678901',
+  })
   async findByCpf(
     @Param('cpf') cpf: string,
     @Request() req: RequestWithUser,
@@ -192,9 +238,9 @@ export class PacientesController {
   }
 
   @Get(':id')
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Buscar paciente por ID',
-    description: 'Busca um paciente específico pelo ID.'
+    description: 'Busca um paciente específico pelo ID.',
   })
   @ApiResponse({
     status: 200,
@@ -214,9 +260,9 @@ export class PacientesController {
   }
 
   @Patch(':id')
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Atualizar paciente',
-    description: 'Atualiza os dados de um paciente existente.'
+    description: 'Atualiza os dados de um paciente existente.',
   })
   @ApiResponse({
     status: 200,
@@ -242,7 +288,7 @@ export class PacientesController {
       +id,
       req.user.empresa_id,
       updatePacienteDto,
-      req.user.id
+      req.user.id,
     );
 
     return {
@@ -252,9 +298,9 @@ export class PacientesController {
   }
 
   @Delete(':id')
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Remover paciente',
-    description: 'Remove um paciente (soft delete - torna inativo).'
+    description: 'Remove um paciente (soft delete - torna inativo).',
   })
   @ApiResponse({
     status: 200,
@@ -277,9 +323,9 @@ export class PacientesController {
   }
 
   @Patch(':id/activate')
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Ativar paciente',
-    description: 'Ativa um paciente inativo.'
+    description: 'Ativa um paciente inativo.',
   })
   @ApiResponse({
     status: 200,
@@ -298,7 +344,7 @@ export class PacientesController {
     const paciente = await this.pacientesService.activate(
       +id,
       req.user.empresa_id,
-      req.user.id
+      req.user.id,
     );
 
     return {
@@ -308,9 +354,9 @@ export class PacientesController {
   }
 
   @Patch(':id/block')
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Bloquear paciente',
-    description: 'Bloqueia um paciente ativo.'
+    description: 'Bloqueia um paciente ativo.',
   })
   @ApiResponse({
     status: 200,
@@ -329,7 +375,7 @@ export class PacientesController {
     const paciente = await this.pacientesService.block(
       +id,
       req.user.empresa_id,
-      req.user.id
+      req.user.id,
     );
 
     return {

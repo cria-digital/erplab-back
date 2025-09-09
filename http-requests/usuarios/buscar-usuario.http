@@ -1,0 +1,53 @@
+### Buscar Usuário por ID
+GET {{baseUrl}}/usuarios/123e4567-e89b-12d3-a456-426614174000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "123e4567-e89b-12d3-a456-426614174000",
+#   "codigoInterno": "USR001",
+#   "nomeCompleto": "João da Silva Santos",
+#   "cpf": "12345678901",
+#   "telefone": "1133334444",
+#   "celularWhatsapp": "11999998888",
+#   "cargoFuncao": "Analista de Sistemas",
+#   "email": "joao.silva@example.com",
+#   "ativo": true,
+#   "validacao2Etapas": false,
+#   "unidades": [...],
+#   "permissoes": [...],
+#   "createdAt": "2024-01-01T10:00:00Z",
+#   "updatedAt": "2024-01-01T10:00:00Z"
+# }
+
+###
+
+### Obter Dados do Usuário Autenticado
+GET {{baseUrl}}/usuarios/me
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "current-user-uuid",
+#   "nomeCompleto": "Usuário Atual",
+#   "email": "usuario.atual@example.com",
+#   ...
+# }
+
+###
+
+### Obter Estatísticas dos Usuários
+GET {{baseUrl}}/usuarios/stats
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "total": 150,
+#   "ativos": 120,
+#   "inativos": 25,
+#   "bloqueados": 5,
+#   "com2FA": 45
+# }

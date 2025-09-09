@@ -1,0 +1,210 @@
+### Registrar Log de Auditoria Genérico
+POST {{baseUrl}}/auditoria/log
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoLog": "ACESSO",
+  "usuarioId": "123e4567-e89b-12d3-a456-426614174000",
+  "modulo": "Pacientes",
+  "acao": "Visualizar Lista",
+  "detalhes": "Listagem com filtro por status ativo",
+  "nivel": "INFO"
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "message": "Log registrado com sucesso",
+#   "data": {
+#     "id": "uuid-gerado",
+#     "tipoLog": "ACESSO",
+#     "usuarioId": "123e4567-e89b-12d3-a456-426614174000",
+#     "dataHora": "2024-01-01T10:00:00Z",
+#     ...
+#   }
+# }
+
+###
+
+### Registrar Log de Alteração
+POST {{baseUrl}}/auditoria/log
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoLog": "ALTERACAO",
+  "usuarioId": "123e4567-e89b-12d3-a456-426614174000",
+  "entidade": "pacientes",
+  "entidadeId": "987e6543-e89b-12d3-a456-426614174000",
+  "operacao": "UPDATE",
+  "modulo": "Pacientes",
+  "dadosAlteracao": {
+    "antes": {
+      "nome": "João Silva",
+      "telefone": "11999998888",
+      "email": "joao@example.com"
+    },
+    "depois": {
+      "nome": "João da Silva",
+      "telefone": "11888887777",
+      "email": "joao.silva@example.com"
+    }
+  },
+  "nivel": "INFO"
+}
+
+###
+
+### Registrar Log de Erro
+POST {{baseUrl}}/auditoria/log
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoLog": "ERRO",
+  "usuarioId": "123e4567-e89b-12d3-a456-426614174000",
+  "modulo": "Financeiro",
+  "detalhes": "Falha ao processar pagamento - Gateway indisponível",
+  "nivel": "ERROR"
+}
+
+###
+
+### Registrar Log de Ação
+POST {{baseUrl}}/auditoria/log
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoLog": "ACAO",
+  "usuarioId": "123e4567-e89b-12d3-a456-426614174000",
+  "modulo": "Relatórios",
+  "acao": "Gerar Relatório",
+  "detalhes": "Relatório mensal de atendimentos gerado e exportado para PDF",
+  "nivel": "INFO"
+}
+
+###
+
+### Registrar Acesso (Endpoint Específico)
+POST {{baseUrl}}/auditoria/acesso
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "acao": "Visualizar Dashboard",
+  "modulo": "Dashboard",
+  "detalhes": "Dashboard principal com métricas do mês atual"
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "message": "Acesso registrado com sucesso",
+#   "data": {...}
+# }
+
+###
+
+### Registrar Erro (Endpoint Específico)
+POST {{baseUrl}}/auditoria/erro
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "erro": "Falha na conexão com banco de dados",
+  "modulo": "Database",
+  "detalhes": "Timeout após 30 segundos - Pool de conexões esgotado"
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "message": "Erro registrado com sucesso",
+#   "data": {...}
+# }
+
+###
+
+### Registrar Login Bem-sucedido
+POST {{baseUrl}}/auditoria/log
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoLog": "ACESSO",
+  "usuarioId": "123e4567-e89b-12d3-a456-426614174000",
+  "operacao": "LOGIN",
+  "detalhes": "Login bem-sucedido",
+  "ipAddress": "192.168.1.100",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+  "nivel": "INFO"
+}
+
+###
+
+### Registrar Tentativa de Login Falha
+POST {{baseUrl}}/auditoria/log
+Content-Type: {{contentType}}
+
+{
+  "tipoLog": "ACESSO",
+  "usuarioId": "00000000-0000-0000-0000-000000000000",
+  "operacao": "LOGIN_FALHA",
+  "detalhes": "Tentativa de login falhou para: usuario@example.com",
+  "ipAddress": "192.168.1.100",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+  "nivel": "WARNING"
+}
+
+###
+
+### Registrar Criação de Registro
+POST {{baseUrl}}/auditoria/log
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoLog": "ALTERACAO",
+  "usuarioId": "123e4567-e89b-12d3-a456-426614174000",
+  "entidade": "usuarios",
+  "entidadeId": "new-user-uuid",
+  "operacao": "INSERT",
+  "modulo": "Usuários",
+  "dadosAlteracao": {
+    "novo": {
+      "nome": "Novo Usuário",
+      "email": "novo@example.com",
+      "ativo": true
+    }
+  },
+  "nivel": "INFO"
+}
+
+###
+
+### Registrar Exclusão de Registro
+POST {{baseUrl}}/auditoria/log
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoLog": "ALTERACAO",
+  "usuarioId": "123e4567-e89b-12d3-a456-426614174000",
+  "entidade": "pacientes",
+  "entidadeId": "deleted-patient-uuid",
+  "operacao": "DELETE",
+  "modulo": "Pacientes",
+  "dadosAlteracao": {
+    "anterior": {
+      "nome": "Paciente Removido",
+      "cpf": "12345678901",
+      "status": "ativo"
+    },
+    "novo": {
+      "status": "inativo"
+    }
+  },
+  "nivel": "WARNING"
+}

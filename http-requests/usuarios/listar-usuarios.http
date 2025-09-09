@@ -1,0 +1,91 @@
+### Listar Todos os Usuários
+GET {{baseUrl}}/usuarios
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [...],
+#   "total": 50,
+#   "page": 1,
+#   "limit": 10,
+#   "totalPages": 5
+# }
+
+###
+
+### Listar com Paginação
+GET {{baseUrl}}/usuarios?page=2&limit=20
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [...],
+#   "total": 50,
+#   "page": 2,
+#   "limit": 20,
+#   "totalPages": 3
+# }
+
+###
+
+### Filtrar por Nome
+GET {{baseUrl}}/usuarios?nome=João
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [
+#     {
+#       "id": "uuid",
+#       "nomeCompleto": "João da Silva",
+#       ...
+#     }
+#   ],
+#   "total": 5,
+#   "page": 1,
+#   "limit": 10,
+#   "totalPages": 1
+# }
+
+###
+
+### Filtrar por Email
+GET {{baseUrl}}/usuarios?email=joao
+Authorization: Bearer {{token}}
+
+###
+
+### Filtrar por CPF
+GET {{baseUrl}}/usuarios?cpf=12345678901
+Authorization: Bearer {{token}}
+
+###
+
+### Filtrar por Status Ativo
+GET {{baseUrl}}/usuarios?ativo=true
+Authorization: Bearer {{token}}
+
+###
+
+### Filtrar por Unidade
+GET {{baseUrl}}/usuarios?unidadeId=uuid-unidade-1
+Authorization: Bearer {{token}}
+
+###
+
+### Filtros Combinados
+GET {{baseUrl}}/usuarios?ativo=true&unidadeId=uuid-unidade-1&page=1&limit=20
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [...],
+#   "total": 15,
+#   "page": 1,
+#   "limit": 20,
+#   "totalPages": 1
+# }

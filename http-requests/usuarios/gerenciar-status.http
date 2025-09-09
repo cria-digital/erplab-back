@@ -1,0 +1,91 @@
+### Remover Usuário (Soft Delete - Inativar)
+DELETE {{baseUrl}}/usuarios/123e4567-e89b-12d3-a456-426614174000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Usuário removido com sucesso"
+# }
+
+###
+
+### Ativar Usuário
+PATCH {{baseUrl}}/usuarios/123e4567-e89b-12d3-a456-426614174000/activate
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Usuário ativado com sucesso",
+#   "data": {
+#     "id": "123e4567-e89b-12d3-a456-426614174000",
+#     "nomeCompleto": "João da Silva Santos",
+#     "ativo": true,
+#     "bloqueadoAte": null,
+#     "tentativasLoginFalhas": 0,
+#     ...
+#   }
+# }
+
+###
+
+### Bloquear Usuário por 30 minutos
+PATCH {{baseUrl}}/usuarios/123e4567-e89b-12d3-a456-426614174000/block
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "minutos": 30
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Usuário bloqueado com sucesso",
+#   "data": {
+#     "id": "123e4567-e89b-12d3-a456-426614174000",
+#     "bloqueadoAte": "2024-01-01T10:30:00Z",
+#     ...
+#   }
+# }
+
+###
+
+### Bloquear Usuário por 2 horas
+PATCH {{baseUrl}}/usuarios/123e4567-e89b-12d3-a456-426614174000/block
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "minutos": 120
+}
+
+###
+
+### Bloquear Usuário por 24 horas
+PATCH {{baseUrl}}/usuarios/123e4567-e89b-12d3-a456-426614174000/block
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "minutos": 1440
+}
+
+###
+
+### Desbloquear Usuário
+PATCH {{baseUrl}}/usuarios/123e4567-e89b-12d3-a456-426614174000/unblock
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Usuário desbloqueado com sucesso",
+#   "data": {
+#     "id": "123e4567-e89b-12d3-a456-426614174000",
+#     "bloqueadoAte": null,
+#     "tentativasLoginFalhas": 0,
+#     ...
+#   }
+# }

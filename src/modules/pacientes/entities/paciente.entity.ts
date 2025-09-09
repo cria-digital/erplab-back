@@ -18,267 +18,267 @@ export class Paciente {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ 
-    type: 'varchar', 
+  @Column({
+    type: 'varchar',
     length: 20,
-    comment: 'Código interno do paciente (ex: PAC123123)'
+    comment: 'Código interno do paciente (ex: PAC123123)',
   })
   codigo_interno: string;
 
-  @Column({ 
-    type: 'varchar', 
+  @Column({
+    type: 'varchar',
     length: 255,
-    comment: 'Nome completo do paciente'
+    comment: 'Nome completo do paciente',
   })
   nome: string;
 
-  @Column({ 
-    type: 'varchar', 
+  @Column({
+    type: 'varchar',
     length: 255,
     nullable: true,
-    comment: 'Nome social do paciente'
+    comment: 'Nome social do paciente',
   })
   nome_social: string;
 
-  @Column({ 
+  @Column({
     type: 'enum',
     enum: ['nao_se_aplica', 'sim', 'nao'],
     default: 'nao_se_aplica',
-    comment: 'Se deve usar o nome social'
+    comment: 'Se deve usar o nome social',
   })
   usar_nome_social: string;
 
-  @Column({ 
+  @Column({
     type: 'enum',
     enum: ['M', 'F', 'O'],
-    comment: 'M - Masculino, F - Feminino, O - Outro'
+    comment: 'M - Masculino, F - Feminino, O - Outro',
   })
   sexo: string;
 
-  @Column({ 
+  @Column({
     type: 'date',
-    comment: 'Data de nascimento'
+    comment: 'Data de nascimento',
   })
   data_nascimento: Date;
 
-  @Column({ 
-    type: 'varchar', 
+  @Column({
+    type: 'varchar',
     length: 255,
-    comment: 'Nome da mãe'
+    comment: 'Nome da mãe',
   })
   nome_mae: string;
 
-  @Column({ 
-    type: 'varchar', 
+  @Column({
+    type: 'varchar',
     length: 50,
     nullable: true,
-    comment: 'Número do prontuário'
+    comment: 'Número do prontuário',
   })
   prontuario: string;
 
-  @Column({ 
-    type: 'varchar', 
+  @Column({
+    type: 'varchar',
     length: 20,
-    comment: 'RG do paciente'
+    comment: 'RG do paciente',
   })
   rg: string;
 
-  @Column({ 
-    type: 'varchar', 
+  @Column({
+    type: 'varchar',
     length: 11,
-    comment: 'CPF sem formatação'
+    comment: 'CPF sem formatação',
   })
   cpf: string;
 
-  @Column({ 
-    type: 'varchar', 
+  @Column({
+    type: 'varchar',
     length: 50,
-    comment: 'Estado civil'
+    comment: 'Estado civil',
   })
   estado_civil: string;
 
-  @Column({ 
-    type: 'varchar', 
+  @Column({
+    type: 'varchar',
     length: 255,
-    comment: 'E-mail do paciente'
+    comment: 'E-mail do paciente',
   })
   email: string;
 
-  @Column({ 
-    type: 'varchar', 
+  @Column({
+    type: 'varchar',
     length: 20,
-    comment: 'Contatos (telefone/celular principal)'
+    comment: 'Contatos (telefone/celular principal)',
   })
   contatos: string;
 
-  @Column({ 
-    type: 'varchar', 
+  @Column({
+    type: 'varchar',
     length: 20,
     nullable: true,
-    comment: 'WhatsApp'
+    comment: 'WhatsApp',
   })
   whatsapp: string;
 
-  @Column({ 
-    type: 'varchar', 
+  @Column({
+    type: 'varchar',
     length: 100,
-    comment: 'Profissão'
+    comment: 'Profissão',
   })
   profissao: string;
 
-  @Column({ 
+  @Column({
     type: 'text',
     nullable: true,
-    comment: 'Observações gerais sobre o paciente'
+    comment: 'Observações gerais sobre o paciente',
   })
   observacao: string;
 
   // Informações de convênio
-  @Column({ 
+  @Column({
     type: 'int',
     nullable: true,
-    comment: 'ID do convênio'
+    comment: 'ID do convênio',
   })
   convenio_id: number;
 
-  @Column({ 
-    type: 'varchar', 
+  @Column({
+    type: 'varchar',
     length: 100,
     nullable: true,
-    comment: 'Nome do plano'
+    comment: 'Nome do plano',
   })
   plano: string;
 
-  @Column({ 
+  @Column({
     type: 'date',
     nullable: true,
-    comment: 'Validade do convênio'
+    comment: 'Validade do convênio',
   })
   validade: Date;
 
-  @Column({ 
-    type: 'varchar', 
+  @Column({
+    type: 'varchar',
     length: 50,
     nullable: true,
-    comment: 'Matrícula do convênio'
+    comment: 'Matrícula do convênio',
   })
   matricula: string;
 
-  @Column({ 
-    type: 'varchar', 
+  @Column({
+    type: 'varchar',
     length: 255,
     nullable: true,
-    comment: 'Nome do titular do convênio'
+    comment: 'Nome do titular do convênio',
   })
   nome_titular: string;
 
-  @Column({ 
-    type: 'varchar', 
+  @Column({
+    type: 'varchar',
     length: 50,
     nullable: true,
-    comment: 'Cartão SUS'
+    comment: 'Cartão SUS',
   })
   cartao_sus: string;
 
   // Endereço
-  @Column({ 
-    type: 'varchar', 
+  @Column({
+    type: 'varchar',
     length: 8,
-    comment: 'CEP sem formatação'
+    comment: 'CEP sem formatação',
   })
   cep: string;
 
-  @Column({ 
-    type: 'varchar', 
+  @Column({
+    type: 'varchar',
     length: 255,
-    comment: 'Rua/Logradouro'
+    comment: 'Rua/Logradouro',
   })
   rua: string;
 
-  @Column({ 
-    type: 'varchar', 
+  @Column({
+    type: 'varchar',
     length: 20,
-    comment: 'Número do endereço'
+    comment: 'Número do endereço',
   })
   numero: string;
 
-  @Column({ 
-    type: 'varchar', 
+  @Column({
+    type: 'varchar',
     length: 100,
-    comment: 'Bairro'
+    comment: 'Bairro',
   })
   bairro: string;
 
-  @Column({ 
-    type: 'varchar', 
+  @Column({
+    type: 'varchar',
     length: 100,
     nullable: true,
-    comment: 'Complemento do endereço'
+    comment: 'Complemento do endereço',
   })
   complemento: string;
 
-  @Column({ 
-    type: 'varchar', 
+  @Column({
+    type: 'varchar',
     length: 100,
-    comment: 'Cidade'
+    comment: 'Cidade',
   })
   cidade: string;
 
-  @Column({ 
-    type: 'char', 
+  @Column({
+    type: 'char',
     length: 2,
-    comment: 'Estado (UF)'
+    comment: 'Estado (UF)',
   })
   estado: string;
 
   // Campo para foto
-  @Column({ 
-    type: 'varchar', 
+  @Column({
+    type: 'varchar',
     length: 500,
     nullable: true,
-    comment: 'URL da foto do paciente'
+    comment: 'URL da foto do paciente',
   })
   foto_url: string;
 
-  @Column({ 
+  @Column({
     type: 'enum',
     enum: ['ativo', 'inativo', 'bloqueado'],
     default: 'ativo',
-    comment: 'Status do paciente no sistema'
+    comment: 'Status do paciente no sistema',
   })
   status: string;
 
   // Multi-empresa
-  @Column({ 
+  @Column({
     type: 'int',
-    comment: 'ID da empresa (CNPJ/Filial)'
+    comment: 'ID da empresa (CNPJ/Filial)',
   })
   empresa_id: number;
 
   // Campos de auditoria
-  @CreateDateColumn({ 
+  @CreateDateColumn({
     type: 'timestamp',
-    comment: 'Data de criação do registro'
+    comment: 'Data de criação do registro',
   })
   criado_em: Date;
 
-  @UpdateDateColumn({ 
+  @UpdateDateColumn({
     type: 'timestamp',
-    comment: 'Data da última atualização'
+    comment: 'Data da última atualização',
   })
   atualizado_em: Date;
 
-  @Column({ 
+  @Column({
     type: 'int',
     nullable: true,
-    comment: 'ID do usuário que criou o registro'
+    comment: 'ID do usuário que criou o registro',
   })
   criado_por: number;
 
-  @Column({ 
+  @Column({
     type: 'int',
     nullable: true,
-    comment: 'ID do usuário que atualizou o registro'
+    comment: 'ID do usuário que atualizou o registro',
   })
   atualizado_por: number;
 
@@ -304,11 +304,11 @@ export class Paciente {
     const nascimento = new Date(this.data_nascimento);
     let idade = hoje.getFullYear() - nascimento.getFullYear();
     const mes = hoje.getMonth() - nascimento.getMonth();
-    
+
     if (mes < 0 || (mes === 0 && hoje.getDate() < nascimento.getDate())) {
       idade--;
     }
-    
+
     return idade;
   }
 
@@ -339,16 +339,16 @@ export class Paciente {
     if (!numero) {
       return '';
     }
-    
+
     // Remove caracteres não numéricos
     const cleaned = numero.replace(/\D/g, '');
-    
+
     if (cleaned.length === 11) {
       return cleaned.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
     } else if (cleaned.length === 10) {
       return cleaned.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
     }
-    
+
     return numero;
   }
 }

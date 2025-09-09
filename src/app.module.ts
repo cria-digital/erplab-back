@@ -19,13 +19,13 @@ import { UnidadeSaudeModule } from './modules/unidade-saude/unidade-saude.module
       useFactory: databaseConfig,
       inject: [ConfigService],
     }),
-    
+
     // Módulos do Sistema ERP
     AtendimentoModule,
     AuditoriaModule,
     PacientesModule,
     UnidadeSaudeModule,
-    
+
     // Próximos módulos a serem implementados:
     // ExamesModule,
     // FinanceiroModule,

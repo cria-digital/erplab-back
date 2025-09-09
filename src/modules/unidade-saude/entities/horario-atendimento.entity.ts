@@ -1,4 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { UnidadeSaude } from './unidade-saude.entity';
 
 export enum DiaSemana {
@@ -9,7 +17,7 @@ export enum DiaSemana {
   SEXTA = 'SEXTA',
   SABADO = 'SABADO',
   DOMINGO = 'DOMINGO',
-  FERIADOS = 'FERIADOS'
+  FERIADOS = 'FERIADOS',
 }
 
 @Entity('horarios_atendimento')
@@ -23,7 +31,7 @@ export class HorarioAtendimento {
   @Column({
     name: 'dia_semana',
     type: 'enum',
-    enum: DiaSemana
+    enum: DiaSemana,
   })
   diaSemana: DiaSemana;
 
@@ -52,7 +60,9 @@ export class HorarioAtendimento {
   updatedAt: Date;
 
   // Relacionamentos
-  @ManyToOne(() => UnidadeSaude, unidade => unidade.horariosAtendimento, { onDelete: 'CASCADE' })
+  @ManyToOne(() => UnidadeSaude, (unidade) => unidade.horariosAtendimento, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'unidade_saude_id' })
   unidadeSaude: UnidadeSaude;
 }

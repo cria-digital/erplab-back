@@ -1,0 +1,94 @@
+### Atualizar Dados do Usuário
+PATCH {{baseUrl}}/usuarios/123e4567-e89b-12d3-a456-426614174000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nomeCompleto": "João da Silva Santos Junior",
+  "telefone": "1144445555",
+  "celularWhatsapp": "11888887777",
+  "cargoFuncao": "Analista Sênior",
+  "dadosAdmissao": "Promovido em 01/06/2024"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Usuário atualizado com sucesso",
+#   "data": {
+#     "id": "123e4567-e89b-12d3-a456-426614174000",
+#     "nomeCompleto": "João da Silva Santos Junior",
+#     "telefone": "1144445555",
+#     "cargoFuncao": "Analista Sênior",
+#     ...
+#   }
+# }
+
+###
+
+### Atualizar Senha do Usuário
+PATCH {{baseUrl}}/usuarios/123e4567-e89b-12d3-a456-426614174000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "senha": "NovaSenhaSegura789!"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Usuário atualizado com sucesso",
+#   "data": {...}
+# }
+
+###
+
+### Atualizar Unidades do Usuário
+PATCH {{baseUrl}}/usuarios/123e4567-e89b-12d3-a456-426614174000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "unidadesIds": [
+    "uuid-unidade-1",
+    "uuid-unidade-3",
+    "uuid-unidade-4"
+  ]
+}
+
+### Expected Response
+# Status: 200 OK
+
+###
+
+### Atualizar Permissões do Usuário
+PATCH {{baseUrl}}/usuarios/123e4567-e89b-12d3-a456-426614174000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "permissoesIds": [
+    "uuid-permissao-admin",
+    "uuid-permissao-relatorios",
+    "uuid-permissao-financeiro"
+  ]
+}
+
+### Expected Response
+# Status: 200 OK
+
+###
+
+### Atualizar Configurações de 2FA
+PATCH {{baseUrl}}/usuarios/123e4567-e89b-12d3-a456-426614174000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "validacao2Etapas": true,
+  "metodoValidacao": "APP"
+}
+
+### Expected Response
+# Status: 200 OK

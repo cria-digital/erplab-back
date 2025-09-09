@@ -1,0 +1,92 @@
+### Buscar Logs de um Usuário Específico
+GET {{baseUrl}}/auditoria/usuario/123e4567-e89b-12d3-a456-426614174000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "log-uuid-1",
+#     "tipoLog": "ACESSO",
+#     "usuarioId": "123e4567-e89b-12d3-a456-426614174000",
+#     "dataHora": "2024-01-15T14:30:00Z",
+#     "acao": "Login",
+#     ...
+#   },
+#   ...
+# ]
+
+###
+
+### Buscar Logs de um Usuário com Limite
+GET {{baseUrl}}/auditoria/usuario/123e4567-e89b-12d3-a456-426614174000?limit=100
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar Logs de uma Entidade Específica
+GET {{baseUrl}}/auditoria/entidade/usuarios/123e4567-e89b-12d3-a456-426614174000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "log-uuid-1",
+#     "tipoLog": "ALTERACAO",
+#     "entidade": "usuarios",
+#     "entidadeId": "123e4567-e89b-12d3-a456-426614174000",
+#     "operacao": "UPDATE",
+#     "dadosAlteracao": {...},
+#     ...
+#   },
+#   ...
+# ]
+
+###
+
+### Buscar Histórico de Alterações de um Paciente
+GET {{baseUrl}}/auditoria/entidade/pacientes/987e6543-e89b-12d3-a456-426614174000
+Authorization: Bearer {{token}}
+
+###
+
+### Obter Estatísticas Gerais
+GET {{baseUrl}}/auditoria/estatisticas
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "totalLogs": 10000,
+#   "porTipo": {
+#     "ACESSO": 6000,
+#     "ALTERACAO": 3000,
+#     "ERRO": 800,
+#     "ACAO": 200
+#   },
+#   "porNivel": {
+#     "INFO": 8500,
+#     "WARNING": 1000,
+#     "ERROR": 400,
+#     "CRITICAL": 100
+#   },
+#   "porOperacao": {
+#     "LOGIN": 2000,
+#     "LOGOUT": 1800,
+#     "INSERT": 1000,
+#     "UPDATE": 1500,
+#     "DELETE": 500,
+#     "LOGIN_FALHA": 200
+#   },
+#   "acessosHoje": 150,
+#   "errosHoje": 5,
+#   "usuariosAtivos": 45,
+#   "modulosMaisAcessados": [
+#     {"modulo": "Pacientes", "acessos": 3500},
+#     {"modulo": "Dashboard", "acessos": 2000},
+#     {"modulo": "Relatórios", "acessos": 1500},
+#     {"modulo": "Financeiro", "acessos": 1000},
+#     {"modulo": "Usuários", "acessos": 800}
+#   ]
+# }

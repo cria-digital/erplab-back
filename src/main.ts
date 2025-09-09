@@ -28,7 +28,9 @@ async function bootstrap() {
   // Configuração do Swagger
   const config = new DocumentBuilder()
     .setTitle('ERP Laboratório API')
-    .setDescription('Sistema ERP modular para laboratórios de análises clínicas e imagens')
+    .setDescription(
+      'Sistema ERP modular para laboratórios de análises clínicas e imagens',
+    )
     .setVersion('1.0')
     .addTag('health', 'Health Check')
     .addTag('atendimento', 'Módulo de Atendimento e Agendamento')

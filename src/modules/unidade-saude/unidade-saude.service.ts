@@ -5,7 +5,14 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource, QueryRunner, FindManyOptions, Like, ILike } from 'typeorm';
+import {
+  Repository,
+  DataSource,
+  QueryRunner,
+  FindManyOptions,
+  Like,
+  ILike,
+} from 'typeorm';
 import { UnidadeSaude } from './entities/unidade-saude.entity';
 import { HorarioAtendimento } from './entities/horario-atendimento.entity';
 import { DadoBancario } from './entities/dado-bancario.entity';
@@ -59,7 +66,9 @@ export class UnidadeSaudeService {
       });
 
       if (existingUnidade) {
-        throw new ConflictException(`Já existe uma unidade com o CNPJ ${createDto.cnpj}`);
+        throw new ConflictException(
+          `Já existe uma unidade com o CNPJ ${createDto.cnpj}`,
+        );
       }
 
       // Cria a unidade principal
@@ -70,11 +79,14 @@ export class UnidadeSaudeService {
         cnaeSecundarios: undefined,
       });
 
-      const savedUnidade = await queryRunner.manager.save(UnidadeSaude, unidade);
+      const savedUnidade = await queryRunner.manager.save(
+        UnidadeSaude,
+        unidade,
+      );
 
       // Salva os horários de atendimento
       if (createDto.horariosAtendimento?.length > 0) {
-        const horarios = createDto.horariosAtendimento.map(h =>
+        const horarios = createDto.horariosAtendimento.map((h) =>
           this.horarioAtendimentoRepository.create({
             ...h,
             unidadeSaudeId: savedUnidade.id,
@@ -86,12 +98,12 @@ export class UnidadeSaudeService {
       // Salva os dados bancários
       if (createDto.dadosBancarios?.length > 0) {
         // Garante que apenas um seja principal
-        const hasPrincipal = createDto.dadosBancarios.some(d => d.principal);
+        const hasPrincipal = createDto.dadosBancarios.some((d) => d.principal);
         if (!hasPrincipal && createDto.dadosBancarios.length > 0) {
           createDto.dadosBancarios[0].principal = true;
         }
 
-        const dadosBancarios = createDto.dadosBancarios.map(d =>
+        const dadosBancarios = createDto.dadosBancarios.map((d) =>
           this.dadoBancarioRepository.create({
             ...d,
             unidadeSaudeId: savedUnidade.id,
@@ -102,7 +114,7 @@ export class UnidadeSaudeService {
 
       // Salva os CNAEs secundários
       if (createDto.cnaeSecundarios?.length > 0) {
-        const cnaes = createDto.cnaeSecundarios.map(c =>
+        const cnaes = createDto.cnaeSecundarios.map((c) =>
           this.cnaeSecundarioRepository.create({
             ...c,
             unidadeSaudeId: savedUnidade.id,
@@ -126,15 +138,10 @@ export class UnidadeSaudeService {
   /**
    * Lista todas as unidades de saúde com paginação e filtros
    */
-  async findAll(params: PaginationParams): Promise<PaginatedResult<UnidadeSaude>> {
-    const {
-      page = 1,
-      limit = 10,
-      search,
-      ativo,
-      cidade,
-      estado,
-    } = params;
+  async findAll(
+    params: PaginationParams,
+  ): Promise<PaginatedResult<UnidadeSaude>> {
+    const { page = 1, limit = 10, search, ativo, cidade, estado } = params;
 
     const skip = (page - 1) * limit;
 
@@ -170,7 +177,8 @@ export class UnidadeSaudeService {
       take: limit,
     };
 
-    const [data, total] = await this.unidadeSaudeRepository.findAndCount(queryOptions);
+    const [data, total] =
+      await this.unidadeSaudeRepository.findAndCount(queryOptions);
 
     return {
       data,
@@ -191,7 +199,9 @@ export class UnidadeSaudeService {
     });
 
     if (!unidade) {
-      throw new NotFoundException(`Unidade de saúde com ID ${id} não encontrada`);
+      throw new NotFoundException(
+        `Unidade de saúde com ID ${id} não encontrada`,
+      );
     }
 
     return unidade;
@@ -207,7 +217,9 @@ export class UnidadeSaudeService {
     });
 
     if (!unidade) {
-      throw new NotFoundException(`Unidade de saúde com CNPJ ${cnpj} não encontrada`);
+      throw new NotFoundException(
+        `Unidade de saúde com CNPJ ${cnpj} não encontrada`,
+      );
     }
 
     return unidade;
@@ -216,7 +228,10 @@ export class UnidadeSaudeService {
   /**
    * Atualiza uma unidade de saúde existente
    */
-  async update(id: string, updateDto: UpdateUnidadeSaudeDto): Promise<UnidadeSaude> {
+  async update(
+    id: string,
+    updateDto: UpdateUnidadeSaudeDto,
+  ): Promise<UnidadeSaude> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -232,7 +247,9 @@ export class UnidadeSaudeService {
         });
 
         if (existingUnidade) {
-          throw new ConflictException(`Já existe uma unidade com o CNPJ ${updateDto.cnpj}`);
+          throw new ConflictException(
+            `Já existe uma unidade com o CNPJ ${updateDto.cnpj}`,
+          );
         }
       }
 
@@ -251,11 +268,13 @@ export class UnidadeSaudeService {
       // Atualiza horários de atendimento se fornecidos
       if (updateDto.horariosAtendimento !== undefined) {
         // Remove horários existentes
-        await queryRunner.manager.delete(HorarioAtendimento, { unidadeSaudeId: id });
+        await queryRunner.manager.delete(HorarioAtendimento, {
+          unidadeSaudeId: id,
+        });
 
         // Adiciona novos horários
         if (updateDto.horariosAtendimento.length > 0) {
-          const horarios = updateDto.horariosAtendimento.map(h =>
+          const horarios = updateDto.horariosAtendimento.map((h) =>
             this.horarioAtendimentoRepository.create({
               ...h,
               unidadeSaudeId: id,
@@ -273,12 +292,14 @@ export class UnidadeSaudeService {
         // Adiciona novos dados bancários
         if (updateDto.dadosBancarios.length > 0) {
           // Garante que apenas um seja principal
-          const hasPrincipal = updateDto.dadosBancarios.some(d => d.principal);
+          const hasPrincipal = updateDto.dadosBancarios.some(
+            (d) => d.principal,
+          );
           if (!hasPrincipal) {
             updateDto.dadosBancarios[0].principal = true;
           }
 
-          const dadosBancarios = updateDto.dadosBancarios.map(d =>
+          const dadosBancarios = updateDto.dadosBancarios.map((d) =>
             this.dadoBancarioRepository.create({
               ...d,
               unidadeSaudeId: id,
@@ -291,11 +312,13 @@ export class UnidadeSaudeService {
       // Atualiza CNAEs secundários se fornecidos
       if (updateDto.cnaeSecundarios !== undefined) {
         // Remove CNAEs existentes
-        await queryRunner.manager.delete(CnaeSecundario, { unidadeSaudeId: id });
+        await queryRunner.manager.delete(CnaeSecundario, {
+          unidadeSaudeId: id,
+        });
 
         // Adiciona novos CNAEs
         if (updateDto.cnaeSecundarios.length > 0) {
-          const cnaes = updateDto.cnaeSecundarios.map(c =>
+          const cnaes = updateDto.cnaeSecundarios.map((c) =>
             this.cnaeSecundarioRepository.create({
               ...c,
               unidadeSaudeId: id,
@@ -332,9 +355,9 @@ export class UnidadeSaudeService {
    */
   async activate(id: string): Promise<UnidadeSaude> {
     const unidade = await this.findOne(id);
-    
+
     await this.unidadeSaudeRepository.update(id, { ativo: true });
-    
+
     return this.findOne(id);
   }
 
@@ -343,16 +366,18 @@ export class UnidadeSaudeService {
    */
   async deactivate(id: string): Promise<UnidadeSaude> {
     const unidade = await this.findOne(id);
-    
+
     await this.unidadeSaudeRepository.update(id, { ativo: false });
-    
+
     return this.findOne(id);
   }
 
   /**
    * Lista unidades ativas para select/dropdown
    */
-  async listActive(): Promise<Pick<UnidadeSaude, 'id' | 'nomeUnidade' | 'nomeFantasia' | 'cnpj'>[]> {
+  async listActive(): Promise<
+    Pick<UnidadeSaude, 'id' | 'nomeUnidade' | 'nomeFantasia' | 'cnpj'>[]
+  > {
     return this.unidadeSaudeRepository.find({
       where: { ativo: true },
       select: ['id', 'nomeUnidade', 'nomeFantasia', 'cnpj'],
@@ -365,9 +390,9 @@ export class UnidadeSaudeService {
    */
   async findByCidade(cidade: string): Promise<UnidadeSaude[]> {
     return this.unidadeSaudeRepository.find({
-      where: { 
+      where: {
         cidade: ILike(`%${cidade}%`),
-        ativo: true 
+        ativo: true,
       },
       relations: ['horariosAtendimento'],
       order: { nomeUnidade: 'ASC' },

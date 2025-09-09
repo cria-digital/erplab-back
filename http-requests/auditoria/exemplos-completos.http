@@ -1,0 +1,233 @@
+### ============================================
+### AUDITORIA API - Exemplos de Requisições
+### ============================================
+
+### 1. Rastreamento Completo de uma Operação
+### 1.1 - Registrar início de operação crítica
+POST {{baseUrl}}/auditoria/log
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoLog": "ACAO",
+  "usuarioId": "admin-uuid",
+  "modulo": "Configurações",
+  "acao": "Iniciar Importação em Lote",
+  "detalhes": "Importação de 5000 pacientes iniciada",
+  "nivel": "INFO"
+}
+
+###
+
+### 1.2 - Registrar progresso
+POST {{baseUrl}}/auditoria/log
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoLog": "ACAO",
+  "usuarioId": "admin-uuid",
+  "modulo": "Configurações",
+  "acao": "Progresso Importação",
+  "detalhes": "2500/5000 pacientes processados",
+  "nivel": "INFO"
+}
+
+###
+
+### 1.3 - Registrar conclusão
+POST {{baseUrl}}/auditoria/log
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoLog": "ACAO",
+  "usuarioId": "admin-uuid",
+  "modulo": "Configurações",
+  "acao": "Importação Concluída",
+  "detalhes": "5000 pacientes importados com sucesso em 45 segundos",
+  "nivel": "INFO"
+}
+
+###
+
+### 2. Auditoria de Segurança
+### 2.1 - Múltiplas tentativas de login falhas
+POST {{baseUrl}}/auditoria/log
+Content-Type: {{contentType}}
+
+{
+  "tipoLog": "ACESSO",
+  "usuarioId": "00000000-0000-0000-0000-000000000000",
+  "operacao": "LOGIN_FALHA",
+  "detalhes": "5ª tentativa de login falhou para: admin@example.com - Conta bloqueada",
+  "ipAddress": "192.168.1.100",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+  "nivel": "WARNING"
+}
+
+###
+
+### 2.2 - Acesso não autorizado tentado
+POST {{baseUrl}}/auditoria/log
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoLog": "ERRO",
+  "usuarioId": "user-uuid",
+  "modulo": "Administração",
+  "detalhes": "Tentativa de acesso não autorizado ao módulo de administração",
+  "ipAddress": "192.168.1.105",
+  "nivel": "WARNING"
+}
+
+###
+
+### 2.3 - Alteração de permissões
+POST {{baseUrl}}/auditoria/log
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoLog": "ALTERACAO",
+  "usuarioId": "admin-uuid",
+  "entidade": "usuarios",
+  "entidadeId": "user-uuid",
+  "operacao": "UPDATE",
+  "modulo": "Usuários",
+  "dadosAlteracao": {
+    "antes": {
+      "permissoes": ["visualizar", "criar"]
+    },
+    "depois": {
+      "permissoes": ["visualizar", "criar", "editar", "deletar", "admin"]
+    }
+  },
+  "detalhes": "Permissões elevadas para administrador",
+  "nivel": "WARNING"
+}
+
+###
+
+### 3. Rastreamento de Alterações Sensíveis
+### 3.1 - Alteração de dados financeiros
+POST {{baseUrl}}/auditoria/log
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoLog": "ALTERACAO",
+  "usuarioId": "finance-user-uuid",
+  "entidade": "pagamentos",
+  "entidadeId": "payment-uuid",
+  "operacao": "UPDATE",
+  "modulo": "Financeiro",
+  "dadosAlteracao": {
+    "antes": {
+      "valor": 1000.00,
+      "status": "pendente",
+      "aprovado_por": null
+    },
+    "depois": {
+      "valor": 1000.00,
+      "status": "aprovado",
+      "aprovado_por": "finance-user-uuid"
+    }
+  },
+  "detalhes": "Pagamento aprovado manualmente",
+  "nivel": "WARNING"
+}
+
+###
+
+### 3.2 - Exclusão de registros
+POST {{baseUrl}}/auditoria/log
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoLog": "ALTERACAO",
+  "usuarioId": "admin-uuid",
+  "entidade": "pacientes",
+  "entidadeId": "patient-uuid",
+  "operacao": "DELETE",
+  "modulo": "Pacientes",
+  "dadosAlteracao": {
+    "anterior": {
+      "nome": "João Silva",
+      "cpf": "12345678901",
+      "email": "joao@example.com",
+      "status": "ativo"
+    }
+  },
+  "detalhes": "Paciente removido permanentemente do sistema",
+  "nivel": "CRITICAL"
+}
+
+###
+
+### 4. Consultas para Análise e Relatórios
+### 4.1 - Buscar todos os erros críticos do último mês
+GET {{baseUrl}}/auditoria?tipoLog=ERRO&nivel=CRITICAL&dataInicio=2024-01-01&dataFim=2024-01-31&page=1&limit=100
+Authorization: Bearer {{token}}
+
+###
+
+### 4.2 - Rastrear todas as ações de um usuário específico hoje
+GET {{baseUrl}}/auditoria?usuarioId=user-uuid&dataInicio=2024-01-15&dataFim=2024-01-15&orderBy=dataHora&orderDirection=ASC
+Authorization: Bearer {{token}}
+
+###
+
+### 4.3 - Verificar todas as alterações em dados de pacientes
+GET {{baseUrl}}/auditoria?tipoLog=ALTERACAO&entidade=pacientes&page=1&limit=50
+Authorization: Bearer {{token}}
+
+###
+
+### 4.4 - Monitorar tentativas de login falhas
+GET {{baseUrl}}/auditoria?operacao=LOGIN_FALHA&nivel=WARNING&dataInicio=2024-01-01&page=1&limit=100
+Authorization: Bearer {{token}}
+
+###
+
+### 5. Cenários de Erro e Validação
+### 5.1 - Tentar registrar log sem tipo
+POST {{baseUrl}}/auditoria/log
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "usuarioId": "user-uuid",
+  "modulo": "Teste",
+  "detalhes": "Teste sem tipo"
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Tipo do log é obrigatório"
+# }
+
+###
+
+### 5.2 - Tentar registrar com UUID inválido
+POST {{baseUrl}}/auditoria/log
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoLog": "ACESSO",
+  "usuarioId": "invalid-uuid",
+  "modulo": "Teste",
+  "nivel": "INFO"
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "ID do usuário deve ser um UUID válido"
+# }

@@ -92,16 +92,114 @@
         ]
       }
     },
-    "/api/v1/auditoria/logs": {
+    "/api/v1/auditoria/log": {
+      "post": {
+        "description": "Registra um novo log de auditoria no sistema",
+        "operationId": "AuditoriaController_registrarLog",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAuditoriaLogDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Log registrado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuditoriaLog"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Registrar log de auditoria",
+        "tags": [
+          "Auditoria"
+        ]
+      }
+    },
+    "/api/v1/auditoria": {
       "get": {
-        "description": "Retorna os logs de auditoria do sistema com filtros opcionais",
-        "operationId": "AuditoriaController_consultarLogs",
+        "description": "Busca logs de auditoria com filtros e paginação",
+        "operationId": "AuditoriaController_buscarLogs",
         "parameters": [
+          {
+            "name": "tipoLog",
+            "required": false,
+            "in": "query",
+            "description": "Tipo do log",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ACESSO",
+                "ALTERACAO",
+                "ERRO",
+                "ACAO"
+              ]
+            }
+          },
+          {
+            "name": "nivel",
+            "required": false,
+            "in": "query",
+            "description": "Nível de severidade",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "INFO",
+                "WARNING",
+                "ERROR",
+                "CRITICAL"
+              ]
+            }
+          },
+          {
+            "name": "operacao",
+            "required": false,
+            "in": "query",
+            "description": "Tipo de operação",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "INSERT",
+                "UPDATE",
+                "DELETE",
+                "LOGIN",
+                "LOGOUT",
+                "LOGIN_FALHA"
+              ]
+            }
+          },
           {
             "name": "usuarioId",
             "required": false,
             "in": "query",
-            "description": "ID do usuário que executou a operação",
+            "description": "ID do usuário",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          },
+          {
+            "name": "unidadeSaudeId",
+            "required": false,
+            "in": "query",
+            "description": "ID da unidade de saúde",
             "schema": {
               "example": "123e4567-e89b-12d3-a456-426614174000",
               "type": "string"
@@ -111,66 +209,49 @@
             "name": "modulo",
             "required": false,
             "in": "query",
-            "description": "Módulo do sistema onde ocorreu a operação",
+            "description": "Nome do módulo",
             "schema": {
-              "type": "string",
-              "enum": [
-                "auth",
-                "atendimento",
-                "exames",
-                "financeiro",
-                "crm",
-                "auditoria",
-                "estoque",
-                "tiss",
-                "tarefas",
-                "bi",
-                "portal_cliente",
-                "portal_medico",
-                "integracoes",
-                "admin"
-              ]
-            }
-          },
-          {
-            "name": "tabela",
-            "required": false,
-            "in": "query",
-            "description": "Nome da tabela/entidade afetada",
-            "schema": {
-              "example": "usuarios",
+              "example": "Pacientes",
               "type": "string"
             }
           },
           {
-            "name": "tipoOperacao",
+            "name": "entidade",
             "required": false,
             "in": "query",
-            "description": "Tipo de operação realizada",
+            "description": "Nome da entidade",
             "schema": {
-              "type": "string",
-              "enum": [
-                "CREATE",
-                "UPDATE",
-                "DELETE",
-                "SELECT",
-                "LOGIN",
-                "LOGOUT",
-                "EXPORT",
-                "IMPORT",
-                "APPROVE",
-                "REJECT",
-                "SIGN"
-              ]
+              "example": "pacientes",
+              "type": "string"
+            }
+          },
+          {
+            "name": "entidadeId",
+            "required": false,
+            "in": "query",
+            "description": "ID da entidade",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          },
+          {
+            "name": "ipAddress",
+            "required": false,
+            "in": "query",
+            "description": "Endereço IP",
+            "schema": {
+              "example": "192.168.1.1",
+              "type": "string"
             }
           },
           {
             "name": "dataInicio",
             "required": false,
             "in": "query",
-            "description": "Data de início do filtro (ISO 8601)",
+            "description": "Data inicial (formato YYYY-MM-DD)",
             "schema": {
-              "example": "2024-01-01T00:00:00Z",
+              "example": "2024-01-01",
               "type": "string"
             }
           },
@@ -178,40 +259,20 @@
             "name": "dataFim",
             "required": false,
             "in": "query",
-            "description": "Data de fim do filtro (ISO 8601)",
+            "description": "Data final (formato YYYY-MM-DD)",
             "schema": {
-              "example": "2024-12-31T23:59:59Z",
+              "example": "2024-12-31",
               "type": "string"
-            }
-          },
-          {
-            "name": "operacaoSensivel",
-            "required": false,
-            "in": "query",
-            "description": "Filtrar apenas operações sensíveis",
-            "schema": {
-              "default": false,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "falhaOperacao",
-            "required": false,
-            "in": "query",
-            "description": "Filtrar apenas operações que falharam",
-            "schema": {
-              "default": false,
-              "type": "boolean"
             }
           },
           {
             "name": "page",
             "required": false,
             "in": "query",
-            "description": "Número da página",
+            "description": "Página atual",
             "schema": {
-              "minimum": 1,
               "default": 1,
+              "example": 1,
               "type": "number"
             }
           },
@@ -219,24 +280,73 @@
             "name": "limit",
             "required": false,
             "in": "query",
-            "description": "Quantidade de registros por página",
+            "description": "Itens por página",
             "schema": {
-              "minimum": 1,
-              "maximum": 100,
-              "default": 50,
+              "default": 10,
+              "example": 10,
               "type": "number"
+            }
+          },
+          {
+            "name": "orderBy",
+            "required": false,
+            "in": "query",
+            "description": "Campo para ordenação",
+            "schema": {
+              "default": "dataHora",
+              "example": "dataHora",
+              "type": "string"
+            }
+          },
+          {
+            "name": "orderDirection",
+            "required": false,
+            "in": "query",
+            "description": "Direção da ordenação",
+            "schema": {
+              "default": "DESC",
+              "type": "string",
+              "enum": [
+                "ASC",
+                "DESC"
+              ]
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Lista de logs de auditoria retornada com sucesso"
-          },
-          "401": {
-            "description": "Não autorizado"
-          },
-          "403": {
-            "description": "Acesso negado - permissão insuficiente"
+            "description": "Logs encontrados com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AuditoriaLog"
+                      }
+                    },
+                    "total": {
+                      "type": "number",
+                      "example": 100
+                    },
+                    "page": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "limit": {
+                      "type": "number",
+                      "example": 10
+                    },
+                    "totalPages": {
+                      "type": "number",
+                      "example": 10
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -244,139 +354,50 @@
             "bearer": []
           }
         ],
-        "summary": "Consultar logs de auditoria",
+        "summary": "Buscar logs de auditoria",
         "tags": [
           "Auditoria"
         ]
       }
     },
-    "/api/v1/auditoria/historico": {
+    "/api/v1/auditoria/usuario/{usuarioId}": {
       "get": {
-        "description": "Retorna o histórico detalhado de alterações nos registros do sistema",
-        "operationId": "AuditoriaController_consultarHistorico",
+        "description": "Busca logs de auditoria de um usuário específico",
+        "operationId": "AuditoriaController_buscarLogsPorUsuario",
         "parameters": [
           {
             "name": "usuarioId",
-            "required": false,
-            "in": "query",
-            "description": "ID do usuário que fez a alteração",
+            "required": true,
+            "in": "path",
+            "description": "ID do usuário",
             "schema": {
               "example": "123e4567-e89b-12d3-a456-426614174000",
               "type": "string"
-            }
-          },
-          {
-            "name": "tabelaOrigem",
-            "required": false,
-            "in": "query",
-            "description": "Nome da tabela origem da alteração",
-            "schema": {
-              "example": "usuarios",
-              "type": "string"
-            }
-          },
-          {
-            "name": "registroId",
-            "required": false,
-            "in": "query",
-            "description": "ID do registro que foi alterado",
-            "schema": {
-              "example": "123e4567-e89b-12d3-a456-426614174000",
-              "type": "string"
-            }
-          },
-          {
-            "name": "campoAlterado",
-            "required": false,
-            "in": "query",
-            "description": "Nome do campo que foi alterado",
-            "schema": {
-              "example": "email",
-              "type": "string"
-            }
-          },
-          {
-            "name": "dataInicio",
-            "required": false,
-            "in": "query",
-            "description": "Data de início do filtro (ISO 8601)",
-            "schema": {
-              "example": "2024-01-01T00:00:00Z",
-              "type": "string"
-            }
-          },
-          {
-            "name": "dataFim",
-            "required": false,
-            "in": "query",
-            "description": "Data de fim do filtro (ISO 8601)",
-            "schema": {
-              "example": "2024-12-31T23:59:59Z",
-              "type": "string"
-            }
-          },
-          {
-            "name": "alteracaoCritica",
-            "required": false,
-            "in": "query",
-            "description": "Filtrar apenas alterações críticas",
-            "schema": {
-              "default": false,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "requerAprovacao",
-            "required": false,
-            "in": "query",
-            "description": "Filtrar apenas alterações que requerem aprovação",
-            "schema": {
-              "default": false,
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "aprovada",
-            "required": false,
-            "in": "query",
-            "description": "Filtrar por status de aprovação",
-            "schema": {
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Número da página",
-            "schema": {
-              "minimum": 1,
-              "default": 1,
-              "type": "number"
             }
           },
           {
             "name": "limit",
             "required": false,
             "in": "query",
-            "description": "Quantidade de registros por página",
+            "description": "Limite de resultados (padrão: 50)",
             "schema": {
-              "minimum": 1,
-              "maximum": 100,
-              "default": 50,
               "type": "number"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Histórico de alterações retornado com sucesso"
-          },
-          "401": {
-            "description": "Não autorizado"
-          },
-          "403": {
-            "description": "Acesso negado - permissão insuficiente"
+            "description": "Logs do usuário encontrados",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AuditoriaLog"
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -384,7 +405,59 @@
             "bearer": []
           }
         ],
-        "summary": "Consultar histórico de alterações",
+        "summary": "Buscar logs por usuário",
+        "tags": [
+          "Auditoria"
+        ]
+      }
+    },
+    "/api/v1/auditoria/entidade/{entidade}/{entidadeId}": {
+      "get": {
+        "description": "Busca logs de auditoria de uma entidade específica",
+        "operationId": "AuditoriaController_buscarLogsPorEntidade",
+        "parameters": [
+          {
+            "name": "entidade",
+            "required": true,
+            "in": "path",
+            "description": "Nome da entidade",
+            "schema": {
+              "example": "pacientes",
+              "type": "string"
+            }
+          },
+          {
+            "name": "entidadeId",
+            "required": true,
+            "in": "path",
+            "description": "ID da entidade",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Logs da entidade encontrados",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AuditoriaLog"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar logs por entidade",
         "tags": [
           "Auditoria"
         ]
@@ -392,12 +465,65 @@
     },
     "/api/v1/auditoria/estatisticas": {
       "get": {
-        "description": "Retorna estatísticas e métricas dos logs de auditoria",
+        "description": "Retorna estatísticas consolidadas dos logs de auditoria",
         "operationId": "AuditoriaController_obterEstatisticas",
         "parameters": [],
         "responses": {
           "200": {
-            "description": "Estatísticas retornadas com sucesso"
+            "description": "Estatísticas retornadas com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "totalLogs": {
+                      "type": "number"
+                    },
+                    "porTipo": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "number"
+                      }
+                    },
+                    "porNivel": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "number"
+                      }
+                    },
+                    "porOperacao": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "number"
+                      }
+                    },
+                    "acessosHoje": {
+                      "type": "number"
+                    },
+                    "errosHoje": {
+                      "type": "number"
+                    },
+                    "usuariosAtivos": {
+                      "type": "number"
+                    },
+                    "modulosMaisAcessados": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "modulo": {
+                            "type": "string"
+                          },
+                          "acessos": {
+                            "type": "number"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -406,6 +532,117 @@
           }
         ],
         "summary": "Obter estatísticas de auditoria",
+        "tags": [
+          "Auditoria"
+        ]
+      }
+    },
+    "/api/v1/auditoria/acesso": {
+      "post": {
+        "description": "Registra um log de acesso ao sistema",
+        "operationId": "AuditoriaController_registrarAcesso",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "acao": {
+                    "type": "string",
+                    "example": "Visualizar Lista"
+                  },
+                  "modulo": {
+                    "type": "string",
+                    "example": "Pacientes"
+                  },
+                  "detalhes": {
+                    "type": "string",
+                    "example": "Lista filtrada por status ativo"
+                  }
+                },
+                "required": [
+                  "acao",
+                  "modulo"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Acesso registrado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuditoriaLog"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Registrar acesso",
+        "tags": [
+          "Auditoria"
+        ]
+      }
+    },
+    "/api/v1/auditoria/erro": {
+      "post": {
+        "description": "Registra um log de erro no sistema",
+        "operationId": "AuditoriaController_registrarErro",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "erro": {
+                    "type": "string",
+                    "example": "Falha ao processar pagamento"
+                  },
+                  "modulo": {
+                    "type": "string",
+                    "example": "Financeiro"
+                  },
+                  "detalhes": {
+                    "type": "string",
+                    "example": "Gateway de pagamento indisponível"
+                  }
+                },
+                "required": [
+                  "erro"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Erro registrado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuditoriaLog"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Registrar erro",
         "tags": [
           "Auditoria"
         ]
@@ -1431,6 +1668,120 @@
       }
     },
     "schemas": {
+      "CreateAuditoriaLogDto": {
+        "type": "object",
+        "properties": {
+          "tipoLog": {
+            "type": "string",
+            "description": "Tipo do log",
+            "enum": [
+              "ACESSO",
+              "ALTERACAO",
+              "ERRO",
+              "ACAO"
+            ],
+            "example": "ACESSO"
+          },
+          "usuarioId": {
+            "type": "string",
+            "description": "ID do usuário que realizou a ação",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "ipAddress": {
+            "type": "string",
+            "description": "Endereço IP do usuário",
+            "example": "192.168.1.1"
+          },
+          "userAgent": {
+            "type": "string",
+            "description": "User Agent do navegador/cliente",
+            "example": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+          },
+          "unidadeSaudeId": {
+            "type": "string",
+            "description": "ID da unidade de saúde",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "modulo": {
+            "type": "string",
+            "description": "Módulo do sistema",
+            "example": "Pacientes",
+            "maxLength": 100
+          },
+          "acao": {
+            "type": "string",
+            "description": "Ação realizada (para logs de acesso)",
+            "example": "Visualizar Lista",
+            "maxLength": 100
+          },
+          "entidade": {
+            "type": "string",
+            "description": "Nome da entidade afetada (para logs de alteração)",
+            "example": "pacientes",
+            "maxLength": 100
+          },
+          "entidadeId": {
+            "type": "string",
+            "description": "ID da entidade afetada",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "operacao": {
+            "type": "string",
+            "description": "Tipo de operação realizada",
+            "enum": [
+              "INSERT",
+              "UPDATE",
+              "DELETE",
+              "LOGIN",
+              "LOGOUT",
+              "LOGIN_FALHA"
+            ],
+            "example": "UPDATE"
+          },
+          "usuarioAlterouId": {
+            "type": "string",
+            "description": "ID do usuário que foi alterado (para logs de alteração em usuários)",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "dadosAlteracao": {
+            "type": "object",
+            "description": "Dados da alteração em formato JSON",
+            "example": {
+              "antes": {
+                "nome": "João"
+              },
+              "depois": {
+                "nome": "João Silva"
+              }
+            }
+          },
+          "detalhes": {
+            "type": "string",
+            "description": "Detalhes adicionais sobre o log",
+            "example": "Alteração realizada via importação em lote"
+          },
+          "nivel": {
+            "type": "string",
+            "description": "Nível de severidade do log",
+            "enum": [
+              "INFO",
+              "WARNING",
+              "ERROR",
+              "CRITICAL"
+            ],
+            "example": "INFO",
+            "default": "INFO"
+          }
+        },
+        "required": [
+          "tipoLog",
+          "usuarioId"
+        ]
+      },
+      "AuditoriaLog": {
+        "type": "object",
+        "properties": {}
+      },
       "CreatePacienteDto": {
         "type": "object",
         "properties": {

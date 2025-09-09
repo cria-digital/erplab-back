@@ -1,0 +1,46 @@
+### Criar Novo Usuário
+POST {{baseUrl}}/usuarios
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nomeCompleto": "João da Silva Santos",
+  "cpf": "12345678901",
+  "telefone": "1133334444",
+  "celularWhatsapp": "11999998888",
+  "cargoFuncao": "Analista de Sistemas",
+  "cnpjAssociado": "12345678000190",
+  "dadosAdmissao": "Admitido em 01/01/2024 - CLT",
+  "email": "joao.silva@example.com",
+  "senha": "SenhaSegura123!",
+  "resetarSenha": false,
+  "validacao2Etapas": false,
+  "metodoValidacao": "EMAIL",
+  "perguntaRecuperacao": "Qual o nome do seu primeiro animal de estimação?",
+  "respostaRecuperacao": "Rex",
+  "ativo": true,
+  "unidadesIds": [
+    "uuid-unidade-1",
+    "uuid-unidade-2"
+  ],
+  "permissoesIds": [
+    "uuid-permissao-1",
+    "uuid-permissao-2"
+  ]
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "message": "Usuário criado com sucesso",
+#   "data": {
+#     "id": "uuid-gerado",
+#     "codigoInterno": "USR1693847520123",
+#     "nomeCompleto": "João da Silva Santos",
+#     "cpf": "12345678901",
+#     "email": "joao.silva@example.com",
+#     "ativo": true,
+#     "createdAt": "2024-01-01T10:00:00Z",
+#     "updatedAt": "2024-01-01T10:00:00Z"
+#   }
+# }

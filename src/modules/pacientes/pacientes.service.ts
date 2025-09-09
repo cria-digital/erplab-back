@@ -1,4 +1,8 @@
-import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -35,31 +39,36 @@ export class PacientesService {
    * @param userId ID do usuário que está criando
    * @returns Paciente criado
    */
-  async create(createPacienteDto: CreatePacienteDto, userId: number): Promise<Paciente> {
+  async create(
+    createPacienteDto: CreatePacienteDto,
+    userId: number,
+  ): Promise<Paciente> {
     // Verifica se já existe paciente com o CPF na empresa
     const pacienteExistente = await this.pacientesRepository.findOne({
-      where: { 
-        cpf: createPacienteDto.cpf, 
-        empresa_id: createPacienteDto.empresa_id 
+      where: {
+        cpf: createPacienteDto.cpf,
+        empresa_id: createPacienteDto.empresa_id,
       },
     });
 
     if (pacienteExistente) {
       throw new ConflictException(
-        'Já existe um paciente cadastrado com este CPF nesta empresa'
+        'Já existe um paciente cadastrado com este CPF nesta empresa',
       );
     }
 
     // Gera código interno se não fornecido
-    const codigoInterno = createPacienteDto.codigo_interno || 
-      `PAC${Date.now()}`;
+    const codigoInterno =
+      createPacienteDto.codigo_interno || `PAC${Date.now()}`;
 
     // Prepara dados para criação
     const dadosPaciente = {
       ...createPacienteDto,
       codigo_interno: codigoInterno,
       data_nascimento: new Date(createPacienteDto.data_nascimento),
-      validade: createPacienteDto.validade ? new Date(createPacienteDto.validade) : undefined,
+      validade: createPacienteDto.validade
+        ? new Date(createPacienteDto.validade)
+        : undefined,
       criado_por: userId,
       atualizado_por: userId,
     };
@@ -74,7 +83,10 @@ export class PacientesService {
    * @param filters Filtros de busca
    * @returns Lista paginada de pacientes
    */
-  async findAll(empresaId: number, filters: PacientesFilters = {}): Promise<PaginatedResult<Paciente>> {
+  async findAll(
+    empresaId: number,
+    filters: PacientesFilters = {},
+  ): Promise<PaginatedResult<Paciente>> {
     const { page = 1, limit = 10, nome, cpf, email, status } = filters;
     const skip = (page - 1) * limit;
 
@@ -107,7 +119,9 @@ export class PacientesService {
       .where('paciente.empresa_id = :empresaId', { empresaId });
 
     if (nome) {
-      query = query.andWhere('paciente.nome ILIKE :nome', { nome: `%${nome}%` });
+      query = query.andWhere('paciente.nome ILIKE :nome', {
+        nome: `%${nome}%`,
+      });
     }
 
     if (cpf) {
@@ -115,7 +129,9 @@ export class PacientesService {
     }
 
     if (email) {
-      query = query.andWhere('paciente.email ILIKE :email', { email: `%${email}%` });
+      query = query.andWhere('paciente.email ILIKE :email', {
+        email: `%${email}%`,
+      });
     }
 
     if (status) {
@@ -176,22 +192,22 @@ export class PacientesService {
    * @returns Paciente atualizado
    */
   async update(
-    id: number, 
-    empresaId: number, 
+    id: number,
+    empresaId: number,
     updatePacienteDto: UpdatePacienteDto,
-    userId: number
+    userId: number,
   ): Promise<Paciente> {
     const paciente = await this.findOne(id, empresaId);
 
     // Prepara dados para atualização
     const dadosAtualizacao = {
       ...updatePacienteDto,
-      data_nascimento: updatePacienteDto.data_nascimento ? 
-        new Date(updatePacienteDto.data_nascimento) : 
-        paciente.data_nascimento,
-      validade: updatePacienteDto.validade ? 
-        new Date(updatePacienteDto.validade) : 
-        paciente.validade,
+      data_nascimento: updatePacienteDto.data_nascimento
+        ? new Date(updatePacienteDto.data_nascimento)
+        : paciente.data_nascimento,
+      validade: updatePacienteDto.validade
+        ? new Date(updatePacienteDto.validade)
+        : paciente.validade,
       atualizado_por: userId,
     };
 
@@ -223,7 +239,11 @@ export class PacientesService {
    * @param userId ID do usuário que está ativando
    * @returns Paciente ativado
    */
-  async activate(id: number, empresaId: number, userId: number): Promise<Paciente> {
+  async activate(
+    id: number,
+    empresaId: number,
+    userId: number,
+  ): Promise<Paciente> {
     const paciente = await this.findOne(id, empresaId);
 
     paciente.status = 'ativo';
@@ -239,7 +259,11 @@ export class PacientesService {
    * @param userId ID do usuário que está bloqueando
    * @returns Paciente bloqueado
    */
-  async block(id: number, empresaId: number, userId: number): Promise<Paciente> {
+  async block(
+    id: number,
+    empresaId: number,
+    userId: number,
+  ): Promise<Paciente> {
     const paciente = await this.findOne(id, empresaId);
 
     paciente.status = 'bloqueado';
@@ -255,7 +279,11 @@ export class PacientesService {
    * @param limit Limite de resultados
    * @returns Lista de pacientes
    */
-  async searchByName(nome: string, empresaId: number, limit: number = 10): Promise<Paciente[]> {
+  async searchByName(
+    nome: string,
+    empresaId: number,
+    limit: number = 10,
+  ): Promise<Paciente[]> {
     return await this.pacientesRepository
       .createQueryBuilder('paciente')
       .where('paciente.empresa_id = :empresaId', { empresaId })
@@ -272,29 +300,29 @@ export class PacientesService {
    * @returns Estatísticas
    */
   async getStats(empresaId: number) {
-    const [
-      total,
-      ativos,
-      inativos,
-      bloqueados,
-      comConvenio,
-      semConvenio,
-    ] = await Promise.all([
-      this.pacientesRepository.count({ where: { empresa_id: empresaId } }),
-      this.pacientesRepository.count({ where: { empresa_id: empresaId, status: 'ativo' } }),
-      this.pacientesRepository.count({ where: { empresa_id: empresaId, status: 'inativo' } }),
-      this.pacientesRepository.count({ where: { empresa_id: empresaId, status: 'bloqueado' } }),
-      this.pacientesRepository
-        .createQueryBuilder('paciente')
-        .where('paciente.empresa_id = :empresaId', { empresaId })
-        .andWhere('paciente.convenio_id IS NOT NULL')
-        .getCount(),
-      this.pacientesRepository
-        .createQueryBuilder('paciente')
-        .where('paciente.empresa_id = :empresaId', { empresaId })
-        .andWhere('paciente.convenio_id IS NULL')
-        .getCount(),
-    ]);
+    const [total, ativos, inativos, bloqueados, comConvenio, semConvenio] =
+      await Promise.all([
+        this.pacientesRepository.count({ where: { empresa_id: empresaId } }),
+        this.pacientesRepository.count({
+          where: { empresa_id: empresaId, status: 'ativo' },
+        }),
+        this.pacientesRepository.count({
+          where: { empresa_id: empresaId, status: 'inativo' },
+        }),
+        this.pacientesRepository.count({
+          where: { empresa_id: empresaId, status: 'bloqueado' },
+        }),
+        this.pacientesRepository
+          .createQueryBuilder('paciente')
+          .where('paciente.empresa_id = :empresaId', { empresaId })
+          .andWhere('paciente.convenio_id IS NOT NULL')
+          .getCount(),
+        this.pacientesRepository
+          .createQueryBuilder('paciente')
+          .where('paciente.empresa_id = :empresaId', { empresaId })
+          .andWhere('paciente.convenio_id IS NULL')
+          .getCount(),
+      ]);
 
     return {
       total,

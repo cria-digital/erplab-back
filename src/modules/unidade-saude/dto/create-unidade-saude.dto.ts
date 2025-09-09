@@ -37,7 +37,10 @@ export class CreateHorarioAtendimentoDto {
   })
   horarioFim: string;
 
-  @ApiPropertyOptional({ example: '12:00', description: 'Início do intervalo (HH:mm)' })
+  @ApiPropertyOptional({
+    example: '12:00',
+    description: 'Início do intervalo (HH:mm)',
+  })
   @IsOptional()
   @IsString()
   @Matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, {
@@ -45,7 +48,10 @@ export class CreateHorarioAtendimentoDto {
   })
   intervaloInicio?: string;
 
-  @ApiPropertyOptional({ example: '13:00', description: 'Fim do intervalo (HH:mm)' })
+  @ApiPropertyOptional({
+    example: '13:00',
+    description: 'Fim do intervalo (HH:mm)',
+  })
   @IsOptional()
   @IsString()
   @Matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, {
@@ -96,7 +102,11 @@ export class CreateDadoBancarioDto {
   @Length(1, 2)
   digitoConta?: string;
 
-  @ApiPropertyOptional({ example: 'CORRENTE', description: 'Tipo da conta', default: 'CORRENTE' })
+  @ApiPropertyOptional({
+    example: 'CORRENTE',
+    description: 'Tipo da conta',
+    default: 'CORRENTE',
+  })
   @IsOptional()
   @IsString()
   @IsEnum(['CORRENTE', 'POUPANCA'])
@@ -130,13 +140,19 @@ export class CreateCnaeSecundarioDto {
 
 export class CreateUnidadeSaudeDto {
   // Informações Básicas
-  @ApiProperty({ example: 'Laboratório Central', description: 'Nome da unidade de saúde' })
+  @ApiProperty({
+    example: 'Laboratório Central',
+    description: 'Nome da unidade de saúde',
+  })
   @IsString()
   @IsNotEmpty()
   @Length(1, 255)
   nomeUnidade: string;
 
-  @ApiPropertyOptional({ example: 'LAB001', description: 'Código interno da unidade' })
+  @ApiPropertyOptional({
+    example: 'LAB001',
+    description: 'Código interno da unidade',
+  })
   @IsOptional()
   @IsString()
   @Length(1, 50)
@@ -160,13 +176,19 @@ export class CreateUnidadeSaudeDto {
   @Length(1, 255)
   nomeFantasia: string;
 
-  @ApiPropertyOptional({ example: '123456', description: 'Inscrição municipal' })
+  @ApiPropertyOptional({
+    example: '123456',
+    description: 'Inscrição municipal',
+  })
   @IsOptional()
   @IsString()
   @Length(1, 50)
   inscricaoMunicipal?: string;
 
-  @ApiPropertyOptional({ example: '789456123', description: 'Inscrição estadual' })
+  @ApiPropertyOptional({
+    example: '789456123',
+    description: 'Inscrição estadual',
+  })
   @IsOptional()
   @IsString()
   @Length(1, 50)
@@ -178,24 +200,36 @@ export class CreateUnidadeSaudeDto {
   @Length(1, 15)
   cnes?: string;
 
-  @ApiPropertyOptional({ example: '(11) 98765-4321', description: 'Contatos da unidade' })
+  @ApiPropertyOptional({
+    example: '(11) 98765-4321',
+    description: 'Contatos da unidade',
+  })
   @IsOptional()
   @IsString()
   @Length(1, 255)
   contatosUnidade?: string;
 
-  @ApiPropertyOptional({ example: 'contato@lab.com.br', description: 'E-mail da unidade' })
+  @ApiPropertyOptional({
+    example: 'contato@lab.com.br',
+    description: 'E-mail da unidade',
+  })
   @IsOptional()
   @IsEmail()
   email?: string;
 
-  @ApiPropertyOptional({ example: '001', description: 'Código do serviço principal' })
+  @ApiPropertyOptional({
+    example: '001',
+    description: 'Código do serviço principal',
+  })
   @IsOptional()
   @IsString()
   @Length(1, 50)
   codigoServicoPrincipal?: string;
 
-  @ApiPropertyOptional({ example: '002', description: 'Código do serviço secundário' })
+  @ApiPropertyOptional({
+    example: '002',
+    description: 'Código do serviço secundário',
+  })
   @IsOptional()
   @IsString()
   @Length(1, 50)
@@ -251,67 +285,111 @@ export class CreateUnidadeSaudeDto {
   cidade?: string;
 
   // Responsável
-  @ApiPropertyOptional({ example: 'Dr. João Silva', description: 'Nome do responsável' })
+  @ApiPropertyOptional({
+    example: 'Dr. João Silva',
+    description: 'Nome do responsável',
+  })
   @IsOptional()
   @IsString()
   @Length(1, 255)
   nomeResponsavel?: string;
 
-  @ApiPropertyOptional({ example: '(11) 98765-4321', description: 'Contato do responsável' })
+  @ApiPropertyOptional({
+    example: '(11) 98765-4321',
+    description: 'Contato do responsável',
+  })
   @IsOptional()
   @IsString()
   @Length(1, 255)
   contatoResponsavel?: string;
 
-  @ApiPropertyOptional({ example: 'responsavel@lab.com.br', description: 'E-mail do responsável' })
+  @ApiPropertyOptional({
+    example: 'responsavel@lab.com.br',
+    description: 'E-mail do responsável',
+  })
   @IsOptional()
   @IsEmail()
   emailResponsavel?: string;
 
   // Impostos
-  @ApiPropertyOptional({ example: 1.5, description: 'Percentual IRRF', minimum: 0, maximum: 100 })
+  @ApiPropertyOptional({
+    example: 1.5,
+    description: 'Percentual IRRF',
+    minimum: 0,
+    maximum: 100,
+  })
   @IsOptional()
   @IsNumber()
   @Min(0)
   @Max(100)
   irrfPercentual?: number;
 
-  @ApiPropertyOptional({ example: 0.65, description: 'Percentual PIS', minimum: 0, maximum: 100 })
+  @ApiPropertyOptional({
+    example: 0.65,
+    description: 'Percentual PIS',
+    minimum: 0,
+    maximum: 100,
+  })
   @IsOptional()
   @IsNumber()
   @Min(0)
   @Max(100)
   pisPercentual?: number;
 
-  @ApiPropertyOptional({ example: 3, description: 'Percentual COFINS', minimum: 0, maximum: 100 })
+  @ApiPropertyOptional({
+    example: 3,
+    description: 'Percentual COFINS',
+    minimum: 0,
+    maximum: 100,
+  })
   @IsOptional()
   @IsNumber()
   @Min(0)
   @Max(100)
   cofinsPercentual?: number;
 
-  @ApiPropertyOptional({ example: 1, description: 'Percentual CSLL', minimum: 0, maximum: 100 })
+  @ApiPropertyOptional({
+    example: 1,
+    description: 'Percentual CSLL',
+    minimum: 0,
+    maximum: 100,
+  })
   @IsOptional()
   @IsNumber()
   @Min(0)
   @Max(100)
   csllPercentual?: number;
 
-  @ApiPropertyOptional({ example: 5, description: 'Percentual ISS', minimum: 0, maximum: 100 })
+  @ApiPropertyOptional({
+    example: 5,
+    description: 'Percentual ISS',
+    minimum: 0,
+    maximum: 100,
+  })
   @IsOptional()
   @IsNumber()
   @Min(0)
   @Max(100)
   issPercentual?: number;
 
-  @ApiPropertyOptional({ example: 0, description: 'Percentual IBS', minimum: 0, maximum: 100 })
+  @ApiPropertyOptional({
+    example: 0,
+    description: 'Percentual IBS',
+    minimum: 0,
+    maximum: 100,
+  })
   @IsOptional()
   @IsNumber()
   @Min(0)
   @Max(100)
   ibsPercentual?: number;
 
-  @ApiPropertyOptional({ example: 0, description: 'Percentual CBS', minimum: 0, maximum: 100 })
+  @ApiPropertyOptional({
+    example: 0,
+    description: 'Percentual CBS',
+    minimum: 0,
+    maximum: 100,
+  })
   @IsOptional()
   @IsNumber()
   @Min(0)
@@ -344,18 +422,26 @@ export class CreateUnidadeSaudeDto {
   @IsBoolean()
   reterCbs?: boolean = false;
 
-  @ApiPropertyOptional({ default: false, description: 'Optante pelo Simples Nacional' })
+  @ApiPropertyOptional({
+    default: false,
+    description: 'Optante pelo Simples Nacional',
+  })
   @IsOptional()
   @IsBoolean()
   optanteSimplesNacional?: boolean = false;
 
   // Certificado Digital
-  @ApiPropertyOptional({ default: false, description: 'Certificado digital vinculado' })
+  @ApiPropertyOptional({
+    default: false,
+    description: 'Certificado digital vinculado',
+  })
   @IsOptional()
   @IsBoolean()
   certificadoDigitalVinculado?: boolean = false;
 
-  @ApiPropertyOptional({ description: 'Caminho do arquivo do certificado digital' })
+  @ApiPropertyOptional({
+    description: 'Caminho do arquivo do certificado digital',
+  })
   @IsOptional()
   @IsString()
   certificadoDigitalPath?: string;
@@ -365,27 +451,38 @@ export class CreateUnidadeSaudeDto {
   @IsString()
   certificadoDigitalSenha?: string;
 
-  @ApiPropertyOptional({ description: 'Data de validade do certificado digital' })
+  @ApiPropertyOptional({
+    description: 'Data de validade do certificado digital',
+  })
   @IsOptional()
   @IsDateString()
   certificadoDigitalValidade?: Date;
 
   // Relacionamentos
-  @ApiPropertyOptional({ type: [CreateHorarioAtendimentoDto], description: 'Horários de atendimento' })
+  @ApiPropertyOptional({
+    type: [CreateHorarioAtendimentoDto],
+    description: 'Horários de atendimento',
+  })
   @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreateHorarioAtendimentoDto)
   horariosAtendimento?: CreateHorarioAtendimentoDto[];
 
-  @ApiPropertyOptional({ type: [CreateDadoBancarioDto], description: 'Dados bancários' })
+  @ApiPropertyOptional({
+    type: [CreateDadoBancarioDto],
+    description: 'Dados bancários',
+  })
   @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreateDadoBancarioDto)
   dadosBancarios?: CreateDadoBancarioDto[];
 
-  @ApiPropertyOptional({ type: [CreateCnaeSecundarioDto], description: 'CNAEs secundários' })
+  @ApiPropertyOptional({
+    type: [CreateCnaeSecundarioDto],
+    description: 'CNAEs secundários',
+  })
   @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })

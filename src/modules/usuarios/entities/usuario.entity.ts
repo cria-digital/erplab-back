@@ -18,7 +18,12 @@ export class Usuario {
   id: string;
 
   // Informações Gerais
-  @Column({ name: 'codigo_interno', type: 'varchar', length: 50, nullable: true })
+  @Column({
+    name: 'codigo_interno',
+    type: 'varchar',
+    length: 50,
+    nullable: true,
+  })
   codigoInterno: string;
 
   @Column({ name: 'nome_completo', type: 'varchar', length: 255 })
@@ -30,16 +35,36 @@ export class Usuario {
   @Column({ type: 'varchar', length: 20, nullable: true })
   telefone: string;
 
-  @Column({ name: 'celular_whatsapp', type: 'varchar', length: 20, nullable: true })
+  @Column({
+    name: 'celular_whatsapp',
+    type: 'varchar',
+    length: 20,
+    nullable: true,
+  })
   celularWhatsapp: string;
 
-  @Column({ name: 'cargo_funcao', type: 'varchar', length: 100, nullable: true })
+  @Column({
+    name: 'cargo_funcao',
+    type: 'varchar',
+    length: 100,
+    nullable: true,
+  })
   cargoFuncao: string;
 
-  @Column({ name: 'cnpj_associado', type: 'varchar', length: 14, nullable: true })
+  @Column({
+    name: 'cnpj_associado',
+    type: 'varchar',
+    length: 14,
+    nullable: true,
+  })
   cnpjAssociado: string;
 
-  @Column({ name: 'dados_admissao', type: 'varchar', length: 255, nullable: true })
+  @Column({
+    name: 'dados_admissao',
+    type: 'varchar',
+    length: 255,
+    nullable: true,
+  })
   dadosAdmissao: string;
 
   @Column({ name: 'foto_url', type: 'varchar', length: 500, nullable: true })
@@ -59,13 +84,28 @@ export class Usuario {
   @Column({ name: 'validacao_2_etapas', type: 'boolean', default: false })
   validacao2Etapas: boolean;
 
-  @Column({ name: 'metodo_validacao', type: 'varchar', length: 50, nullable: true })
+  @Column({
+    name: 'metodo_validacao',
+    type: 'varchar',
+    length: 50,
+    nullable: true,
+  })
   metodoValidacao: string; // 'SMS', 'EMAIL', 'APP'
 
-  @Column({ name: 'pergunta_recuperacao', type: 'varchar', length: 255, nullable: true })
+  @Column({
+    name: 'pergunta_recuperacao',
+    type: 'varchar',
+    length: 255,
+    nullable: true,
+  })
   perguntaRecuperacao: string;
 
-  @Column({ name: 'resposta_recuperacao_hash', type: 'varchar', length: 255, nullable: true })
+  @Column({
+    name: 'resposta_recuperacao_hash',
+    type: 'varchar',
+    length: 255,
+    nullable: true,
+  })
   respostaRecuperacaoHash: string;
 
   // Controle de acesso
@@ -111,7 +151,10 @@ export class Usuario {
   }
 
   async hashRespostaRecuperacao(resposta: string) {
-    this.respostaRecuperacaoHash = await bcrypt.hash(resposta.toLowerCase(), 10);
+    this.respostaRecuperacaoHash = await bcrypt.hash(
+      resposta.toLowerCase(),
+      10,
+    );
   }
 
   async compareRespostaRecuperacao(resposta: string): Promise<boolean> {

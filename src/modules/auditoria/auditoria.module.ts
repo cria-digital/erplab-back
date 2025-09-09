@@ -1,17 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { LogAuditoria } from './entities/log-auditoria.entity';
-import { HistoricoAlteracao } from './entities/historico-alteracao.entity';
-import { AuditoriaService } from './services/auditoria.service';
-import { AuditoriaController } from './controllers/auditoria.controller';
+import { AuditoriaLog } from './entities/auditoria-log.entity';
+import { AuditoriaService } from './auditoria.service';
+import { AuditoriaController } from './auditoria.controller';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([
-      LogAuditoria,
-      HistoricoAlteracao,
-    ]),
-  ],
+  imports: [TypeOrmModule.forFeature([AuditoriaLog])],
   controllers: [AuditoriaController],
   providers: [AuditoriaService],
   exports: [AuditoriaService],
