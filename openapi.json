@@ -1407,6 +1407,11 @@
             "description": "Lista de atendimentos retornada com sucesso"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Listar atendimentos",
         "tags": [
           "atendimento"
@@ -1423,6 +1428,11 @@
             "description": "Fila de atendimento atual"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Obter fila de atendimento",
         "tags": [
           "atendimento"
@@ -1439,6 +1449,11 @@
             "description": "OS criada com sucesso"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Gerar Ordem de Serviço",
         "tags": [
           "atendimento"
@@ -1455,6 +1470,11 @@
             "description": "Pedido médico processado com sucesso"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Processar pedido médico com OCR",
         "tags": [
           "atendimento"
@@ -2005,6 +2025,11 @@
             "description": "CNPJ já cadastrado"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Criar nova unidade de saúde",
         "tags": [
           "Unidades de Saúde"
@@ -2108,6 +2133,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Listar unidades de saúde",
         "tags": [
           "Unidades de Saúde"
@@ -2148,6 +2178,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Listar unidades ativas",
         "tags": [
           "Unidades de Saúde"
@@ -2185,6 +2220,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Buscar unidades por cidade",
         "tags": [
           "Unidades de Saúde"
@@ -2222,6 +2262,11 @@
             "description": "Unidade não encontrada"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Buscar unidade por CNPJ",
         "tags": [
           "Unidades de Saúde"
@@ -2258,6 +2303,11 @@
             "description": "Unidade não encontrada"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Buscar unidade por ID",
         "tags": [
           "Unidades de Saúde"
@@ -2305,6 +2355,11 @@
             "description": "CNPJ já cadastrado em outra unidade"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Atualizar unidade de saúde",
         "tags": [
           "Unidades de Saúde"
@@ -2332,6 +2387,11 @@
             "description": "Unidade não encontrada"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Remover unidade de saúde",
         "tags": [
           "Unidades de Saúde"
@@ -2368,6 +2428,11 @@
             "description": "Unidade não encontrada"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Ativar unidade de saúde",
         "tags": [
           "Unidades de Saúde"
@@ -2404,6 +2469,11 @@
             "description": "Unidade não encontrada"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Desativar unidade de saúde",
         "tags": [
           "Unidades de Saúde"

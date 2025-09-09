@@ -32,6 +32,7 @@ import {
 } from './dto/response-unidade-saude.dto';
 
 @ApiTags('Unidades de Saúde')
+@ApiBearerAuth()
 @Controller('unidades-saude')
 @UseInterceptors(ClassSerializerInterceptor)
 export class UnidadeSaudeController {
