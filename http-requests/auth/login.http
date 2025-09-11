@@ -3,7 +3,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: {{contentType}}
 
 {
-  "email": "admin@erplab.com.br",
+  "email": "diegosoek@gmail.com",
   "password": "Admin@123"
 }
 
@@ -17,7 +17,7 @@ Content-Type: {{contentType}}
 #   "user": {
 #     "id": "uuid",
 #     "nome": "Administrador",
-#     "email": "admin@erplab.com.br",
+#     "email": "diegosoek@gmail.com",
 #     "tipo": "ADMIN",
 #     "unidade_saude_id": "uuid",
 #     "permissoes": ["admin"],
@@ -50,7 +50,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: {{contentType}}
 
 {
-  "email": "admin@erplab.com.br",
+  "email": "diegosoek@gmail.com",
   "password": "SenhaIncorreta123"
 }
 

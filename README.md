@@ -136,6 +136,20 @@ npm run build
 npm run start:prod
 ```
 
+### 6. Crie o usuário inicial (PRIMEIRO ACESSO)
+```bash
+# Endpoint especial para criar o usuário administrador inicial
+# Email fixo: diegosoek@gmail.com
+# Você define a senha na requisição
+
+curl -X POST http://localhost:10016/api/v1/auth/setup \
+  -H "Content-Type: application/json" \
+  -d '{"senha": "SuaSenhaSegura123!"}'
+
+# IMPORTANTE: Este endpoint só funciona quando não há usuários no sistema
+# Após criar o primeiro usuário, o endpoint retornará erro 400
+```
+
 **Verificando se tudo está funcionando:**
 ```bash
 # Teste a API

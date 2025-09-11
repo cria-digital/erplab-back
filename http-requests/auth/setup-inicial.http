@@ -1,0 +1,48 @@
+### Criar usuário administrador inicial
+### Email fixo: diegosoek@gmail.com
+### ATENÇÃO: Só funciona quando não há usuários no sistema!
+
+POST {{baseUrl}}/auth/setup
+Content-Type: {{contentType}}
+
+{
+  "senha": "Admin123!"
+}
+
+### Expected Response - Sucesso (201)
+# {
+#   "message": "Usuário inicial criado com sucesso",
+#   "email": "diegosoek@gmail.com",
+#   "nome": "Diego Soek"
+# }
+
+### Expected Response - Erro (400) - Já existe usuário
+# {
+#   "statusCode": 400,
+#   "message": "Já existe usuário cadastrado no sistema",
+#   "error": "Bad Request"
+# }
+
+### Fazer login com o usuário criado
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "diegosoek@gmail.com",
+  "password": "Admin123!"
+}
+
+### Expected Response - Login bem-sucedido (200)
+# {
+#   "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+#   "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+#   "token_type": "Bearer",
+#   "expires_in": "1d",
+#   "user": {
+#     "id": "uuid-do-usuario",
+#     "nome": "Diego Soek",
+#     "email": "diegosoek@gmail.com",
+#     "permissoes": [],
+#     "foto_url": null
+#   }
+# }

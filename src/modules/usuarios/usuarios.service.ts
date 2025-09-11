@@ -135,15 +135,17 @@ export class UsuariosService {
       await this.usuarioPermissaoRepository.save(permissoes);
     }
 
-    // Registra na auditoria
-    await this.auditoriaService.registrarAlteracao(
-      criadoPorId || usuarioSalvo.id,
-      'usuarios',
-      usuarioSalvo.id,
-      OperacaoLog.INSERT,
-      { novo: { id: usuarioSalvo.id, email: usuarioSalvo.email } },
-      'Usuários',
-    );
+    // Registra na auditoria apenas se não for o primeiro usuário
+    if (criadoPorId) {
+      await this.auditoriaService.registrarAlteracao(
+        criadoPorId,
+        'usuarios',
+        usuarioSalvo.id,
+        OperacaoLog.INSERT,
+        { novo: { id: usuarioSalvo.id, email: usuarioSalvo.email } },
+        'Usuários',
+      );
+    }
 
     return usuarioSalvo;
   }

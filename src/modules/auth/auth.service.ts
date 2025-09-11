@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
@@ -118,5 +118,38 @@ export class AuthService {
     // Aqui você pode implementar blacklist de tokens se necessário
     // Por ora, apenas registra o logout
     await this.usuariosService.registrarLogout(userId);
+  }
+
+  async setupInitialUser(senha: string) {
+    try {
+      // Verifica se já existe algum usuário no sistema
+      const usuarios = await this.usuariosService.findAll({ limit: 1 });
+      
+      if (usuarios.total > 0) {
+        throw new ConflictException('Já existe usuário cadastrado no sistema');
+      }
+    } catch (error) {
+      // Se der erro ao buscar (provavelmente tabela não existe), continua
+      console.log('Criando primeiro usuário do sistema...');
+    }
+
+    // Cria o usuário inicial com email fixo
+    const usuario = await this.usuariosService.create({
+      email: 'diegosoek@gmail.com',
+      senha: senha,
+      nomeCompleto: 'Diego Soek',
+      cpf: '12345678901',
+      telefone: '1133334444',
+      celularWhatsapp: '11999998888',
+      cargoFuncao: 'Administrador do Sistema',
+      ativo: true,
+      resetarSenha: false,
+    }, null); // Passa null para criadoPorId já que é o primeiro usuário
+
+    return {
+      message: 'Usuário inicial criado com sucesso',
+      email: usuario.email,
+      nome: usuario.nomeCompleto,
+    };
   }
 }

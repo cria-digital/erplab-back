@@ -26,6 +26,22 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Public()
+  @Post('setup')
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: 'Criar usuário inicial - diegosoek@gmail.com' })
+  @ApiResponse({
+    status: 201,
+    description: 'Usuário inicial criado com sucesso',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Já existe usuário cadastrado no sistema',
+  })
+  async setup(@Body() setupDto: { senha: string }) {
+    return this.authService.setupInitialUser(setupDto.senha);
+  }
+
+  @Public()
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Realizar login' })

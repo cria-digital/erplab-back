@@ -1,5 +1,28 @@
 # Padrões e Aprendizados do Projeto ERP Lab Backend
 
+## Setup Inicial do Sistema
+
+### Criação do Primeiro Usuário
+- **Endpoint especial**: `POST /api/v1/auth/setup`
+- **Email fixo**: `diegosoek@gmail.com`
+- **Funcionalidade**: Cria o usuário administrador inicial quando o sistema está vazio
+- **Restrição**: Só funciona quando não há usuários cadastrados no sistema
+- **Uso**:
+  ```bash
+  curl -X POST http://localhost:10016/api/v1/auth/setup \
+    -H "Content-Type: application/json" \
+    -d '{"senha": "Admin123!"}'
+  ```
+- **Resposta de sucesso**: Retorna dados do usuário criado
+- **Resposta de erro**: HTTP 400 se já existir usuário no sistema
+
+### Usuário de Teste Criado
+- **Email**: `diegosoek@gmail.com`
+- **Senha**: `Admin123!`
+- **Cargo**: Administrador do Sistema
+- **Status**: Ativo
+- **ID**: `f6749f41-187e-4a05-8fe7-285ef87e99f1`
+
 ## Estrutura do Projeto
 
 ### Padrões de Organização de Módulos
@@ -116,10 +139,48 @@ npm run test         # Executar testes
 
 ### Banco de Dados
 ```bash
-npm run migration:generate -- -n NomeMigracao  # Gerar migration
-npm run migration:run                          # Executar migrations
-npm run migration:revert                       # Reverter última migration
+# SEMPRE usar o comando abaixo para gerar migrations (cria timestamp automático)
+npm run build && npx typeorm migration:generate -d dist/config/typeorm.config.js src/database/migrations/NomeDaMigration
+
+npm run migration:run     # Executar migrations
+npm run migration:revert  # Reverter última migration
 ```
+
+### Testar Autenticação
+```bash
+# Login
+curl -X POST http://localhost:10016/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email": "diegosoek@gmail.com", "password": "Admin123!"}'
+
+# Usar token em requisição autenticada
+TOKEN="seu_token_aqui"
+curl -X GET http://localhost:10016/api/v1/usuarios \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+## Estado Atual do Sistema
+
+### Tabelas Criadas via Migrations
+- ✅ **usuarios** - Tabela principal de usuários
+- ✅ **usuarios_unidades** - Relacionamento usuário x unidade de saúde
+- ✅ **usuarios_permissoes** - Permissões de usuários
+- ✅ **modulos_sistema** - Módulos do sistema
+- ✅ **tipos_permissao** - Tipos de permissões
+- ✅ **auditoria_logs** - Logs de auditoria
+- ✅ **historico_alteracoes** - Histórico de alterações
+- ✅ **logs_auditoria** - Logs de auditoria (compatibilidade)
+- ✅ **pacientes** - Tabela de pacientes
+- ✅ **unidades_saude** - Unidades de saúde
+- ✅ **horarios_atendimento** - Horários de atendimento
+- ✅ **dados_bancarios** - Dados bancários
+- ✅ **cnae_secundarios** - CNAEs secundários
+
+### Migrations Executadas
+1. `CreatePacientesTable1756931316461`
+2. `CreateUnidadesSaudeTable1757363365715`
+3. `CreateUsuariosTable1757583000000`
+4. `CreateAuditoriaAndPermissoesTables1757582641301`
 
 ## Estrutura de Entidades
 
@@ -139,14 +200,17 @@ npm run migration:revert                       # Reverter última migration
 
 ## Pontos de Atenção
 
-1. **Não criar subpastas em módulos** - Manter estrutura flat
-2. **Sempre rodar build e lint** antes de considerar tarefa completa
-3. **Seguir padrões de nomenclatura** do projeto (snake_case no DB, camelCase no TS)
-4. **Organizar requests HTTP** em arquivos separados por operação
-5. **Usar variáveis de ambiente** para configurações sensíveis
-6. **Implementar auditoria** em operações críticas
-7. **Validar dados de entrada** com DTOs e class-validator
-8. **Documentar API** com decorators do Swagger
+1. **NUNCA criar tabelas/schemas sem migrations** - SEMPRE usar TypeORM migrations
+2. **NUNCA criar arquivos de migration manualmente** - SEMPRE usar `npm run migration:generate` ou `npm run migration:create` para gerar timestamp correto
+3. **NUNCA apagar migrations existentes** - Migrations são imutáveis após commit. Se houver problema, criar nova migration para corrigir
+4. **Não criar subpastas em módulos** - Manter estrutura flat
+3. **Sempre rodar build e lint** antes de considerar tarefa completa
+4. **Seguir padrões de nomenclatura** do projeto (snake_case no DB, camelCase no TS)
+5. **Organizar requests HTTP** em arquivos separados por operação
+6. **Usar variáveis de ambiente** para configurações sensíveis
+7. **Implementar auditoria** em operações críticas
+8. **Validar dados de entrada** com DTOs e class-validator
+9. **Documentar API** com decorators do Swagger
 
 ## Próximos Passos Sugeridos
 
