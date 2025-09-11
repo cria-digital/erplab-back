@@ -227,13 +227,15 @@ export class CreateUnidadeSaudeDto {
   codigoServicoPrincipal?: string;
 
   @ApiPropertyOptional({
-    example: '002',
-    description: 'Código do serviço secundário',
+    example: ['002', '003', '004'],
+    description: 'Códigos dos serviços secundários',
+    type: [String],
   })
   @IsOptional()
-  @IsString()
-  @Length(1, 50)
-  codigoServicoSecundario?: string;
+  @IsArray()
+  @IsString({ each: true })
+  @Length(1, 50, { each: true })
+  codigoServicoSecundario?: string[];
 
   @ApiPropertyOptional({ example: '8621601', description: 'CNAE principal' })
   @IsOptional()

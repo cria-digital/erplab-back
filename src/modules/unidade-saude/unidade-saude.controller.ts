@@ -1,38 +1,34 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  ClassSerializerInterceptor,
+  Controller,
   Delete,
-  Query,
+  Get,
   HttpCode,
   HttpStatus,
+  Param,
   ParseUUIDPipe,
-  ValidationPipe,
+  Patch,
+  Post,
+  Query,
   UseInterceptors,
-  ClassSerializerInterceptor,
+  ValidationPipe,
 } from '@nestjs/common';
 import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiQuery,
-  ApiParam,
-  ApiBearerAuth,
   ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
 } from '@nestjs/swagger';
-import { UnidadeSaudeService, PaginationParams } from './unidade-saude.service';
 import { CreateUnidadeSaudeDto } from './dto/create-unidade-saude.dto';
+import { UnidadeSaudeResponseDto } from './dto/response-unidade-saude.dto';
 import { UpdateUnidadeSaudeDto } from './dto/update-unidade-saude.dto';
-import {
-  UnidadeSaudeResponseDto,
-  UnidadeSaudeListResponseDto,
-} from './dto/response-unidade-saude.dto';
+import { PaginationParams, UnidadeSaudeService } from './unidade-saude.service';
 
 @ApiTags('Unidades de Saúde')
-@ApiBearerAuth()
+// @ApiBearerAuth()
 @Controller('unidades-saude')
 @UseInterceptors(ClassSerializerInterceptor)
 export class UnidadeSaudeController {

@@ -7,7 +7,12 @@ import {
   Put,
   Delete,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { AtendimentoService } from '../services/atendimento.service';
 
 @ApiTags('atendimento')

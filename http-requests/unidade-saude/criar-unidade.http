@@ -14,7 +14,7 @@ Content-Type: {{contentType}}
   "contatosUnidade": "(11) 4712-3456",
   "email": "contato@labsr.com.br",
   "codigoServicoPrincipal": "001",
-  "codigoServicoSecundario": "002",
+  "codigoServicoSecundario": ["002", "003", "004"],
   "cnaePrincipal": "8640201",
   "cep": "18130000",
   "rua": "Rua São Paulo",

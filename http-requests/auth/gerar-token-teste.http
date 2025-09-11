@@ -1,0 +1,77 @@
+### Gerar Token JWT de Teste (sem parâmetros)
+POST {{baseUrl}}/auth/generate-test-token
+Content-Type: {{contentType}}
+
+{}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "access_token": "eyJhbGciOiJIUzI1...",
+#   "token_type": "Bearer",
+#   "expires_in": "1d",
+#   "user": {
+#     "id": "test-user-id-123456789",
+#     "nome": "Usuário de Teste",
+#     "email": "teste@erplab.com",
+#     "test": true
+#   }
+# }
+
+###
+
+### Gerar Token JWT de Teste com Nome Personalizado
+POST {{baseUrl}}/auth/generate-test-token
+Content-Type: {{contentType}}
+
+{
+  "nome": "João Silva",
+  "email": "joao.silva@teste.com"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "access_token": "eyJhbGciOiJIUzI1...",
+#   "token_type": "Bearer",
+#   "expires_in": "1d",
+#   "user": {
+#     "id": "test-user-id-123456789",
+#     "nome": "João Silva",
+#     "email": "joao.silva@teste.com",
+#     "test": true
+#   }
+# }
+
+###
+
+### Testar Token Gerado - Validar Token
+POST {{baseUrl}}/auth/validate
+Content-Type: {{contentType}}
+
+{
+  "token": "COLE_AQUI_O_TOKEN_GERADO"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "valid": true
+# }
+
+###
+
+### Testar Token Gerado - Obter Perfil (requer autenticação)
+GET {{baseUrl}}/auth/me
+Authorization: Bearer COLE_AQUI_O_TOKEN_GERADO
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "sub": "test-user-id-123456789",
+#   "email": "teste@erplab.com",
+#   "nome": "Usuário de Teste",
+#   "test": true,
+#   "iat": 1234567890,
+#   "exp": 1234567890
+# }

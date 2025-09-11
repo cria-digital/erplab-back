@@ -76,11 +76,11 @@ export class UnidadeSaude {
 
   @Column({
     name: 'codigo_servico_secundario',
-    type: 'varchar',
-    length: 50,
+    type: 'jsonb',
     nullable: true,
+    default: () => "'[]'",
   })
-  codigoServicoSecundario: string;
+  codigoServicoSecundario: string[];
 
   @Column({
     name: 'cnae_principal',

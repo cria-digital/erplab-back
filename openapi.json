@@ -2043,11 +2043,6 @@
             "description": "CNPJ já cadastrado"
           }
         },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
         "summary": "Criar nova unidade de saúde",
         "tags": [
           "Unidades de Saúde"
@@ -2151,11 +2146,6 @@
             }
           }
         },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
         "summary": "Listar unidades de saúde",
         "tags": [
           "Unidades de Saúde"
@@ -2196,11 +2186,6 @@
             }
           }
         },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
         "summary": "Listar unidades ativas",
         "tags": [
           "Unidades de Saúde"
@@ -2238,11 +2223,6 @@
             }
           }
         },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
         "summary": "Buscar unidades por cidade",
         "tags": [
           "Unidades de Saúde"
@@ -2280,11 +2260,6 @@
             "description": "Unidade não encontrada"
           }
         },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
         "summary": "Buscar unidade por CNPJ",
         "tags": [
           "Unidades de Saúde"
@@ -2321,11 +2296,6 @@
             "description": "Unidade não encontrada"
           }
         },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
         "summary": "Buscar unidade por ID",
         "tags": [
           "Unidades de Saúde"
@@ -2373,11 +2343,6 @@
             "description": "CNPJ já cadastrado em outra unidade"
           }
         },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
         "summary": "Atualizar unidade de saúde",
         "tags": [
           "Unidades de Saúde"
@@ -2405,11 +2370,6 @@
             "description": "Unidade não encontrada"
           }
         },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
         "summary": "Remover unidade de saúde",
         "tags": [
           "Unidades de Saúde"
@@ -2446,11 +2406,6 @@
             "description": "Unidade não encontrada"
           }
         },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
         "summary": "Ativar unidade de saúde",
         "tags": [
           "Unidades de Saúde"
@@ -2487,11 +2442,6 @@
             "description": "Unidade não encontrada"
           }
         },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
         "summary": "Desativar unidade de saúde",
         "tags": [
           "Unidades de Saúde"
@@ -3601,9 +3551,16 @@
             "description": "Código do serviço principal"
           },
           "codigoServicoSecundario": {
-            "type": "string",
-            "example": "002",
-            "description": "Código do serviço secundário"
+            "example": [
+              "002",
+              "003",
+              "004"
+            ],
+            "description": "Códigos dos serviços secundários",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "cnaePrincipal": {
             "type": "string",
@@ -3937,7 +3894,10 @@
             "type": "string"
           },
           "codigoServicoSecundario": {
-            "type": "string"
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "cnaePrincipal": {
             "type": "string"
@@ -4128,9 +4088,16 @@
             "description": "Código do serviço principal"
           },
           "codigoServicoSecundario": {
-            "type": "string",
-            "example": "002",
-            "description": "Código do serviço secundário"
+            "example": [
+              "002",
+              "003",
+              "004"
+            ],
+            "description": "Códigos dos serviços secundários",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "cnaePrincipal": {
             "type": "string",

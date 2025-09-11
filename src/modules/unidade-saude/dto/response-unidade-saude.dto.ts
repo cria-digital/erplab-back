@@ -148,9 +148,9 @@ export class UnidadeSaudeResponseDto {
   @Expose()
   codigoServicoPrincipal?: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({ required: false, type: [String] })
   @Expose()
-  codigoServicoSecundario?: string;
+  codigoServicoSecundario?: string[];
 
   @ApiProperty({ required: false })
   @Expose()
