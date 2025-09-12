@@ -1,0 +1,37 @@
+### Criar Usuário Inicial do Sistema (Rota Pública - Só funciona quando não há usuários)
+### Esta rota só funciona quando o sistema está vazio (sem usuários cadastrados)
+POST {{baseUrl}}/auth/setup
+Content-Type: {{contentType}}
+
+{
+  "senha": "Admin123!"
+}
+
+### Resposta esperada (quando sistema está vazio):
+# Status: 201 Created
+# {
+#   "id": "uuid-gerado",
+#   "codigoInterno": "USR...",
+#   "nomeCompleto": "Administrador do Sistema",
+#   "email": "diegosoek@gmail.com",
+#   "cpf": "00000000000",
+#   "cargoFuncao": "Administrador do Sistema",
+#   "ativo": true,
+#   "createdAt": "2025-01-09T...",
+#   "updatedAt": "2025-01-09T..."
+# }
+
+### Resposta quando já existe usuário no sistema:
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Já existem usuários cadastrados no sistema",
+#   "error": "Bad Request"
+# }
+
+### NOTAS IMPORTANTES:
+# 1. Esta rota é PÚBLICA (não precisa de autenticação)
+# 2. Email fixo: diegosoek@gmail.com
+# 3. Só funciona quando o banco está vazio (sem usuários)
+# 4. Após criar o primeiro usuário, use o login normal
+# 5. Senha definida na requisição será a senha do admin
