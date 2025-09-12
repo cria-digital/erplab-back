@@ -21,6 +21,7 @@ import {
   ApiQuery,
   ApiResponse,
   ApiTags,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { CreateUnidadeSaudeDto } from './dto/create-unidade-saude.dto';
 import { UnidadeSaudeResponseDto } from './dto/response-unidade-saude.dto';
@@ -28,7 +29,7 @@ import { UpdateUnidadeSaudeDto } from './dto/update-unidade-saude.dto';
 import { PaginationParams, UnidadeSaudeService } from './unidade-saude.service';
 
 @ApiTags('Unidades de Saúde')
-// @ApiBearerAuth()
+@ApiBearerAuth()
 @Controller('unidades-saude')
 @UseInterceptors(ClassSerializerInterceptor)
 export class UnidadeSaudeController {

@@ -5,7 +5,6 @@ import {
   Body,
   Query,
   Param,
-  UseGuards,
   Request,
 } from '@nestjs/common';
 import {
@@ -43,8 +42,6 @@ interface RequestWithUser {
   };
 }
 
-// Nota: JwtAuthGuard será implementado no módulo de autenticação
-// @UseGuards(JwtAuthGuard)
 
 @ApiTags('Auditoria')
 @ApiBearerAuth()

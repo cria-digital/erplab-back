@@ -48,11 +48,10 @@ import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
   ],
   controllers: [HealthController],
   providers: [
-    // Temporariamente desabilitado para testes
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: JwtAuthGuard,
-    // },
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
   ],
 })
 export class AppModule {}

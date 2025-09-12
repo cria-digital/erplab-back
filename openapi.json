@@ -40,6 +40,11 @@
             "description": "Já existe usuário cadastrado no sistema"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Criar usuário inicial - diegosoek@gmail.com",
         "tags": [
           "auth"
@@ -119,6 +124,11 @@
             "description": "Credenciais inválidas"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Realizar login",
         "tags": [
           "auth"
@@ -166,6 +176,11 @@
             "description": "Refresh token inválido"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Renovar access token",
         "tags": [
           "auth"
@@ -263,6 +278,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Validar token JWT",
         "tags": [
           "auth"
@@ -2043,6 +2063,11 @@
             "description": "CNPJ já cadastrado"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Criar nova unidade de saúde",
         "tags": [
           "Unidades de Saúde"
@@ -2146,6 +2171,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Listar unidades de saúde",
         "tags": [
           "Unidades de Saúde"
@@ -2186,6 +2216,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Listar unidades ativas",
         "tags": [
           "Unidades de Saúde"
@@ -2223,6 +2258,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Buscar unidades por cidade",
         "tags": [
           "Unidades de Saúde"
@@ -2260,6 +2300,11 @@
             "description": "Unidade não encontrada"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Buscar unidade por CNPJ",
         "tags": [
           "Unidades de Saúde"
@@ -2296,6 +2341,11 @@
             "description": "Unidade não encontrada"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Buscar unidade por ID",
         "tags": [
           "Unidades de Saúde"
@@ -2343,6 +2393,11 @@
             "description": "CNPJ já cadastrado em outra unidade"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Atualizar unidade de saúde",
         "tags": [
           "Unidades de Saúde"
@@ -2370,6 +2425,11 @@
             "description": "Unidade não encontrada"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Remover unidade de saúde",
         "tags": [
           "Unidades de Saúde"
@@ -2406,6 +2466,11 @@
             "description": "Unidade não encontrada"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Ativar unidade de saúde",
         "tags": [
           "Unidades de Saúde"
@@ -2442,6 +2507,11 @@
             "description": "Unidade não encontrada"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Desativar unidade de saúde",
         "tags": [
           "Unidades de Saúde"

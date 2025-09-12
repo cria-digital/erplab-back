@@ -16,11 +16,11 @@ import {
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { Public } from './decorators/public.decorator';
 import { CurrentUser } from './decorators/current-user.decorator';
 
 @ApiTags('auth')
+@ApiBearerAuth()
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -96,19 +96,15 @@ export class AuthController {
     return this.authService.refreshToken(refreshTokenDto);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post('logout')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiBearerAuth()
   @ApiOperation({ summary: 'Realizar logout' })
   @ApiResponse({ status: 204, description: 'Logout realizado com sucesso' })
   async logout(@CurrentUser() user: any) {
     await this.authService.logout(user.id);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('me')
-  @ApiBearerAuth()
   @ApiOperation({ summary: 'Obter dados do usuário autenticado' })
   @ApiResponse({
     status: 200,
