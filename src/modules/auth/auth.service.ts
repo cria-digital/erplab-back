@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  ConflictException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
@@ -124,7 +128,7 @@ export class AuthService {
     try {
       // Verifica se já existe algum usuário no sistema
       const usuarios = await this.usuariosService.findAll({ limit: 1 });
-      
+
       if (usuarios.total > 0) {
         throw new ConflictException('Já existe usuário cadastrado no sistema');
       }
@@ -134,17 +138,20 @@ export class AuthService {
     }
 
     // Cria o usuário inicial com email fixo
-    const usuario = await this.usuariosService.create({
-      email: 'diegosoek@gmail.com',
-      senha: senha,
-      nomeCompleto: 'Diego Soek',
-      cpf: '12345678901',
-      telefone: '1133334444',
-      celularWhatsapp: '11999998888',
-      cargoFuncao: 'Administrador do Sistema',
-      ativo: true,
-      resetarSenha: false,
-    }, null); // Passa null para criadoPorId já que é o primeiro usuário
+    const usuario = await this.usuariosService.create(
+      {
+        email: 'diegosoek@gmail.com',
+        senha: senha,
+        nomeCompleto: 'Diego Soek',
+        cpf: '12345678901',
+        telefone: '1133334444',
+        celularWhatsapp: '11999998888',
+        cargoFuncao: 'Administrador do Sistema',
+        ativo: true,
+        resetarSenha: false,
+      },
+      null,
+    ); // Passa null para criadoPorId já que é o primeiro usuário
 
     return {
       message: 'Usuário inicial criado com sucesso',

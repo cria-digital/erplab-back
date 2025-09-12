@@ -9,7 +9,6 @@ import {
   Query,
   Request,
   UseGuards,
-  HttpStatus,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -24,6 +23,7 @@ import {
 import { UsuariosService, UsuariosFilters } from './usuarios.service';
 import { CreateUsuarioDto, UpdateUsuarioDto, ChangePasswordDto } from './dto';
 import { Usuario } from './entities/usuario.entity';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 interface ApiResponse<T = any> {
   message: string;
@@ -39,6 +39,7 @@ interface RequestWithUser {
 
 @ApiTags('Usuários')
 @ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('usuarios')
 export class UsuariosController {
   constructor(private readonly usuariosService: UsuariosService) {}
