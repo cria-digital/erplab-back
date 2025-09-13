@@ -1,5 +1,7 @@
 # ERP Laboratório - Backend
 
+https://www.figma.com/design/dCqv3yXaLoOhzYX5ajbRV2/ERP-Lab?node-id=567-10646&t=9oOAm7LP2dMHWk5n-0
+
 Sistema ERP modular para laboratórios de análises clínicas e imagens, desenvolvido com NestJS, TypeORM e PostgreSQL.
 
 ## 🚀 Tecnologias
