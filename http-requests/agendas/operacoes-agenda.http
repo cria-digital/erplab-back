@@ -1,0 +1,89 @@
+### Listar Todas as Agendas
+GET {{baseUrl}}/api/v1/agendas
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid",
+#     "codigoInterno": "AGE001",
+#     "nomeAgenda": "ULTRASSONOGRAFIA - UNIDADE SÃO ROQUE",
+#     "status": "ATIVO"
+#   }
+# ]
+
+###
+
+### Buscar Agenda por ID
+GET {{baseUrl}}/api/v1/agendas/{{agendaId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "codigoInterno": "AGE001",
+#   "nomeAgenda": "ULTRASSONOGRAFIA - UNIDADE SÃO ROQUE",
+#   "configuracaoAgenda": {...},
+#   "vinculacoes": [...],
+#   "notificacoes": {...}
+# }
+
+###
+
+### Atualizar Agenda
+PATCH {{baseUrl}}/api/v1/agendas/{{agendaId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "descricao": "Agenda atualizada para exames de ultrassonografia e doppler",
+  "status": "ATIVO"
+}
+
+### Expected Response
+# Status: 200 OK
+
+###
+
+### Adicionar Bloqueio de Horário
+POST {{baseUrl}}/api/v1/agendas/{{agendaId}}/bloqueios
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "dataInicio": "2024-03-20",
+  "horaInicio": "14:00",
+  "dataFim": "2024-03-20",
+  "horaFim": "18:00",
+  "observacao": "Manutenção preventiva do equipamento",
+  "motivoBloqueio": "Manutenção"
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "id": "uuid",
+#   "dataInicio": "2024-03-20",
+#   "horaInicio": "14:00:00",
+#   "motivoBloqueio": "Manutenção"
+# }
+
+###
+
+### Remover Bloqueio de Horário
+DELETE {{baseUrl}}/api/v1/agendas/bloqueios/{{bloqueioId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+
+###
+
+### Remover Agenda
+DELETE {{baseUrl}}/api/v1/agendas/{{agendaId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK

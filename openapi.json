@@ -4134,6 +4134,734 @@
           "Tipos de Exame"
         ]
       }
+    },
+    "/api/v1/agendas": {
+      "post": {
+        "operationId": "AgendasController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAgendaDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Agenda criada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Agenda"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Criar nova agenda",
+        "tags": [
+          "Agendas"
+        ]
+      },
+      "get": {
+        "operationId": "AgendasController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de agendas retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Agenda"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar todas as agendas",
+        "tags": [
+          "Agendas"
+        ]
+      }
+    },
+    "/api/v1/agendas/{id}": {
+      "get": {
+        "operationId": "AgendasController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da agenda",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Agenda encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Agenda"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Agenda não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar agenda por ID",
+        "tags": [
+          "Agendas"
+        ]
+      },
+      "patch": {
+        "operationId": "AgendasController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da agenda",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAgendaDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Agenda atualizada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Agenda"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Agenda não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Atualizar agenda",
+        "tags": [
+          "Agendas"
+        ]
+      },
+      "delete": {
+        "operationId": "AgendasController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da agenda",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Agenda removida com sucesso"
+          },
+          "404": {
+            "description": "Agenda não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Remover agenda",
+        "tags": [
+          "Agendas"
+        ]
+      }
+    },
+    "/api/v1/agendas/{id}/bloqueios": {
+      "post": {
+        "operationId": "AgendasController_addBloqueio",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da agenda",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBloqueioDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Bloqueio adicionado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BloqueioHorario"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Agenda não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Adicionar bloqueio de horário em agenda",
+        "tags": [
+          "Agendas"
+        ]
+      }
+    },
+    "/api/v1/agendas/bloqueios/{bloqueioId}": {
+      "delete": {
+        "operationId": "AgendasController_removeBloqueio",
+        "parameters": [
+          {
+            "name": "bloqueioId",
+            "required": true,
+            "in": "path",
+            "description": "ID do bloqueio",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bloqueio removido com sucesso"
+          },
+          "404": {
+            "description": "Bloqueio não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Remover bloqueio de horário",
+        "tags": [
+          "Agendas"
+        ]
+      }
+    },
+    "/api/v1/profissionais": {
+      "post": {
+        "operationId": "ProfissionaisController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProfissionalDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Profissional cadastrado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profissional"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos"
+          },
+          "409": {
+            "description": "CPF já cadastrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Cadastrar novo profissional",
+        "tags": [
+          "Profissionais"
+        ]
+      },
+      "get": {
+        "operationId": "ProfissionaisController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de profissionais retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Profissional"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar todos os profissionais",
+        "tags": [
+          "Profissionais"
+        ]
+      }
+    },
+    "/api/v1/profissionais/{id}": {
+      "get": {
+        "operationId": "ProfissionaisController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do profissional",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profissional encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profissional"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Profissional não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar profissional por ID",
+        "tags": [
+          "Profissionais"
+        ]
+      },
+      "patch": {
+        "operationId": "ProfissionaisController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do profissional",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProfissionalDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Profissional atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profissional"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Profissional não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Atualizar dados do profissional",
+        "tags": [
+          "Profissionais"
+        ]
+      },
+      "delete": {
+        "operationId": "ProfissionaisController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do profissional",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profissional removido com sucesso"
+          },
+          "404": {
+            "description": "Profissional não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Remover profissional",
+        "tags": [
+          "Profissionais"
+        ]
+      }
+    },
+    "/api/v1/profissionais/cpf/{cpf}": {
+      "get": {
+        "operationId": "ProfissionaisController_findByCpf",
+        "parameters": [
+          {
+            "name": "cpf",
+            "required": true,
+            "in": "path",
+            "description": "CPF do profissional",
+            "schema": {
+              "example": "123.456.789-00",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profissional encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profissional"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Profissional não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar profissional por CPF",
+        "tags": [
+          "Profissionais"
+        ]
+      }
+    },
+    "/api/v1/profissionais/{id}/documentos": {
+      "post": {
+        "operationId": "ProfissionaisController_addDocumento",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do profissional",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDocumentoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Documento adicionado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentoProfissional"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Profissional não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Adicionar documento ao profissional",
+        "tags": [
+          "Profissionais"
+        ]
+      }
+    },
+    "/api/v1/profissionais/documentos/{documentoId}": {
+      "patch": {
+        "operationId": "ProfissionaisController_updateDocumento",
+        "parameters": [
+          {
+            "name": "documentoId",
+            "required": true,
+            "in": "path",
+            "description": "ID do documento",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDocumentoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Documento atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentoProfissional"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Documento não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Atualizar documento do profissional",
+        "tags": [
+          "Profissionais"
+        ]
+      },
+      "delete": {
+        "operationId": "ProfissionaisController_removeDocumento",
+        "parameters": [
+          {
+            "name": "documentoId",
+            "required": true,
+            "in": "path",
+            "description": "ID do documento",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Documento removido com sucesso"
+          },
+          "404": {
+            "description": "Documento não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Remover documento do profissional",
+        "tags": [
+          "Profissionais"
+        ]
+      }
+    },
+    "/api/v1/profissionais/{id}/agendas/{agendaId}": {
+      "post": {
+        "operationId": "ProfissionaisController_vincularAgenda",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do profissional",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "agendaId",
+            "required": true,
+            "in": "path",
+            "description": "ID da agenda",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Agenda vinculada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profissional"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Profissional ou agenda não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Vincular agenda ao profissional",
+        "tags": [
+          "Profissionais"
+        ]
+      },
+      "delete": {
+        "operationId": "ProfissionaisController_desvincularAgenda",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do profissional",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "agendaId",
+            "required": true,
+            "in": "path",
+            "description": "ID da agenda",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Agenda desvinculada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profissional"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Profissional ou agenda não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Desvincular agenda do profissional",
+        "tags": [
+          "Profissionais"
+        ]
+      }
     }
   },
   "info": {
@@ -7193,6 +7921,689 @@
             }
           }
         }
+      },
+      "CreatePeriodoAtendimentoDto": {
+        "type": "object",
+        "properties": {
+          "periodo": {
+            "type": "string",
+            "enum": [
+              "MANHA",
+              "TARDE",
+              "NOITE",
+              "INTEGRAL"
+            ],
+            "description": "Período do atendimento"
+          },
+          "horarioInicio": {
+            "type": "string",
+            "example": "08:00",
+            "description": "Horário de início"
+          },
+          "horarioFim": {
+            "type": "string",
+            "example": "12:00",
+            "description": "Horário de fim"
+          },
+          "diasSemana": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "SEG",
+                "TER",
+                "QUA",
+                "QUI",
+                "SEX",
+                "SAB",
+                "DOM",
+                "FERIADOS"
+              ]
+            }
+          },
+          "intervaloPeriodo": {
+            "type": "number",
+            "example": 30,
+            "description": "Intervalo em minutos"
+          },
+          "capacidadePeriodo": {
+            "type": "number",
+            "example": 10
+          }
+        },
+        "required": [
+          "periodo",
+          "horarioInicio",
+          "horarioFim"
+        ]
+      },
+      "CreateConfiguracaoAgendaDto": {
+        "type": "object",
+        "properties": {
+          "diasSemana": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "SEG",
+                "TER",
+                "QUA",
+                "QUI",
+                "SEX",
+                "SAB",
+                "DOM",
+                "FERIADOS"
+              ]
+            }
+          },
+          "periodosAtendimento": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreatePeriodoAtendimentoDto"
+            }
+          },
+          "intervaloAgendamento": {
+            "type": "number",
+            "example": 30,
+            "description": "Intervalo entre agendamentos em minutos"
+          },
+          "capacidadeTotal": {
+            "type": "number",
+            "example": 100
+          },
+          "capacidadePorHorario": {
+            "type": "number",
+            "example": 4
+          }
+        },
+        "required": [
+          "diasSemana",
+          "periodosAtendimento",
+          "intervaloAgendamento"
+        ]
+      },
+      "CreateAgendaDto": {
+        "type": "object",
+        "properties": {
+          "codigoInterno": {
+            "type": "string",
+            "example": "AGE001",
+            "description": "Código interno da agenda"
+          },
+          "nomeAgenda": {
+            "type": "string",
+            "example": "ULTRASSONOGRAFIA - UNIDADE SÃO ROQUE"
+          },
+          "descricao": {
+            "type": "string",
+            "example": "Agenda para exames de ultrassonografia"
+          },
+          "unidadeAssociadaId": {
+            "type": "string",
+            "description": "ID da unidade de saúde associada"
+          },
+          "setorId": {
+            "type": "string",
+            "description": "ID do setor"
+          },
+          "salaId": {
+            "type": "string",
+            "description": "ID da sala"
+          },
+          "profissionalId": {
+            "type": "string",
+            "description": "ID do profissional"
+          },
+          "especialidadeId": {
+            "type": "string",
+            "description": "ID da especialidade"
+          },
+          "equipamentoId": {
+            "type": "string",
+            "description": "ID do equipamento"
+          },
+          "configuracaoAgenda": {
+            "$ref": "#/components/schemas/CreateConfiguracaoAgendaDto"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ATIVO",
+              "INATIVO"
+            ],
+            "default": "ATIVO"
+          }
+        },
+        "required": [
+          "codigoInterno",
+          "nomeAgenda",
+          "configuracaoAgenda"
+        ]
+      },
+      "Agenda": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateAgendaDto": {
+        "type": "object",
+        "properties": {
+          "codigoInterno": {
+            "type": "string",
+            "example": "AGE001",
+            "description": "Código interno da agenda"
+          },
+          "nomeAgenda": {
+            "type": "string",
+            "example": "ULTRASSONOGRAFIA - UNIDADE SÃO ROQUE"
+          },
+          "descricao": {
+            "type": "string",
+            "example": "Agenda para exames de ultrassonografia"
+          },
+          "unidadeAssociadaId": {
+            "type": "string",
+            "description": "ID da unidade de saúde associada"
+          },
+          "setorId": {
+            "type": "string",
+            "description": "ID do setor"
+          },
+          "salaId": {
+            "type": "string",
+            "description": "ID da sala"
+          },
+          "profissionalId": {
+            "type": "string",
+            "description": "ID do profissional"
+          },
+          "especialidadeId": {
+            "type": "string",
+            "description": "ID da especialidade"
+          },
+          "equipamentoId": {
+            "type": "string",
+            "description": "ID do equipamento"
+          },
+          "configuracaoAgenda": {
+            "$ref": "#/components/schemas/CreateConfiguracaoAgendaDto"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ATIVO",
+              "INATIVO"
+            ],
+            "default": "ATIVO"
+          }
+        }
+      },
+      "CreateBloqueioDto": {
+        "type": "object",
+        "properties": {
+          "dataInicio": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2024-03-15",
+            "description": "Data de início do bloqueio"
+          },
+          "horaInicio": {
+            "type": "string",
+            "example": "14:00",
+            "description": "Hora de início do bloqueio"
+          },
+          "dataFim": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2024-03-15",
+            "description": "Data de fim do bloqueio"
+          },
+          "horaFim": {
+            "type": "string",
+            "example": "18:00",
+            "description": "Hora de fim do bloqueio"
+          },
+          "observacao": {
+            "type": "string",
+            "example": "Feriado municipal"
+          },
+          "motivoBloqueio": {
+            "type": "string",
+            "example": "Manutenção do equipamento"
+          }
+        },
+        "required": [
+          "dataInicio",
+          "horaInicio"
+        ]
+      },
+      "BloqueioHorario": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateEnderecoDto": {
+        "type": "object",
+        "properties": {
+          "cep": {
+            "type": "string",
+            "example": "01310-100"
+          },
+          "rua": {
+            "type": "string",
+            "example": "Avenida Paulista"
+          },
+          "numero": {
+            "type": "string",
+            "example": "1578"
+          },
+          "bairro": {
+            "type": "string",
+            "example": "Bela Vista"
+          },
+          "complemento": {
+            "type": "string",
+            "example": "Conjunto 2"
+          },
+          "cidade": {
+            "type": "string",
+            "example": "São Paulo"
+          },
+          "estado": {
+            "type": "string",
+            "enum": [
+              "AC",
+              "AL",
+              "AP",
+              "AM",
+              "BA",
+              "CE",
+              "DF",
+              "ES",
+              "GO",
+              "MA",
+              "MT",
+              "MS",
+              "MG",
+              "PA",
+              "PB",
+              "PR",
+              "PE",
+              "PI",
+              "RJ",
+              "RN",
+              "RS",
+              "RO",
+              "RR",
+              "SC",
+              "SP",
+              "SE",
+              "TO"
+            ],
+            "example": "SP"
+          }
+        },
+        "required": [
+          "cep",
+          "rua",
+          "numero",
+          "bairro",
+          "cidade",
+          "estado"
+        ]
+      },
+      "CreateProfissionalDto": {
+        "type": "object",
+        "properties": {
+          "pronomesPessoal": {
+            "type": "string",
+            "enum": [
+              "DR",
+              "DRA",
+              "SR",
+              "SRA",
+              "MASCULINO",
+              "FEMININO"
+            ],
+            "example": "DR"
+          },
+          "nomeCompleto": {
+            "type": "string",
+            "example": "João da Silva Santos"
+          },
+          "cpf": {
+            "type": "string",
+            "example": "123.456.789-00"
+          },
+          "dataNascimento": {
+            "format": "date-time",
+            "type": "string",
+            "example": "1985-03-15"
+          },
+          "sexo": {
+            "type": "string",
+            "enum": [
+              "MASCULINO",
+              "FEMININO"
+            ]
+          },
+          "celular": {
+            "type": "string",
+            "example": "(11) 98765-4321"
+          },
+          "email": {
+            "type": "string",
+            "example": "joao.silva@exemplo.com"
+          },
+          "tipoContratacao": {
+            "type": "string",
+            "enum": [
+              "CLT",
+              "PJ",
+              "AUTONOMO"
+            ]
+          },
+          "profissao": {
+            "type": "string",
+            "example": "MÉDICO"
+          },
+          "codigoInterno": {
+            "type": "string",
+            "example": "19011"
+          },
+          "tipoProfissional": {
+            "type": "string",
+            "enum": [
+              "REALIZANTE",
+              "SOLICITANTE",
+              "AMBOS"
+            ]
+          },
+          "nomeConselho": {
+            "type": "string",
+            "example": "CRM",
+            "description": "Nome do conselho profissional"
+          },
+          "numeroConselho": {
+            "type": "string",
+            "example": "37308"
+          },
+          "estadoConselho": {
+            "type": "string",
+            "enum": [
+              "AC",
+              "AL",
+              "AP",
+              "AM",
+              "BA",
+              "CE",
+              "DF",
+              "ES",
+              "GO",
+              "MA",
+              "MT",
+              "MS",
+              "MG",
+              "PA",
+              "PB",
+              "PR",
+              "PE",
+              "PI",
+              "RJ",
+              "RN",
+              "RS",
+              "RO",
+              "RR",
+              "SC",
+              "SP",
+              "SE",
+              "TO"
+            ]
+          },
+          "codigoCBO": {
+            "type": "string",
+            "example": "225320",
+            "description": "Código CBO da profissão"
+          },
+          "rqe": {
+            "type": "string",
+            "example": "1257",
+            "description": "Registro de Qualificação de Especialista"
+          },
+          "especialidadePrincipal": {
+            "type": "string",
+            "example": "CARDIOLOGIA"
+          },
+          "possuiAssinaturaDigital": {
+            "type": "boolean",
+            "default": false
+          },
+          "endereco": {
+            "$ref": "#/components/schemas/CreateEnderecoDto"
+          },
+          "agendasIds": {
+            "description": "IDs das agendas vinculadas",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "ativo": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "required": [
+          "pronomesPessoal",
+          "nomeCompleto",
+          "cpf",
+          "dataNascimento",
+          "sexo",
+          "celular",
+          "email",
+          "tipoContratacao",
+          "profissao",
+          "codigoInterno",
+          "tipoProfissional",
+          "nomeConselho",
+          "numeroConselho",
+          "estadoConselho",
+          "codigoCBO",
+          "possuiAssinaturaDigital"
+        ]
+      },
+      "Profissional": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateProfissionalDto": {
+        "type": "object",
+        "properties": {
+          "pronomesPessoal": {
+            "type": "string",
+            "enum": [
+              "DR",
+              "DRA",
+              "SR",
+              "SRA",
+              "MASCULINO",
+              "FEMININO"
+            ],
+            "example": "DR"
+          },
+          "nomeCompleto": {
+            "type": "string",
+            "example": "João da Silva Santos"
+          },
+          "cpf": {
+            "type": "string",
+            "example": "123.456.789-00"
+          },
+          "dataNascimento": {
+            "format": "date-time",
+            "type": "string",
+            "example": "1985-03-15"
+          },
+          "sexo": {
+            "type": "string",
+            "enum": [
+              "MASCULINO",
+              "FEMININO"
+            ]
+          },
+          "celular": {
+            "type": "string",
+            "example": "(11) 98765-4321"
+          },
+          "email": {
+            "type": "string",
+            "example": "joao.silva@exemplo.com"
+          },
+          "tipoContratacao": {
+            "type": "string",
+            "enum": [
+              "CLT",
+              "PJ",
+              "AUTONOMO"
+            ]
+          },
+          "profissao": {
+            "type": "string",
+            "example": "MÉDICO"
+          },
+          "codigoInterno": {
+            "type": "string",
+            "example": "19011"
+          },
+          "tipoProfissional": {
+            "type": "string",
+            "enum": [
+              "REALIZANTE",
+              "SOLICITANTE",
+              "AMBOS"
+            ]
+          },
+          "nomeConselho": {
+            "type": "string",
+            "example": "CRM",
+            "description": "Nome do conselho profissional"
+          },
+          "numeroConselho": {
+            "type": "string",
+            "example": "37308"
+          },
+          "estadoConselho": {
+            "type": "string",
+            "enum": [
+              "AC",
+              "AL",
+              "AP",
+              "AM",
+              "BA",
+              "CE",
+              "DF",
+              "ES",
+              "GO",
+              "MA",
+              "MT",
+              "MS",
+              "MG",
+              "PA",
+              "PB",
+              "PR",
+              "PE",
+              "PI",
+              "RJ",
+              "RN",
+              "RS",
+              "RO",
+              "RR",
+              "SC",
+              "SP",
+              "SE",
+              "TO"
+            ]
+          },
+          "codigoCBO": {
+            "type": "string",
+            "example": "225320",
+            "description": "Código CBO da profissão"
+          },
+          "rqe": {
+            "type": "string",
+            "example": "1257",
+            "description": "Registro de Qualificação de Especialista"
+          },
+          "especialidadePrincipal": {
+            "type": "string",
+            "example": "CARDIOLOGIA"
+          },
+          "possuiAssinaturaDigital": {
+            "type": "boolean",
+            "default": false
+          },
+          "endereco": {
+            "$ref": "#/components/schemas/CreateEnderecoDto"
+          },
+          "agendasIds": {
+            "description": "IDs das agendas vinculadas",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "ativo": {
+            "type": "boolean",
+            "default": true
+          }
+        }
+      },
+      "CreateDocumentoDto": {
+        "type": "object",
+        "properties": {
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "DIPLOMA",
+              "CERTIFICADOS",
+              "CRM",
+              "COMPROVANTE_RESIDENCIA",
+              "COMPROVANTE_BANCARIO",
+              "ULTRASSONOGRAFIA_GERAL",
+              "ULTRASSONOGRAFIA_DOPPLER",
+              "RADIOLOGIA",
+              "TOMOGRAFIA"
+            ]
+          },
+          "arquivo": {
+            "type": "string",
+            "example": "url-do-arquivo.pdf"
+          },
+          "validade": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2025-12-31"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDENTE",
+              "APROVADO",
+              "REPROVADO",
+              "VENCIDO"
+            ],
+            "default": "PENDENTE"
+          },
+          "observacoes": {
+            "type": "string",
+            "example": "Documento em análise"
+          }
+        },
+        "required": [
+          "tipo"
+        ]
+      },
+      "DocumentoProfissional": {
+        "type": "object",
+        "properties": {}
       }
     }
   }

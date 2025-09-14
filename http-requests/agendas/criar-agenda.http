@@ -1,0 +1,51 @@
+### Criar Nova Agenda
+POST {{baseUrl}}/api/v1/agendas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoInterno": "AGE001",
+  "nomeAgenda": "ULTRASSONOGRAFIA - UNIDADE SÃO ROQUE",
+  "descricao": "Agenda para exames de ultrassonografia",
+  "unidadeAssociadaId": "{{unidadeId}}",
+  "setorId": "{{setorId}}",
+  "salaId": "{{salaId}}",
+  "profissionalId": "{{profissionalId}}",
+  "especialidadeId": "{{especialidadeId}}",
+  "configuracaoAgenda": {
+    "diasSemana": ["SEG", "TER", "QUA", "QUI", "SEX"],
+    "periodosAtendimento": [
+      {
+        "periodo": "MANHA",
+        "horarioInicio": "08:00",
+        "horarioFim": "12:00",
+        "diasSemana": ["SEG", "QUA", "SEX"],
+        "intervaloPeriodo": 30,
+        "capacidadePeriodo": 8
+      },
+      {
+        "periodo": "TARDE",
+        "horarioInicio": "14:00",
+        "horarioFim": "18:00",
+        "diasSemana": ["TER", "QUI"],
+        "intervaloPeriodo": 30,
+        "capacidadePeriodo": 8
+      }
+    ],
+    "intervaloAgendamento": 30,
+    "capacidadeTotal": 16,
+    "capacidadePorHorario": 2
+  },
+  "status": "ATIVO"
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "id": "uuid-gerado",
+#   "codigoInterno": "AGE001",
+#   "nomeAgenda": "ULTRASSONOGRAFIA - UNIDADE SÃO ROQUE",
+#   "status": "ATIVO",
+#   "criadoEm": "2024-03-15T10:00:00Z",
+#   "atualizadoEm": "2024-03-15T10:00:00Z"
+# }

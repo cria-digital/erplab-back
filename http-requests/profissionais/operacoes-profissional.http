@@ -1,0 +1,136 @@
+### Listar Todos os Profissionais
+GET {{baseUrl}}/api/v1/profissionais
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid",
+#     "nomeCompleto": "André Giannini Pinto",
+#     "cpf": "999.999.999-99",
+#     "profissao": "MÉDICO",
+#     "especialidadePrincipal": "CARDIOLOGIA",
+#     "ativo": true
+#   }
+# ]
+
+###
+
+### Buscar Profissional por ID
+GET {{baseUrl}}/api/v1/profissionais/{{profissionalId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "nomeCompleto": "André Giannini Pinto",
+#   "documentos": [...],
+#   "endereco": {...}
+# }
+
+###
+
+### Buscar Profissional por CPF
+GET {{baseUrl}}/api/v1/profissionais/cpf/999.999.999-99
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+
+###
+
+### Atualizar Profissional
+PATCH {{baseUrl}}/api/v1/profissionais/{{profissionalId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "celular": "(11) 98888-7777",
+  "email": "andre.novo@melaboratorio.com",
+  "possuiAssinaturaDigital": true
+}
+
+### Expected Response
+# Status: 200 OK
+
+###
+
+### Adicionar Documento ao Profissional
+POST {{baseUrl}}/api/v1/profissionais/{{profissionalId}}/documentos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipo": "CRM",
+  "arquivo": "url-do-documento-crm.pdf",
+  "validade": "2025-12-31",
+  "status": "APROVADO",
+  "observacoes": "Documento validado pelo conselho"
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "id": "uuid",
+#   "tipo": "CRM",
+#   "status": "APROVADO",
+#   "validade": "2025-12-31"
+# }
+
+###
+
+### Atualizar Documento
+PATCH {{baseUrl}}/api/v1/profissionais/documentos/{{documentoId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "status": "VENCIDO",
+  "observacoes": "Documento precisa ser renovado"
+}
+
+### Expected Response
+# Status: 200 OK
+
+###
+
+### Remover Documento
+DELETE {{baseUrl}}/api/v1/profissionais/documentos/{{documentoId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+
+###
+
+### Vincular Agenda ao Profissional
+POST {{baseUrl}}/api/v1/profissionais/{{profissionalId}}/agendas/{{agendaId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "nomeCompleto": "André Giannini Pinto",
+#   "agendasIds": ["agenda-id-1", "agenda-id-2"]
+# }
+
+###
+
+### Desvincular Agenda do Profissional
+DELETE {{baseUrl}}/api/v1/profissionais/{{profissionalId}}/agendas/{{agendaId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+
+###
+
+### Remover Profissional
+DELETE {{baseUrl}}/api/v1/profissionais/{{profissionalId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK

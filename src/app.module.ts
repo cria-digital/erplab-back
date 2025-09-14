@@ -13,6 +13,8 @@ import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { ExamesModule } from './modules/exames/exames.module';
 import { EmailModule } from './modules/email/email.module';
+import { AgendasModule } from './modules/agendas/agendas.module';
+import { ProfissionaisModule } from './modules/profissionais/profissionais.module';
 
 @Module({
   imports: [
@@ -37,6 +39,8 @@ import { EmailModule } from './modules/email/email.module';
     PacientesModule,
     UnidadeSaudeModule,
     ExamesModule,
+    AgendasModule,
+    ProfissionaisModule,
 
     // Próximos módulos a serem implementados:
     // FinanceiroModule,
