@@ -127,6 +127,24 @@ npm run lint   # Verificar padrões de código
 - Separar DTOs de Create e Update
 - Sempre validar UUIDs e formatos específicos (CPF, email, etc)
 
+## APIs Disponíveis
+
+### Módulo de Exames (26 endpoints)
+- **Exames** (`/api/v1/exames`)
+  - CRUD completo de exames
+  - Busca por categoria, tipo, laboratório
+  - Gestão de status em lote
+  - Filtros especializados (com preparo, urgentes)
+
+- **Tipos de Exame** (`/api/v1/tipos-exame`)
+  - CRUD completo de tipos
+  - Filtros por agendamento, autorização, domiciliar
+
+- **Convênios** (`/api/v1/convenios`)
+  - CRUD completo de convênios
+  - Verificação de autorização
+  - Regras específicas por convênio
+
 ## Comandos Úteis
 
 ### Desenvolvimento
@@ -175,12 +193,22 @@ curl -X GET http://localhost:10016/api/v1/usuarios \
 - ✅ **horarios_atendimento** - Horários de atendimento
 - ✅ **dados_bancarios** - Dados bancários
 - ✅ **cnae_secundarios** - CNAEs secundários
+- ✅ **exames** - Cadastro de exames laboratoriais
+- ✅ **tipos_exame** - Tipos/categorias de exames
+- ✅ **convenios** - Convênios médicos e planos de saúde
+- ✅ **ordens_servico** - Ordens de serviço para exames
+- ✅ **ordens_servico_exames** - Exames vinculados às ordens
+- ✅ **resultados_exames** - Resultados dos exames
+- ✅ **laboratorios_apoio** - Laboratórios parceiros
+- ✅ **subgrupos_exame** - Subgrupos de exames
+- ✅ **setores_exame** - Setores responsáveis pelos exames
 
 ### Migrations Executadas
 1. `CreatePacientesTable1756931316461`
 2. `CreateUnidadesSaudeTable1757363365715`
 3. `CreateUsuariosTable1757583000000`
 4. `CreateAuditoriaAndPermissoesTables1757582641301`
+5. `CreateExamesTables1757809611114`
 
 ## Estrutura de Entidades
 
@@ -197,6 +225,17 @@ curl -X GET http://localhost:10016/api/v1/usuarios \
 - Rastreamento de alterações com before/after
 - Filtros avançados para consulta
 - Estatísticas agregadas
+
+### Módulo de Exames
+- **Exame**: Cadastro completo de exames com códigos TUSS, AMB, LOINC, SUS
+- **TipoExame**: Categorização de exames (laboratorial, imagem, procedimento)
+- **Convenio**: Gestão de convênios com configurações específicas
+- **OrdemServico**: Gestão de ordens de serviço para exames
+- **ResultadoExame**: Armazenamento de resultados e laudos
+- **LaboratorioApoio**: Laboratórios parceiros para exames especializados
+- Relacionamentos complexos entre entidades
+- Suporte a multi-tenant (empresa_id)
+- Soft delete em todas as entidades
 
 ## Pontos de Atenção
 

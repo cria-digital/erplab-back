@@ -1,0 +1,96 @@
+### Criar um novo exame - Hemograma Completo
+POST {{baseUrl}}/exames
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo_interno": "HEMOG001",
+  "nome": "Hemograma Completo",
+  "sinonimos": "Hemograma, Contagem de células",
+  "codigo_tuss": "40304361",
+  "codigo_amb": "28.01.001-2",
+  "codigo_sus": "0202010503",
+  "tipo_exame_id": 1,
+  "categoria": "laboratorio",
+  "subgrupo_id": 1,
+  "setor_id": 1,
+  "metodologia": "Citometria de fluxo",
+  "especialidade_requerida": "nao",
+  "grupo": "Hematologia",
+  "peso": 100,
+  "volume_min": 2.5,
+  "volume_ideal": 5.0,
+  "unidade_medida": "células/mm³",
+  "amostra_biologica": "Sangue total EDTA",
+  "tipo_recipiente": "Tubo roxo EDTA",
+  "necessita_preparo": "sim",
+  "requisitos": "Jejum de 4 horas",
+  "tipo_realizacao": "interno",
+  "prazo_entrega_dias": 1,
+  "formato_prazo": "1 dia útil",
+  "tem_valores_referencia": "sim",
+  "valores_referencia": {
+    "adulto_masculino": {
+      "hemoglobina": { "min": 13.5, "max": 17.5, "unidade": "g/dL" },
+      "hematocrito": { "min": 39, "max": 50, "unidade": "%" }
+    },
+    "adulto_feminino": {
+      "hemoglobina": { "min": 12.0, "max": 15.5, "unidade": "g/dL" },
+      "hematocrito": { "min": 35, "max": 45, "unidade": "%" }
+    }
+  },
+  "tecnica_coleta": "Punção venosa periférica",
+  "preparo_coleta": {
+    "geral": "Jejum de 4 horas",
+    "feminino": "Informar se está menstruada",
+    "infantil": "Jejum de 2 horas para crianças"
+  },
+  "lembretes": {
+    "coletores": "Homogeneizar suavemente o tubo após coleta",
+    "recepcionistas": "Verificar jejum do paciente",
+    "ordem_servico": "Coletar em tubo EDTA (roxo)"
+  },
+  "status": "ativo",
+  "empresa_id": 1
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "message": "Exame criado com sucesso",
+#   "data": {
+#     "id": 1,
+#     "codigo_interno": "HEMOG001",
+#     "nome": "Hemograma Completo",
+#     ...
+#   }
+# }
+
+###
+
+### Criar exame de imagem - Raio-X Tórax
+POST {{baseUrl}}/exames
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo_interno": "RX001",
+  "nome": "Radiografia de Tórax PA e Perfil",
+  "sinonimos": "Raio-X Tórax, RX Tórax",
+  "codigo_tuss": "41001010",
+  "tipo_exame_id": 2,
+  "categoria": "imagem",
+  "metodologia": "Radiografia digital",
+  "especialidade_requerida": "sim",
+  "especialidade": "Radiologia",
+  "necessita_preparo": "nao",
+  "tipo_realizacao": "interno",
+  "prazo_entrega_dias": 1,
+  "formato_prazo": "24 horas",
+  "preparo_coleta": {
+    "geral": "Retirar objetos metálicos",
+    "feminino": "Informar possibilidade de gravidez"
+  },
+  "status": "ativo",
+  "empresa_id": 1
+}

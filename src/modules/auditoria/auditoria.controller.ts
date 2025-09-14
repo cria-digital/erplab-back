@@ -42,7 +42,6 @@ interface RequestWithUser {
   };
 }
 
-
 @ApiTags('Auditoria')
 @ApiBearerAuth()
 @Controller('auditoria')

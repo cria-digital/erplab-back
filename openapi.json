@@ -2517,6 +2517,1548 @@
           "Unidades de Saúde"
         ]
       }
+    },
+    "/api/v1/exames": {
+      "post": {
+        "description": "Cria um novo exame no sistema com todas as configurações necessárias.",
+        "operationId": "ExamesController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateExameDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Exame criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Exame"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos"
+          },
+          "409": {
+            "description": "Código interno já cadastrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Criar um novo exame",
+        "tags": [
+          "Exames"
+        ]
+      },
+      "get": {
+        "description": "Lista todos os exames com filtros opcionais e paginação.",
+        "operationId": "ExamesController_findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Número da página",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Quantidade de itens por página",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Buscar por nome do exame",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "categoria",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por categoria",
+            "schema": {
+              "enum": [
+                "laboratorio",
+                "imagem",
+                "procedimento",
+                "consulta"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por status",
+            "schema": {
+              "enum": [
+                "ativo",
+                "inativo",
+                "suspenso"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de exames retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Exame"
+                      }
+                    },
+                    "total": {
+                      "type": "number",
+                      "example": 100
+                    },
+                    "page": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "lastPage": {
+                      "type": "number",
+                      "example": 10
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar exames",
+        "tags": [
+          "Exames"
+        ]
+      }
+    },
+    "/api/v1/exames/categoria/{categoria}": {
+      "get": {
+        "description": "Retorna todos os exames ativos de uma categoria específica.",
+        "operationId": "ExamesController_findByCategoria",
+        "parameters": [
+          {
+            "name": "categoria",
+            "required": true,
+            "in": "path",
+            "description": "Categoria do exame",
+            "schema": {
+              "enum": [
+                "laboratorio",
+                "imagem",
+                "procedimento",
+                "consulta"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de exames da categoria",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Exame"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar exames por categoria",
+        "tags": [
+          "Exames"
+        ]
+      }
+    },
+    "/api/v1/exames/tipo/{tipoId}": {
+      "get": {
+        "description": "Retorna todos os exames ativos de um tipo específico.",
+        "operationId": "ExamesController_findByTipo",
+        "parameters": [
+          {
+            "name": "tipoId",
+            "required": true,
+            "in": "path",
+            "description": "ID do tipo de exame",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de exames do tipo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Exame"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar exames por tipo",
+        "tags": [
+          "Exames"
+        ]
+      }
+    },
+    "/api/v1/exames/laboratorio/{laboratorioId}": {
+      "get": {
+        "description": "Retorna todos os exames realizados em um laboratório de apoio específico.",
+        "operationId": "ExamesController_findByLaboratorioApoio",
+        "parameters": [
+          {
+            "name": "laboratorioId",
+            "required": true,
+            "in": "path",
+            "description": "ID do laboratório de apoio",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de exames do laboratório",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Exame"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar exames por laboratório de apoio",
+        "tags": [
+          "Exames"
+        ]
+      }
+    },
+    "/api/v1/exames/buscar/{nome}": {
+      "get": {
+        "description": "Busca exames pelo nome ou sinônimos.",
+        "operationId": "ExamesController_searchByName",
+        "parameters": [
+          {
+            "name": "nome",
+            "required": true,
+            "in": "path",
+            "description": "Nome ou parte do nome do exame",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de exames encontrados",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Exame"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar exames por nome",
+        "tags": [
+          "Exames"
+        ]
+      }
+    },
+    "/api/v1/exames/com-preparo": {
+      "get": {
+        "description": "Retorna todos os exames ativos que necessitam de preparo especial.",
+        "operationId": "ExamesController_getExamesComPreparo",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de exames com preparo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Exame"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar exames que necessitam preparo",
+        "tags": [
+          "Exames"
+        ]
+      }
+    },
+    "/api/v1/exames/urgentes": {
+      "get": {
+        "description": "Retorna exames ordenados por prioridade/peso.",
+        "operationId": "ExamesController_getExamesUrgentes",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de exames urgentes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Exame"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar exames urgentes",
+        "tags": [
+          "Exames"
+        ]
+      }
+    },
+    "/api/v1/exames/codigos": {
+      "get": {
+        "description": "Busca exames pelos códigos TUSS, AMB ou SUS.",
+        "operationId": "ExamesController_findByCodigos",
+        "parameters": [
+          {
+            "name": "tuss",
+            "required": false,
+            "in": "query",
+            "description": "Código TUSS",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "amb",
+            "required": false,
+            "in": "query",
+            "description": "Código AMB",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sus",
+            "required": false,
+            "in": "query",
+            "description": "Código SUS",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de exames encontrados",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Exame"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar exames por códigos padronizados",
+        "tags": [
+          "Exames"
+        ]
+      }
+    },
+    "/api/v1/exames/codigo/{codigo}": {
+      "get": {
+        "description": "Retorna um exame específico pelo código interno.",
+        "operationId": "ExamesController_findByCodigo",
+        "parameters": [
+          {
+            "name": "codigo",
+            "required": true,
+            "in": "path",
+            "description": "Código interno do exame",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Exame encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Exame"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Exame não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar exame por código interno",
+        "tags": [
+          "Exames"
+        ]
+      }
+    },
+    "/api/v1/exames/{id}": {
+      "get": {
+        "description": "Retorna um exame específico pelo ID.",
+        "operationId": "ExamesController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do exame",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Exame encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Exame"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Exame não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar exame por ID",
+        "tags": [
+          "Exames"
+        ]
+      },
+      "patch": {
+        "description": "Atualiza as informações de um exame existente.",
+        "operationId": "ExamesController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do exame",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateExameDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Exame atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Exame"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Exame não encontrado"
+          },
+          "409": {
+            "description": "Código interno já existe em outro exame"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Atualizar exame",
+        "tags": [
+          "Exames"
+        ]
+      },
+      "delete": {
+        "description": "Desativa um exame (soft delete).",
+        "operationId": "ExamesController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do exame",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Exame desativado com sucesso"
+          },
+          "404": {
+            "description": "Exame não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Desativar exame",
+        "tags": [
+          "Exames"
+        ]
+      }
+    },
+    "/api/v1/exames/status/bulk": {
+      "patch": {
+        "description": "Atualiza o status de múltiplos exames.",
+        "operationId": "ExamesController_bulkUpdateStatus",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "example": [
+                      1,
+                      2,
+                      3
+                    ]
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "ativo",
+                      "inativo",
+                      "suspenso"
+                    ],
+                    "example": "inativo"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Status atualizados com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Atualizar status em lote",
+        "tags": [
+          "Exames"
+        ]
+      }
+    },
+    "/api/v1/convenios": {
+      "post": {
+        "description": "Cria um novo convênio no sistema com todas as configurações necessárias.",
+        "operationId": "ConveniosController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateConvenioDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Convênio criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Convenio"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos"
+          },
+          "409": {
+            "description": "Código ou CNPJ já cadastrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Criar um novo convênio",
+        "tags": [
+          "Convênios"
+        ]
+      },
+      "get": {
+        "description": "Lista todos os convênios com filtros opcionais e paginação.",
+        "operationId": "ConveniosController_findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Número da página",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Quantidade de itens por página",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Buscar por nome do convênio",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por status",
+            "schema": {
+              "enum": [
+                "ativo",
+                "inativo",
+                "suspenso"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de convênios retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Convenio"
+                      }
+                    },
+                    "total": {
+                      "type": "number",
+                      "example": 100
+                    },
+                    "page": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "lastPage": {
+                      "type": "number",
+                      "example": 10
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar convênios",
+        "tags": [
+          "Convênios"
+        ]
+      }
+    },
+    "/api/v1/convenios/ativos": {
+      "get": {
+        "description": "Retorna todos os convênios com status ativo.",
+        "operationId": "ConveniosController_findAtivos",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de convênios ativos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Convenio"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar convênios ativos",
+        "tags": [
+          "Convênios"
+        ]
+      }
+    },
+    "/api/v1/convenios/com-integracao": {
+      "get": {
+        "description": "Retorna todos os convênios que possuem integração via API.",
+        "operationId": "ConveniosController_findComIntegracao",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de convênios com integração",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Convenio"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar convênios com integração",
+        "tags": [
+          "Convênios"
+        ]
+      }
+    },
+    "/api/v1/convenios/tipo-faturamento/{tipo}": {
+      "get": {
+        "description": "Retorna convênios filtrados pelo tipo de faturamento.",
+        "operationId": "ConveniosController_findByTipoFaturamento",
+        "parameters": [
+          {
+            "name": "tipo",
+            "required": true,
+            "in": "path",
+            "description": "Tipo de faturamento",
+            "schema": {
+              "enum": [
+                "tiss",
+                "proprio",
+                "manual"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de convênios do tipo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Convenio"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar convênios por tipo de faturamento",
+        "tags": [
+          "Convênios"
+        ]
+      }
+    },
+    "/api/v1/convenios/{id}/autorizacao": {
+      "get": {
+        "description": "Verifica se o convênio requer autorização e/ou senha.",
+        "operationId": "ConveniosController_verificarAutorizacao",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do convênio",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Requisitos de autorização",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "requerAutorizacao": {
+                      "type": "boolean"
+                    },
+                    "requerSenha": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Verificar requisitos de autorização",
+        "tags": [
+          "Convênios"
+        ]
+      }
+    },
+    "/api/v1/convenios/{id}/regras": {
+      "get": {
+        "description": "Retorna as regras específicas e configurações do convênio.",
+        "operationId": "ConveniosController_getRegrasConvenio",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do convênio",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Regras do convênio",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "percentualDesconto": {
+                      "type": "number"
+                    },
+                    "tabelaPrecos": {
+                      "type": "string"
+                    },
+                    "validadeGuiaDias": {
+                      "type": "number"
+                    },
+                    "regrasEspecificas": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Obter regras do convênio",
+        "tags": [
+          "Convênios"
+        ]
+      }
+    },
+    "/api/v1/convenios/codigo/{codigo}": {
+      "get": {
+        "description": "Retorna um convênio específico pelo código.",
+        "operationId": "ConveniosController_findByCodigo",
+        "parameters": [
+          {
+            "name": "codigo",
+            "required": true,
+            "in": "path",
+            "description": "Código do convênio",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Convênio encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Convenio"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Convênio não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar convênio por código",
+        "tags": [
+          "Convênios"
+        ]
+      }
+    },
+    "/api/v1/convenios/{id}": {
+      "get": {
+        "description": "Retorna um convênio específico pelo ID.",
+        "operationId": "ConveniosController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do convênio",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Convênio encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Convenio"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Convênio não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar convênio por ID",
+        "tags": [
+          "Convênios"
+        ]
+      },
+      "patch": {
+        "description": "Atualiza as informações de um convênio existente.",
+        "operationId": "ConveniosController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do convênio",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateConvenioDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Convênio atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Convenio"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Convênio não encontrado"
+          },
+          "409": {
+            "description": "Código ou CNPJ já existe em outro convênio"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Atualizar convênio",
+        "tags": [
+          "Convênios"
+        ]
+      },
+      "delete": {
+        "description": "Desativa um convênio (soft delete).",
+        "operationId": "ConveniosController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do convênio",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Convênio desativado com sucesso"
+          },
+          "404": {
+            "description": "Convênio não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Desativar convênio",
+        "tags": [
+          "Convênios"
+        ]
+      }
+    },
+    "/api/v1/tipos-exame": {
+      "post": {
+        "operationId": "TiposExameController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTipoExameDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Tipo de exame criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoExame"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Tipo de exame com este código já existe"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Criar novo tipo de exame",
+        "tags": [
+          "Tipos de Exame"
+        ]
+      },
+      "get": {
+        "operationId": "TiposExameController_findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Número da página",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Itens por página",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por status",
+            "schema": {
+              "enum": [
+                "ativo",
+                "inativo"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de tipos de exame retornada com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar todos os tipos de exame",
+        "tags": [
+          "Tipos de Exame"
+        ]
+      }
+    },
+    "/api/v1/tipos-exame/ativos": {
+      "get": {
+        "operationId": "TiposExameController_findAtivos",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de tipos de exame ativos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TipoExame"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar apenas tipos de exame ativos",
+        "tags": [
+          "Tipos de Exame"
+        ]
+      }
+    },
+    "/api/v1/tipos-exame/com-agendamento": {
+      "get": {
+        "operationId": "TiposExameController_findComAgendamento",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de tipos que requerem agendamento",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TipoExame"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar tipos que requerem agendamento",
+        "tags": [
+          "Tipos de Exame"
+        ]
+      }
+    },
+    "/api/v1/tipos-exame/com-autorizacao": {
+      "get": {
+        "operationId": "TiposExameController_findComAutorizacao",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de tipos que requerem autorização",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TipoExame"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar tipos que requerem autorização",
+        "tags": [
+          "Tipos de Exame"
+        ]
+      }
+    },
+    "/api/v1/tipos-exame/domiciliares": {
+      "get": {
+        "operationId": "TiposExameController_findDomiciliares",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de tipos que permitem coleta domiciliar",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TipoExame"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar tipos que permitem coleta domiciliar",
+        "tags": [
+          "Tipos de Exame"
+        ]
+      }
+    },
+    "/api/v1/tipos-exame/{id}": {
+      "get": {
+        "operationId": "TiposExameController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do tipo de exame",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tipo de exame encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoExame"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Tipo de exame não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar tipo de exame por ID",
+        "tags": [
+          "Tipos de Exame"
+        ]
+      },
+      "patch": {
+        "operationId": "TiposExameController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do tipo de exame",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTipoExameDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tipo de exame atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoExame"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Tipo de exame não encontrado"
+          },
+          "409": {
+            "description": "Código já existe em outro tipo"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Atualizar tipo de exame",
+        "tags": [
+          "Tipos de Exame"
+        ]
+      },
+      "delete": {
+        "operationId": "TiposExameController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do tipo de exame",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tipo de exame desativado com sucesso"
+          },
+          "404": {
+            "description": "Tipo de exame não encontrado"
+          },
+          "409": {
+            "description": "Não é possível excluir tipo com exames vinculados"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Desativar tipo de exame",
+        "tags": [
+          "Tipos de Exame"
+        ]
+      }
+    },
+    "/api/v1/tipos-exame/codigo/{codigo}": {
+      "get": {
+        "operationId": "TiposExameController_findByCodigo",
+        "parameters": [
+          {
+            "name": "codigo",
+            "required": true,
+            "in": "path",
+            "description": "Código do tipo de exame",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tipo de exame encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoExame"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Tipo de exame não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar tipo de exame por código",
+        "tags": [
+          "Tipos de Exame"
+        ]
+      }
     }
   },
   "info": {
@@ -4346,6 +5888,1068 @@
             "type": "boolean",
             "default": true,
             "description": "Status ativo/inativo"
+          }
+        }
+      },
+      "CreateExameDto": {
+        "type": "object",
+        "properties": {
+          "codigo_interno": {
+            "type": "string",
+            "description": "Código interno único do exame",
+            "example": "HEMOG001",
+            "maxLength": 50
+          },
+          "nome": {
+            "type": "string",
+            "description": "Nome completo do exame",
+            "example": "Hemograma Completo",
+            "maxLength": 255
+          },
+          "sinonimos": {
+            "type": "string",
+            "description": "Sinônimos ou nomes alternativos",
+            "example": "Hemograma, Contagem de células",
+            "maxLength": 50
+          },
+          "codigo_tuss": {
+            "type": "string",
+            "description": "Código TUSS (Terminologia Unificada da Saúde Suplementar)",
+            "example": "40304361",
+            "maxLength": 20
+          },
+          "codigo_amb": {
+            "type": "string",
+            "description": "Código AMB (Associação Médica Brasileira)",
+            "example": "28.01.001-2",
+            "maxLength": 20
+          },
+          "codigo_loinc": {
+            "type": "string",
+            "description": "Código LOINC (Logical Observation Identifiers Names and Codes)",
+            "example": "58410-2",
+            "maxLength": 20
+          },
+          "codigo_sus": {
+            "type": "string",
+            "description": "Código SUS",
+            "example": "0202010503",
+            "maxLength": 20
+          },
+          "tipo_exame_id": {
+            "type": "number",
+            "description": "ID do tipo de exame",
+            "example": 1
+          },
+          "categoria": {
+            "type": "string",
+            "description": "Categoria geral do exame",
+            "enum": [
+              "laboratorio",
+              "imagem",
+              "procedimento",
+              "consulta"
+            ],
+            "example": "laboratorio"
+          },
+          "subgrupo_id": {
+            "type": "number",
+            "description": "ID do subgrupo do exame",
+            "example": 1
+          },
+          "setor_id": {
+            "type": "number",
+            "description": "ID do setor responsável",
+            "example": 1
+          },
+          "metodologia": {
+            "type": "string",
+            "description": "Metodologia utilizada no exame",
+            "example": "Citometria de fluxo",
+            "maxLength": 255
+          },
+          "especialidade_requerida": {
+            "type": "string",
+            "description": "Se precisa de especialidade médica específica",
+            "enum": [
+              "nao",
+              "sim"
+            ],
+            "default": "nao"
+          },
+          "especialidade": {
+            "type": "string",
+            "description": "Especialidade médica requerida",
+            "example": "Hematologia",
+            "maxLength": 255
+          },
+          "grupo": {
+            "type": "string",
+            "description": "Grupo de exames relacionados",
+            "example": "Hemograma",
+            "maxLength": 100
+          },
+          "peso": {
+            "type": "number",
+            "description": "Peso/prioridade para ordenação",
+            "example": 100
+          },
+          "volume_min": {
+            "type": "number",
+            "description": "Volume mínimo necessário (em ml)",
+            "example": 2.5
+          },
+          "volume_ideal": {
+            "type": "number",
+            "description": "Volume ideal (em ml)",
+            "example": 5
+          },
+          "unidade_medida": {
+            "type": "string",
+            "description": "Unidade de medida do resultado",
+            "example": "mg/dL",
+            "maxLength": 50
+          },
+          "amostra_biologica": {
+            "type": "string",
+            "description": "Tipo de amostra biológica necessária",
+            "example": "Sangue total EDTA",
+            "maxLength": 100
+          },
+          "tipo_recipiente": {
+            "type": "string",
+            "description": "Tipo de recipiente para coleta",
+            "example": "Tubo roxo EDTA",
+            "maxLength": 100
+          },
+          "necessita_preparo": {
+            "type": "string",
+            "description": "Se necessita preparo especial",
+            "enum": [
+              "nao",
+              "sim"
+            ],
+            "default": "nao"
+          },
+          "requisitos": {
+            "type": "string",
+            "description": "Requisitos para realização do exame",
+            "example": "Jejum de 8 horas"
+          },
+          "tipo_realizacao": {
+            "type": "string",
+            "description": "Onde o exame é realizado",
+            "enum": [
+              "interno",
+              "apoio",
+              "telemedicina"
+            ],
+            "default": "interno"
+          },
+          "laboratorio_apoio_id": {
+            "type": "number",
+            "description": "ID do laboratório de apoio",
+            "example": 1
+          },
+          "destino_exame": {
+            "type": "string",
+            "description": "Destino do exame no sistema externo",
+            "example": "DB_HEMOGRAMA",
+            "maxLength": 100
+          },
+          "envio_automatico": {
+            "type": "string",
+            "description": "Se envia automaticamente para laboratório de apoio",
+            "enum": [
+              "nao",
+              "sim"
+            ],
+            "default": "nao"
+          },
+          "prazo_entrega_dias": {
+            "type": "number",
+            "description": "Prazo de entrega em dias úteis",
+            "example": 2
+          },
+          "formato_prazo": {
+            "type": "string",
+            "description": "Formato do prazo",
+            "example": "2 dias úteis",
+            "maxLength": 50
+          },
+          "tem_valores_referencia": {
+            "type": "string",
+            "description": "Se tem referência de valores normais",
+            "enum": [
+              "nao",
+              "sim"
+            ],
+            "default": "nao"
+          },
+          "valores_referencia": {
+            "type": "object",
+            "description": "Valores de referência por idade/sexo",
+            "example": {
+              "adulto_masculino": {
+                "min": 13.5,
+                "max": 17.5
+              },
+              "adulto_feminino": {
+                "min": 12,
+                "max": 15.5
+              }
+            }
+          },
+          "tecnica_coleta": {
+            "type": "string",
+            "description": "Técnica de coleta específica",
+            "example": "Punção venosa periférica"
+          },
+          "distribuicao": {
+            "type": "string",
+            "description": "Distribuição/processamento da amostra",
+            "example": "Centrifugar a 3000 rpm por 10 minutos"
+          },
+          "processamento_entrega": {
+            "type": "string",
+            "description": "Processamento e entrega de laudos",
+            "example": "Resultado liberado em até 2 dias úteis"
+          },
+          "requisitos_anvisa": {
+            "type": "object",
+            "description": "Requisitos da ANVISA/Normas técnicas",
+            "example": {
+              "norma": "RDC 302/2005",
+              "requisito": "Controle de qualidade interno"
+            }
+          },
+          "formularios_atendimento": {
+            "type": "object",
+            "description": "Formulários necessários para o atendimento",
+            "example": [
+              "termo_consentimento",
+              "questionario_jejum"
+            ]
+          },
+          "preparo_coleta": {
+            "type": "object",
+            "description": "Instruções de preparo por público",
+            "example": {
+              "geral": "Jejum de 8 horas",
+              "feminino": "Informar data da última menstruação",
+              "infantil": "Jejum de 4 horas para crianças"
+            }
+          },
+          "lembretes": {
+            "type": "object",
+            "description": "Lembretes para coletores, recepcionistas e ordem de serviço",
+            "example": {
+              "coletores": "Homogeneizar suavemente o tubo",
+              "recepcionistas": "Verificar jejum do paciente",
+              "ordem_servico": "Exame deve ser coletado em tubo EDTA"
+            }
+          },
+          "status": {
+            "type": "string",
+            "description": "Status do exame no sistema",
+            "enum": [
+              "ativo",
+              "inativo",
+              "suspenso"
+            ],
+            "default": "ativo"
+          },
+          "empresa_id": {
+            "type": "number",
+            "description": "ID da empresa (null = disponível para todas)",
+            "example": 1
+          }
+        },
+        "required": [
+          "codigo_interno",
+          "nome",
+          "tipo_exame_id",
+          "categoria",
+          "especialidade_requerida",
+          "necessita_preparo",
+          "tipo_realizacao",
+          "envio_automatico",
+          "tem_valores_referencia",
+          "status"
+        ]
+      },
+      "Exame": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateExameDto": {
+        "type": "object",
+        "properties": {
+          "codigo_interno": {
+            "type": "string",
+            "description": "Código interno único do exame",
+            "example": "HEMOG001",
+            "maxLength": 50
+          },
+          "nome": {
+            "type": "string",
+            "description": "Nome completo do exame",
+            "example": "Hemograma Completo",
+            "maxLength": 255
+          },
+          "sinonimos": {
+            "type": "string",
+            "description": "Sinônimos ou nomes alternativos",
+            "example": "Hemograma, Contagem de células",
+            "maxLength": 50
+          },
+          "codigo_tuss": {
+            "type": "string",
+            "description": "Código TUSS (Terminologia Unificada da Saúde Suplementar)",
+            "example": "40304361",
+            "maxLength": 20
+          },
+          "codigo_amb": {
+            "type": "string",
+            "description": "Código AMB (Associação Médica Brasileira)",
+            "example": "28.01.001-2",
+            "maxLength": 20
+          },
+          "codigo_loinc": {
+            "type": "string",
+            "description": "Código LOINC (Logical Observation Identifiers Names and Codes)",
+            "example": "58410-2",
+            "maxLength": 20
+          },
+          "codigo_sus": {
+            "type": "string",
+            "description": "Código SUS",
+            "example": "0202010503",
+            "maxLength": 20
+          },
+          "tipo_exame_id": {
+            "type": "number",
+            "description": "ID do tipo de exame",
+            "example": 1
+          },
+          "categoria": {
+            "type": "string",
+            "description": "Categoria geral do exame",
+            "enum": [
+              "laboratorio",
+              "imagem",
+              "procedimento",
+              "consulta"
+            ],
+            "example": "laboratorio"
+          },
+          "subgrupo_id": {
+            "type": "number",
+            "description": "ID do subgrupo do exame",
+            "example": 1
+          },
+          "setor_id": {
+            "type": "number",
+            "description": "ID do setor responsável",
+            "example": 1
+          },
+          "metodologia": {
+            "type": "string",
+            "description": "Metodologia utilizada no exame",
+            "example": "Citometria de fluxo",
+            "maxLength": 255
+          },
+          "especialidade_requerida": {
+            "type": "string",
+            "description": "Se precisa de especialidade médica específica",
+            "enum": [
+              "nao",
+              "sim"
+            ],
+            "default": "nao"
+          },
+          "especialidade": {
+            "type": "string",
+            "description": "Especialidade médica requerida",
+            "example": "Hematologia",
+            "maxLength": 255
+          },
+          "grupo": {
+            "type": "string",
+            "description": "Grupo de exames relacionados",
+            "example": "Hemograma",
+            "maxLength": 100
+          },
+          "peso": {
+            "type": "number",
+            "description": "Peso/prioridade para ordenação",
+            "example": 100
+          },
+          "volume_min": {
+            "type": "number",
+            "description": "Volume mínimo necessário (em ml)",
+            "example": 2.5
+          },
+          "volume_ideal": {
+            "type": "number",
+            "description": "Volume ideal (em ml)",
+            "example": 5
+          },
+          "unidade_medida": {
+            "type": "string",
+            "description": "Unidade de medida do resultado",
+            "example": "mg/dL",
+            "maxLength": 50
+          },
+          "amostra_biologica": {
+            "type": "string",
+            "description": "Tipo de amostra biológica necessária",
+            "example": "Sangue total EDTA",
+            "maxLength": 100
+          },
+          "tipo_recipiente": {
+            "type": "string",
+            "description": "Tipo de recipiente para coleta",
+            "example": "Tubo roxo EDTA",
+            "maxLength": 100
+          },
+          "necessita_preparo": {
+            "type": "string",
+            "description": "Se necessita preparo especial",
+            "enum": [
+              "nao",
+              "sim"
+            ],
+            "default": "nao"
+          },
+          "requisitos": {
+            "type": "string",
+            "description": "Requisitos para realização do exame",
+            "example": "Jejum de 8 horas"
+          },
+          "tipo_realizacao": {
+            "type": "string",
+            "description": "Onde o exame é realizado",
+            "enum": [
+              "interno",
+              "apoio",
+              "telemedicina"
+            ],
+            "default": "interno"
+          },
+          "laboratorio_apoio_id": {
+            "type": "number",
+            "description": "ID do laboratório de apoio",
+            "example": 1
+          },
+          "destino_exame": {
+            "type": "string",
+            "description": "Destino do exame no sistema externo",
+            "example": "DB_HEMOGRAMA",
+            "maxLength": 100
+          },
+          "envio_automatico": {
+            "type": "string",
+            "description": "Se envia automaticamente para laboratório de apoio",
+            "enum": [
+              "nao",
+              "sim"
+            ],
+            "default": "nao"
+          },
+          "prazo_entrega_dias": {
+            "type": "number",
+            "description": "Prazo de entrega em dias úteis",
+            "example": 2
+          },
+          "formato_prazo": {
+            "type": "string",
+            "description": "Formato do prazo",
+            "example": "2 dias úteis",
+            "maxLength": 50
+          },
+          "tem_valores_referencia": {
+            "type": "string",
+            "description": "Se tem referência de valores normais",
+            "enum": [
+              "nao",
+              "sim"
+            ],
+            "default": "nao"
+          },
+          "valores_referencia": {
+            "type": "object",
+            "description": "Valores de referência por idade/sexo",
+            "example": {
+              "adulto_masculino": {
+                "min": 13.5,
+                "max": 17.5
+              },
+              "adulto_feminino": {
+                "min": 12,
+                "max": 15.5
+              }
+            }
+          },
+          "tecnica_coleta": {
+            "type": "string",
+            "description": "Técnica de coleta específica",
+            "example": "Punção venosa periférica"
+          },
+          "distribuicao": {
+            "type": "string",
+            "description": "Distribuição/processamento da amostra",
+            "example": "Centrifugar a 3000 rpm por 10 minutos"
+          },
+          "processamento_entrega": {
+            "type": "string",
+            "description": "Processamento e entrega de laudos",
+            "example": "Resultado liberado em até 2 dias úteis"
+          },
+          "requisitos_anvisa": {
+            "type": "object",
+            "description": "Requisitos da ANVISA/Normas técnicas",
+            "example": {
+              "norma": "RDC 302/2005",
+              "requisito": "Controle de qualidade interno"
+            }
+          },
+          "formularios_atendimento": {
+            "type": "object",
+            "description": "Formulários necessários para o atendimento",
+            "example": [
+              "termo_consentimento",
+              "questionario_jejum"
+            ]
+          },
+          "preparo_coleta": {
+            "type": "object",
+            "description": "Instruções de preparo por público",
+            "example": {
+              "geral": "Jejum de 8 horas",
+              "feminino": "Informar data da última menstruação",
+              "infantil": "Jejum de 4 horas para crianças"
+            }
+          },
+          "lembretes": {
+            "type": "object",
+            "description": "Lembretes para coletores, recepcionistas e ordem de serviço",
+            "example": {
+              "coletores": "Homogeneizar suavemente o tubo",
+              "recepcionistas": "Verificar jejum do paciente",
+              "ordem_servico": "Exame deve ser coletado em tubo EDTA"
+            }
+          },
+          "status": {
+            "type": "string",
+            "description": "Status do exame no sistema",
+            "enum": [
+              "ativo",
+              "inativo",
+              "suspenso"
+            ],
+            "default": "ativo"
+          },
+          "empresa_id": {
+            "type": "number",
+            "description": "ID da empresa (null = disponível para todas)",
+            "example": 1
+          }
+        }
+      },
+      "CreateConvenioDto": {
+        "type": "object",
+        "properties": {
+          "codigo": {
+            "type": "string",
+            "description": "Código interno único do convênio",
+            "example": "CONV001",
+            "maxLength": 20
+          },
+          "nome": {
+            "type": "string",
+            "description": "Nome do convênio",
+            "example": "Unimed São Paulo",
+            "maxLength": 255
+          },
+          "razao_social": {
+            "type": "string",
+            "description": "Razão social",
+            "example": "Unimed São Paulo Cooperativa de Trabalho Médico",
+            "maxLength": 255
+          },
+          "cnpj": {
+            "type": "string",
+            "description": "CNPJ do convênio (somente números)",
+            "example": "12345678901234",
+            "maxLength": 14
+          },
+          "registro_ans": {
+            "type": "string",
+            "description": "Registro ANS",
+            "example": "123456",
+            "maxLength": 50
+          },
+          "tem_integracao_api": {
+            "type": "boolean",
+            "description": "Se tem integração via API",
+            "example": true,
+            "default": false
+          },
+          "url_api": {
+            "type": "string",
+            "description": "URL da API do convênio",
+            "example": "https://api.unimed.com.br/v1",
+            "maxLength": 255
+          },
+          "token_api": {
+            "type": "string",
+            "description": "Token/chave de acesso da API",
+            "example": "sk_live_123456789",
+            "maxLength": 255
+          },
+          "requer_autorizacao": {
+            "type": "boolean",
+            "description": "Se requer autorização prévia",
+            "example": true,
+            "default": false
+          },
+          "requer_senha": {
+            "type": "boolean",
+            "description": "Se requer senha de autorização",
+            "example": false,
+            "default": false
+          },
+          "validade_guia_dias": {
+            "type": "number",
+            "description": "Validade padrão da guia em dias",
+            "example": 30
+          },
+          "tipo_faturamento": {
+            "type": "string",
+            "description": "Tipo de faturamento",
+            "enum": [
+              "tiss",
+              "proprio",
+              "manual"
+            ],
+            "default": "tiss"
+          },
+          "portal_envio": {
+            "type": "string",
+            "description": "Portal de envio (SAVI, Orizon, etc)",
+            "example": "SAVI",
+            "maxLength": 255
+          },
+          "dia_fechamento": {
+            "type": "number",
+            "description": "Dia de fechamento do faturamento",
+            "example": 20,
+            "minimum": 1,
+            "maximum": 31
+          },
+          "prazo_pagamento_dias": {
+            "type": "number",
+            "description": "Prazo de pagamento em dias",
+            "example": 30
+          },
+          "percentual_desconto": {
+            "type": "number",
+            "description": "Percentual de desconto padrão",
+            "example": 10.5,
+            "default": 0,
+            "minimum": 0,
+            "maximum": 100
+          },
+          "tabela_precos": {
+            "type": "string",
+            "description": "Tabela de preços utilizada",
+            "example": "CBHPM 2023",
+            "maxLength": 50
+          },
+          "telefone": {
+            "type": "string",
+            "description": "Telefone de contato",
+            "example": "11987654321",
+            "maxLength": 20
+          },
+          "email": {
+            "type": "string",
+            "description": "E-mail de contato",
+            "example": "contato@unimed.com.br",
+            "maxLength": 255
+          },
+          "contato_nome": {
+            "type": "string",
+            "description": "Nome da pessoa de contato",
+            "example": "João Silva",
+            "maxLength": 255
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações gerais",
+            "example": "Autorização via portal web, envio de guias até dia 20"
+          },
+          "regras_especificas": {
+            "type": "object",
+            "description": "Regras específicas do convênio",
+            "example": {
+              "requisitosPrevios": [
+                "carteirinha",
+                "pedido médico"
+              ],
+              "examesExcluidos": [
+                "COVID-19 PCR"
+              ]
+            }
+          },
+          "status": {
+            "type": "string",
+            "description": "Status do convênio",
+            "enum": [
+              "ativo",
+              "inativo",
+              "suspenso"
+            ],
+            "default": "ativo"
+          }
+        },
+        "required": [
+          "codigo",
+          "nome",
+          "razao_social",
+          "tem_integracao_api",
+          "requer_autorizacao",
+          "requer_senha",
+          "tipo_faturamento",
+          "percentual_desconto",
+          "status"
+        ]
+      },
+      "Convenio": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateConvenioDto": {
+        "type": "object",
+        "properties": {
+          "codigo": {
+            "type": "string",
+            "description": "Código interno único do convênio",
+            "example": "CONV001",
+            "maxLength": 20
+          },
+          "nome": {
+            "type": "string",
+            "description": "Nome do convênio",
+            "example": "Unimed São Paulo",
+            "maxLength": 255
+          },
+          "razao_social": {
+            "type": "string",
+            "description": "Razão social",
+            "example": "Unimed São Paulo Cooperativa de Trabalho Médico",
+            "maxLength": 255
+          },
+          "cnpj": {
+            "type": "string",
+            "description": "CNPJ do convênio (somente números)",
+            "example": "12345678901234",
+            "maxLength": 14
+          },
+          "registro_ans": {
+            "type": "string",
+            "description": "Registro ANS",
+            "example": "123456",
+            "maxLength": 50
+          },
+          "tem_integracao_api": {
+            "type": "boolean",
+            "description": "Se tem integração via API",
+            "example": true,
+            "default": false
+          },
+          "url_api": {
+            "type": "string",
+            "description": "URL da API do convênio",
+            "example": "https://api.unimed.com.br/v1",
+            "maxLength": 255
+          },
+          "token_api": {
+            "type": "string",
+            "description": "Token/chave de acesso da API",
+            "example": "sk_live_123456789",
+            "maxLength": 255
+          },
+          "requer_autorizacao": {
+            "type": "boolean",
+            "description": "Se requer autorização prévia",
+            "example": true,
+            "default": false
+          },
+          "requer_senha": {
+            "type": "boolean",
+            "description": "Se requer senha de autorização",
+            "example": false,
+            "default": false
+          },
+          "validade_guia_dias": {
+            "type": "number",
+            "description": "Validade padrão da guia em dias",
+            "example": 30
+          },
+          "tipo_faturamento": {
+            "type": "string",
+            "description": "Tipo de faturamento",
+            "enum": [
+              "tiss",
+              "proprio",
+              "manual"
+            ],
+            "default": "tiss"
+          },
+          "portal_envio": {
+            "type": "string",
+            "description": "Portal de envio (SAVI, Orizon, etc)",
+            "example": "SAVI",
+            "maxLength": 255
+          },
+          "dia_fechamento": {
+            "type": "number",
+            "description": "Dia de fechamento do faturamento",
+            "example": 20,
+            "minimum": 1,
+            "maximum": 31
+          },
+          "prazo_pagamento_dias": {
+            "type": "number",
+            "description": "Prazo de pagamento em dias",
+            "example": 30
+          },
+          "percentual_desconto": {
+            "type": "number",
+            "description": "Percentual de desconto padrão",
+            "example": 10.5,
+            "default": 0,
+            "minimum": 0,
+            "maximum": 100
+          },
+          "tabela_precos": {
+            "type": "string",
+            "description": "Tabela de preços utilizada",
+            "example": "CBHPM 2023",
+            "maxLength": 50
+          },
+          "telefone": {
+            "type": "string",
+            "description": "Telefone de contato",
+            "example": "11987654321",
+            "maxLength": 20
+          },
+          "email": {
+            "type": "string",
+            "description": "E-mail de contato",
+            "example": "contato@unimed.com.br",
+            "maxLength": 255
+          },
+          "contato_nome": {
+            "type": "string",
+            "description": "Nome da pessoa de contato",
+            "example": "João Silva",
+            "maxLength": 255
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações gerais",
+            "example": "Autorização via portal web, envio de guias até dia 20"
+          },
+          "regras_especificas": {
+            "type": "object",
+            "description": "Regras específicas do convênio",
+            "example": {
+              "requisitosPrevios": [
+                "carteirinha",
+                "pedido médico"
+              ],
+              "examesExcluidos": [
+                "COVID-19 PCR"
+              ]
+            }
+          },
+          "status": {
+            "type": "string",
+            "description": "Status do convênio",
+            "enum": [
+              "ativo",
+              "inativo",
+              "suspenso"
+            ],
+            "default": "ativo"
+          }
+        }
+      },
+      "CreateTipoExameDto": {
+        "type": "object",
+        "properties": {
+          "codigo": {
+            "type": "string",
+            "description": "Código único do tipo de exame",
+            "example": "LAB001",
+            "maxLength": 20
+          },
+          "nome": {
+            "type": "string",
+            "description": "Nome do tipo de exame",
+            "example": "Exames Laboratoriais",
+            "maxLength": 100
+          },
+          "descricao": {
+            "type": "string",
+            "description": "Descrição detalhada do tipo",
+            "example": "Exames de análises clínicas realizados em laboratório"
+          },
+          "icone": {
+            "type": "string",
+            "description": "Ícone ou identificador visual",
+            "example": "fa-flask",
+            "maxLength": 50
+          },
+          "cor": {
+            "type": "string",
+            "description": "Cor hexadecimal para interface",
+            "example": "#3498db",
+            "maxLength": 7
+          },
+          "ordem": {
+            "type": "number",
+            "description": "Ordem de exibição",
+            "example": 1,
+            "minimum": 0,
+            "default": 0
+          },
+          "status": {
+            "type": "string",
+            "description": "Status do tipo de exame",
+            "enum": [
+              "ativo",
+              "inativo"
+            ],
+            "default": "ativo"
+          },
+          "requer_agendamento": {
+            "type": "boolean",
+            "description": "Se requer agendamento prévio",
+            "example": false,
+            "default": false
+          },
+          "requer_autorizacao": {
+            "type": "boolean",
+            "description": "Se requer autorização de convênio",
+            "example": false,
+            "default": false
+          },
+          "permite_domiciliar": {
+            "type": "boolean",
+            "description": "Se permite coleta domiciliar",
+            "example": true,
+            "default": false
+          },
+          "configuracoes": {
+            "type": "object",
+            "description": "Configurações adicionais do tipo",
+            "example": {
+              "tempoMedio": 30,
+              "requisitoEspecial": "jejum"
+            }
+          }
+        },
+        "required": [
+          "codigo",
+          "nome",
+          "ordem",
+          "status",
+          "requer_agendamento",
+          "requer_autorizacao",
+          "permite_domiciliar"
+        ]
+      },
+      "TipoExame": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateTipoExameDto": {
+        "type": "object",
+        "properties": {
+          "codigo": {
+            "type": "string",
+            "description": "Código único do tipo de exame",
+            "example": "LAB001",
+            "maxLength": 20
+          },
+          "nome": {
+            "type": "string",
+            "description": "Nome do tipo de exame",
+            "example": "Exames Laboratoriais",
+            "maxLength": 100
+          },
+          "descricao": {
+            "type": "string",
+            "description": "Descrição detalhada do tipo",
+            "example": "Exames de análises clínicas realizados em laboratório"
+          },
+          "icone": {
+            "type": "string",
+            "description": "Ícone ou identificador visual",
+            "example": "fa-flask",
+            "maxLength": 50
+          },
+          "cor": {
+            "type": "string",
+            "description": "Cor hexadecimal para interface",
+            "example": "#3498db",
+            "maxLength": 7
+          },
+          "ordem": {
+            "type": "number",
+            "description": "Ordem de exibição",
+            "example": 1,
+            "minimum": 0,
+            "default": 0
+          },
+          "status": {
+            "type": "string",
+            "description": "Status do tipo de exame",
+            "enum": [
+              "ativo",
+              "inativo"
+            ],
+            "default": "ativo"
+          },
+          "requer_agendamento": {
+            "type": "boolean",
+            "description": "Se requer agendamento prévio",
+            "example": false,
+            "default": false
+          },
+          "requer_autorizacao": {
+            "type": "boolean",
+            "description": "Se requer autorização de convênio",
+            "example": false,
+            "default": false
+          },
+          "permite_domiciliar": {
+            "type": "boolean",
+            "description": "Se permite coleta domiciliar",
+            "example": true,
+            "default": false
+          },
+          "configuracoes": {
+            "type": "object",
+            "description": "Configurações adicionais do tipo",
+            "example": {
+              "tempoMedio": 30,
+              "requisitoEspecial": "jejum"
+            }
           }
         }
       }

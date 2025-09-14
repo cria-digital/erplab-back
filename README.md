@@ -164,8 +164,8 @@ http://localhost:10016/api/v1/health
 ## 🌐 Endpoints
 
 - **API Base:** `http://localhost:10016/api/v1`
-- **Documentação:** `http://localhost:10016/api/docs` (em desenvolvimento)
-- **Health Check:** `http://localhost:10016/api/v1/health` (em desenvolvimento)
+- **Documentação Swagger:** `http://localhost:10016/api/docs`
+- **Health Check:** `http://localhost:10016/api/v1/health`
 
 ## 📁 Estrutura do Projeto
 
@@ -254,12 +254,22 @@ npm run migration:revert    # Reverter última migration
 
 ## 🏗️ Módulos do Sistema
 
-### Core Modules (Implementação Prioritária)
+### Módulos Implementados ✅
+1. **Autenticação** - JWT, refresh token, setup inicial
+2. **Usuários** - Gestão completa de usuários, permissões
+3. **Auditoria** - Logs de todas operações, histórico de alterações
+4. **Pacientes** - Cadastro completo de pacientes
+5. **Unidades de Saúde** - Gestão de unidades/filiais
+6. **Exames** - Gestão completa de exames, tipos e convênios (26 endpoints)
+   - Cadastro de exames com códigos TUSS, AMB, LOINC, SUS
+   - Tipos de exame com configurações específicas
+   - Convênios médicos com regras de autorização
+   - Ordens de serviço e resultados
+
+### Core Modules (Em Desenvolvimento)
 1. **Atendimento** - Sistema multi-canal, OCR, filas, OS
-2. **Exames** - Integração laboratórios, telemedicina, DICOM
-3. **Financeiro** - Contas a pagar/receber, conciliação
-4. **CRM** - WhatsApp Bot, jornada do cliente
-5. **Auditoria** - POPs, checklists, rastreabilidade
+2. **Financeiro** - Contas a pagar/receber, conciliação
+3. **CRM** - WhatsApp Bot, jornada do cliente
 
 ### Secondary Modules
 6. **Estoque** - Controle de insumos e compras
@@ -293,10 +303,10 @@ HERMES_PARDINI_API_TOKEN=...
 ## 🎯 Próximos Passos
 
 1. **Implementar módulo de atendimento** (prioridade 1)
-2. **Configurar autenticação JWT**
-3. **Criar entities principais**
-4. **Implementar integração WhatsApp**
-5. **Configurar Swagger/OpenAPI**
+2. **Implementar módulo financeiro** (prioridade 2)
+3. **Implementar integração WhatsApp** (prioridade 3)
+4. **Adicionar testes unitários e e2e**
+5. **Configurar CI/CD pipeline**
 
 ## 📝 Convenções
 

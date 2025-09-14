@@ -11,6 +11,7 @@ import { UnidadeSaudeModule } from './modules/unidade-saude/unidade-saude.module
 import { UsuariosModule } from './modules/usuarios/usuarios.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
+import { ExamesModule } from './modules/exames/exames.module';
 
 @Module({
   imports: [
@@ -33,9 +34,9 @@ import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
     AuditoriaModule,
     PacientesModule,
     UnidadeSaudeModule,
+    ExamesModule,
 
     // Próximos módulos a serem implementados:
-    // ExamesModule,
     // FinanceiroModule,
     // CrmModule,
     // EstoqueModule,

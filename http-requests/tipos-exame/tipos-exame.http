@@ -1,0 +1,154 @@
+### Variáveis
+@baseUrl = http://localhost:10016/api/v1
+@contentType = application/json
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkNWI5MmEzMC1hMDNlLTRmOGUtYmJjNS0wZDEzY2FiYWQ3MjMiLCJlbWFpbCI6ImRpZWdvc29la0BnbWFpbC5jb20iLCJub21lIjoiRGllZ28gU29layIsImlhdCI6MTc1NzgxMDU5MiwiZXhwIjoxNzU3ODk2OTkyfQ.Nl106ykTeiqD3c37ElQhSPMOlxkoINhu_PKZNEHM6D4
+
+### Criar tipo de exame
+POST {{baseUrl}}/tipos-exame
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo": "LAB001",
+  "nome": "Exames Laboratoriais",
+  "descricao": "Exames de análises clínicas realizados em laboratório",
+  "icone": "fa-flask",
+  "cor": "#3498db",
+  "ordem": 1,
+  "status": "ativo",
+  "requer_agendamento": false,
+  "requer_autorizacao": false,
+  "permite_domiciliar": true,
+  "configuracoes": {
+    "tempoMedio": 30,
+    "requisitoEspecial": "jejum"
+  }
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "success": true,
+#   "message": "Tipo de exame criado com sucesso",
+#   "data": {
+#     "id": 1,
+#     "codigo": "LAB001",
+#     "nome": "Exames Laboratoriais",
+#     ...
+#   }
+# }
+
+### Criar tipo de exame - Imagem
+POST {{baseUrl}}/tipos-exame
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo": "IMG001",
+  "nome": "Exames de Imagem",
+  "descricao": "Exames de diagnóstico por imagem",
+  "icone": "fa-x-ray",
+  "cor": "#9b59b6",
+  "ordem": 2,
+  "status": "ativo",
+  "requer_agendamento": true,
+  "requer_autorizacao": true,
+  "permite_domiciliar": false
+}
+
+### Criar tipo de exame - Procedimentos
+POST {{baseUrl}}/tipos-exame
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo": "PROC001",
+  "nome": "Procedimentos Médicos",
+  "descricao": "Procedimentos médicos ambulatoriais",
+  "icone": "fa-procedures",
+  "cor": "#e74c3c",
+  "ordem": 3,
+  "status": "ativo",
+  "requer_agendamento": true,
+  "requer_autorizacao": false,
+  "permite_domiciliar": false
+}
+
+### Listar todos os tipos de exame
+GET {{baseUrl}}/tipos-exame?page=1&limit=10
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "success": true,
+#   "message": "Tipos de exame listados com sucesso",
+#   "data": {
+#     "data": [...],
+#     "total": 3,
+#     "page": 1,
+#     "lastPage": 1
+#   }
+# }
+
+### Listar tipos ativos
+GET {{baseUrl}}/tipos-exame/ativos
+Authorization: Bearer {{token}}
+
+### Listar tipos que requerem agendamento
+GET {{baseUrl}}/tipos-exame/com-agendamento
+Authorization: Bearer {{token}}
+
+### Listar tipos que requerem autorização
+GET {{baseUrl}}/tipos-exame/com-autorizacao
+Authorization: Bearer {{token}}
+
+### Listar tipos que permitem coleta domiciliar
+GET {{baseUrl}}/tipos-exame/domiciliares
+Authorization: Bearer {{token}}
+
+### Buscar tipo por ID
+GET {{baseUrl}}/tipos-exame/1
+Authorization: Bearer {{token}}
+
+### Buscar tipo por código
+GET {{baseUrl}}/tipos-exame/codigo/LAB001
+Authorization: Bearer {{token}}
+
+### Atualizar tipo de exame
+PATCH {{baseUrl}}/tipos-exame/1
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "descricao": "Exames de análises clínicas e bioquímicas realizados em laboratório",
+  "ordem": 1,
+  "permite_domiciliar": true,
+  "configuracoes": {
+    "tempoMedio": 45,
+    "requisitoEspecial": "jejum de 8h",
+    "observacoes": "Alguns exames podem ter requisitos específicos"
+  }
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "success": true,
+#   "message": "Tipo de exame atualizado com sucesso",
+#   "data": {
+#     "id": 1,
+#     ...
+#   }
+# }
+
+### Desativar tipo de exame
+DELETE {{baseUrl}}/tipos-exame/1
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "success": true,
+#   "message": "Tipo de exame desativado com sucesso"
+# }
