@@ -1,0 +1,83 @@
+### Variáveis
+@baseUrl = http://localhost:10016/api/v1
+@contentType = application/json
+
+### 1. Solicitar Recuperação de Senha
+POST {{baseUrl}}/auth/forgot-password
+Content-Type: {{contentType}}
+
+{
+  "email": "diegosoek@gmail.com"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Se o email estiver cadastrado, você receberá um link para recuperação de senha."
+# }
+
+### 2. Validar Token de Recuperação
+# Substitua o TOKEN_UUID pelo token recebido no email
+GET {{baseUrl}}/auth/validate-reset-token/5d3f1be8-9d0d-41a5-97a0-7ec092ac7d1a
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "valid": true
+# }
+
+### 3. Resetar Senha com Token
+# Substitua o TOKEN_UUID pelo token recebido no email
+POST {{baseUrl}}/auth/reset-password
+Content-Type: {{contentType}}
+
+{
+  "token": "5d3f1be8-9d0d-41a5-97a0-7ec092ac7d1a",
+  "newPassword": "NovaSenha123!"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Senha alterada com sucesso. Você já pode fazer login com a nova senha."
+# }
+
+### 4. Testar Login com Nova Senha
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "diegosoek@gmail.com",
+  "password": "NovaSenha123!"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "access_token": "eyJhbGciOiJIUzI1...",
+#   "refresh_token": "eyJhbGciOiJIUzI1...",
+#   "token_type": "Bearer",
+#   "expires_in": "24h",
+#   "user": {
+#     "id": "uuid",
+#     "nome": "Diego Soek",
+#     "email": "diegosoek@gmail.com",
+#     "permissoes": [],
+#     "foto_url": null
+#   }
+# }
+
+### Fluxo de Teste Completo
+# 1. Execute a requisição "Solicitar Recuperação de Senha"
+# 2. Verifique o email (ou logs do console se o email não estiver configurado)
+# 3. Copie o token UUID do email/log
+# 4. Substitua TOKEN_UUID nas requisições 2 e 3
+# 5. Execute "Validar Token" para confirmar que está válido
+# 6. Execute "Resetar Senha" para definir nova senha
+# 7. Teste o login com a nova senha
+
+### Observações:
+# - O token expira em 2 horas
+# - Após usar o token para resetar a senha, ele é invalidado
+# - Por segurança, a resposta do forgot-password não indica se o email existe
+# - Se o email não estiver configurado, verifique os logs do console para o token

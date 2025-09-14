@@ -1,0 +1,90 @@
+### Variáveis
+@baseUrl = http://localhost:10016/api/v1
+@contentType = application/json
+
+### 1. Fazer Login para obter token
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "diegosoek@gmail.com",
+  "password": "Admin123!"
+}
+
+### 2. Alterar Senha do Usuário Autenticado
+POST {{baseUrl}}/auth/change-password
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "currentPassword": "NovaSenha123!",
+  "newPassword": "Admin123!"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Senha alterada com sucesso"
+# }
+
+### 3. Testar Login com Nova Senha
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "diegosoek@gmail.com",
+  "password": "NovaSenha123!"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "access_token": "eyJhbGciOiJIUzI1...",
+#   "refresh_token": "eyJhbGciOiJIUzI1...",
+#   "token_type": "Bearer",
+#   "expires_in": "24h",
+#   "user": {
+#     "id": "uuid",
+#     "nome": "Diego Soek",
+#     "email": "diegosoek@gmail.com",
+#     "permissoes": [],
+#     "foto_url": null
+#   }
+# }
+
+### Possíveis Erros:
+
+### Senha Atual Incorreta
+# Status: 401 Unauthorized
+# {
+#   "statusCode": 401,
+#   "message": "Senha atual incorreta",
+#   "error": "Unauthorized"
+# }
+
+### Nova Senha Igual à Atual
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "A nova senha deve ser diferente da senha atual",
+#   "error": "Bad Request"
+# }
+
+### Token Inválido ou Expirado
+# Status: 401 Unauthorized
+# {
+#   "statusCode": 401,
+#   "message": "Unauthorized"
+# }
+
+### Observações:
+# - A rota /auth/change-password requer autenticação (token JWT válido)
+# - A senha atual deve estar correta
+# - A nova senha deve ser diferente da atual
+# - A nova senha deve atender aos requisitos:
+#   - Mínimo 8 caracteres
+#   - Pelo menos uma letra maiúscula
+#   - Pelo menos uma letra minúscula
+#   - Pelo menos um número
+#   - Pelo menos um caractere especial (@$!%*?&)
+# - Um email de confirmação será enviado após a alteração bem-sucedida

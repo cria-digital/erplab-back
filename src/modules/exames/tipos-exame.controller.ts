@@ -97,7 +97,11 @@ export class TiposExameController {
   > {
     const pageNum = page ? parseInt(page, 10) : 1;
     const limitNum = limit ? parseInt(limit, 10) : 10;
-    const result = await this.tiposExameService.findAll(pageNum, limitNum, status);
+    const result = await this.tiposExameService.findAll(
+      pageNum,
+      limitNum,
+      status,
+    );
     return {
       success: true,
       message: 'Tipos de exame listados com sucesso',

@@ -60,7 +60,7 @@ export class AtendimentoService {
   }
 
   // RF002 - Auto-atendimento com OCR
-  async processarOCR(arquivo: any) {
+  async processarOCR() {
     return {
       status: 'processado',
       dados_extraidos: {

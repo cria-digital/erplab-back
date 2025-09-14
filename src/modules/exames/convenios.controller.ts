@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   Query,
-  Request,
   ParseIntPipe,
 } from '@nestjs/common';
 import {
@@ -28,13 +27,6 @@ import { Convenio } from './entities/convenio.entity';
 interface ApiResponseType<T = any> {
   message: string;
   data?: T;
-}
-
-interface RequestWithUser {
-  user: {
-    id: string;
-    email: string;
-  };
 }
 
 @ApiTags('Convênios')
@@ -65,7 +57,6 @@ export class ConveniosController {
   @ApiBody({ type: CreateConvenioDto })
   async create(
     @Body() createConvenioDto: CreateConvenioDto,
-    @Request() req: RequestWithUser,
   ): Promise<ApiResponseType<Convenio>> {
     const convenio = await this.conveniosService.create(createConvenioDto);
 
@@ -346,7 +337,6 @@ export class ConveniosController {
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateConvenioDto: UpdateConvenioDto,
-    @Request() req: RequestWithUser,
   ): Promise<ApiResponseType<Convenio>> {
     const convenio = await this.conveniosService.update(id, updateConvenioDto);
     return {
@@ -375,7 +365,6 @@ export class ConveniosController {
   })
   async remove(
     @Param('id', ParseIntPipe) id: number,
-    @Request() req: RequestWithUser,
   ): Promise<ApiResponseType> {
     await this.conveniosService.remove(id);
     return {

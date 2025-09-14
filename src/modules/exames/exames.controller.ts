@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   Query,
-  Request,
   ParseIntPipe,
 } from '@nestjs/common';
 import {
@@ -28,13 +27,6 @@ import { Exame } from './entities/exame.entity';
 interface ApiResponseType<T = any> {
   message: string;
   data?: T;
-}
-
-interface RequestWithUser {
-  user: {
-    id: string;
-    email: string;
-  };
 }
 
 @ApiTags('Exames')
@@ -65,7 +57,6 @@ export class ExamesController {
   @ApiBody({ type: CreateExameDto })
   async create(
     @Body() createExameDto: CreateExameDto,
-    @Request() req: RequestWithUser,
   ): Promise<ApiResponseType<Exame>> {
     const exame = await this.examesService.create(createExameDto);
 
@@ -408,7 +399,6 @@ export class ExamesController {
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateExameDto: UpdateExameDto,
-    @Request() req: RequestWithUser,
   ): Promise<ApiResponseType<Exame>> {
     const exame = await this.examesService.update(id, updateExameDto);
     return {
@@ -437,7 +427,6 @@ export class ExamesController {
   })
   async remove(
     @Param('id', ParseIntPipe) id: number,
-    @Request() req: RequestWithUser,
   ): Promise<ApiResponseType> {
     await this.examesService.remove(id);
     return {
@@ -473,7 +462,6 @@ export class ExamesController {
   })
   async bulkUpdateStatus(
     @Body() body: { ids: number[]; status: string },
-    @Request() req: RequestWithUser,
   ): Promise<ApiResponseType> {
     await this.examesService.bulkUpdateStatus(body.ids, body.status);
     return {

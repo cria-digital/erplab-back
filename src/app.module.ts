@@ -12,6 +12,7 @@ import { UsuariosModule } from './modules/usuarios/usuarios.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { ExamesModule } from './modules/exames/exames.module';
+import { EmailModule } from './modules/email/email.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ExamesModule } from './modules/exames/exames.module';
     // Módulos de Autenticação e Autorização
     AuthModule,
     UsuariosModule,
+    EmailModule,
 
     // Módulos do Sistema ERP
     AtendimentoModule,

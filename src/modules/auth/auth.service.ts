@@ -2,21 +2,32 @@ import {
   Injectable,
   UnauthorizedException,
   ConflictException,
+  BadRequestException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid';
 import { UsuariosService } from '../usuarios/usuarios.service';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 import { Usuario } from '../usuarios/entities/usuario.entity';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class AuthService {
   constructor(
+    @InjectRepository(Usuario)
+    private readonly usuariosRepository: Repository<Usuario>,
     private readonly usuariosService: UsuariosService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly emailService: EmailService,
   ) {}
 
   async validateUser(email: string, password: string): Promise<Usuario> {
@@ -132,7 +143,7 @@ export class AuthService {
       if (usuarios.total > 0) {
         throw new ConflictException('Já existe usuário cadastrado no sistema');
       }
-    } catch (error) {
+    } catch {
       // Se der erro ao buscar (provavelmente tabela não existe), continua
       console.log('Criando primeiro usuário do sistema...');
     }
@@ -158,5 +169,162 @@ export class AuthService {
       email: usuario.email,
       nome: usuario.nomeCompleto,
     };
+  }
+
+  /**
+   * Solicita recuperação de senha
+   */
+  async forgotPassword(forgotPasswordDto: ForgotPasswordDto): Promise<void> {
+    const usuario = await this.usuariosService.findByEmail(
+      forgotPasswordDto.email,
+    );
+
+    // Não revela se o email existe ou não por segurança
+    if (!usuario) {
+      return;
+    }
+
+    // Gera token de recuperação
+    const resetToken = uuidv4();
+    const resetExpires = new Date();
+    resetExpires.setHours(resetExpires.getHours() + 2); // Token válido por 2 horas
+
+    // Salva token no usuário
+    usuario.resetPasswordToken = resetToken;
+    usuario.resetPasswordExpires = resetExpires;
+    await this.usuariosRepository.save(usuario);
+
+    // Envia email com link de recuperação
+    try {
+      await this.emailService.sendPasswordResetEmail(
+        usuario.email,
+        usuario.nomeCompleto,
+        resetToken,
+      );
+    } catch (error) {
+      console.error('Erro ao enviar email de recuperação:', error);
+      // Remove token se falhar o envio do email
+      usuario.resetPasswordToken = null;
+      usuario.resetPasswordExpires = null;
+      await this.usuariosRepository.save(usuario);
+      throw new BadRequestException('Erro ao enviar email de recuperação');
+    }
+  }
+
+  /**
+   * Reseta a senha com o token de recuperação
+   */
+  async resetPasswordWithToken(
+    resetPasswordDto: ResetPasswordDto,
+  ): Promise<void> {
+    const usuario = await this.usuariosRepository.findOne({
+      where: {
+        resetPasswordToken: resetPasswordDto.token,
+      },
+    });
+
+    if (!usuario) {
+      throw new BadRequestException('Token inválido');
+    }
+
+    if (usuario.resetPasswordExpires < new Date()) {
+      throw new BadRequestException('Token expirado');
+    }
+
+    // Atualiza a senha
+    usuario.senhaHash = await bcrypt.hash(resetPasswordDto.newPassword, 10);
+    usuario.resetPasswordToken = null;
+    usuario.resetPasswordExpires = null;
+    usuario.resetarSenha = false;
+    usuario.tentativasLoginFalhas = 0;
+    usuario.bloqueadoAte = null;
+
+    await this.usuariosRepository.save(usuario);
+
+    // Envia email de confirmação
+    try {
+      await this.emailService.sendPasswordChangedNotification(
+        usuario.email,
+        usuario.nomeCompleto,
+      );
+    } catch (error) {
+      console.error('Erro ao enviar email de confirmação:', error);
+      // Não falha a operação se o email de confirmação não for enviado
+    }
+  }
+
+  /**
+   * Valida se um token de recuperação é válido
+   */
+  async validateResetToken(token: string): Promise<boolean> {
+    const usuario = await this.usuariosRepository.findOne({
+      where: {
+        resetPasswordToken: token,
+      },
+    });
+
+    if (!usuario) {
+      return false;
+    }
+
+    if (usuario.resetPasswordExpires < new Date()) {
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * Altera a senha do usuário autenticado
+   */
+  async changePassword(
+    userId: string,
+    changePasswordDto: ChangePasswordDto,
+  ): Promise<void> {
+    const usuario = await this.usuariosRepository.findOne({
+      where: { id: userId },
+    });
+
+    if (!usuario) {
+      throw new UnauthorizedException('Usuário não encontrado');
+    }
+
+    // Verifica se a senha atual está correta
+    const isPasswordValid = await bcrypt.compare(
+      changePasswordDto.currentPassword,
+      usuario.senhaHash,
+    );
+
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Senha atual incorreta');
+    }
+
+    // Verifica se a nova senha é diferente da atual
+    const isSamePassword = await bcrypt.compare(
+      changePasswordDto.newPassword,
+      usuario.senhaHash,
+    );
+
+    if (isSamePassword) {
+      throw new BadRequestException(
+        'A nova senha deve ser diferente da senha atual',
+      );
+    }
+
+    // Atualiza a senha
+    usuario.senhaHash = await bcrypt.hash(changePasswordDto.newPassword, 10);
+    usuario.resetarSenha = false;
+    await this.usuariosRepository.save(usuario);
+
+    // Envia email de confirmação
+    try {
+      await this.emailService.sendPasswordChangedNotification(
+        usuario.email,
+        usuario.nomeCompleto,
+      );
+    } catch (error) {
+      console.error('Erro ao enviar email de confirmação:', error);
+      // Não falha a operação se o email não for enviado
+    }
   }
 }

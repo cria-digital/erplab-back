@@ -4,7 +4,7 @@ Content-Type: {{contentType}}
 
 {
   "email": "diegosoek@gmail.com",
-  "password": "Admin@123"
+  "password": "Admin123!"
 }
 
 ### Expected Response

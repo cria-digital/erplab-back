@@ -28,31 +28,9 @@
         ]
       }
     },
-    "/api/v1/auth/setup": {
-      "post": {
-        "operationId": "AuthController_setup",
-        "parameters": [],
-        "responses": {
-          "201": {
-            "description": "Usuário inicial criado com sucesso"
-          },
-          "400": {
-            "description": "Já existe usuário cadastrado no sistema"
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Criar usuário inicial - diegosoek@gmail.com",
-        "tags": [
-          "auth"
-        ]
-      }
-    },
     "/api/v1/auth/login": {
       "post": {
+        "description": "Autentica o usuário e retorna tokens de acesso JWT",
         "operationId": "AuthController_login",
         "parameters": [],
         "requestBody": {
@@ -71,51 +49,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "access_token": {
-                      "type": "string"
-                    },
-                    "refresh_token": {
-                      "type": "string"
-                    },
-                    "token_type": {
-                      "type": "string",
-                      "default": "Bearer"
-                    },
-                    "expires_in": {
-                      "type": "string"
-                    },
-                    "user": {
-                      "type": "object",
-                      "properties": {
-                        "id": {
-                          "type": "string"
-                        },
-                        "nome": {
-                          "type": "string"
-                        },
-                        "email": {
-                          "type": "string"
-                        },
-                        "tipo": {
-                          "type": "string"
-                        },
-                        "unidade_saude_id": {
-                          "type": "string"
-                        },
-                        "permissoes": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          }
-                        },
-                        "foto_url": {
-                          "type": "string"
-                        }
-                      }
-                    }
-                  }
+                  "$ref": "#/components/schemas/LoginResponseDto"
                 }
               }
             }
@@ -124,19 +58,15 @@
             "description": "Credenciais inválidas"
           }
         },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
         "summary": "Realizar login",
         "tags": [
-          "auth"
+          "Autenticação"
         ]
       }
     },
     "/api/v1/auth/refresh": {
       "post": {
+        "description": "Usa o refresh token para gerar um novo access token",
         "operationId": "AuthController_refreshToken",
         "parameters": [],
         "requestBody": {
@@ -155,19 +85,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "access_token": {
-                      "type": "string"
-                    },
-                    "token_type": {
-                      "type": "string",
-                      "default": "Bearer"
-                    },
-                    "expires_in": {
-                      "type": "string"
-                    }
-                  }
+                  "$ref": "#/components/schemas/RefreshResponseDto"
                 }
               }
             }
@@ -176,19 +94,15 @@
             "description": "Refresh token inválido"
           }
         },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
         "summary": "Renovar access token",
         "tags": [
-          "auth"
+          "Autenticação"
         ]
       }
     },
     "/api/v1/auth/logout": {
       "post": {
+        "description": "Invalida a sessão do usuário autenticado",
         "operationId": "AuthController_logout",
         "parameters": [],
         "responses": {
@@ -203,12 +117,13 @@
         ],
         "summary": "Realizar logout",
         "tags": [
-          "auth"
+          "Autenticação"
         ]
       }
     },
     "/api/v1/auth/me": {
       "get": {
+        "description": "Retorna as informações do usuário atual baseado no token JWT",
         "operationId": "AuthController_getProfile",
         "parameters": [],
         "responses": {
@@ -253,29 +168,189 @@
         ],
         "summary": "Obter dados do usuário autenticado",
         "tags": [
-          "auth"
+          "Autenticação"
         ]
       }
     },
     "/api/v1/auth/validate": {
       "post": {
+        "description": "Verifica se um token JWT é válido",
         "operationId": "AuthController_validateToken",
         "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string",
+                    "description": "Token JWT para validar"
+                  }
+                },
+                "required": [
+                  "token"
+                ]
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Status de validação do token",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "valid": {
-                      "type": "boolean"
-                    }
-                  }
+                  "$ref": "#/components/schemas/ValidateTokenResponseDto"
                 }
               }
             }
+          }
+        },
+        "summary": "Validar token JWT",
+        "tags": [
+          "Autenticação"
+        ]
+      }
+    },
+    "/api/v1/auth/forgot-password": {
+      "post": {
+        "description": "Envia um email com link para recuperação de senha",
+        "operationId": "AuthController_forgotPassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForgotPasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Email de recuperação enviado se o email existir no sistema",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro ao enviar email de recuperação"
+          }
+        },
+        "summary": "Solicitar recuperação de senha",
+        "tags": [
+          "Autenticação"
+        ]
+      }
+    },
+    "/api/v1/auth/reset-password": {
+      "post": {
+        "description": "Define uma nova senha usando o token recebido por email",
+        "operationId": "AuthController_resetPassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Senha alterada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Token inválido ou expirado"
+          }
+        },
+        "summary": "Resetar senha com token de recuperação",
+        "tags": [
+          "Autenticação"
+        ]
+      }
+    },
+    "/api/v1/auth/validate-reset-token/{token}": {
+      "get": {
+        "description": "Verifica se um token de recuperação é válido e não expirou",
+        "operationId": "AuthController_validateResetToken",
+        "parameters": [
+          {
+            "name": "token",
+            "required": true,
+            "in": "path",
+            "description": "Token UUID de recuperação de senha",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status de validação do token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidateTokenResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Validar token de recuperação de senha",
+        "tags": [
+          "Autenticação"
+        ]
+      }
+    },
+    "/api/v1/auth/change-password": {
+      "post": {
+        "description": "Permite ao usuário logado alterar sua própria senha fornecendo a senha atual",
+        "operationId": "AuthController_changePassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Senha alterada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Nova senha igual à senha atual"
+          },
+          "401": {
+            "description": "Senha atual incorreta ou usuário não autenticado"
           }
         },
         "security": [
@@ -283,9 +358,9 @@
             "bearer": []
           }
         ],
-        "summary": "Validar token JWT",
+        "summary": "Alterar senha do usuário autenticado",
         "tags": [
-          "auth"
+          "Autenticação"
         ]
       }
     },
@@ -4151,6 +4226,88 @@
           "password"
         ]
       },
+      "UserResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID único do usuário",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "nome": {
+            "type": "string",
+            "description": "Nome completo do usuário",
+            "example": "João Silva"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email do usuário",
+            "example": "joao.silva@exemplo.com"
+          },
+          "permissoes": {
+            "description": "Lista de permissões do usuário",
+            "example": [
+              "VIEW_PATIENTS",
+              "EDIT_EXAMS"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "foto_url": {
+            "type": "string",
+            "description": "URL da foto do perfil",
+            "example": "https://exemplo.com/foto.jpg"
+          }
+        },
+        "required": [
+          "id",
+          "nome",
+          "email"
+        ]
+      },
+      "LoginResponseDto": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "description": "Token JWT de acesso",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ"
+          },
+          "refresh_token": {
+            "type": "string",
+            "description": "Token de renovação",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ"
+          },
+          "token_type": {
+            "type": "string",
+            "description": "Tipo do token",
+            "example": "Bearer",
+            "default": "Bearer"
+          },
+          "expires_in": {
+            "type": "string",
+            "description": "Tempo de expiração do token",
+            "example": "24h"
+          },
+          "user": {
+            "description": "Dados do usuário autenticado",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserResponseDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "access_token",
+          "refresh_token",
+          "token_type",
+          "expires_in",
+          "user"
+        ]
+      },
       "RefreshTokenDto": {
         "type": "object",
         "properties": {
@@ -4162,6 +4319,116 @@
         },
         "required": [
           "refresh_token"
+        ]
+      },
+      "RefreshResponseDto": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "description": "Novo token JWT de acesso",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ"
+          },
+          "token_type": {
+            "type": "string",
+            "description": "Tipo do token",
+            "example": "Bearer",
+            "default": "Bearer"
+          },
+          "expires_in": {
+            "type": "string",
+            "description": "Tempo de expiração do token",
+            "example": "24h"
+          }
+        },
+        "required": [
+          "access_token",
+          "token_type",
+          "expires_in"
+        ]
+      },
+      "ValidateTokenResponseDto": {
+        "type": "object",
+        "properties": {
+          "valid": {
+            "type": "boolean",
+            "description": "Indica se o token é válido",
+            "example": true
+          }
+        },
+        "required": [
+          "valid"
+        ]
+      },
+      "ForgotPasswordDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email do usuário para recuperação de senha",
+            "example": "usuario@exemplo.com"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "MessageResponseDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Mensagem de resposta",
+            "example": "Operação realizada com sucesso"
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "ResetPasswordDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Token de recuperação de senha",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "newPassword": {
+            "type": "string",
+            "description": "Nova senha do usuário",
+            "example": "NovaSenha123!"
+          }
+        },
+        "required": [
+          "token",
+          "newPassword"
+        ]
+      },
+      "ChangePasswordDto": {
+        "type": "object",
+        "properties": {
+          "senhaAtual": {
+            "type": "string",
+            "description": "Senha atual do usuário",
+            "example": "SenhaAtual123!"
+          },
+          "novaSenha": {
+            "type": "string",
+            "description": "Nova senha do usuário (mínimo 8 caracteres)",
+            "example": "NovaSenhaSegura123!",
+            "minLength": 8
+          },
+          "confirmacaoSenha": {
+            "type": "string",
+            "description": "Confirmação da nova senha",
+            "example": "NovaSenhaSegura123!"
+          }
+        },
+        "required": [
+          "senhaAtual",
+          "novaSenha",
+          "confirmacaoSenha"
         ]
       },
       "CreateUsuarioDto": {
@@ -4436,32 +4703,6 @@
             "minLength": 8
           }
         }
-      },
-      "ChangePasswordDto": {
-        "type": "object",
-        "properties": {
-          "senhaAtual": {
-            "type": "string",
-            "description": "Senha atual do usuário",
-            "example": "SenhaAtual123!"
-          },
-          "novaSenha": {
-            "type": "string",
-            "description": "Nova senha do usuário (mínimo 8 caracteres)",
-            "example": "NovaSenhaSegura123!",
-            "minLength": 8
-          },
-          "confirmacaoSenha": {
-            "type": "string",
-            "description": "Confirmação da nova senha",
-            "example": "NovaSenhaSegura123!"
-          }
-        },
-        "required": [
-          "senhaAtual",
-          "novaSenha",
-          "confirmacaoSenha"
-        ]
       },
       "CreateAuditoriaLogDto": {
         "type": "object",

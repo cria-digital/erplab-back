@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { ConflictException, NotFoundException } from '@nestjs/common';
 
 import { PacientesService } from './pacientes.service';
@@ -9,7 +8,6 @@ import { CreatePacienteDto, UpdatePacienteDto } from './dto';
 
 describe('PacientesService', () => {
   let service: PacientesService;
-  let repository: Repository<Paciente>;
 
   const mockRepository = {
     create: jest.fn(),
@@ -59,7 +57,6 @@ describe('PacientesService', () => {
     }).compile();
 
     service = module.get<PacientesService>(PacientesService);
-    repository = module.get<Repository<Paciente>>(getRepositoryToken(Paciente));
   });
 
   afterEach(() => {

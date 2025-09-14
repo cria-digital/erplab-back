@@ -5,7 +5,7 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like, FindManyOptions } from 'typeorm';
+import { Repository, Like } from 'typeorm';
 import { Exame } from './entities/exame.entity';
 import { CreateExameDto } from './dto/create-exame.dto';
 import { UpdateExameDto } from './dto/update-exame.dto';

@@ -6,8 +6,6 @@ import {
   IsNumber,
   IsEnum,
   MaxLength,
-  IsDecimal,
-  Min,
 } from 'class-validator';
 
 export class CreateExameDto {

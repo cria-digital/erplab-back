@@ -99,11 +99,12 @@ Authorization: Bearer {{token}}
 
 ## Boas Práticas Identificadas
 
-### Sempre Executar Build e Lint
+### Sempre Executar Build e Lint (OBRIGATÓRIO)
 ```bash
 npm run build  # Verificar erros TypeScript
 npm run lint   # Verificar padrões de código
 ```
+**IMPORTANTE**: SEMPRE executar estes comandos ao finalizar qualquer implementação ou alteração de código.
 
 ### Módulo de Auditoria
 - Registrar todas as operações críticas

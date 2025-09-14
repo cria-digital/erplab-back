@@ -80,6 +80,22 @@ export class Usuario {
   @Column({ name: 'resetar_senha', type: 'boolean', default: false })
   resetarSenha: boolean;
 
+  // Recuperação de senha
+  @Column({
+    name: 'reset_password_token',
+    type: 'varchar',
+    length: 255,
+    nullable: true,
+  })
+  resetPasswordToken: string;
+
+  @Column({
+    name: 'reset_password_expires',
+    type: 'timestamp',
+    nullable: true,
+  })
+  resetPasswordExpires: Date;
+
   // Autenticação 2 fatores
   @Column({ name: 'validacao_2_etapas', type: 'boolean', default: false })
   validacao2Etapas: boolean;

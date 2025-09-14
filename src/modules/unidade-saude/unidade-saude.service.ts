@@ -1,18 +1,10 @@
 import {
   Injectable,
   NotFoundException,
-  BadRequestException,
   ConflictException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  Repository,
-  DataSource,
-  QueryRunner,
-  FindManyOptions,
-  Like,
-  ILike,
-} from 'typeorm';
+import { Repository, DataSource, FindManyOptions, ILike } from 'typeorm';
 import { UnidadeSaude } from './entities/unidade-saude.entity';
 import { HorarioAtendimento } from './entities/horario-atendimento.entity';
 import { DadoBancario } from './entities/dado-bancario.entity';
@@ -344,7 +336,7 @@ export class UnidadeSaudeService {
    * Remove (soft delete) uma unidade de saúde
    */
   async remove(id: string): Promise<void> {
-    const unidade = await this.findOne(id);
+    await this.findOne(id);
 
     // Soft delete - apenas marca como inativo
     await this.unidadeSaudeRepository.update(id, { ativo: false });
@@ -354,7 +346,7 @@ export class UnidadeSaudeService {
    * Ativa uma unidade de saúde
    */
   async activate(id: string): Promise<UnidadeSaude> {
-    const unidade = await this.findOne(id);
+    await this.findOne(id);
 
     await this.unidadeSaudeRepository.update(id, { ativo: true });
 
@@ -365,7 +357,7 @@ export class UnidadeSaudeService {
    * Desativa uma unidade de saúde
    */
   async deactivate(id: string): Promise<UnidadeSaude> {
-    const unidade = await this.findOne(id);
+    await this.findOne(id);
 
     await this.unidadeSaudeRepository.update(id, { ativo: false });
 

@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Put,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
@@ -72,7 +64,7 @@ export class AtendimentoController {
     status: 200,
     description: 'Pedido médico processado com sucesso',
   })
-  processarPedidoOCR(@Body() arquivo: any) {
-    return this.atendimentoService.processarOCR(arquivo);
+  processarPedidoOCR() {
+    return this.atendimentoService.processarOCR();
   }
 }
