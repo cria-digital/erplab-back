@@ -15,6 +15,7 @@ import { ExamesModule } from './modules/exames/exames.module';
 import { EmailModule } from './modules/email/email.module';
 import { AgendasModule } from './modules/agendas/agendas.module';
 import { ProfissionaisModule } from './modules/profissionais/profissionais.module';
+import { CommonModule } from './modules/common/common.module';
 
 @Module({
   imports: [
@@ -32,6 +33,9 @@ import { ProfissionaisModule } from './modules/profissionais/profissionais.modul
     AuthModule,
     UsuariosModule,
     EmailModule,
+
+    // Módulos Comuns
+    CommonModule,
 
     // Módulos do Sistema ERP
     AtendimentoModule,

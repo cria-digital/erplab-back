@@ -130,6 +130,24 @@ npm run lint   # Verificar padrões de código
 
 ## APIs Disponíveis
 
+### Módulo Common (APIs Auxiliares)
+- **CEP** (`/api/v1/cep`)
+  - `GET /{cep}` - Buscar endereço por CEP (público)
+  - Retorna dados compatíveis com cadastro de unidades
+  - Usa API ViaCEP como fonte de dados
+
+- **CNAE** (`/api/v1/cnae`)
+  - `GET /` - Listar CNAEs com filtros e paginação (público)
+    - Parâmetros de paginação: `page` (padrão: 1), `limit` (padrão: 10, máx: 100)
+    - Retorna estrutura paginada com `data` e `meta`
+  - `GET /search?q={termo}` - Buscar por termo (público)
+  - `GET /codigo?codigo={codigo}` - Buscar por código específico (público)
+  - `GET /secao/{secao}` - Listar por seção (público)
+  - `GET /divisao/{divisao}` - Listar por divisão (público)
+  - **IMPORTANTE**: Códigos CNAE estão armazenados sem formatação (ex: `86101` ao invés de `8610-1/01`)
+  - **Total de CNAEs**: 1358 registros importados da base completa do IBGE
+  - **Paginação**: Implementada com metadados (total, totalPages, hasPrevPage, hasNextPage)
+
 ### Módulo de Exames (26 endpoints)
 - **Exames** (`/api/v1/exames`)
   - CRUD completo de exames
@@ -155,6 +173,18 @@ npm run build        # Compilar TypeScript
 npm run lint         # Verificar código
 npm run test         # Executar testes
 ```
+
+### Seeders
+```bash
+npm run seed        # Executa todos os seeders
+npm run seed:all    # Executa todos os seeders (alias)
+npm run seed:cnae   # Executa apenas seeder de CNAEs
+```
+
+**Seeder de CNAEs**:
+- Importa 12 CNAEs da área de saúde por padrão
+- Para importar TODOS os CNAEs: baixe JSON de https://servicodados.ibge.gov.br/api/v2/cnae/classes
+- Salve em `src/database/seeds/data/cnaes.json`
 
 ### Banco de Dados
 ```bash
@@ -203,6 +233,7 @@ curl -X GET http://localhost:10016/api/v1/usuarios \
 - ✅ **laboratorios_apoio** - Laboratórios parceiros
 - ✅ **subgrupos_exame** - Subgrupos de exames
 - ✅ **setores_exame** - Setores responsáveis pelos exames
+- ✅ **cnaes** - Classificação Nacional de Atividades Econômicas
 
 ### Migrations Executadas
 1. `CreatePacientesTable1756931316461`
@@ -210,6 +241,8 @@ curl -X GET http://localhost:10016/api/v1/usuarios \
 3. `CreateUsuariosTable1757583000000`
 4. `CreateAuditoriaAndPermissoesTables1757582641301`
 5. `CreateExamesTables1757809611114`
+6. `AddPasswordResetFields1757842882650`
+7. `CreateCnaeTable1757970200000`
 
 ## Estrutura de Entidades
 
@@ -238,6 +271,13 @@ curl -X GET http://localhost:10016/api/v1/usuarios \
 - Suporte a multi-tenant (empresa_id)
 - Soft delete em todas as entidades
 
+### Módulo Common (APIs Auxiliares)
+- **API de CEP**: Busca endereços via ViaCEP com dados compatíveis para cadastros
+- **API de CNAE**: Consulta de CNAEs (Classificação Nacional de Atividades Econômicas)
+- **Entidade CNAE**: Estrutura completa com seção, divisão, grupo, classe e subclasse
+- Busca de CNAEs por código, descrição, seção e divisão
+- 12 CNAEs da área de saúde pré-cadastrados via seeder
+
 ## Pontos de Atenção
 
 1. **NUNCA criar tabelas/schemas sem migrations** - SEMPRE usar TypeORM migrations
@@ -251,6 +291,7 @@ curl -X GET http://localhost:10016/api/v1/usuarios \
 7. **Implementar auditoria** em operações críticas
 8. **Validar dados de entrada** com DTOs e class-validator
 9. **Documentar API** com decorators do Swagger
+10. **Usar query parameters para códigos com caracteres especiais** - CNAEs têm barras no código (ex: `?codigo=8640-2/02` em vez de `/codigo/8640-2/02`)
 
 ## Próximos Passos Sugeridos
 

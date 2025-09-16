@@ -1,0 +1,120 @@
+### ====================================
+### EXEMPLOS DE PAGINAÇÃO - API DE CNAE
+### ====================================
+
+### Primeira página com 10 itens (padrão)
+GET {{baseUrl}}/cnae
+Content-Type: {{contentType}}
+
+### Expected Response
+# {
+#   "data": [ ... ],
+#   "meta": {
+#     "page": 1,
+#     "limit": 10,
+#     "total": 1358,
+#     "totalPages": 136,
+#     "hasPrevPage": false,
+#     "hasNextPage": true
+#   }
+# }
+
+###
+
+### Segunda página com 10 itens
+GET {{baseUrl}}/cnae?page=2&limit=10
+Content-Type: {{contentType}}
+
+###
+
+### Primeira página com 20 itens por página
+GET {{baseUrl}}/cnae?page=1&limit=20
+Content-Type: {{contentType}}
+
+###
+
+### Página 5 com 50 itens por página
+GET {{baseUrl}}/cnae?page=5&limit=50
+Content-Type: {{contentType}}
+
+###
+
+### ====================================
+### PAGINAÇÃO COM FILTROS
+### ====================================
+
+### CNAEs da área de saúde (seção Q) - página 1
+GET {{baseUrl}}/cnae?secao=Q&page=1&limit=10
+Content-Type: {{contentType}}
+
+###
+
+### CNAEs da área de saúde (seção Q) - página 2
+GET {{baseUrl}}/cnae?secao=Q&page=2&limit=10
+Content-Type: {{contentType}}
+
+###
+
+### Buscar por descrição "hospital" com paginação
+GET {{baseUrl}}/cnae?descricao=hospital&page=1&limit=5
+Content-Type: {{contentType}}
+
+###
+
+### Filtrar por divisão 86 (Atividades de atenção à saúde humana) com paginação
+GET {{baseUrl}}/cnae?divisao=86&page=1&limit=15
+Content-Type: {{contentType}}
+
+###
+
+### ====================================
+### CENÁRIOS ESPECIAIS
+### ====================================
+
+### Última página (assumindo 1358 registros, limit 10)
+GET {{baseUrl}}/cnae?page=136&limit=10
+Content-Type: {{contentType}}
+
+### Expected Response
+# {
+#   "data": [ ... 8 itens ],
+#   "meta": {
+#     "page": 136,
+#     "limit": 10,
+#     "total": 1358,
+#     "totalPages": 136,
+#     "hasPrevPage": true,
+#     "hasNextPage": false
+#   }
+# }
+
+###
+
+### Página além do limite (retorna array vazio)
+GET {{baseUrl}}/cnae?page=200&limit=10
+Content-Type: {{contentType}}
+
+### Expected Response
+# {
+#   "data": [],
+#   "meta": {
+#     "page": 200,
+#     "limit": 10,
+#     "total": 1358,
+#     "totalPages": 136,
+#     "hasPrevPage": true,
+#     "hasNextPage": false
+#   }
+# }
+
+###
+
+### Todos os CNAEs ativos com paginação
+GET {{baseUrl}}/cnae?ativo=true&page=1&limit=25
+Content-Type: {{contentType}}
+
+###
+
+### Combinação de filtros: seção Q, divisão 86, página 1
+GET {{baseUrl}}/cnae?secao=Q&divisao=86&page=1&limit=10
+Content-Type: {{contentType}}

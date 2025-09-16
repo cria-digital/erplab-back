@@ -1510,6 +1510,512 @@
         ]
       }
     },
+    "/api/v1/cep/{cep}": {
+      "get": {
+        "description": "Retorna o endereço completo através do CEP informado. Os dados são obtidos através da API ViaCEP e formatados para compatibilidade com o cadastro de unidades.",
+        "operationId": "CepController_buscarEndereco",
+        "parameters": [
+          {
+            "name": "cep",
+            "required": true,
+            "in": "path",
+            "description": "CEP com ou sem formatação (ex: 01310-100 ou 01310100)",
+            "schema": {
+              "example": "01310100",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Endereço encontrado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnderecoResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "CEP inválido - deve conter 8 dígitos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 400,
+                    "message": "CEP inválido. O CEP deve conter 8 dígitos.",
+                    "error": "Bad Request"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "CEP não encontrado na base de dados",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "statusCode": 404,
+                    "message": "CEP não encontrado.",
+                    "error": "Not Found"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro ao buscar informações do CEP"
+          }
+        },
+        "summary": "Buscar endereço completo por CEP",
+        "tags": [
+          "CEP - Consulta de Endereços"
+        ]
+      }
+    },
+    "/api/v1/cnae": {
+      "post": {
+        "description": "Endpoint para cadastrar um novo CNAE no sistema",
+        "operationId": "CnaeController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCnaeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "CNAE criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Cnae"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos"
+          },
+          "409": {
+            "description": "CNAE já existe com este código"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Criar novo CNAE",
+        "tags": [
+          "CNAE - Classificação Nacional de Atividades Econômicas"
+        ]
+      },
+      "get": {
+        "description": "Retorna lista paginada de CNAEs podendo filtrar por código, descrição, seção, divisão e status",
+        "operationId": "CnaeController_findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Número da página (padrão: 1)",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Quantidade por página (padrão: 10, máximo: 100)",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "codigo",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por código",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "descricao",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por descrição",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "secao",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por seção",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "divisao",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por divisão",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ativo",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por status",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista paginada de CNAEs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "data": [
+                      {
+                        "id": "uuid",
+                        "codigo": "86101",
+                        "descricao": "ATIVIDADES DE ATENDIMENTO HOSPITALAR",
+                        "secao": "Q"
+                      }
+                    ],
+                    "meta": {
+                      "page": 1,
+                      "limit": 10,
+                      "total": 1358,
+                      "totalPages": 136,
+                      "hasPrevPage": false,
+                      "hasNextPage": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar CNAEs com filtros e paginação",
+        "tags": [
+          "CNAE - Classificação Nacional de Atividades Econômicas"
+        ]
+      }
+    },
+    "/api/v1/cnae/search": {
+      "get": {
+        "description": "Busca CNAEs por termo em código, descrição ou subclasse. Retorna no máximo 20 resultados.",
+        "operationId": "CnaeController_search",
+        "parameters": [
+          {
+            "name": "q",
+            "required": true,
+            "in": "query",
+            "description": "Termo de busca (mínimo 2 caracteres)",
+            "schema": {
+              "example": "laboratório",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CNAEs encontrados",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Cnae"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar CNAEs por termo",
+        "tags": [
+          "CNAE - Classificação Nacional de Atividades Econômicas"
+        ]
+      }
+    },
+    "/api/v1/cnae/codigo": {
+      "get": {
+        "description": "Busca um CNAE específico pelo seu código",
+        "operationId": "CnaeController_findByCodigo",
+        "parameters": [
+          {
+            "name": "codigo",
+            "required": true,
+            "in": "query",
+            "description": "Código do CNAE",
+            "schema": {
+              "example": "8640-2/02",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CNAE encontrado"
+          },
+          "404": {
+            "description": "CNAE não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar CNAE por código",
+        "tags": [
+          "CNAE - Classificação Nacional de Atividades Econômicas"
+        ]
+      }
+    },
+    "/api/v1/cnae/secao/{secao}": {
+      "get": {
+        "description": "Retorna todos os CNAEs de uma seção específica",
+        "operationId": "CnaeController_findBySecao",
+        "parameters": [
+          {
+            "name": "secao",
+            "required": true,
+            "in": "path",
+            "description": "Letra da seção (A-U)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar CNAEs por seção",
+        "tags": [
+          "CNAE - Classificação Nacional de Atividades Econômicas"
+        ]
+      }
+    },
+    "/api/v1/cnae/divisao/{divisao}": {
+      "get": {
+        "description": "Retorna todos os CNAEs de uma divisão específica",
+        "operationId": "CnaeController_findByDivisao",
+        "parameters": [
+          {
+            "name": "divisao",
+            "required": true,
+            "in": "path",
+            "description": "Código da divisão (01-99)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar CNAEs por divisão",
+        "tags": [
+          "CNAE - Classificação Nacional de Atividades Econômicas"
+        ]
+      }
+    },
+    "/api/v1/cnae/{id}": {
+      "get": {
+        "description": "Busca um CNAE específico pelo seu ID (UUID)",
+        "operationId": "CnaeController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do CNAE",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CNAE encontrado"
+          },
+          "404": {
+            "description": "CNAE não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar CNAE por ID",
+        "tags": [
+          "CNAE - Classificação Nacional de Atividades Econômicas"
+        ]
+      },
+      "patch": {
+        "operationId": "CnaeController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do CNAE",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCnaeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "CNAE atualizado com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Atualizar CNAE",
+        "tags": [
+          "CNAE - Classificação Nacional de Atividades Econômicas"
+        ]
+      },
+      "delete": {
+        "operationId": "CnaeController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do CNAE",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CNAE desativado com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Desativar CNAE",
+        "tags": [
+          "CNAE - Classificação Nacional de Atividades Econômicas"
+        ]
+      }
+    },
+    "/api/v1/cnae/import": {
+      "post": {
+        "description": "Permite importar múltiplos CNAEs de uma vez. Útil para carga inicial de dados.",
+        "operationId": "CnaeController_importBulk",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "CNAEs importados com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "message": "100 CNAEs importados com sucesso"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na importação"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Importar CNAEs em lote",
+        "tags": [
+          "CNAE - Classificação Nacional de Atividades Econômicas"
+        ]
+      }
+    },
     "/api/v1/atendimento": {
       "get": {
         "description": "RF001-RF004: Sistema de contato multi-canal, auto-atendimento, gestão de filas e OS",
@@ -5545,6 +6051,240 @@
       "AuditoriaLog": {
         "type": "object",
         "properties": {}
+      },
+      "EnderecoResponseDto": {
+        "type": "object",
+        "properties": {
+          "cep": {
+            "type": "string",
+            "example": "01310100",
+            "description": "CEP sem formatação"
+          },
+          "rua": {
+            "type": "string",
+            "example": "Avenida Paulista",
+            "description": "Logradouro/Rua"
+          },
+          "logradouro": {
+            "type": "string",
+            "example": "Avenida Paulista",
+            "description": "Logradouro original da API"
+          },
+          "complemento": {
+            "type": "string",
+            "example": "de 612 a 1510 - lado par",
+            "description": "Complemento do logradouro"
+          },
+          "bairro": {
+            "type": "string",
+            "example": "Bela Vista",
+            "description": "Bairro"
+          },
+          "cidade": {
+            "type": "string",
+            "example": "São Paulo",
+            "description": "Cidade"
+          },
+          "estado": {
+            "type": "string",
+            "example": "SP",
+            "description": "Estado (sigla UF)"
+          },
+          "ibge": {
+            "type": "string",
+            "example": "3550308",
+            "description": "Código IBGE do município"
+          },
+          "gia": {
+            "type": "string",
+            "example": "1004",
+            "description": "Código GIA"
+          },
+          "ddd": {
+            "type": "string",
+            "example": "11",
+            "description": "DDD da região"
+          },
+          "siafi": {
+            "type": "string",
+            "example": "7107",
+            "description": "Código SIAFI"
+          }
+        },
+        "required": [
+          "cep",
+          "rua",
+          "logradouro",
+          "complemento",
+          "bairro",
+          "cidade",
+          "estado",
+          "ibge",
+          "gia",
+          "ddd",
+          "siafi"
+        ]
+      },
+      "CreateCnaeDto": {
+        "type": "object",
+        "properties": {
+          "codigo": {
+            "type": "string",
+            "example": "8610-1/01",
+            "description": "Código CNAE"
+          },
+          "descricao": {
+            "type": "string",
+            "example": "Atividades de atendimento hospitalar, exceto pronto-socorro e unidades para atendimento a urgências",
+            "description": "Descrição do CNAE"
+          },
+          "secao": {
+            "type": "string",
+            "example": "Q",
+            "description": "Seção do CNAE"
+          },
+          "descricaoSecao": {
+            "type": "string",
+            "example": "SAÚDE HUMANA E SERVIÇOS SOCIAIS",
+            "description": "Descrição da seção"
+          },
+          "divisao": {
+            "type": "string",
+            "example": "86",
+            "description": "Divisão do CNAE"
+          },
+          "descricaoDivisao": {
+            "type": "string",
+            "example": "Atividades de atenção à saúde humana",
+            "description": "Descrição da divisão"
+          },
+          "grupo": {
+            "type": "string",
+            "example": "861",
+            "description": "Grupo do CNAE"
+          },
+          "descricaoGrupo": {
+            "type": "string",
+            "example": "Atividades de atendimento hospitalar",
+            "description": "Descrição do grupo"
+          },
+          "classe": {
+            "type": "string",
+            "example": "8610",
+            "description": "Classe do CNAE"
+          },
+          "descricaoClasse": {
+            "type": "string",
+            "example": "Atividades de atendimento hospitalar",
+            "description": "Descrição da classe"
+          },
+          "subclasse": {
+            "type": "string",
+            "example": "8610-1",
+            "description": "Subclasse do CNAE"
+          },
+          "descricaoSubclasse": {
+            "type": "string",
+            "example": "Atividades de atendimento hospitalar",
+            "description": "Descrição da subclasse"
+          },
+          "ativo": {
+            "type": "boolean",
+            "example": true,
+            "description": "Status do CNAE",
+            "default": true
+          },
+          "observacoes": {
+            "type": "string",
+            "example": "CNAE relacionado a atividades hospitalares",
+            "description": "Observações"
+          }
+        },
+        "required": [
+          "codigo",
+          "descricao",
+          "ativo"
+        ]
+      },
+      "Cnae": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateCnaeDto": {
+        "type": "object",
+        "properties": {
+          "codigo": {
+            "type": "string",
+            "example": "8610-1/01",
+            "description": "Código CNAE"
+          },
+          "descricao": {
+            "type": "string",
+            "example": "Atividades de atendimento hospitalar, exceto pronto-socorro e unidades para atendimento a urgências",
+            "description": "Descrição do CNAE"
+          },
+          "secao": {
+            "type": "string",
+            "example": "Q",
+            "description": "Seção do CNAE"
+          },
+          "descricaoSecao": {
+            "type": "string",
+            "example": "SAÚDE HUMANA E SERVIÇOS SOCIAIS",
+            "description": "Descrição da seção"
+          },
+          "divisao": {
+            "type": "string",
+            "example": "86",
+            "description": "Divisão do CNAE"
+          },
+          "descricaoDivisao": {
+            "type": "string",
+            "example": "Atividades de atenção à saúde humana",
+            "description": "Descrição da divisão"
+          },
+          "grupo": {
+            "type": "string",
+            "example": "861",
+            "description": "Grupo do CNAE"
+          },
+          "descricaoGrupo": {
+            "type": "string",
+            "example": "Atividades de atendimento hospitalar",
+            "description": "Descrição do grupo"
+          },
+          "classe": {
+            "type": "string",
+            "example": "8610",
+            "description": "Classe do CNAE"
+          },
+          "descricaoClasse": {
+            "type": "string",
+            "example": "Atividades de atendimento hospitalar",
+            "description": "Descrição da classe"
+          },
+          "subclasse": {
+            "type": "string",
+            "example": "8610-1",
+            "description": "Subclasse do CNAE"
+          },
+          "descricaoSubclasse": {
+            "type": "string",
+            "example": "Atividades de atendimento hospitalar",
+            "description": "Descrição da subclasse"
+          },
+          "ativo": {
+            "type": "boolean",
+            "example": true,
+            "description": "Status do CNAE",
+            "default": true
+          },
+          "observacoes": {
+            "type": "string",
+            "example": "CNAE relacionado a atividades hospitalares",
+            "description": "Observações"
+          }
+        }
       },
       "CreatePacienteDto": {
         "type": "object",

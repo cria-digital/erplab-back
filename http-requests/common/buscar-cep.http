@@ -1,0 +1,69 @@
+### Buscar CEP - Formato com hífen
+GET {{baseUrl}}/cep/01310-100
+Content-Type: {{contentType}}
+
+### Expected Response
+# {
+#   "cep": "01310100",
+#   "rua": "Avenida Paulista",
+#   "logradouro": "Avenida Paulista",
+#   "complemento": "de 612 a 1510 - lado par",
+#   "bairro": "Bela Vista",
+#   "cidade": "São Paulo",
+#   "estado": "SP",
+#   "ibge": "3550308",
+#   "gia": "1004",
+#   "ddd": "11",
+#   "siafi": "7107"
+# }
+
+###
+
+### Buscar CEP - Formato sem hífen
+GET {{baseUrl}}/cep/01310100
+Content-Type: {{contentType}}
+
+###
+
+### Buscar CEP - CEP inválido (menos de 8 dígitos)
+GET {{baseUrl}}/cep/0131010
+Content-Type: {{contentType}}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "message": "CEP inválido. O CEP deve conter 8 dígitos."
+# }
+
+###
+
+### Buscar CEP - CEP não encontrado
+GET {{baseUrl}}/cep/99999999
+Content-Type: {{contentType}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "message": "CEP não encontrado."
+# }
+
+###
+
+### Buscar CEP - Exemplo de outro CEP válido (Rio de Janeiro)
+GET {{baseUrl}}/cep/20040020
+Content-Type: {{contentType}}
+
+### Expected Response
+# {
+#   "cep": "20040020",
+#   "rua": "Avenida Rio Branco",
+#   "logradouro": "Avenida Rio Branco",
+#   "complemento": "de 156 ao fim - lado par",
+#   "bairro": "Centro",
+#   "cidade": "Rio de Janeiro",
+#   "estado": "RJ",
+#   "ibge": "3304557",
+#   "gia": "",
+#   "ddd": "21",
+#   "siafi": "6001"
+# }
