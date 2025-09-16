@@ -64,11 +64,16 @@ export class UnidadeSaudeService {
       }
 
       // Cria a unidade principal
+      const {
+        horariosAtendimento,
+        dadosBancarios,
+        cnaeSecundarios,
+        cnaePrincipalId,
+        ...unidadeData
+      } = createDto;
       const unidade = this.unidadeSaudeRepository.create({
-        ...createDto,
-        horariosAtendimento: undefined,
-        dadosBancarios: undefined,
-        cnaeSecundarios: undefined,
+        ...unidadeData,
+        cnaePrincipalId: cnaePrincipalId || null,
       });
 
       const savedUnidade = await queryRunner.manager.save(
@@ -77,8 +82,8 @@ export class UnidadeSaudeService {
       );
 
       // Salva os horários de atendimento
-      if (createDto.horariosAtendimento?.length > 0) {
-        const horarios = createDto.horariosAtendimento.map((h) =>
+      if (horariosAtendimento?.length > 0) {
+        const horarios = horariosAtendimento.map((h) =>
           this.horarioAtendimentoRepository.create({
             ...h,
             unidadeSaudeId: savedUnidade.id,
@@ -88,28 +93,29 @@ export class UnidadeSaudeService {
       }
 
       // Salva os dados bancários
-      if (createDto.dadosBancarios?.length > 0) {
+      if (dadosBancarios?.length > 0) {
         // Garante que apenas um seja principal
-        const hasPrincipal = createDto.dadosBancarios.some((d) => d.principal);
-        if (!hasPrincipal && createDto.dadosBancarios.length > 0) {
-          createDto.dadosBancarios[0].principal = true;
+        const hasPrincipal = dadosBancarios.some((d) => d.principal);
+        if (!hasPrincipal && dadosBancarios.length > 0) {
+          dadosBancarios[0].principal = true;
         }
 
-        const dadosBancarios = createDto.dadosBancarios.map((d) =>
+        const dadosBancariosEntities = dadosBancarios.map((d) =>
           this.dadoBancarioRepository.create({
             ...d,
             unidadeSaudeId: savedUnidade.id,
           }),
         );
-        await queryRunner.manager.save(DadoBancario, dadosBancarios);
+        await queryRunner.manager.save(DadoBancario, dadosBancariosEntities);
       }
 
       // Salva os CNAEs secundários
-      if (createDto.cnaeSecundarios?.length > 0) {
-        const cnaes = createDto.cnaeSecundarios.map((c) =>
+      if (cnaeSecundarios?.length > 0) {
+        const cnaes = cnaeSecundarios.map((c) =>
           this.cnaeSecundarioRepository.create({
-            ...c,
+            cnaeId: c.cnaeId,
             unidadeSaudeId: savedUnidade.id,
+            ativo: true,
           }),
         );
         await queryRunner.manager.save(CnaeSecundario, cnaes);
@@ -246,27 +252,33 @@ export class UnidadeSaudeService {
       }
 
       // Atualiza a unidade principal
+      const {
+        horariosAtendimento,
+        dadosBancarios,
+        cnaeSecundarios,
+        cnaePrincipalId,
+        ...updateData
+      } = updateDto;
       await queryRunner.manager.update(
         UnidadeSaude,
         { id },
         {
-          ...updateDto,
-          horariosAtendimento: undefined,
-          dadosBancarios: undefined,
-          cnaeSecundarios: undefined,
+          ...updateData,
+          cnaePrincipalId:
+            cnaePrincipalId !== undefined ? cnaePrincipalId : undefined,
         },
       );
 
       // Atualiza horários de atendimento se fornecidos
-      if (updateDto.horariosAtendimento !== undefined) {
+      if (horariosAtendimento !== undefined) {
         // Remove horários existentes
         await queryRunner.manager.delete(HorarioAtendimento, {
           unidadeSaudeId: id,
         });
 
         // Adiciona novos horários
-        if (updateDto.horariosAtendimento.length > 0) {
-          const horarios = updateDto.horariosAtendimento.map((h) =>
+        if (horariosAtendimento.length > 0) {
+          const horarios = horariosAtendimento.map((h) =>
             this.horarioAtendimentoRepository.create({
               ...h,
               unidadeSaudeId: id,
@@ -277,43 +289,42 @@ export class UnidadeSaudeService {
       }
 
       // Atualiza dados bancários se fornecidos
-      if (updateDto.dadosBancarios !== undefined) {
+      if (dadosBancarios !== undefined) {
         // Remove dados bancários existentes
         await queryRunner.manager.delete(DadoBancario, { unidadeSaudeId: id });
 
         // Adiciona novos dados bancários
-        if (updateDto.dadosBancarios.length > 0) {
+        if (dadosBancarios.length > 0) {
           // Garante que apenas um seja principal
-          const hasPrincipal = updateDto.dadosBancarios.some(
-            (d) => d.principal,
-          );
+          const hasPrincipal = dadosBancarios.some((d) => d.principal);
           if (!hasPrincipal) {
-            updateDto.dadosBancarios[0].principal = true;
+            dadosBancarios[0].principal = true;
           }
 
-          const dadosBancarios = updateDto.dadosBancarios.map((d) =>
+          const dadosBancariosEntities = dadosBancarios.map((d) =>
             this.dadoBancarioRepository.create({
               ...d,
               unidadeSaudeId: id,
             }),
           );
-          await queryRunner.manager.save(DadoBancario, dadosBancarios);
+          await queryRunner.manager.save(DadoBancario, dadosBancariosEntities);
         }
       }
 
       // Atualiza CNAEs secundários se fornecidos
-      if (updateDto.cnaeSecundarios !== undefined) {
+      if (cnaeSecundarios !== undefined) {
         // Remove CNAEs existentes
         await queryRunner.manager.delete(CnaeSecundario, {
           unidadeSaudeId: id,
         });
 
         // Adiciona novos CNAEs
-        if (updateDto.cnaeSecundarios.length > 0) {
-          const cnaes = updateDto.cnaeSecundarios.map((c) =>
+        if (cnaeSecundarios.length > 0) {
+          const cnaes = cnaeSecundarios.map((c) =>
             this.cnaeSecundarioRepository.create({
-              ...c,
+              cnaeId: c.cnaeId,
               unidadeSaudeId: id,
+              ativo: true,
             }),
           );
           await queryRunner.manager.save(CnaeSecundario, cnaes);

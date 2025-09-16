@@ -125,17 +125,13 @@ export class CreateDadoBancarioDto {
 }
 
 export class CreateCnaeSecundarioDto {
-  @ApiProperty({ example: '8621601', description: 'Código CNAE secundário' })
+  @ApiProperty({
+    example: 'uuid-do-cnae',
+    description: 'ID do CNAE secundário',
+  })
   @IsString()
   @IsNotEmpty()
-  @Length(1, 10)
-  codigoCnae: string;
-
-  @ApiPropertyOptional({ description: 'Descrição do CNAE' })
-  @IsOptional()
-  @IsString()
-  @Length(0, 255)
-  descricao?: string;
+  cnaeId: string;
 }
 
 export class CreateUnidadeSaudeDto {
@@ -237,11 +233,13 @@ export class CreateUnidadeSaudeDto {
   @Length(1, 50, { each: true })
   codigoServicoSecundario?: string[];
 
-  @ApiPropertyOptional({ example: '8621601', description: 'CNAE principal' })
+  @ApiPropertyOptional({
+    example: 'uuid-do-cnae',
+    description: 'ID do CNAE principal',
+  })
   @IsOptional()
   @IsString()
-  @Length(1, 10)
-  cnaePrincipal?: string;
+  cnaePrincipalId?: string;
 
   // Endereço
   @ApiPropertyOptional({ example: '01234567', description: 'CEP' })

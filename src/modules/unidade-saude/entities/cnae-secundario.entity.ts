@@ -8,6 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { UnidadeSaude } from './unidade-saude.entity';
+import { Cnae } from '../../common/entities/cnae.entity';
 
 @Entity('cnae_secundarios')
 export class CnaeSecundario {
@@ -17,11 +18,12 @@ export class CnaeSecundario {
   @Column({ name: 'unidade_saude_id', type: 'uuid' })
   unidadeSaudeId: string;
 
-  @Column({ name: 'codigo_cnae', type: 'varchar', length: 10 })
-  codigoCnae: string;
+  @Column({ name: 'cnae_id', type: 'uuid' })
+  cnaeId: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  descricao: string;
+  @ManyToOne(() => Cnae, { eager: true })
+  @JoinColumn({ name: 'cnae_id' })
+  cnae: Cnae;
 
   @Column({ type: 'boolean', default: true })
   ativo: boolean;

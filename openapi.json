@@ -6799,18 +6799,14 @@
       "CreateCnaeSecundarioDto": {
         "type": "object",
         "properties": {
-          "codigoCnae": {
+          "cnaeId": {
             "type": "string",
-            "example": "8621601",
-            "description": "Código CNAE secundário"
-          },
-          "descricao": {
-            "type": "string",
-            "description": "Descrição do CNAE"
+            "example": "uuid-do-cnae",
+            "description": "ID do CNAE secundário"
           }
         },
         "required": [
-          "codigoCnae"
+          "cnaeId"
         ]
       },
       "CreateUnidadeSaudeDto": {
@@ -6883,10 +6879,10 @@
               "type": "string"
             }
           },
-          "cnaePrincipal": {
+          "cnaePrincipalId": {
             "type": "string",
-            "example": "8621601",
-            "description": "CNAE principal"
+            "example": "uuid-do-cnae",
+            "description": "ID do CNAE principal"
           },
           "cep": {
             "type": "string",
@@ -7159,11 +7155,12 @@
           "id": {
             "type": "string"
           },
-          "codigoCnae": {
+          "cnaeId": {
             "type": "string"
           },
-          "descricao": {
-            "type": "string"
+          "cnae": {
+            "type": "object",
+            "description": "Objeto CNAE completo"
           },
           "ativo": {
             "type": "boolean"
@@ -7171,7 +7168,8 @@
         },
         "required": [
           "id",
-          "codigoCnae",
+          "cnaeId",
+          "cnae",
           "ativo"
         ]
       },
@@ -7220,8 +7218,12 @@
               "type": "string"
             }
           },
-          "cnaePrincipal": {
+          "cnaePrincipalId": {
             "type": "string"
+          },
+          "cnaePrincipal": {
+            "type": "object",
+            "description": "Objeto CNAE principal"
           },
           "cep": {
             "type": "string"
@@ -7420,10 +7422,10 @@
               "type": "string"
             }
           },
-          "cnaePrincipal": {
+          "cnaePrincipalId": {
             "type": "string",
-            "example": "8621601",
-            "description": "CNAE principal"
+            "example": "uuid-do-cnae",
+            "description": "ID do CNAE principal"
           },
           "cep": {
             "type": "string",

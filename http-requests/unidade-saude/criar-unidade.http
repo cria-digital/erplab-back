@@ -1,4 +1,7 @@
 ### Criar Nova Unidade de Saúde
+# IMPORTANTE: Os campos cnaePrincipalId e cnaeId agora usam UUIDs da tabela cnaes
+# Para buscar CNAEs disponíveis: GET {{baseUrl}}/cnae
+# Exemplo de CNAE 86402 (Lab. Clínico): f0bb0d8e-39cb-4d35-ac49-3479a71f6d99
 POST {{baseUrl}}/unidades-saude
 Content-Type: {{contentType}}
 
@@ -15,7 +18,7 @@ Content-Type: {{contentType}}
   "email": "contato@labsr.com.br",
   "codigoServicoPrincipal": "001",
   "codigoServicoSecundario": ["002", "003", "004"],
-  "cnaePrincipal": "8640201",
+  "cnaePrincipalId": "f0bb0d8e-39cb-4d35-ac49-3479a71f6d99",
   "cep": "18130000",
   "rua": "Rua São Paulo",
   "numero": "123",
@@ -115,12 +118,10 @@ Content-Type: {{contentType}}
   ],
   "cnaeSecundarios": [
     {
-      "codigoCnae": "8640202",
-      "descricao": "Laboratórios clínicos"
+      "cnaeId": "958195aa-b078-4ff3-8e1b-67800481fb5e"
     },
     {
-      "codigoCnae": "8640203",
-      "descricao": "Serviços de diálise e nefrologia"
+      "cnaeId": "8cf37945-af29-4f10-a20b-95cde3635701"
     }
   ]
 }

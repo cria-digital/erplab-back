@@ -88,11 +88,11 @@ export class CnaeSecundarioResponseDto {
 
   @ApiProperty()
   @Expose()
-  codigoCnae: string;
+  cnaeId: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({ type: Object, description: 'Objeto CNAE completo' })
   @Expose()
-  descricao?: string;
+  cnae: any;
 
   @ApiProperty()
   @Expose()
@@ -154,7 +154,15 @@ export class UnidadeSaudeResponseDto {
 
   @ApiProperty({ required: false })
   @Expose()
-  cnaePrincipal?: string;
+  cnaePrincipalId?: string;
+
+  @ApiProperty({
+    type: Object,
+    required: false,
+    description: 'Objeto CNAE principal',
+  })
+  @Expose()
+  cnaePrincipal?: any;
 
   // Endereço
   @ApiProperty({ required: false })

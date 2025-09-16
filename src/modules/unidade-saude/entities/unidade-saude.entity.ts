@@ -5,10 +5,13 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { HorarioAtendimento } from './horario-atendimento.entity';
 import { DadoBancario } from './dado-bancario.entity';
 import { CnaeSecundario } from './cnae-secundario.entity';
+import { Cnae } from '../../common/entities/cnae.entity';
 
 @Entity('unidades_saude')
 export class UnidadeSaude {
@@ -83,12 +86,15 @@ export class UnidadeSaude {
   codigoServicoSecundario: string[];
 
   @Column({
-    name: 'cnae_principal',
-    type: 'varchar',
-    length: 10,
+    name: 'cnae_principal_id',
+    type: 'uuid',
     nullable: true,
   })
-  cnaePrincipal: string;
+  cnaePrincipalId: string;
+
+  @ManyToOne(() => Cnae, { nullable: true, eager: true })
+  @JoinColumn({ name: 'cnae_principal_id' })
+  cnaePrincipal: Cnae;
 
   // Imagem/Logo
   @Column({ name: 'imagem_url', type: 'varchar', length: 500, nullable: true })

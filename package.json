@@ -23,9 +23,7 @@
     "migration:generate": "npm run build && npx typeorm migration:generate -d dist/config/typeorm.config.js",
     "migration:run": "npm run build && npx typeorm migration:run -d dist/config/typeorm.config.js",
     "migration:revert": "npm run build && npx typeorm migration:revert -d dist/config/typeorm.config.js",
-    "seed": "npm run build && node dist/database/seeds/seed-all.js",
-    "seed:all": "npm run build && node dist/database/seeds/seed-all.js",
-    "seed:cnae": "npm run build && node dist/database/seeds/cnae-seed.js"
+    "seed": "npm run build && node dist/database/seeds/seed-all.js"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^2.0.2",
