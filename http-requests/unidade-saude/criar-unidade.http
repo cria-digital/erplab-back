@@ -4,6 +4,7 @@
 # Exemplo de CNAE 86402 (Lab. Clínico): f0bb0d8e-39cb-4d35-ac49-3479a71f6d99
 POST {{baseUrl}}/unidades-saude
 Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
 
 {
   "nomeUnidade": "Laboratório Central São Roque",

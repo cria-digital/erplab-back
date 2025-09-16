@@ -1,6 +1,7 @@
 ### Ativar Unidade de Saúde
 # Substitua {id} pelo UUID real da unidade
 PATCH {{baseUrl}}/unidades-saude/123e4567-e89b-12d3-a456-426614174000/ativar
+Authorization: Bearer {{token}}
 
 ### Expected Response
 # Status: 200 OK
@@ -16,6 +17,7 @@ PATCH {{baseUrl}}/unidades-saude/123e4567-e89b-12d3-a456-426614174000/ativar
 ### Desativar Unidade de Saúde
 # Substitua {id} pelo UUID real da unidade
 PATCH {{baseUrl}}/unidades-saude/123e4567-e89b-12d3-a456-426614174000/desativar
+Authorization: Bearer {{token}}
 
 ### Expected Response
 # Status: 200 OK
@@ -31,6 +33,7 @@ PATCH {{baseUrl}}/unidades-saude/123e4567-e89b-12d3-a456-426614174000/desativar
 ### Remover Unidade de Saúde (Soft Delete)
 # Substitua {id} pelo UUID real da unidade
 DELETE {{baseUrl}}/unidades-saude/123e4567-e89b-12d3-a456-426614174000
+Authorization: Bearer {{token}}
 
 ### Expected Response
 # Status: 204 No Content
@@ -40,6 +43,7 @@ DELETE {{baseUrl}}/unidades-saude/123e4567-e89b-12d3-a456-426614174000
 
 ### Tentar Buscar Unidade Inexistente (Erro)
 GET {{baseUrl}}/unidades-saude/99999999-9999-9999-9999-999999999999
+Authorization: Bearer {{token}}
 
 ### Expected Response
 # Status: 404 Not Found
@@ -54,6 +58,7 @@ GET {{baseUrl}}/unidades-saude/99999999-9999-9999-9999-999999999999
 ### Tentar Criar Unidade com CNPJ Duplicado (Erro)
 POST {{baseUrl}}/unidades-saude
 Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
 
 {
   "nomeUnidade": "Tentativa Duplicada",

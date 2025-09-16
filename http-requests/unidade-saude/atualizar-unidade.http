@@ -2,6 +2,7 @@
 # Substitua {id} pelo UUID real da unidade
 PATCH {{baseUrl}}/unidades-saude/123e4567-e89b-12d3-a456-426614174000
 Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
 
 {
   "nomeFantasia": "LabSR Central - Atualizado",
@@ -23,6 +24,7 @@ Content-Type: {{contentType}}
 ### Atualizar Horários de Atendimento
 PATCH {{baseUrl}}/unidades-saude/123e4567-e89b-12d3-a456-426614174000
 Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
 
 {
   "horariosAtendimento": [
@@ -50,6 +52,7 @@ Content-Type: {{contentType}}
 ### Atualizar Dados Bancários
 PATCH {{baseUrl}}/unidades-saude/123e4567-e89b-12d3-a456-426614174000
 Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
 
 {
   "dadosBancarios": [
@@ -72,6 +75,7 @@ Content-Type: {{contentType}}
 ### Atualizar Impostos
 PATCH {{baseUrl}}/unidades-saude/123e4567-e89b-12d3-a456-426614174000
 Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
 
 {
   "issPercentual": 3,
@@ -86,6 +90,7 @@ Content-Type: {{contentType}}
 ### Atualizar Endereço Completo
 PATCH {{baseUrl}}/unidades-saude/123e4567-e89b-12d3-a456-426614174000
 Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
 
 {
   "cep": "18135000",
