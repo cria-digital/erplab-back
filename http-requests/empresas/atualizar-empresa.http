@@ -1,0 +1,128 @@
+### Atualizar dados da empresa
+PATCH {{baseUrl}}/empresas/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nomeFantasia": "Saúde Total Plus",
+  "telefoneFixo": "(11) 3333-5555",
+  "celular": "(11) 98888-9999",
+  "emailComercial": "atendimento@saudetotalplus.com.br",
+  "siteEmpresa": "www.saudetotalplus.com.br",
+  "nomeResponsavel": "João Carlos Silva",
+  "contatoResponsavel": "(11) 98765-1234"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "550e8400-e29b-41d4-a716-446655440000",
+#   "tipoEmpresa": "CONVENIOS",
+#   "cnpj": "12.345.678/0001-90",
+#   "nomeFantasia": "Saúde Total Plus",
+#   "telefoneFixo": "(11) 3333-5555",
+#   ...
+# }
+
+###
+
+### Atualizar endereço da empresa
+PATCH {{baseUrl}}/empresas/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "cep": "01452-000",
+  "rua": "Rua dos Pinheiros",
+  "numero": "900",
+  "bairro": "Pinheiros",
+  "complemento": "Torre A - 10º andar",
+  "cidade": "São Paulo",
+  "estado": "SP"
+}
+
+###
+
+### Atualizar dados fiscais
+PATCH {{baseUrl}}/empresas/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "inscricaoEstadual": "987654321",
+  "inscricaoMunicipal": "123456789",
+  "irrfPercentual": 1.8,
+  "pisPercentual": 0.75,
+  "cofinsPercentual": 3.5,
+  "csllPercentual": 1.2,
+  "issPercentual": 5.0,
+  "reterIss": true,
+  "reterIr": true,
+  "reterPcc": true,
+  "optanteSimplesNacional": false
+}
+
+###
+
+### Atualizar dados bancários
+PATCH {{baseUrl}}/empresas/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "banco": "237",
+  "agencia": "3456",
+  "contaCorrente": "987654-3",
+  "formaPagamento": "PIX"
+}
+
+###
+
+### Atualizar responsável
+PATCH {{baseUrl}}/empresas/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nomeResponsavel": "Maria Aparecida Santos",
+  "cargoResponsavel": "Diretora de Credenciamento",
+  "contatoResponsavel": "(11) 99876-5432",
+  "emailResponsavel": "maria.santos@saudetotal.com.br"
+}
+
+###
+
+### Atualizar CNPJ (verificação de duplicidade)
+PATCH {{baseUrl}}/empresas/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "cnpj": "98.765.432/0001-10"
+}
+
+### Error Response - CNPJ já cadastrado
+# Status: 409 Conflict
+# {
+#   "statusCode": 409,
+#   "message": "CNPJ já cadastrado para outra empresa",
+#   "error": "Conflict"
+# }
+
+###
+
+### Error Response - Empresa não encontrada
+PATCH {{baseUrl}}/empresas/999e8400-e29b-41d4-a716-446655440999
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nomeFantasia": "Nome Novo"
+}
+
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Empresa com ID 999e8400-e29b-41d4-a716-446655440999 não encontrada",
+#   "error": "Not Found"
+# }

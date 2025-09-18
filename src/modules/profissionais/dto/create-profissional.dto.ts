@@ -143,6 +143,11 @@ export class CreateProfissionalDto {
   @Type(() => CreateEnderecoDto)
   endereco?: CreateEnderecoDto;
 
+  @ApiPropertyOptional({ default: true })
+  @IsOptional()
+  @IsBoolean()
+  ativo?: boolean;
+
   @ApiPropertyOptional({
     type: [String],
     description: 'IDs das agendas vinculadas',
@@ -151,9 +156,4 @@ export class CreateProfissionalDto {
   @IsArray()
   @IsUUID('4', { each: true })
   agendasIds?: string[];
-
-  @ApiPropertyOptional({ default: true })
-  @IsOptional()
-  @IsBoolean()
-  ativo?: boolean;
 }

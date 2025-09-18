@@ -1,9 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Profissional } from '../entities/profissional.entity';
 import { DocumentoProfissional } from '../entities/documento-profissional.entity';
 import { Endereco } from '../../../comum/entities/endereco.entity';
+import { Agenda } from '../../agendas/entities/agenda.entity';
 import { CreateProfissionalDto } from '../dto/create-profissional.dto';
 import { UpdateProfissionalDto } from '../dto/update-profissional.dto';
 import { CreateDocumentoDto } from '../dto/create-documento.dto';
@@ -17,6 +22,8 @@ export class ProfissionaisService {
     private documentoRepository: Repository<DocumentoProfissional>,
     @InjectRepository(Endereco)
     private enderecoRepository: Repository<Endereco>,
+    @InjectRepository(Agenda)
+    private agendaRepository: Repository<Agenda>,
   ) {}
 
   async create(
@@ -43,14 +50,14 @@ export class ProfissionaisService {
 
   async findAll(): Promise<Profissional[]> {
     return await this.profissionalRepository.find({
-      relations: ['documentos', 'endereco'],
+      relations: ['documentos', 'endereco', 'agendas'],
     });
   }
 
   async findOne(id: string): Promise<Profissional> {
     const profissional = await this.profissionalRepository.findOne({
       where: { id },
-      relations: ['documentos', 'endereco'],
+      relations: ['documentos', 'endereco', 'agendas'],
     });
 
     if (!profissional) {
@@ -63,7 +70,7 @@ export class ProfissionaisService {
   async findByCpf(cpf: string): Promise<Profissional> {
     const profissional = await this.profissionalRepository.findOne({
       where: { cpf },
-      relations: ['documentos', 'endereco'],
+      relations: ['documentos', 'endereco', 'agendas'],
     });
 
     if (!profissional) {
@@ -156,16 +163,30 @@ export class ProfissionaisService {
   ): Promise<Profissional> {
     const profissional = await this.findOne(profissionalId);
 
-    if (!profissional.agendasIds) {
-      profissional.agendasIds = [];
+    const agenda = await this.agendaRepository.findOne({
+      where: { id: agendaId },
+      relations: ['profissionais'],
+    });
+
+    if (!agenda) {
+      throw new NotFoundException('Agenda não encontrada');
     }
 
-    if (!profissional.agendasIds.includes(agendaId)) {
-      profissional.agendasIds.push(agendaId);
-      await this.profissionalRepository.save(profissional);
+    const jaVinculado = profissional.agendas?.some((a) => a.id === agendaId);
+    if (jaVinculado) {
+      throw new BadRequestException(
+        'Agenda já está vinculada a este profissional',
+      );
     }
 
-    return profissional;
+    if (!profissional.agendas) {
+      profissional.agendas = [];
+    }
+
+    profissional.agendas.push(agenda);
+    await this.profissionalRepository.save(profissional);
+
+    return this.findOne(profissionalId);
   }
 
   async desvincularAgenda(
@@ -174,13 +195,27 @@ export class ProfissionaisService {
   ): Promise<Profissional> {
     const profissional = await this.findOne(profissionalId);
 
-    if (profissional.agendasIds) {
-      profissional.agendasIds = profissional.agendasIds.filter(
-        (id) => id !== agendaId,
-      );
-      await this.profissionalRepository.save(profissional);
+    const agenda = await this.agendaRepository.findOne({
+      where: { id: agendaId },
+    });
+
+    if (!agenda) {
+      throw new NotFoundException('Agenda não encontrada');
     }
 
-    return profissional;
+    const vinculoExiste = profissional.agendas?.some((a) => a.id === agendaId);
+    if (!vinculoExiste) {
+      throw new BadRequestException(
+        'Agenda não está vinculada a este profissional',
+      );
+    }
+
+    profissional.agendas = profissional.agendas.filter(
+      (a) => a.id !== agendaId,
+    );
+
+    await this.profissionalRepository.save(profissional);
+
+    return this.findOne(profissionalId);
   }
 }

@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  ManyToMany,
   OneToMany,
   OneToOne,
   JoinColumn,
@@ -15,6 +16,7 @@ import { VinculacaoAgenda } from './vinculacao-agenda.entity';
 import { NotificacaoAgenda } from './notificacao-agenda.entity';
 import { CanalIntegracao } from './canal-integracao.entity';
 import { UnidadeSaude } from '../../unidade-saude/entities/unidade-saude.entity';
+import { Profissional } from '../../profissionais/entities/profissional.entity';
 
 @Entity('agendas')
 export class Agenda {
@@ -43,8 +45,8 @@ export class Agenda {
   @Column({ nullable: true })
   salaId: string;
 
-  @Column({ nullable: true })
-  profissionalId: string;
+  @ManyToMany(() => Profissional, (profissional) => profissional.agendas)
+  profissionais: Profissional[];
 
   @Column({ nullable: true })
   especialidadeId: string;

@@ -5,10 +5,16 @@ import { DocumentoProfissional } from './entities/documento-profissional.entity'
 import { ProfissionaisService } from './services/profissionais.service';
 import { ProfissionaisController } from './controllers/profissionais.controller';
 import { Endereco } from '../../comum/entities/endereco.entity';
+import { Agenda } from '../agendas/entities/agenda.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Profissional, DocumentoProfissional, Endereco]),
+    TypeOrmModule.forFeature([
+      Profissional,
+      DocumentoProfissional,
+      Endereco,
+      Agenda,
+    ]),
   ],
   providers: [ProfissionaisService],
   controllers: [ProfissionaisController],

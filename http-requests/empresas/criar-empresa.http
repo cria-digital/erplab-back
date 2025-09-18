@@ -1,0 +1,175 @@
+### Criar Empresa - Convênio
+POST {{baseUrl}}/empresas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoEmpresa": "CONVENIOS",
+  "codigoInterno": "CONV001",
+  "cnpj": "12.345.678/0001-90",
+  "razaoSocial": "Convênio Médico Saúde Total S.A.",
+  "nomeFantasia": "Saúde Total",
+  "inscricaoEstadual": "123456789",
+  "inscricaoMunicipal": "987654321",
+  "telefoneFixo": "(11) 3333-4444",
+  "celular": "(11) 98888-7777",
+  "emailComercial": "contato@saudetotal.com.br",
+  "siteEmpresa": "www.saudetotal.com.br",
+  "cep": "01310-100",
+  "rua": "Avenida Paulista",
+  "numero": "1578",
+  "bairro": "Bela Vista",
+  "complemento": "15º andar",
+  "estado": "SP",
+  "cidade": "São Paulo",
+  "nomeResponsavel": "João Silva",
+  "cargoResponsavel": "Gerente de Credenciamento",
+  "contatoResponsavel": "(11) 98765-4321",
+  "emailResponsavel": "joao.silva@saudetotal.com.br",
+  "irrfPercentual": 1.5,
+  "pisPercentual": 0.65,
+  "cofinsPercentual": 3.0,
+  "csllPercentual": 1.0,
+  "issPercentual": 5.0,
+  "reterIss": true,
+  "reterIr": false,
+  "reterPcc": true,
+  "optanteSimplesNacional": false,
+  "banco": "001",
+  "agencia": "1234",
+  "contaCorrente": "123456-7",
+  "formaPagamento": "Transferência Bancária",
+  "ativo": true
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "id": "uuid",
+#   "tipoEmpresa": "CONVENIOS",
+#   "cnpj": "12.345.678/0001-90",
+#   ...
+# }
+
+###
+
+### Criar Empresa - Laboratório de Apoio
+POST {{baseUrl}}/empresas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoEmpresa": "LABORATORIO_APOIO",
+  "cnpj": "98.765.432/0001-10",
+  "razaoSocial": "Laboratório de Análises Clínicas Ltda",
+  "nomeFantasia": "LabAnalisa",
+  "telefoneFixo": "(11) 2222-3333",
+  "emailComercial": "contato@labanalisa.com.br",
+  "cep": "04567-000",
+  "rua": "Rua dos Laboratórios",
+  "numero": "500",
+  "bairro": "Vila Mariana",
+  "estado": "SP",
+  "cidade": "São Paulo",
+  "nomeResponsavel": "Dra. Maria Santos",
+  "cargoResponsavel": "Diretora Técnica",
+  "emailResponsavel": "maria.santos@labanalisa.com.br",
+  "ativo": true
+}
+
+###
+
+### Criar Empresa - Telemedicina
+POST {{baseUrl}}/empresas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoEmpresa": "TELEMEDICINA",
+  "cnpj": "45.678.901/0001-23",
+  "razaoSocial": "TeleMed Serviços Médicos Online S.A.",
+  "nomeFantasia": "TeleMed Online",
+  "telefoneFixo": "(11) 4444-5555",
+  "celular": "(11) 99999-8888",
+  "emailComercial": "atendimento@telemedonline.com.br",
+  "siteEmpresa": "www.telemedonline.com.br",
+  "cep": "05402-000",
+  "rua": "Rua Digital",
+  "numero": "100",
+  "bairro": "Pinheiros",
+  "estado": "SP",
+  "cidade": "São Paulo",
+  "nomeResponsavel": "Carlos Oliveira",
+  "cargoResponsavel": "Diretor de Operações",
+  "emailResponsavel": "carlos@telemedonline.com.br",
+  "ativo": true
+}
+
+###
+
+### Criar Empresa - Fornecedores
+POST {{baseUrl}}/empresas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoEmpresa": "FORNECEDORES",
+  "cnpj": "67.890.123/0001-45",
+  "razaoSocial": "Equipamentos Médicos Brasil Ltda",
+  "nomeFantasia": "EquipMed",
+  "telefoneFixo": "(11) 5555-6666",
+  "emailComercial": "vendas@equipmed.com.br",
+  "cep": "09560-000",
+  "rua": "Rua Industrial",
+  "numero": "2000",
+  "bairro": "Distrito Industrial",
+  "estado": "SP",
+  "cidade": "São Caetano do Sul",
+  "nomeResponsavel": "Pedro Almeida",
+  "cargoResponsavel": "Gerente Comercial",
+  "emailResponsavel": "pedro@equipmed.com.br",
+  "ativo": true
+}
+
+###
+
+### Criar Empresa - Prestadores de Serviços
+POST {{baseUrl}}/empresas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoEmpresa": "PRESTADORES_SERVICOS",
+  "cnpj": "34.567.890/0001-67",
+  "razaoSocial": "Limpeza e Conservação Hospitalar Ltda",
+  "nomeFantasia": "CleanMed",
+  "telefoneFixo": "(11) 7777-8888",
+  "emailComercial": "contato@cleanmed.com.br",
+  "cep": "02345-000",
+  "rua": "Rua dos Serviços",
+  "numero": "300",
+  "bairro": "Vila Nova",
+  "estado": "SP",
+  "cidade": "São Paulo",
+  "nomeResponsavel": "Ana Costa",
+  "cargoResponsavel": "Coordenadora Geral",
+  "emailResponsavel": "ana@cleanmed.com.br",
+  "optanteSimplesNacional": true,
+  "ativo": true
+}
+
+### Error Response - CNPJ Duplicado
+# Status: 409 Conflict
+# {
+#   "statusCode": 409,
+#   "message": "CNPJ já cadastrado",
+#   "error": "Conflict"
+# }
+
+### Error Response - Dados Inválidos
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": ["cnpj must be a string", "razaoSocial must be a string"],
+#   "error": "Bad Request"
+# }

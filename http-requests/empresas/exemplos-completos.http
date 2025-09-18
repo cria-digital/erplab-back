@@ -1,0 +1,265 @@
+### =============================================
+### EXEMPLOS COMPLETOS - MÓDULO EMPRESAS
+### =============================================
+
+### 1. FLUXO COMPLETO - CADASTRO DE CONVÊNIO
+### =============================================
+
+### Passo 1: Verificar se CNPJ já existe
+GET {{baseUrl}}/empresas/cnpj/11.222.333%2F0001-44
+Authorization: Bearer {{token}}
+
+# Se retornar 404, pode prosseguir com o cadastro
+
+###
+
+### Passo 2: Cadastrar novo convênio
+POST {{baseUrl}}/empresas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoEmpresa": "CONVENIOS",
+  "codigoInterno": "CONV-UNIMED-SP",
+  "cnpj": "11.222.333/0001-44",
+  "razaoSocial": "Unimed São Paulo Cooperativa de Trabalho Médico",
+  "nomeFantasia": "Unimed São Paulo",
+  "inscricaoEstadual": "111222333444",
+  "inscricaoMunicipal": "555666777",
+  "telefoneFixo": "(11) 3265-9800",
+  "celular": "(11) 99999-0000",
+  "emailComercial": "credenciamento@unimed-sp.com.br",
+  "siteEmpresa": "www.unimedsp.com.br",
+  "cep": "04547-130",
+  "rua": "Avenida Engenheiro Luís Carlos Berrini",
+  "numero": "901",
+  "bairro": "Cidade Monções",
+  "complemento": "Torre Sul - 5º andar",
+  "estado": "SP",
+  "cidade": "São Paulo",
+  "nomeResponsavel": "Dr. Paulo Henrique Silva",
+  "cargoResponsavel": "Diretor de Credenciamento",
+  "contatoResponsavel": "(11) 98888-7777",
+  "emailResponsavel": "paulo.silva@unimed-sp.com.br",
+  "irrfPercentual": 1.5,
+  "pisPercentual": 0.65,
+  "cofinsPercentual": 3.0,
+  "csllPercentual": 1.0,
+  "issPercentual": 5.0,
+  "reterIss": false,
+  "reterIr": false,
+  "reterPcc": false,
+  "optanteSimplesNacional": false,
+  "banco": "237",
+  "agencia": "0123",
+  "contaCorrente": "456789-0",
+  "formaPagamento": "Transferência Bancária",
+  "ativo": true
+}
+
+###
+
+### Passo 3: Verificar cadastro
+GET {{baseUrl}}/empresas/cnpj/11.222.333%2F0001-44
+Authorization: Bearer {{token}}
+
+###
+
+### 2. FLUXO COMPLETO - CADASTRO DE LABORATÓRIO DE APOIO
+### =============================================
+
+### Passo 1: Cadastrar laboratório de apoio
+POST {{baseUrl}}/empresas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoEmpresa": "LABORATORIO_APOIO",
+  "codigoInterno": "LAB-FLEURY",
+  "cnpj": "60.462.623/0001-56",
+  "razaoSocial": "Fleury S.A.",
+  "nomeFantasia": "Fleury Medicina e Saúde",
+  "inscricaoEstadual": "114489808119",
+  "telefoneFixo": "(11) 5035-5000",
+  "emailComercial": "parceiros@fleury.com.br",
+  "siteEmpresa": "www.fleury.com.br",
+  "cep": "04344-070",
+  "rua": "Avenida General Valdomiro de Lima",
+  "numero": "508",
+  "bairro": "Jabaquara",
+  "estado": "SP",
+  "cidade": "São Paulo",
+  "nomeResponsavel": "Dra. Ana Paula Martins",
+  "cargoResponsavel": "Gerente de Laboratórios Parceiros",
+  "contatoResponsavel": "(11) 95555-4444",
+  "emailResponsavel": "ana.martins@fleury.com.br",
+  "banco": "341",
+  "agencia": "7890",
+  "contaCorrente": "12345-6",
+  "formaPagamento": "Boleto Bancário",
+  "ativo": true
+}
+
+###
+
+### Passo 2: Listar todos os laboratórios de apoio
+GET {{baseUrl}}/empresas/tipo/LABORATORIO_APOIO
+Authorization: Bearer {{token}}
+
+###
+
+### 3. FLUXO COMPLETO - GESTÃO DE STATUS
+### =============================================
+
+### Passo 1: Criar empresa prestadora de serviços
+POST {{baseUrl}}/empresas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoEmpresa": "PRESTADORES_SERVICOS",
+  "cnpj": "99.888.777/0001-66",
+  "razaoSocial": "Manutenção Hospitalar Técnica Ltda",
+  "nomeFantasia": "MedTec Manutenção",
+  "telefoneFixo": "(11) 4444-3333",
+  "emailComercial": "contato@medtec.com.br",
+  "cep": "09080-320",
+  "rua": "Rua Luís Pinto Fláquer",
+  "numero": "441",
+  "bairro": "Centro",
+  "estado": "SP",
+  "cidade": "Santo André",
+  "nomeResponsavel": "Roberto Campos",
+  "cargoResponsavel": "Diretor Técnico",
+  "emailResponsavel": "roberto@medtec.com.br",
+  "optanteSimplesNacional": true,
+  "ativo": true
+}
+
+###
+
+### Passo 2: Desativar empresa temporariamente
+# Buscar ID primeiro
+GET {{baseUrl}}/empresas/cnpj/99.888.777%2F0001-66
+Authorization: Bearer {{token}}
+
+# Usar o ID retornado no passo anterior
+PATCH {{baseUrl}}/empresas/{id-retornado}/desativar
+Authorization: Bearer {{token}}
+
+###
+
+### Passo 3: Reativar empresa
+PATCH {{baseUrl}}/empresas/{id-retornado}/ativar
+Authorization: Bearer {{token}}
+
+###
+
+### 4. FLUXO COMPLETO - ATUALIZAÇÃO FISCAL
+### =============================================
+
+### Passo 1: Buscar empresa para atualização
+GET {{baseUrl}}/empresas/cnpj/11.222.333%2F0001-44
+Authorization: Bearer {{token}}
+
+###
+
+### Passo 2: Atualizar dados fiscais e de retenção
+PATCH {{baseUrl}}/empresas/{id-retornado}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "irrfPercentual": 1.65,
+  "pisPercentual": 0.65,
+  "cofinsPercentual": 3.0,
+  "csllPercentual": 1.08,
+  "issPercentual": 5.0,
+  "ibsPercentual": 8.5,
+  "cbsPercentual": 0.9,
+  "reterIss": true,
+  "reterIr": true,
+  "reterPcc": true,
+  "reterIbs": false,
+  "reterCbs": false,
+  "optanteSimplesNacional": false
+}
+
+###
+
+### 5. RELATÓRIO COMPLETO - LISTAR TODAS AS EMPRESAS POR TIPO
+### =============================================
+
+### Listar todos os convênios
+GET {{baseUrl}}/empresas/tipo/CONVENIOS
+Authorization: Bearer {{token}}
+
+###
+
+### Listar todos os laboratórios de apoio
+GET {{baseUrl}}/empresas/tipo/LABORATORIO_APOIO
+Authorization: Bearer {{token}}
+
+###
+
+### Listar todas as empresas de telemedicina
+GET {{baseUrl}}/empresas/tipo/TELEMEDICINA
+Authorization: Bearer {{token}}
+
+###
+
+### Listar todos os fornecedores
+GET {{baseUrl}}/empresas/tipo/FORNECEDORES
+Authorization: Bearer {{token}}
+
+###
+
+### Listar todos os prestadores de serviços
+GET {{baseUrl}}/empresas/tipo/PRESTADORES_SERVICOS
+Authorization: Bearer {{token}}
+
+###
+
+### Listar TODAS as empresas (sem filtro de tipo)
+GET {{baseUrl}}/empresas
+Authorization: Bearer {{token}}
+
+###
+
+### 6. CENÁRIOS DE ERRO
+### =============================================
+
+### Tentar cadastrar com CNPJ duplicado
+POST {{baseUrl}}/empresas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoEmpresa": "CONVENIOS",
+  "cnpj": "11.222.333/0001-44",
+  "razaoSocial": "Empresa Duplicada",
+  "nomeFantasia": "Duplicada",
+  "emailComercial": "teste@duplicada.com.br"
+}
+
+# Retorna erro 409 Conflict
+
+###
+
+### Tentar buscar empresa inexistente
+GET {{baseUrl}}/empresas/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{token}}
+
+# Retorna erro 404 Not Found
+
+###
+
+### Tentar atualizar sem autenticação
+PATCH {{baseUrl}}/empresas/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+
+{
+  "nomeFantasia": "Não autorizado"
+}
+
+# Retorna erro 401 Unauthorized

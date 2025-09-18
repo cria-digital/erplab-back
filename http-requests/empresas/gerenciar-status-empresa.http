@@ -1,0 +1,82 @@
+### Ativar empresa
+PATCH {{baseUrl}}/empresas/550e8400-e29b-41d4-a716-446655440000/ativar
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "550e8400-e29b-41d4-a716-446655440000",
+#   "tipoEmpresa": "CONVENIOS",
+#   "cnpj": "12.345.678/0001-90",
+#   "razaoSocial": "Convênio Médico Saúde Total S.A.",
+#   "nomeFantasia": "Saúde Total",
+#   "ativo": true,
+#   ...
+# }
+
+###
+
+### Desativar empresa
+PATCH {{baseUrl}}/empresas/550e8400-e29b-41d4-a716-446655440000/desativar
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "550e8400-e29b-41d4-a716-446655440000",
+#   "tipoEmpresa": "CONVENIOS",
+#   "cnpj": "12.345.678/0001-90",
+#   "razaoSocial": "Convênio Médico Saúde Total S.A.",
+#   "nomeFantasia": "Saúde Total",
+#   "ativo": false,
+#   ...
+# }
+
+###
+
+### Remover empresa (Soft Delete)
+DELETE {{baseUrl}}/empresas/550e8400-e29b-41d4-a716-446655440000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# (No response body - empresa é marcada como inativa)
+
+###
+
+### Error Response - Empresa não encontrada ao ativar
+PATCH {{baseUrl}}/empresas/999e8400-e29b-41d4-a716-446655440999/ativar
+Authorization: Bearer {{token}}
+
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Empresa com ID 999e8400-e29b-41d4-a716-446655440999 não encontrada",
+#   "error": "Not Found"
+# }
+
+###
+
+### Error Response - Empresa não encontrada ao desativar
+PATCH {{baseUrl}}/empresas/999e8400-e29b-41d4-a716-446655440999/desativar
+Authorization: Bearer {{token}}
+
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Empresa com ID 999e8400-e29b-41d4-a716-446655440999 não encontrada",
+#   "error": "Not Found"
+# }
+
+###
+
+### Error Response - Empresa não encontrada ao remover
+DELETE {{baseUrl}}/empresas/999e8400-e29b-41d4-a716-446655440999
+Authorization: Bearer {{token}}
+
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Empresa com ID 999e8400-e29b-41d4-a716-446655440999 não encontrada",
+#   "error": "Not Found"
+# }

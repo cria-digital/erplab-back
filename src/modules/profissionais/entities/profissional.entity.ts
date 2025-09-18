@@ -6,7 +6,9 @@ import {
   UpdateDateColumn,
   OneToMany,
   ManyToOne,
+  ManyToMany,
   JoinColumn,
+  JoinTable,
 } from 'typeorm';
 import {
   PronomeEnum,
@@ -17,6 +19,7 @@ import {
 } from '../enums/profissionais.enum';
 import { DocumentoProfissional } from './documento-profissional.entity';
 import { Endereco } from '../../../comum/entities/endereco.entity';
+import { Agenda } from '../../agendas/entities/agenda.entity';
 
 @Entity('profissionais')
 export class Profissional {
@@ -108,8 +111,19 @@ export class Profissional {
   @JoinColumn({ name: 'enderecoId' })
   endereco: Endereco;
 
-  @Column('simple-array', { nullable: true })
-  agendasIds: string[];
+  @ManyToMany(() => Agenda, (agenda) => agenda.profissionais)
+  @JoinTable({
+    name: 'profissionais_agendas',
+    joinColumn: {
+      name: 'profissional_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'agenda_id',
+      referencedColumnName: 'id',
+    },
+  })
+  agendas: Agenda[];
 
   @Column({ default: true })
   ativo: boolean;

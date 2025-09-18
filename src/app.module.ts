@@ -15,6 +15,7 @@ import { ExamesModule } from './modules/exames/exames.module';
 import { EmailModule } from './modules/email/email.module';
 import { AgendasModule } from './modules/agendas/agendas.module';
 import { ProfissionaisModule } from './modules/profissionais/profissionais.module';
+import { EmpresasModule } from './modules/empresas/empresas.module';
 import { CommonModule } from './modules/common/common.module';
 
 @Module({
@@ -45,6 +46,7 @@ import { CommonModule } from './modules/common/common.module';
     ExamesModule,
     AgendasModule,
     ProfissionaisModule,
+    EmpresasModule,
 
     // Próximos módulos a serem implementados:
     // FinanceiroModule,

@@ -5368,6 +5368,367 @@
           "Profissionais"
         ]
       }
+    },
+    "/api/v1/empresas": {
+      "post": {
+        "operationId": "EmpresasController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEmpresaDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Empresa cadastrada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Empresa"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos"
+          },
+          "409": {
+            "description": "CNPJ já cadastrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Cadastrar nova empresa",
+        "tags": [
+          "Empresas"
+        ]
+      },
+      "get": {
+        "operationId": "EmpresasController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de empresas retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Empresa"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar todas as empresas",
+        "tags": [
+          "Empresas"
+        ]
+      }
+    },
+    "/api/v1/empresas/tipo/{tipo}": {
+      "get": {
+        "operationId": "EmpresasController_findByTipo",
+        "parameters": [
+          {
+            "name": "tipo",
+            "required": true,
+            "in": "path",
+            "description": "Tipo de empresa",
+            "schema": {
+              "enum": [
+                "CONVENIOS",
+                "LABORATORIO_APOIO",
+                "TELEMEDICINA",
+                "FORNECEDORES",
+                "PRESTADORES_SERVICOS"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de empresas do tipo especificado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Empresa"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar empresas por tipo",
+        "tags": [
+          "Empresas"
+        ]
+      }
+    },
+    "/api/v1/empresas/cnpj/{cnpj}": {
+      "get": {
+        "operationId": "EmpresasController_findByCnpj",
+        "parameters": [
+          {
+            "name": "cnpj",
+            "required": true,
+            "in": "path",
+            "description": "CNPJ da empresa",
+            "schema": {
+              "example": "00.000.000/0001-00",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Empresa encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Empresa"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Empresa não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar empresa por CNPJ",
+        "tags": [
+          "Empresas"
+        ]
+      }
+    },
+    "/api/v1/empresas/{id}": {
+      "get": {
+        "operationId": "EmpresasController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da empresa",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Empresa encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Empresa"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Empresa não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar empresa por ID",
+        "tags": [
+          "Empresas"
+        ]
+      },
+      "patch": {
+        "operationId": "EmpresasController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da empresa",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEmpresaDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Empresa atualizada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Empresa"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Empresa não encontrada"
+          },
+          "409": {
+            "description": "CNPJ já cadastrado para outra empresa"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Atualizar dados da empresa",
+        "tags": [
+          "Empresas"
+        ]
+      },
+      "delete": {
+        "operationId": "EmpresasController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da empresa",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Empresa removida com sucesso"
+          },
+          "404": {
+            "description": "Empresa não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Remover empresa (soft delete)",
+        "tags": [
+          "Empresas"
+        ]
+      }
+    },
+    "/api/v1/empresas/{id}/ativar": {
+      "patch": {
+        "operationId": "EmpresasController_activate",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da empresa",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Empresa ativada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Empresa"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Empresa não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Ativar empresa",
+        "tags": [
+          "Empresas"
+        ]
+      }
+    },
+    "/api/v1/empresas/{id}/desativar": {
+      "patch": {
+        "operationId": "EmpresasController_deactivate",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da empresa",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Empresa desativada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Empresa"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Empresa não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Desativar empresa",
+        "tags": [
+          "Empresas"
+        ]
+      }
     }
   },
   "info": {
@@ -9121,16 +9482,16 @@
           "endereco": {
             "$ref": "#/components/schemas/CreateEnderecoDto"
           },
+          "ativo": {
+            "type": "boolean",
+            "default": true
+          },
           "agendasIds": {
             "description": "IDs das agendas vinculadas",
             "type": "array",
             "items": {
               "type": "string"
             }
-          },
-          "ativo": {
-            "type": "boolean",
-            "default": true
           }
         },
         "required": [
@@ -9285,16 +9646,16 @@
           "endereco": {
             "$ref": "#/components/schemas/CreateEnderecoDto"
           },
+          "ativo": {
+            "type": "boolean",
+            "default": true
+          },
           "agendasIds": {
             "description": "IDs das agendas vinculadas",
             "type": "array",
             "items": {
               "type": "string"
             }
-          },
-          "ativo": {
-            "type": "boolean",
-            "default": true
           }
         }
       },
@@ -9346,6 +9707,377 @@
       "DocumentoProfissional": {
         "type": "object",
         "properties": {}
+      },
+      "CreateEmpresaDto": {
+        "type": "object",
+        "properties": {
+          "tipoEmpresa": {
+            "type": "string",
+            "enum": [
+              "CONVENIOS",
+              "LABORATORIO_APOIO",
+              "TELEMEDICINA",
+              "FORNECEDORES",
+              "PRESTADORES_SERVICOS"
+            ],
+            "description": "Tipo de empresa"
+          },
+          "codigoInterno": {
+            "type": "string",
+            "description": "Código interno da empresa"
+          },
+          "cnpj": {
+            "type": "string",
+            "example": "00.000.000/0001-00",
+            "description": "CNPJ da empresa"
+          },
+          "razaoSocial": {
+            "type": "string",
+            "description": "Razão social da empresa"
+          },
+          "nomeFantasia": {
+            "type": "string",
+            "description": "Nome fantasia da empresa"
+          },
+          "inscricaoEstadual": {
+            "type": "string",
+            "description": "Inscrição estadual"
+          },
+          "inscricaoMunicipal": {
+            "type": "string",
+            "description": "Inscrição municipal"
+          },
+          "telefoneFixo": {
+            "type": "string",
+            "description": "Telefone fixo"
+          },
+          "celular": {
+            "type": "string",
+            "description": "Celular"
+          },
+          "emailComercial": {
+            "type": "string",
+            "description": "E-mail comercial"
+          },
+          "siteEmpresa": {
+            "type": "string",
+            "description": "Site da empresa"
+          },
+          "cep": {
+            "type": "string",
+            "description": "CEP"
+          },
+          "rua": {
+            "type": "string",
+            "description": "Rua"
+          },
+          "numero": {
+            "type": "string",
+            "description": "Número"
+          },
+          "bairro": {
+            "type": "string",
+            "description": "Bairro"
+          },
+          "complemento": {
+            "type": "string",
+            "description": "Complemento"
+          },
+          "estado": {
+            "type": "string",
+            "description": "Estado (UF)"
+          },
+          "cidade": {
+            "type": "string",
+            "description": "Cidade"
+          },
+          "nomeResponsavel": {
+            "type": "string",
+            "description": "Nome do responsável"
+          },
+          "cargoResponsavel": {
+            "type": "string",
+            "description": "Cargo do responsável"
+          },
+          "contatoResponsavel": {
+            "type": "string",
+            "description": "Contato do responsável"
+          },
+          "emailResponsavel": {
+            "type": "string",
+            "description": "E-mail do responsável"
+          },
+          "irrfPercentual": {
+            "type": "number",
+            "description": "Percentual IRRF"
+          },
+          "pisPercentual": {
+            "type": "number",
+            "description": "Percentual PIS"
+          },
+          "cofinsPercentual": {
+            "type": "number",
+            "description": "Percentual COFINS"
+          },
+          "csllPercentual": {
+            "type": "number",
+            "description": "Percentual CSLL"
+          },
+          "issPercentual": {
+            "type": "number",
+            "description": "Percentual ISS"
+          },
+          "ibsPercentual": {
+            "type": "number",
+            "description": "Percentual IBS"
+          },
+          "cbsPercentual": {
+            "type": "number",
+            "description": "Percentual CBS"
+          },
+          "reterIss": {
+            "type": "boolean",
+            "description": "Reter ISS",
+            "default": false
+          },
+          "reterIr": {
+            "type": "boolean",
+            "description": "Reter IR",
+            "default": false
+          },
+          "reterPcc": {
+            "type": "boolean",
+            "description": "Reter PCC",
+            "default": false
+          },
+          "reterIbs": {
+            "type": "boolean",
+            "description": "Reter IBS",
+            "default": false
+          },
+          "reterCbs": {
+            "type": "boolean",
+            "description": "Reter CBS",
+            "default": false
+          },
+          "optanteSimplesNacional": {
+            "type": "boolean",
+            "description": "Optante pelo Simples Nacional",
+            "default": false
+          },
+          "banco": {
+            "type": "string",
+            "description": "Banco"
+          },
+          "agencia": {
+            "type": "string",
+            "description": "Agência"
+          },
+          "contaCorrente": {
+            "type": "string",
+            "description": "Conta corrente"
+          },
+          "formaPagamento": {
+            "type": "string",
+            "description": "Forma de pagamento"
+          },
+          "ativo": {
+            "type": "boolean",
+            "default": true,
+            "description": "Status ativo/inativo"
+          }
+        },
+        "required": [
+          "tipoEmpresa",
+          "cnpj",
+          "razaoSocial",
+          "nomeFantasia",
+          "emailComercial"
+        ]
+      },
+      "Empresa": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateEmpresaDto": {
+        "type": "object",
+        "properties": {
+          "tipoEmpresa": {
+            "type": "string",
+            "enum": [
+              "CONVENIOS",
+              "LABORATORIO_APOIO",
+              "TELEMEDICINA",
+              "FORNECEDORES",
+              "PRESTADORES_SERVICOS"
+            ],
+            "description": "Tipo de empresa"
+          },
+          "codigoInterno": {
+            "type": "string",
+            "description": "Código interno da empresa"
+          },
+          "cnpj": {
+            "type": "string",
+            "example": "00.000.000/0001-00",
+            "description": "CNPJ da empresa"
+          },
+          "razaoSocial": {
+            "type": "string",
+            "description": "Razão social da empresa"
+          },
+          "nomeFantasia": {
+            "type": "string",
+            "description": "Nome fantasia da empresa"
+          },
+          "inscricaoEstadual": {
+            "type": "string",
+            "description": "Inscrição estadual"
+          },
+          "inscricaoMunicipal": {
+            "type": "string",
+            "description": "Inscrição municipal"
+          },
+          "telefoneFixo": {
+            "type": "string",
+            "description": "Telefone fixo"
+          },
+          "celular": {
+            "type": "string",
+            "description": "Celular"
+          },
+          "emailComercial": {
+            "type": "string",
+            "description": "E-mail comercial"
+          },
+          "siteEmpresa": {
+            "type": "string",
+            "description": "Site da empresa"
+          },
+          "cep": {
+            "type": "string",
+            "description": "CEP"
+          },
+          "rua": {
+            "type": "string",
+            "description": "Rua"
+          },
+          "numero": {
+            "type": "string",
+            "description": "Número"
+          },
+          "bairro": {
+            "type": "string",
+            "description": "Bairro"
+          },
+          "complemento": {
+            "type": "string",
+            "description": "Complemento"
+          },
+          "estado": {
+            "type": "string",
+            "description": "Estado (UF)"
+          },
+          "cidade": {
+            "type": "string",
+            "description": "Cidade"
+          },
+          "nomeResponsavel": {
+            "type": "string",
+            "description": "Nome do responsável"
+          },
+          "cargoResponsavel": {
+            "type": "string",
+            "description": "Cargo do responsável"
+          },
+          "contatoResponsavel": {
+            "type": "string",
+            "description": "Contato do responsável"
+          },
+          "emailResponsavel": {
+            "type": "string",
+            "description": "E-mail do responsável"
+          },
+          "irrfPercentual": {
+            "type": "number",
+            "description": "Percentual IRRF"
+          },
+          "pisPercentual": {
+            "type": "number",
+            "description": "Percentual PIS"
+          },
+          "cofinsPercentual": {
+            "type": "number",
+            "description": "Percentual COFINS"
+          },
+          "csllPercentual": {
+            "type": "number",
+            "description": "Percentual CSLL"
+          },
+          "issPercentual": {
+            "type": "number",
+            "description": "Percentual ISS"
+          },
+          "ibsPercentual": {
+            "type": "number",
+            "description": "Percentual IBS"
+          },
+          "cbsPercentual": {
+            "type": "number",
+            "description": "Percentual CBS"
+          },
+          "reterIss": {
+            "type": "boolean",
+            "description": "Reter ISS",
+            "default": false
+          },
+          "reterIr": {
+            "type": "boolean",
+            "description": "Reter IR",
+            "default": false
+          },
+          "reterPcc": {
+            "type": "boolean",
+            "description": "Reter PCC",
+            "default": false
+          },
+          "reterIbs": {
+            "type": "boolean",
+            "description": "Reter IBS",
+            "default": false
+          },
+          "reterCbs": {
+            "type": "boolean",
+            "description": "Reter CBS",
+            "default": false
+          },
+          "optanteSimplesNacional": {
+            "type": "boolean",
+            "description": "Optante pelo Simples Nacional",
+            "default": false
+          },
+          "banco": {
+            "type": "string",
+            "description": "Banco"
+          },
+          "agencia": {
+            "type": "string",
+            "description": "Agência"
+          },
+          "contaCorrente": {
+            "type": "string",
+            "description": "Conta corrente"
+          },
+          "formaPagamento": {
+            "type": "string",
+            "description": "Forma de pagamento"
+          },
+          "ativo": {
+            "type": "boolean",
+            "default": true,
+            "description": "Status ativo/inativo"
+          }
+        }
       }
     }
   }

@@ -1,0 +1,110 @@
+### Buscar empresa por ID
+GET {{baseUrl}}/empresas/293a1d23-9892-402d-bef7-b7b9eab7925a
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "550e8400-e29b-41d4-a716-446655440000",
+#   "tipoEmpresa": "CONVENIOS",
+#   "codigoInterno": "CONV001",
+#   "cnpj": "12.345.678/0001-90",
+#   "razaoSocial": "Convênio Médico Saúde Total S.A.",
+#   "nomeFantasia": "Saúde Total",
+#   "inscricaoEstadual": "123456789",
+#   "inscricaoMunicipal": "987654321",
+#   "telefoneFixo": "(11) 3333-4444",
+#   "celular": "(11) 98888-7777",
+#   "emailComercial": "contato@saudetotal.com.br",
+#   "siteEmpresa": "www.saudetotal.com.br",
+#   "cep": "01310-100",
+#   "rua": "Avenida Paulista",
+#   "numero": "1578",
+#   "bairro": "Bela Vista",
+#   "complemento": "15º andar",
+#   "estado": "SP",
+#   "cidade": "São Paulo",
+#   "nomeResponsavel": "João Silva",
+#   "cargoResponsavel": "Gerente de Credenciamento",
+#   "contatoResponsavel": "(11) 98765-4321",
+#   "emailResponsavel": "joao.silva@saudetotal.com.br",
+#   "irrfPercentual": 1.5,
+#   "pisPercentual": 0.65,
+#   "cofinsPercentual": 3.0,
+#   "csllPercentual": 1.0,
+#   "issPercentual": 5.0,
+#   "reterIss": true,
+#   "reterIr": false,
+#   "reterPcc": true,
+#   "optanteSimplesNacional": false,
+#   "banco": "001",
+#   "agencia": "1234",
+#   "contaCorrente": "123456-7",
+#   "formaPagamento": "Transferência Bancária",
+#   "ativo": true,
+#   "criadoEm": "2024-01-15T10:00:00.000Z",
+#   "atualizadoEm": "2024-01-15T10:00:00.000Z"
+# }
+
+### Error Response - Empresa não encontrada
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Empresa com ID 550e8400-e29b-41d4-a716-446655440000 não encontrada",
+#   "error": "Not Found"
+# }
+
+###
+
+### Buscar empresa por CNPJ
+GET {{baseUrl}}/empresas/cnpj/12.345.678%2F0001-90
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "tipoEmpresa": "CONVENIOS",
+#   "cnpj": "12.345.678/0001-90",
+#   "razaoSocial": "Convênio Médico Saúde Total S.A.",
+#   "nomeFantasia": "Saúde Total",
+#   ...
+# }
+
+### Error Response - CNPJ não encontrado
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Empresa com CNPJ 12.345.678/0001-90 não encontrada",
+#   "error": "Not Found"
+# }
+
+###
+
+### Buscar empresa por CNPJ - Formato alternativo sem formatação
+GET {{baseUrl}}/empresas/cnpj/12345678000190
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar empresa por CNPJ - Laboratório
+GET {{baseUrl}}/empresas/cnpj/98.765.432%2F0001-10
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar empresa por CNPJ - Telemedicina
+GET {{baseUrl}}/empresas/cnpj/45.678.901%2F0001-23
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar empresa por CNPJ - Fornecedor
+GET {{baseUrl}}/empresas/cnpj/67.890.123%2F0001-45
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar empresa por CNPJ - Prestador de Serviços
+GET {{baseUrl}}/empresas/cnpj/34.567.890%2F0001-67
+Authorization: Bearer {{token}}
