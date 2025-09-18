@@ -1,0 +1,58 @@
+### Listar Todas as Instruções
+GET {{baseUrl}}/instrucoes
+Authorization: Bearer {{token}}
+
+### Listar Instruções por Convênio
+GET {{baseUrl}}/instrucoes/convenio/{{convenio_id}}
+Authorization: Bearer {{token}}
+
+### Listar Instruções Vigentes
+GET {{baseUrl}}/instrucoes/convenio/{{convenio_id}}/vigentes
+Authorization: Bearer {{token}}
+
+### Listar Instruções por Categoria
+GET {{baseUrl}}/instrucoes/convenio/{{convenio_id}}/categoria/autorizacao_previa
+Authorization: Bearer {{token}}
+
+### Listar Instruções Próximas do Vencimento
+GET {{baseUrl}}/instrucoes/convenio/{{convenio_id}}/proximas-vencer?dias=30
+Authorization: Bearer {{token}}
+
+### Buscar Instruções
+GET {{baseUrl}}/instrucoes/convenio/{{convenio_id}}/search?q=cirurgia
+Authorization: Bearer {{token}}
+
+### Obter Histórico da Instrução
+GET {{baseUrl}}/instrucoes/{{instrucao_id}}/historico
+Authorization: Bearer {{token}}
+
+### Alternar Status da Instrução
+PATCH {{baseUrl}}/instrucoes/{{instrucao_id}}/toggle-status
+Authorization: Bearer {{token}}
+
+### Expected Responses
+# GET /instrucoes - Status: 200 OK
+# [
+#   {
+#     "id": "uuid",
+#     "codigo": "INST001",
+#     "titulo": "Autorização Prévia para Cirurgias",
+#     "categoria": "autorizacao_previa",
+#     "status": "ativa",
+#     "prioridade": "alta",
+#     ...
+#   }
+# ]
+
+# GET /historico - Status: 200 OK
+# {
+#   "instrucao": { ... },
+#   "historico": [
+#     {
+#       "data": "2024-01-01T10:00:00Z",
+#       "usuario": "Sistema",
+#       "acao": "Criação",
+#       "detalhes": "Instrução criada"
+#     }
+#   ]
+# }

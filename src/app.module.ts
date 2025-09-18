@@ -17,6 +17,7 @@ import { AgendasModule } from './modules/agendas/agendas.module';
 import { ProfissionaisModule } from './modules/profissionais/profissionais.module';
 import { EmpresasModule } from './modules/empresas/empresas.module';
 import { CommonModule } from './modules/common/common.module';
+import { ConveniosModule } from './modules/convenios/convenios.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { CommonModule } from './modules/common/common.module';
     AgendasModule,
     ProfissionaisModule,
     EmpresasModule,
+    ConveniosModule,
 
     // Próximos módulos a serem implementados:
     // FinanceiroModule,

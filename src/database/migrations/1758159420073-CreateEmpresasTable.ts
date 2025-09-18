@@ -22,7 +22,13 @@ export class CreateEmpresasTable1758159420073 implements MigrationInterface {
           {
             name: 'tipoEmpresa',
             type: 'enum',
-            enum: ['CONVENIOS', 'LABORATORIO_APOIO', 'TELEMEDICINA', 'FORNECEDORES', 'PRESTADORES_SERVICOS'],
+            enum: [
+              'CONVENIOS',
+              'LABORATORIO_APOIO',
+              'TELEMEDICINA',
+              'FORNECEDORES',
+              'PRESTADORES_SERVICOS',
+            ],
           },
           {
             name: 'codigoInterno',

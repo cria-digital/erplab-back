@@ -46,6 +46,9 @@ export class Empresa {
   @Column({ nullable: true })
   siteEmpresa: string;
 
+  @Column({ nullable: true })
+  logo: string;
+
   // Endereço (seguindo padrão UnidadeSaude - campos diretos)
   @Column({ nullable: true })
   cep: string;

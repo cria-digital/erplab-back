@@ -3760,8 +3760,7 @@
     },
     "/api/v1/convenios": {
       "post": {
-        "description": "Cria um novo convênio no sistema com todas as configurações necessárias.",
-        "operationId": "ConveniosController_create",
+        "operationId": "ConvenioController_create",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -3784,109 +3783,34 @@
               }
             }
           },
-          "400": {
-            "description": "Dados inválidos"
-          },
           "409": {
-            "description": "Código ou CNPJ já cadastrado"
+            "description": "Conflito - Código ou CNPJ já existente"
           }
         },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Criar um novo convênio",
+        "summary": "Criar novo convênio",
         "tags": [
           "Convênios"
         ]
       },
       "get": {
-        "description": "Lista todos os convênios com filtros opcionais e paginação.",
-        "operationId": "ConveniosController_findAll",
-        "parameters": [
-          {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Número da página",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Quantidade de itens por página",
-            "schema": {
-              "example": 10,
-              "type": "number"
-            }
-          },
-          {
-            "name": "search",
-            "required": false,
-            "in": "query",
-            "description": "Buscar por nome do convênio",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "status",
-            "required": false,
-            "in": "query",
-            "description": "Filtrar por status",
-            "schema": {
-              "enum": [
-                "ativo",
-                "inativo",
-                "suspenso"
-              ],
-              "type": "string"
-            }
-          }
-        ],
+        "operationId": "ConvenioController_findAll",
+        "parameters": [],
         "responses": {
           "200": {
-            "description": "Lista de convênios retornada com sucesso",
+            "description": "Lista de convênios",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/Convenio"
-                      }
-                    },
-                    "total": {
-                      "type": "number",
-                      "example": 100
-                    },
-                    "page": {
-                      "type": "number",
-                      "example": 1
-                    },
-                    "lastPage": {
-                      "type": "number",
-                      "example": 10
-                    }
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Convenio"
                   }
                 }
               }
             }
           }
         },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Listar convênios",
+        "summary": "Listar todos os convênios",
         "tags": [
           "Convênios"
         ]
@@ -3894,8 +3818,7 @@
     },
     "/api/v1/convenios/ativos": {
       "get": {
-        "description": "Retorna todos os convênios com status ativo.",
-        "operationId": "ConveniosController_findAtivos",
+        "operationId": "ConvenioController_findAtivos",
         "parameters": [],
         "responses": {
           "200": {
@@ -3912,11 +3835,6 @@
             }
           }
         },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
         "summary": "Listar convênios ativos",
         "tags": [
           "Convênios"
@@ -4100,8 +4018,7 @@
     },
     "/api/v1/convenios/codigo/{codigo}": {
       "get": {
-        "description": "Retorna um convênio específico pelo código.",
-        "operationId": "ConveniosController_findByCodigo",
+        "operationId": "ConvenioController_findByCodigo",
         "parameters": [
           {
             "name": "codigo",
@@ -4128,11 +4045,6 @@
             "description": "Convênio não encontrado"
           }
         },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
         "summary": "Buscar convênio por código",
         "tags": [
           "Convênios"
@@ -4141,8 +4053,7 @@
     },
     "/api/v1/convenios/{id}": {
       "get": {
-        "description": "Retorna um convênio específico pelo ID.",
-        "operationId": "ConveniosController_findOne",
+        "operationId": "ConvenioController_findOne",
         "parameters": [
           {
             "name": "id",
@@ -4150,7 +4061,7 @@
             "in": "path",
             "description": "ID do convênio",
             "schema": {
-              "type": "number"
+              "type": "string"
             }
           }
         ],
@@ -4169,19 +4080,13 @@
             "description": "Convênio não encontrado"
           }
         },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
         "summary": "Buscar convênio por ID",
         "tags": [
           "Convênios"
         ]
       },
       "patch": {
-        "description": "Atualiza as informações de um convênio existente.",
-        "operationId": "ConveniosController_update",
+        "operationId": "ConvenioController_update",
         "parameters": [
           {
             "name": "id",
@@ -4189,7 +4094,7 @@
             "in": "path",
             "description": "ID do convênio",
             "schema": {
-              "type": "number"
+              "type": "string"
             }
           }
         ],
@@ -4205,7 +4110,7 @@
         },
         "responses": {
           "200": {
-            "description": "Convênio atualizado com sucesso",
+            "description": "Convênio atualizado",
             "content": {
               "application/json": {
                 "schema": {
@@ -4218,22 +4123,16 @@
             "description": "Convênio não encontrado"
           },
           "409": {
-            "description": "Código ou CNPJ já existe em outro convênio"
+            "description": "Conflito - Código ou CNPJ já existente"
           }
         },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
         "summary": "Atualizar convênio",
         "tags": [
           "Convênios"
         ]
       },
       "delete": {
-        "description": "Desativa um convênio (soft delete).",
-        "operationId": "ConveniosController_remove",
+        "operationId": "ConvenioController_remove",
         "parameters": [
           {
             "name": "id",
@@ -4241,24 +4140,19 @@
             "in": "path",
             "description": "ID do convênio",
             "schema": {
-              "type": "number"
+              "type": "string"
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "Convênio desativado com sucesso"
+          "204": {
+            "description": "Convênio excluído"
           },
           "404": {
             "description": "Convênio não encontrado"
           }
         },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Desativar convênio",
+        "summary": "Excluir convênio",
         "tags": [
           "Convênios"
         ]
@@ -5727,6 +5621,908 @@
         "summary": "Desativar empresa",
         "tags": [
           "Empresas"
+        ]
+      }
+    },
+    "/api/v1/convenios/search": {
+      "get": {
+        "operationId": "ConvenioController_search",
+        "parameters": [
+          {
+            "name": "q",
+            "required": true,
+            "in": "query",
+            "description": "Termo de busca",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resultados da busca",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Convenio"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Buscar convênios",
+        "tags": [
+          "Convênios"
+        ]
+      }
+    },
+    "/api/v1/convenios/cnpj/{cnpj}": {
+      "get": {
+        "operationId": "ConvenioController_findByCnpj",
+        "parameters": [
+          {
+            "name": "cnpj",
+            "required": true,
+            "in": "path",
+            "description": "CNPJ do convênio",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Convênio encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Convenio"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Convênio não encontrado"
+          }
+        },
+        "summary": "Buscar convênio por CNPJ",
+        "tags": [
+          "Convênios"
+        ]
+      }
+    },
+    "/api/v1/convenios/{id}/toggle-status": {
+      "patch": {
+        "operationId": "ConvenioController_toggleStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do convênio",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status alterado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Convenio"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Convênio não encontrado"
+          }
+        },
+        "summary": "Alternar status do convênio (ativo/inativo)",
+        "tags": [
+          "Convênios"
+        ]
+      }
+    },
+    "/api/v1/planos": {
+      "post": {
+        "operationId": "PlanoController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePlanoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Plano criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Plano"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Convênio não encontrado"
+          },
+          "409": {
+            "description": "Conflito - Código já existente para o convênio"
+          }
+        },
+        "summary": "Criar novo plano",
+        "tags": [
+          "Planos"
+        ]
+      },
+      "get": {
+        "operationId": "PlanoController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de planos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Plano"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar todos os planos",
+        "tags": [
+          "Planos"
+        ]
+      }
+    },
+    "/api/v1/planos/ativos": {
+      "get": {
+        "operationId": "PlanoController_findAtivos",
+        "parameters": [
+          {
+            "name": "convenioId",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por convênio",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de planos ativos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Plano"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar planos ativos",
+        "tags": [
+          "Planos"
+        ]
+      }
+    },
+    "/api/v1/planos/convenio/{convenioId}": {
+      "get": {
+        "operationId": "PlanoController_findByConvenio",
+        "parameters": [
+          {
+            "name": "convenioId",
+            "required": true,
+            "in": "path",
+            "description": "ID do convênio",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de planos do convênio",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Plano"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar planos de um convênio",
+        "tags": [
+          "Planos"
+        ]
+      }
+    },
+    "/api/v1/planos/convenio/{convenioId}/codigo/{codigo}": {
+      "get": {
+        "operationId": "PlanoController_findByCodigo",
+        "parameters": [
+          {
+            "name": "convenioId",
+            "required": true,
+            "in": "path",
+            "description": "ID do convênio",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "codigo",
+            "required": true,
+            "in": "path",
+            "description": "Código do plano",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Plano encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Plano"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Plano não encontrado"
+          }
+        },
+        "summary": "Buscar plano por código dentro do convênio",
+        "tags": [
+          "Planos"
+        ]
+      }
+    },
+    "/api/v1/planos/{id}": {
+      "get": {
+        "operationId": "PlanoController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do plano",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Plano encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Plano"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Plano não encontrado"
+          }
+        },
+        "summary": "Buscar plano por ID",
+        "tags": [
+          "Planos"
+        ]
+      },
+      "patch": {
+        "operationId": "PlanoController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do plano",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePlanoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Plano atualizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Plano"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Plano não encontrado"
+          },
+          "409": {
+            "description": "Conflito - Código já existente"
+          }
+        },
+        "summary": "Atualizar plano",
+        "tags": [
+          "Planos"
+        ]
+      },
+      "delete": {
+        "operationId": "PlanoController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do plano",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Plano excluído"
+          },
+          "404": {
+            "description": "Plano não encontrado"
+          }
+        },
+        "summary": "Excluir plano",
+        "tags": [
+          "Planos"
+        ]
+      }
+    },
+    "/api/v1/planos/{id}/verificar-carencia": {
+      "get": {
+        "operationId": "PlanoController_verificarCarencia",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do plano",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dataAdesao",
+            "required": true,
+            "in": "query",
+            "description": "Data de adesão do beneficiário",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Carência verificada"
+          }
+        },
+        "summary": "Verificar carência do plano",
+        "tags": [
+          "Planos"
+        ]
+      }
+    },
+    "/api/v1/planos/{id}/calcular-coparticipacao": {
+      "get": {
+        "operationId": "PlanoController_calcularCoparticipacao",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do plano",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "valor",
+            "required": true,
+            "in": "query",
+            "description": "Valor do procedimento",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Coparticipação calculada"
+          }
+        },
+        "summary": "Calcular coparticipação",
+        "tags": [
+          "Planos"
+        ]
+      }
+    },
+    "/api/v1/instrucoes": {
+      "post": {
+        "operationId": "InstrucaoController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateInstrucaoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Instrução criada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Instrucao"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Convênio não encontrado"
+          }
+        },
+        "summary": "Criar nova instrução",
+        "tags": [
+          "Instruções"
+        ]
+      },
+      "get": {
+        "operationId": "InstrucaoController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de instruções",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Instrucao"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar todas as instruções",
+        "tags": [
+          "Instruções"
+        ]
+      }
+    },
+    "/api/v1/instrucoes/convenio/{convenioId}": {
+      "get": {
+        "operationId": "InstrucaoController_findByConvenio",
+        "parameters": [
+          {
+            "name": "convenioId",
+            "required": true,
+            "in": "path",
+            "description": "ID do convênio",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de instruções do convênio",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Instrucao"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar instruções de um convênio",
+        "tags": [
+          "Instruções"
+        ]
+      }
+    },
+    "/api/v1/instrucoes/convenio/{convenioId}/vigentes": {
+      "get": {
+        "operationId": "InstrucaoController_findVigentes",
+        "parameters": [
+          {
+            "name": "convenioId",
+            "required": true,
+            "in": "path",
+            "description": "ID do convênio",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "data",
+            "required": false,
+            "in": "query",
+            "description": "Data de referência",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de instruções vigentes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Instrucao"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar instruções vigentes de um convênio",
+        "tags": [
+          "Instruções"
+        ]
+      }
+    },
+    "/api/v1/instrucoes/convenio/{convenioId}/categoria/{categoria}": {
+      "get": {
+        "operationId": "InstrucaoController_findByCategoria",
+        "parameters": [
+          {
+            "name": "convenioId",
+            "required": true,
+            "in": "path",
+            "description": "ID do convênio",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "categoria",
+            "required": true,
+            "in": "path",
+            "description": "Categoria da instrução",
+            "schema": {
+              "enum": [
+                "autorizacao_previa",
+                "faturamento",
+                "atendimento",
+                "documentacao",
+                "auditoria",
+                "urgencia_emergencia",
+                "internacao",
+                "sadt"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de instruções da categoria",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Instrucao"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar instruções por categoria",
+        "tags": [
+          "Instruções"
+        ]
+      }
+    },
+    "/api/v1/instrucoes/convenio/{convenioId}/proximas-vencer": {
+      "get": {
+        "operationId": "InstrucaoController_findProximasVencer",
+        "parameters": [
+          {
+            "name": "convenioId",
+            "required": true,
+            "in": "path",
+            "description": "ID do convênio",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dias",
+            "required": false,
+            "in": "query",
+            "description": "Dias de antecedência",
+            "schema": {
+              "default": 30,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de instruções próximas do vencimento",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Instrucao"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar instruções próximas do vencimento",
+        "tags": [
+          "Instruções"
+        ]
+      }
+    },
+    "/api/v1/instrucoes/convenio/{convenioId}/search": {
+      "get": {
+        "operationId": "InstrucaoController_search",
+        "parameters": [
+          {
+            "name": "convenioId",
+            "required": true,
+            "in": "path",
+            "description": "ID do convênio",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "required": true,
+            "in": "query",
+            "description": "Termo de busca",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resultados da busca",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Instrucao"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Buscar instruções",
+        "tags": [
+          "Instruções"
+        ]
+      }
+    },
+    "/api/v1/instrucoes/{id}": {
+      "get": {
+        "operationId": "InstrucaoController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da instrução",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Instrução encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Instrucao"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Instrução não encontrada"
+          }
+        },
+        "summary": "Buscar instrução por ID",
+        "tags": [
+          "Instruções"
+        ]
+      },
+      "patch": {
+        "operationId": "InstrucaoController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da instrução",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateInstrucaoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Instrução atualizada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Instrucao"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Instrução não encontrada"
+          }
+        },
+        "summary": "Atualizar instrução",
+        "tags": [
+          "Instruções"
+        ]
+      },
+      "delete": {
+        "operationId": "InstrucaoController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da instrução",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Instrução excluída"
+          },
+          "404": {
+            "description": "Instrução não encontrada"
+          }
+        },
+        "summary": "Excluir instrução",
+        "tags": [
+          "Instruções"
+        ]
+      }
+    },
+    "/api/v1/instrucoes/{id}/historico": {
+      "get": {
+        "operationId": "InstrucaoController_getHistorico",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da instrução",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Histórico da instrução"
+          },
+          "404": {
+            "description": "Instrução não encontrada"
+          }
+        },
+        "summary": "Obter histórico da instrução",
+        "tags": [
+          "Instruções"
+        ]
+      }
+    },
+    "/api/v1/instrucoes/{id}/toggle-status": {
+      "patch": {
+        "operationId": "InstrucaoController_toggleStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da instrução",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status alterado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Instrucao"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Instrução não encontrada"
+          }
+        },
+        "summary": "Alternar status da instrução",
+        "tags": [
+          "Instruções"
         ]
       }
     }
@@ -8534,168 +9330,187 @@
         "properties": {
           "codigo": {
             "type": "string",
-            "description": "Código interno único do convênio",
-            "example": "CONV001",
+            "description": "Código do convênio",
             "maxLength": 20
-          },
-          "nome": {
-            "type": "string",
-            "description": "Nome do convênio",
-            "example": "Unimed São Paulo",
-            "maxLength": 255
           },
           "razao_social": {
             "type": "string",
-            "description": "Razão social",
-            "example": "Unimed São Paulo Cooperativa de Trabalho Médico",
+            "description": "Razão social do convênio",
+            "maxLength": 255
+          },
+          "nome_fantasia": {
+            "type": "string",
+            "description": "Nome fantasia do convênio",
             "maxLength": 255
           },
           "cnpj": {
             "type": "string",
-            "description": "CNPJ do convênio (somente números)",
-            "example": "12345678901234",
+            "description": "CNPJ do convênio",
+            "minLength": 14,
             "maxLength": 14
+          },
+          "inscricao_estadual": {
+            "type": "string",
+            "description": "Inscrição estadual"
+          },
+          "inscricao_municipal": {
+            "type": "string",
+            "description": "Inscrição municipal"
           },
           "registro_ans": {
             "type": "string",
-            "description": "Registro ANS",
-            "example": "123456",
-            "maxLength": 50
+            "description": "Registro ANS"
           },
-          "tem_integracao_api": {
-            "type": "boolean",
-            "description": "Se tem integração via API",
-            "example": true,
-            "default": false
-          },
-          "url_api": {
+          "tipo_convenio": {
             "type": "string",
-            "description": "URL da API do convênio",
-            "example": "https://api.unimed.com.br/v1",
-            "maxLength": 255
-          },
-          "token_api": {
-            "type": "string",
-            "description": "Token/chave de acesso da API",
-            "example": "sk_live_123456789",
-            "maxLength": 255
-          },
-          "requer_autorizacao": {
-            "type": "boolean",
-            "description": "Se requer autorização prévia",
-            "example": true,
-            "default": false
-          },
-          "requer_senha": {
-            "type": "boolean",
-            "description": "Se requer senha de autorização",
-            "example": false,
-            "default": false
-          },
-          "validade_guia_dias": {
-            "type": "number",
-            "description": "Validade padrão da guia em dias",
-            "example": 30
-          },
-          "tipo_faturamento": {
-            "type": "string",
-            "description": "Tipo de faturamento",
             "enum": [
-              "tiss",
-              "proprio",
-              "manual"
+              "plano_saude",
+              "particular",
+              "sus",
+              "cooperativa",
+              "outro"
             ],
-            "default": "tiss"
+            "description": "Tipo do convênio"
           },
-          "portal_envio": {
+          "modalidade": {
             "type": "string",
-            "description": "Portal de envio (SAVI, Orizon, etc)",
-            "example": "SAVI",
-            "maxLength": 255
+            "enum": [
+              "pre_pagamento",
+              "pos_pagamento",
+              "coparticipacao"
+            ],
+            "description": "Modalidade do convênio"
           },
-          "dia_fechamento": {
-            "type": "number",
-            "description": "Dia de fechamento do faturamento",
-            "example": 20,
-            "minimum": 1,
-            "maximum": 31
+          "endereco": {
+            "type": "string",
+            "description": "Endereço"
           },
-          "prazo_pagamento_dias": {
+          "numero": {
+            "type": "string",
+            "description": "Número"
+          },
+          "complemento": {
+            "type": "string",
+            "description": "Complemento"
+          },
+          "bairro": {
+            "type": "string",
+            "description": "Bairro"
+          },
+          "cidade": {
+            "type": "string",
+            "description": "Cidade"
+          },
+          "uf": {
+            "type": "string",
+            "description": "UF",
+            "minLength": 2,
+            "maxLength": 2
+          },
+          "cep": {
+            "type": "string",
+            "description": "CEP",
+            "minLength": 8,
+            "maxLength": 8
+          },
+          "telefone_principal": {
+            "type": "string",
+            "description": "Telefone principal"
+          },
+          "telefone_secundario": {
+            "type": "string",
+            "description": "Telefone secundário"
+          },
+          "email_principal": {
+            "type": "string",
+            "description": "Email principal"
+          },
+          "email_faturamento": {
+            "type": "string",
+            "description": "Email de faturamento"
+          },
+          "website": {
+            "type": "string",
+            "description": "Website"
+          },
+          "prazo_pagamento": {
             "type": "number",
             "description": "Prazo de pagamento em dias",
-            "example": 30
+            "default": 30
           },
-          "percentual_desconto": {
+          "dia_vencimento": {
             "type": "number",
-            "description": "Percentual de desconto padrão",
-            "example": 10.5,
-            "default": 0,
-            "minimum": 0,
-            "maximum": 100
+            "description": "Dia de vencimento"
           },
-          "tabela_precos": {
+          "forma_pagamento": {
             "type": "string",
-            "description": "Tabela de preços utilizada",
-            "example": "CBHPM 2023",
-            "maxLength": 50
+            "enum": [
+              "boleto",
+              "transferencia",
+              "deposito",
+              "pix"
+            ],
+            "description": "Forma de pagamento"
           },
-          "telefone": {
+          "banco": {
             "type": "string",
-            "description": "Telefone de contato",
-            "example": "11987654321",
-            "maxLength": 20
+            "description": "Banco"
           },
-          "email": {
+          "agencia": {
             "type": "string",
-            "description": "E-mail de contato",
-            "example": "contato@unimed.com.br",
-            "maxLength": 255
+            "description": "Agência"
           },
-          "contato_nome": {
+          "conta": {
             "type": "string",
-            "description": "Nome da pessoa de contato",
-            "example": "João Silva",
-            "maxLength": 255
+            "description": "Conta"
+          },
+          "pix_key": {
+            "type": "string",
+            "description": "Chave PIX"
           },
           "observacoes": {
             "type": "string",
-            "description": "Observações gerais",
-            "example": "Autorização via portal web, envio de guias até dia 20"
+            "description": "Observações"
           },
-          "regras_especificas": {
-            "type": "object",
-            "description": "Regras específicas do convênio",
-            "example": {
-              "requisitosPrevios": [
-                "carteirinha",
-                "pedido médico"
-              ],
-              "examesExcluidos": [
-                "COVID-19 PCR"
-              ]
-            }
+          "ativo": {
+            "type": "boolean",
+            "description": "Status ativo",
+            "default": true
           },
-          "status": {
+          "data_contrato": {
+            "format": "date-time",
             "type": "string",
-            "description": "Status do convênio",
-            "enum": [
-              "ativo",
-              "inativo",
-              "suspenso"
-            ],
-            "default": "ativo"
+            "description": "Data do contrato"
+          },
+          "data_vigencia_inicio": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data de início da vigência"
+          },
+          "data_vigencia_fim": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data de fim da vigência"
           }
         },
         "required": [
           "codigo",
-          "nome",
           "razao_social",
-          "tem_integracao_api",
-          "requer_autorizacao",
-          "requer_senha",
-          "tipo_faturamento",
-          "percentual_desconto",
-          "status"
+          "nome_fantasia",
+          "cnpj",
+          "tipo_convenio",
+          "modalidade",
+          "endereco",
+          "numero",
+          "bairro",
+          "cidade",
+          "uf",
+          "cep",
+          "telefone_principal",
+          "email_principal",
+          "prazo_pagamento",
+          "forma_pagamento",
+          "ativo"
         ]
       },
       "Convenio": {
@@ -8707,156 +9522,167 @@
         "properties": {
           "codigo": {
             "type": "string",
-            "description": "Código interno único do convênio",
-            "example": "CONV001",
+            "description": "Código do convênio",
             "maxLength": 20
-          },
-          "nome": {
-            "type": "string",
-            "description": "Nome do convênio",
-            "example": "Unimed São Paulo",
-            "maxLength": 255
           },
           "razao_social": {
             "type": "string",
-            "description": "Razão social",
-            "example": "Unimed São Paulo Cooperativa de Trabalho Médico",
+            "description": "Razão social do convênio",
+            "maxLength": 255
+          },
+          "nome_fantasia": {
+            "type": "string",
+            "description": "Nome fantasia do convênio",
             "maxLength": 255
           },
           "cnpj": {
             "type": "string",
-            "description": "CNPJ do convênio (somente números)",
-            "example": "12345678901234",
+            "description": "CNPJ do convênio",
+            "minLength": 14,
             "maxLength": 14
+          },
+          "inscricao_estadual": {
+            "type": "string",
+            "description": "Inscrição estadual"
+          },
+          "inscricao_municipal": {
+            "type": "string",
+            "description": "Inscrição municipal"
           },
           "registro_ans": {
             "type": "string",
-            "description": "Registro ANS",
-            "example": "123456",
-            "maxLength": 50
+            "description": "Registro ANS"
           },
-          "tem_integracao_api": {
-            "type": "boolean",
-            "description": "Se tem integração via API",
-            "example": true,
-            "default": false
-          },
-          "url_api": {
+          "tipo_convenio": {
             "type": "string",
-            "description": "URL da API do convênio",
-            "example": "https://api.unimed.com.br/v1",
-            "maxLength": 255
-          },
-          "token_api": {
-            "type": "string",
-            "description": "Token/chave de acesso da API",
-            "example": "sk_live_123456789",
-            "maxLength": 255
-          },
-          "requer_autorizacao": {
-            "type": "boolean",
-            "description": "Se requer autorização prévia",
-            "example": true,
-            "default": false
-          },
-          "requer_senha": {
-            "type": "boolean",
-            "description": "Se requer senha de autorização",
-            "example": false,
-            "default": false
-          },
-          "validade_guia_dias": {
-            "type": "number",
-            "description": "Validade padrão da guia em dias",
-            "example": 30
-          },
-          "tipo_faturamento": {
-            "type": "string",
-            "description": "Tipo de faturamento",
             "enum": [
-              "tiss",
-              "proprio",
-              "manual"
+              "plano_saude",
+              "particular",
+              "sus",
+              "cooperativa",
+              "outro"
             ],
-            "default": "tiss"
+            "description": "Tipo do convênio"
           },
-          "portal_envio": {
+          "modalidade": {
             "type": "string",
-            "description": "Portal de envio (SAVI, Orizon, etc)",
-            "example": "SAVI",
-            "maxLength": 255
+            "enum": [
+              "pre_pagamento",
+              "pos_pagamento",
+              "coparticipacao"
+            ],
+            "description": "Modalidade do convênio"
           },
-          "dia_fechamento": {
-            "type": "number",
-            "description": "Dia de fechamento do faturamento",
-            "example": 20,
-            "minimum": 1,
-            "maximum": 31
+          "endereco": {
+            "type": "string",
+            "description": "Endereço"
           },
-          "prazo_pagamento_dias": {
+          "numero": {
+            "type": "string",
+            "description": "Número"
+          },
+          "complemento": {
+            "type": "string",
+            "description": "Complemento"
+          },
+          "bairro": {
+            "type": "string",
+            "description": "Bairro"
+          },
+          "cidade": {
+            "type": "string",
+            "description": "Cidade"
+          },
+          "uf": {
+            "type": "string",
+            "description": "UF",
+            "minLength": 2,
+            "maxLength": 2
+          },
+          "cep": {
+            "type": "string",
+            "description": "CEP",
+            "minLength": 8,
+            "maxLength": 8
+          },
+          "telefone_principal": {
+            "type": "string",
+            "description": "Telefone principal"
+          },
+          "telefone_secundario": {
+            "type": "string",
+            "description": "Telefone secundário"
+          },
+          "email_principal": {
+            "type": "string",
+            "description": "Email principal"
+          },
+          "email_faturamento": {
+            "type": "string",
+            "description": "Email de faturamento"
+          },
+          "website": {
+            "type": "string",
+            "description": "Website"
+          },
+          "prazo_pagamento": {
             "type": "number",
             "description": "Prazo de pagamento em dias",
-            "example": 30
+            "default": 30
           },
-          "percentual_desconto": {
+          "dia_vencimento": {
             "type": "number",
-            "description": "Percentual de desconto padrão",
-            "example": 10.5,
-            "default": 0,
-            "minimum": 0,
-            "maximum": 100
+            "description": "Dia de vencimento"
           },
-          "tabela_precos": {
+          "forma_pagamento": {
             "type": "string",
-            "description": "Tabela de preços utilizada",
-            "example": "CBHPM 2023",
-            "maxLength": 50
+            "enum": [
+              "boleto",
+              "transferencia",
+              "deposito",
+              "pix"
+            ],
+            "description": "Forma de pagamento"
           },
-          "telefone": {
+          "banco": {
             "type": "string",
-            "description": "Telefone de contato",
-            "example": "11987654321",
-            "maxLength": 20
+            "description": "Banco"
           },
-          "email": {
+          "agencia": {
             "type": "string",
-            "description": "E-mail de contato",
-            "example": "contato@unimed.com.br",
-            "maxLength": 255
+            "description": "Agência"
           },
-          "contato_nome": {
+          "conta": {
             "type": "string",
-            "description": "Nome da pessoa de contato",
-            "example": "João Silva",
-            "maxLength": 255
+            "description": "Conta"
+          },
+          "pix_key": {
+            "type": "string",
+            "description": "Chave PIX"
           },
           "observacoes": {
             "type": "string",
-            "description": "Observações gerais",
-            "example": "Autorização via portal web, envio de guias até dia 20"
+            "description": "Observações"
           },
-          "regras_especificas": {
-            "type": "object",
-            "description": "Regras específicas do convênio",
-            "example": {
-              "requisitosPrevios": [
-                "carteirinha",
-                "pedido médico"
-              ],
-              "examesExcluidos": [
-                "COVID-19 PCR"
-              ]
-            }
+          "ativo": {
+            "type": "boolean",
+            "description": "Status ativo",
+            "default": true
           },
-          "status": {
+          "data_contrato": {
+            "format": "date-time",
             "type": "string",
-            "description": "Status do convênio",
-            "enum": [
-              "ativo",
-              "inativo",
-              "suspenso"
-            ],
-            "default": "ativo"
+            "description": "Data do contrato"
+          },
+          "data_vigencia_inicio": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data de início da vigência"
+          },
+          "data_vigencia_fim": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data de fim da vigência"
           }
         }
       },
@@ -10076,6 +10902,531 @@
             "type": "boolean",
             "default": true,
             "description": "Status ativo/inativo"
+          }
+        }
+      },
+      "CreatePlanoDto": {
+        "type": "object",
+        "properties": {
+          "convenio_id": {
+            "type": "string",
+            "description": "ID do convênio"
+          },
+          "codigo_plano": {
+            "type": "string",
+            "description": "Código do plano",
+            "maxLength": 50
+          },
+          "nome_plano": {
+            "type": "string",
+            "description": "Nome do plano",
+            "maxLength": 255
+          },
+          "tipo_plano": {
+            "type": "string",
+            "enum": [
+              "ambulatorial",
+              "hospitalar",
+              "completo",
+              "odontologico"
+            ],
+            "description": "Tipo do plano"
+          },
+          "categoria": {
+            "type": "string",
+            "enum": [
+              "basico",
+              "intermediario",
+              "premium",
+              "executivo"
+            ],
+            "description": "Categoria do plano"
+          },
+          "modalidade": {
+            "type": "string",
+            "enum": [
+              "pre_pagamento",
+              "pos_pagamento",
+              "coparticipacao"
+            ],
+            "description": "Modalidade do plano"
+          },
+          "vigencia_inicio": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data de início da vigência"
+          },
+          "vigencia_fim": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data de fim da vigência"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ativo",
+              "inativo",
+              "suspenso"
+            ],
+            "description": "Status do plano",
+            "default": "ativo"
+          },
+          "carencia_dias": {
+            "type": "number",
+            "description": "Carência em dias",
+            "default": 0
+          },
+          "cobertura_geografica": {
+            "type": "string",
+            "enum": [
+              "municipal",
+              "estadual",
+              "nacional",
+              "internacional"
+            ],
+            "description": "Cobertura geográfica"
+          },
+          "valor_consulta": {
+            "type": "number",
+            "description": "Valor da consulta"
+          },
+          "valor_ch": {
+            "type": "number",
+            "description": "Valor CH"
+          },
+          "valor_uco": {
+            "type": "number",
+            "description": "Valor UCO"
+          },
+          "valor_filme": {
+            "type": "number",
+            "description": "Valor do filme"
+          },
+          "percentual_coparticipacao": {
+            "type": "number",
+            "description": "Percentual de coparticipação"
+          },
+          "limite_mensal": {
+            "type": "number",
+            "description": "Limite mensal"
+          },
+          "limite_anual": {
+            "type": "number",
+            "description": "Limite anual"
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações"
+          }
+        },
+        "required": [
+          "convenio_id",
+          "codigo_plano",
+          "nome_plano",
+          "tipo_plano",
+          "categoria",
+          "modalidade",
+          "vigencia_inicio",
+          "status",
+          "carencia_dias",
+          "cobertura_geografica"
+        ]
+      },
+      "Plano": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdatePlanoDto": {
+        "type": "object",
+        "properties": {
+          "codigo_plano": {
+            "type": "string",
+            "description": "Código do plano",
+            "maxLength": 50
+          },
+          "nome_plano": {
+            "type": "string",
+            "description": "Nome do plano",
+            "maxLength": 255
+          },
+          "tipo_plano": {
+            "type": "string",
+            "enum": [
+              "ambulatorial",
+              "hospitalar",
+              "completo",
+              "odontologico"
+            ],
+            "description": "Tipo do plano"
+          },
+          "categoria": {
+            "type": "string",
+            "enum": [
+              "basico",
+              "intermediario",
+              "premium",
+              "executivo"
+            ],
+            "description": "Categoria do plano"
+          },
+          "modalidade": {
+            "type": "string",
+            "enum": [
+              "pre_pagamento",
+              "pos_pagamento",
+              "coparticipacao"
+            ],
+            "description": "Modalidade do plano"
+          },
+          "vigencia_inicio": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data de início da vigência"
+          },
+          "vigencia_fim": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data de fim da vigência"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ativo",
+              "inativo",
+              "suspenso"
+            ],
+            "description": "Status do plano",
+            "default": "ativo"
+          },
+          "carencia_dias": {
+            "type": "number",
+            "description": "Carência em dias",
+            "default": 0
+          },
+          "cobertura_geografica": {
+            "type": "string",
+            "enum": [
+              "municipal",
+              "estadual",
+              "nacional",
+              "internacional"
+            ],
+            "description": "Cobertura geográfica"
+          },
+          "valor_consulta": {
+            "type": "number",
+            "description": "Valor da consulta"
+          },
+          "valor_ch": {
+            "type": "number",
+            "description": "Valor CH"
+          },
+          "valor_uco": {
+            "type": "number",
+            "description": "Valor UCO"
+          },
+          "valor_filme": {
+            "type": "number",
+            "description": "Valor do filme"
+          },
+          "percentual_coparticipacao": {
+            "type": "number",
+            "description": "Percentual de coparticipação"
+          },
+          "limite_mensal": {
+            "type": "number",
+            "description": "Limite mensal"
+          },
+          "limite_anual": {
+            "type": "number",
+            "description": "Limite anual"
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações"
+          }
+        }
+      },
+      "CreateInstrucaoDto": {
+        "type": "object",
+        "properties": {
+          "convenio_id": {
+            "type": "string",
+            "description": "ID do convênio"
+          },
+          "codigo": {
+            "type": "string",
+            "description": "Código da instrução",
+            "maxLength": 20
+          },
+          "categoria": {
+            "type": "string",
+            "enum": [
+              "autorizacao_previa",
+              "faturamento",
+              "atendimento",
+              "documentacao",
+              "auditoria",
+              "urgencia_emergencia",
+              "internacao",
+              "sadt"
+            ],
+            "description": "Categoria da instrução"
+          },
+          "tipo_procedimento": {
+            "type": "string",
+            "enum": [
+              "todos",
+              "consultas",
+              "exames",
+              "cirurgias",
+              "internacoes",
+              "procedimentos_especiais"
+            ],
+            "description": "Tipo de procedimento",
+            "default": "todos"
+          },
+          "titulo": {
+            "type": "string",
+            "description": "Título da instrução",
+            "maxLength": 255
+          },
+          "descricao": {
+            "type": "string",
+            "description": "Descrição detalhada da instrução"
+          },
+          "prazo_resposta_dias": {
+            "type": "number",
+            "description": "Prazo de resposta em dias"
+          },
+          "prazo_resposta_horas": {
+            "type": "number",
+            "description": "Prazo de resposta em horas"
+          },
+          "vigencia_inicio": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data de início da vigência"
+          },
+          "vigencia_fim": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data de fim da vigência"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ativa",
+              "inativa",
+              "suspensa"
+            ],
+            "description": "Status da instrução",
+            "default": "ativa"
+          },
+          "prioridade": {
+            "type": "string",
+            "enum": [
+              "alta",
+              "media",
+              "baixa"
+            ],
+            "description": "Prioridade da instrução",
+            "default": "media"
+          },
+          "setor_responsavel": {
+            "type": "string",
+            "description": "Setor responsável"
+          },
+          "contato_telefone": {
+            "type": "string",
+            "description": "Telefone de contato"
+          },
+          "contato_email": {
+            "type": "string",
+            "description": "Email de contato"
+          },
+          "documentos_necessarios": {
+            "description": "Lista de documentos necessários",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "anexos": {
+            "description": "Anexos",
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "links_uteis": {
+            "description": "Links úteis",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tags": {
+            "description": "Tags para busca",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "observacoes_internas": {
+            "type": "string",
+            "description": "Observações internas"
+          },
+          "created_by": {
+            "type": "string",
+            "description": "Criado por"
+          }
+        },
+        "required": [
+          "convenio_id",
+          "codigo",
+          "categoria",
+          "tipo_procedimento",
+          "titulo",
+          "descricao",
+          "vigencia_inicio",
+          "status",
+          "prioridade"
+        ]
+      },
+      "Instrucao": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateInstrucaoDto": {
+        "type": "object",
+        "properties": {
+          "codigo": {
+            "type": "string",
+            "description": "Código da instrução",
+            "maxLength": 20
+          },
+          "categoria": {
+            "type": "string",
+            "enum": [
+              "autorizacao_previa",
+              "faturamento",
+              "atendimento",
+              "documentacao",
+              "auditoria",
+              "urgencia_emergencia",
+              "internacao",
+              "sadt"
+            ],
+            "description": "Categoria da instrução"
+          },
+          "tipo_procedimento": {
+            "type": "string",
+            "enum": [
+              "todos",
+              "consultas",
+              "exames",
+              "cirurgias",
+              "internacoes",
+              "procedimentos_especiais"
+            ],
+            "description": "Tipo de procedimento",
+            "default": "todos"
+          },
+          "titulo": {
+            "type": "string",
+            "description": "Título da instrução",
+            "maxLength": 255
+          },
+          "descricao": {
+            "type": "string",
+            "description": "Descrição detalhada da instrução"
+          },
+          "prazo_resposta_dias": {
+            "type": "number",
+            "description": "Prazo de resposta em dias"
+          },
+          "prazo_resposta_horas": {
+            "type": "number",
+            "description": "Prazo de resposta em horas"
+          },
+          "vigencia_inicio": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data de início da vigência"
+          },
+          "vigencia_fim": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data de fim da vigência"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ativa",
+              "inativa",
+              "suspensa"
+            ],
+            "description": "Status da instrução",
+            "default": "ativa"
+          },
+          "prioridade": {
+            "type": "string",
+            "enum": [
+              "alta",
+              "media",
+              "baixa"
+            ],
+            "description": "Prioridade da instrução",
+            "default": "media"
+          },
+          "setor_responsavel": {
+            "type": "string",
+            "description": "Setor responsável"
+          },
+          "contato_telefone": {
+            "type": "string",
+            "description": "Telefone de contato"
+          },
+          "contato_email": {
+            "type": "string",
+            "description": "Email de contato"
+          },
+          "documentos_necessarios": {
+            "description": "Lista de documentos necessários",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "anexos": {
+            "description": "Anexos",
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "links_uteis": {
+            "description": "Links úteis",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tags": {
+            "description": "Tags para busca",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "observacoes_internas": {
+            "type": "string",
+            "description": "Observações internas"
+          },
+          "created_by": {
+            "type": "string",
+            "description": "Criado por"
           }
         }
       }
