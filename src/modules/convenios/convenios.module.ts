@@ -10,6 +10,7 @@ import {
   ProcedimentoAutorizado,
   Restricao,
 } from './entities';
+import { Empresa } from '../empresas/entities/empresa.entity';
 
 // Services
 import { ConvenioService } from './services/convenio.service';
@@ -30,6 +31,7 @@ import { InstrucaoController } from './controllers/instrucao.controller';
       Instrucao,
       ProcedimentoAutorizado,
       Restricao,
+      Empresa,
     ]),
   ],
   providers: [ConvenioService, PlanoService, InstrucaoService],

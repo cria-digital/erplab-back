@@ -39,7 +39,9 @@ export class LaboratorioController {
     status: 409,
     description: 'Conflito - Código ou CNPJ já existente',
   })
-  create(@Body() createLaboratorioDto: CreateLaboratorioDto): Promise<Laboratorio> {
+  create(
+    @Body() createLaboratorioDto: CreateLaboratorioDto,
+  ): Promise<Laboratorio> {
     return this.laboratorioService.create(createLaboratorioDto);
   }
 
@@ -90,7 +92,10 @@ export class LaboratorioController {
 
   @Get('integracao/:tipo')
   @ApiOperation({ summary: 'Buscar laboratórios por tipo de integração' })
-  @ApiParam({ name: 'tipo', enum: ['api', 'webservice', 'manual', 'ftp', 'email'] })
+  @ApiParam({
+    name: 'tipo',
+    enum: ['api', 'webservice', 'manual', 'ftp', 'email'],
+  })
   @ApiResponse({
     status: 200,
     description: 'Laboratórios com o tipo de integração especificado',
@@ -162,7 +167,11 @@ export class LaboratorioController {
   @Patch(':id/toggle-status')
   @ApiOperation({ summary: 'Alternar status do laboratório (ativo/inativo)' })
   @ApiParam({ name: 'id', description: 'ID do laboratório' })
-  @ApiResponse({ status: 200, description: 'Status alterado', type: Laboratorio })
+  @ApiResponse({
+    status: 200,
+    description: 'Status alterado',
+    type: Laboratorio,
+  })
   @ApiResponse({ status: 404, description: 'Laboratório não encontrado' })
   toggleStatus(@Param('id', ParseUUIDPipe) id: string): Promise<Laboratorio> {
     return this.laboratorioService.toggleStatus(id);

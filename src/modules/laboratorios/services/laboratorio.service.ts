@@ -16,7 +16,9 @@ export class LaboratorioService {
     private readonly laboratorioRepository: Repository<Laboratorio>,
   ) {}
 
-  async create(createLaboratorioDto: CreateLaboratorioDto): Promise<Laboratorio> {
+  async create(
+    createLaboratorioDto: CreateLaboratorioDto,
+  ): Promise<Laboratorio> {
     // Verificar duplicidade de código
     const existingCodigo = await this.laboratorioRepository.findOne({
       where: { codigo: createLaboratorioDto.codigo },
@@ -63,7 +65,9 @@ export class LaboratorioService {
     });
 
     if (!laboratorio) {
-      throw new NotFoundException(`Laboratório com código ${codigo} não encontrado`);
+      throw new NotFoundException(
+        `Laboratório com código ${codigo} não encontrado`,
+      );
     }
 
     return laboratorio;
@@ -75,7 +79,9 @@ export class LaboratorioService {
     });
 
     if (!laboratorio) {
-      throw new NotFoundException(`Laboratório com CNPJ ${cnpj} não encontrado`);
+      throw new NotFoundException(
+        `Laboratório com CNPJ ${cnpj} não encontrado`,
+      );
     }
 
     return laboratorio;
@@ -92,7 +98,7 @@ export class LaboratorioService {
     return await this.laboratorioRepository.find({
       where: {
         tipo_integracao: tipo as any,
-        ativo: true
+        ativo: true,
       },
       order: { nome_fantasia: 'ASC' },
     });
@@ -102,17 +108,23 @@ export class LaboratorioService {
     return await this.laboratorioRepository.find({
       where: {
         aceita_urgencia: true,
-        ativo: true
+        ativo: true,
       },
       order: { nome_fantasia: 'ASC' },
     });
   }
 
-  async update(id: string, updateLaboratorioDto: UpdateLaboratorioDto): Promise<Laboratorio> {
+  async update(
+    id: string,
+    updateLaboratorioDto: UpdateLaboratorioDto,
+  ): Promise<Laboratorio> {
     const laboratorio = await this.findOne(id);
 
     // Verificar duplicidade de código se foi alterado
-    if (updateLaboratorioDto.codigo && updateLaboratorioDto.codigo !== laboratorio.codigo) {
+    if (
+      updateLaboratorioDto.codigo &&
+      updateLaboratorioDto.codigo !== laboratorio.codigo
+    ) {
       const existingCodigo = await this.laboratorioRepository.findOne({
         where: { codigo: updateLaboratorioDto.codigo },
       });
@@ -123,7 +135,10 @@ export class LaboratorioService {
     }
 
     // Verificar duplicidade de CNPJ se foi alterado
-    if (updateLaboratorioDto.cnpj && updateLaboratorioDto.cnpj !== laboratorio.cnpj) {
+    if (
+      updateLaboratorioDto.cnpj &&
+      updateLaboratorioDto.cnpj !== laboratorio.cnpj
+    ) {
       const existingCnpj = await this.laboratorioRepository.findOne({
         where: { cnpj: updateLaboratorioDto.cnpj },
       });

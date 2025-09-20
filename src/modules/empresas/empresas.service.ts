@@ -124,7 +124,7 @@ export class EmpresasService {
     return await this.empresaRepository.find({
       where: {
         tipoEmpresa: 'LABORATORIO_APOIO' as any,
-        ativo: true
+        ativo: true,
       },
       order: { nomeFantasia: 'ASC' },
     });
@@ -142,7 +142,7 @@ export class EmpresasService {
     return await this.empresaRepository.find({
       where: {
         tipoEmpresa: 'CONVENIOS' as any,
-        ativo: true
+        ativo: true,
       },
       order: { nomeFantasia: 'ASC' },
     });

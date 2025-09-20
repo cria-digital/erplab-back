@@ -12,7 +12,10 @@ import {
   IsUrl,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { TipoIntegracao, MetodoEnvioResultado } from '../entities/laboratorio.entity';
+import {
+  TipoIntegracao,
+  MetodoEnvioResultado,
+} from '../entities/laboratorio.entity';
 
 export class CreateLaboratorioDto {
   @ApiProperty({ description: 'Código do laboratório', maxLength: 20 })
@@ -142,7 +145,11 @@ export class CreateLaboratorioDto {
   numero_conselho?: string;
 
   // Integração
-  @ApiPropertyOptional({ enum: TipoIntegracao, description: 'Tipo de integração', default: TipoIntegracao.MANUAL })
+  @ApiPropertyOptional({
+    enum: TipoIntegracao,
+    description: 'Tipo de integração',
+    default: TipoIntegracao.MANUAL,
+  })
   @IsOptional()
   @IsEnum(TipoIntegracao)
   tipo_integracao?: TipoIntegracao;
@@ -177,7 +184,10 @@ export class CreateLaboratorioDto {
   configuracao_adicional?: string;
 
   // Métodos de Envio
-  @ApiPropertyOptional({ description: 'Métodos de envio de resultado', type: [String] })
+  @ApiPropertyOptional({
+    description: 'Métodos de envio de resultado',
+    type: [String],
+  })
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
@@ -190,12 +200,18 @@ export class CreateLaboratorioDto {
   portal_resultados_url?: string;
 
   // Prazos e Condições
-  @ApiPropertyOptional({ description: 'Prazo entrega normal (dias)', default: 3 })
+  @ApiPropertyOptional({
+    description: 'Prazo entrega normal (dias)',
+    default: 3,
+  })
   @IsOptional()
   @IsNumber()
   prazo_entrega_normal?: number;
 
-  @ApiPropertyOptional({ description: 'Prazo entrega urgente (dias)', default: 1 })
+  @ApiPropertyOptional({
+    description: 'Prazo entrega urgente (dias)',
+    default: 1,
+  })
   @IsOptional()
   @IsNumber()
   prazo_entrega_urgente?: number;
@@ -205,7 +221,10 @@ export class CreateLaboratorioDto {
   @IsNumber()
   taxa_urgencia?: number;
 
-  @ApiPropertyOptional({ description: 'Prazo de pagamento (dias)', default: 30 })
+  @ApiPropertyOptional({
+    description: 'Prazo de pagamento (dias)',
+    default: 30,
+  })
   @IsOptional()
   @IsNumber()
   prazo_pagamento?: number;
@@ -256,7 +275,10 @@ export class CreateLaboratorioDto {
   @IsBoolean()
   aceita_urgencia?: boolean;
 
-  @ApiPropertyOptional({ description: 'Envia resultado automático', default: true })
+  @ApiPropertyOptional({
+    description: 'Envia resultado automático',
+    default: true,
+  })
   @IsOptional()
   @IsBoolean()
   envia_resultado_automatico?: boolean;

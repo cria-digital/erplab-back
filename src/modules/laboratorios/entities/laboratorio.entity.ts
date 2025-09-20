@@ -51,7 +51,11 @@ export class Laboratorio {
   numero_conselho: string;
 
   // Integração
-  @Column({ type: 'enum', enum: TipoIntegracao, default: TipoIntegracao.MANUAL })
+  @Column({
+    type: 'enum',
+    enum: TipoIntegracao,
+    default: TipoIntegracao.MANUAL,
+  })
   tipo_integracao: TipoIntegracao;
 
   @Column({ type: 'varchar', length: 255, nullable: true })

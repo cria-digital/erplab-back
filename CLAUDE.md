@@ -350,14 +350,200 @@ laboratorios
 - ⏳ Testes ainda não realizados
 
 ### Consideração sobre Herança vs Relacionamento
-- **Padrão escolhido**: Manter consistência com o módulo de Convênios
-- **Estrutura**: Relacionamento OneToOne com `empresas` (não herança de tabelas)
+- **Padrão escolhido**: Relacionamento OneToOne com `empresas` (não herança de tabelas)
+- **Estrutura**: Dados comuns em `empresas`, dados específicos em tabelas próprias
 - **Motivo**: TypeORM com PostgreSQL tem limitações para herança de tabelas
 - **Benefício**: Mantém dados normalizados e evita duplicação
 
+## Módulo de Convênios (Refatorado)
+
+### Refatoração Realizada (Janeiro 2025)
+- **Antes**: Tabela `convenios` com todos os campos (duplicando dados de empresa)
+- **Depois**: Relacionamento OneToOne com `empresas`, mantendo apenas campos específicos
+
+### Nova Estrutura da Tabela Convênios
+```sql
+convenios
+├── id (uuid)
+├── empresa_id (uuid, FK → empresas.id, UNIQUE)
+├── codigo_convenio (varchar 20, UNIQUE)
+├── registro_ans (varchar 20)
+├── tipo_convenio (enum)
+├── modalidade (enum)
+├── prazo_pagamento (int, default: 30)
+├── dia_vencimento (int)
+├── email_faturamento (varchar 255)
+├── pix_key (varchar 255)
+├── observacoes_convenio (text)
+├── data_contrato (date)
+├── data_vigencia_inicio (date)
+├── data_vigencia_fim (date)
+├── requer_autorizacao (boolean, default: true)
+├── aceita_atendimento_online (boolean, default: false)
+├── percentual_coparticipacao (decimal 5,2)
+├── valor_consulta (decimal 10,2)
+├── created_at (timestamp)
+└── updated_at (timestamp)
+```
+
+### Arquivos Modificados
+- `src/modules/convenios/entities/convenio.entity.ts` - Refatorado com OneToOne para Empresa
+- `src/modules/convenios/dto/create-convenio.dto.ts` - Atualizado para incluir dados de empresa
+- `src/modules/convenios/services/convenio.service.ts` - Refatorado com transações para criar empresa+convênio
+- `src/modules/convenios/convenios.module.ts` - Importa entidade Empresa
+- `src/database/migrations/1758400000000-RefactorConveniosToUseEmpresas.ts` - Migration para migrar dados
+
+### Padrão Arquitetural Estabelecido
+- **Empresas**: Tabela central com dados comuns (CNPJ, razão social, endereço, impostos, etc.)
+- **Módulos específicos**: Tabelas com relacionamento OneToOne e apenas campos específicos
+- **Benefícios**:
+  - Evita duplicação de dados
+  - Facilita manutenção
+  - Permite reutilização
+  - Mantém integridade referencial
+
+## Módulo de Telemedicina (Criado Janeiro 2025)
+
+### Funcionalidades Implementadas
+Seguindo o padrão arquitetural estabelecido (OneToOne com Empresas), o módulo de telemedicina oferece:
+
+#### Características Principais
+- **Integração**: Suporte a múltiplos tipos (API REST, Webhook, HL7, FHIR, DICOM, Manual)
+- **Plataformas**: Web, Mobile, Desktop, Híbrida
+- **Serviços**: Teleconsulta, Telediagnóstico, Telecirurgia, Telemonitoramento
+- **Vínculo de Exames**: Sistema completo para mapear exames internos com códigos da plataforma
+
+### Nova Estrutura das Tabelas
+
+#### Tabela `telemedicina`
+```sql
+telemedicina
+├── id (uuid)
+├── empresa_id (uuid, FK → empresas.id, UNIQUE)
+├── codigo_telemedicina (varchar 20, UNIQUE)
+├── tipo_integracao (enum)
+├── url_integracao (varchar 255)
+├── token_integracao (varchar 255)
+├── usuario_integracao (varchar 100)
+├── senha_integracao (varchar 100)
+├── configuracao_adicional (text)
+├── status_integracao (enum)
+├── tipo_plataforma (enum)
+├── url_plataforma (varchar 255)
+├── versao_sistema (varchar 255)
+├── especialidades_atendidas (text array)
+├── tipos_consulta (text array)
+├── teleconsulta (boolean)
+├── telediagnostico (boolean)
+├── telecirurgia (boolean)
+├── telemonitoramento (boolean)
+├── tempo_consulta_padrao (int)
+├── permite_agendamento_online (boolean)
+├── permite_cancelamento_online (boolean)
+├── antecedencia_minima_agendamento (int)
+├── antecedencia_minima_cancelamento (int)
+├── certificado_digital (varchar 100)
+├── suporte_gravacao (boolean)
+├── suporte_streaming (boolean)
+├── criptografia_end_to_end (boolean)
+├── protocolo_seguranca (varchar 50)
+├── valor_consulta_particular (decimal 10,2)
+├── percentual_repasse (decimal 5,2)
+├── taxa_plataforma (decimal 10,2)
+├── observacoes (text)
+├── requisitos_tecnicos (text)
+├── created_at (timestamp)
+└── updated_at (timestamp)
+```
+
+#### Tabela `telemedicina_exames`
+```sql
+telemedicina_exames
+├── id (uuid)
+├── telemedicina_id (uuid, FK → telemedicina.id)
+├── exame_id (uuid, FK → exames.id)
+├── codigo_telemedicina (varchar 50)
+├── nome_exame_telemedicina (varchar 255)
+├── categoria_telemedicina (varchar 100)
+├── ativo (boolean)
+├── permite_upload_imagem (boolean)
+├── requer_especialista (boolean)
+├── tempo_laudo_padrao (int)
+├── valor_laudo (decimal 10,2)
+├── observacoes (text)
+├── created_at (timestamp)
+└── updated_at (timestamp)
+└── UNIQUE(telemedicina_id, exame_id)
+```
+
+### Arquivos Criados
+- **Entidades**: `telemedicina.entity.ts`, `telemedicina-exame.entity.ts`
+- **DTOs**: `create-telemedicina.dto.ts`, `update-telemedicina.dto.ts`, `create-telemedicina-exame.dto.ts`, `update-telemedicina-exame.dto.ts`
+- **Services**: `telemedicina.service.ts`, `telemedicina-exame.service.ts`
+- **Controllers**: `telemedicina.controller.ts`, `telemedicina-exame.controller.ts`
+- **Módulo**: `telemedicina.module.ts`
+- **Migration**: `1758374921602-CreateTelemedicinaTable.ts`
+
+### Funcionalidades dos Services
+#### TelemedicinaService
+- CRUD completo com transações
+- Busca por código, CNPJ, tipo de integração, plataforma
+- Filtros por status e funcionalidades
+- Estatísticas agregadas
+- Atualização de status de integração
+
+#### TelemedicinaExameService
+- Gestão de vínculos exame-telemedicina
+- Vinculação automática por código
+- Busca de exames sem vínculo
+- Estatísticas de vínculos
+- Importação/exportação de planilhas (preparado)
+
+### API Endpoints
+
+#### Telemedicina (`/api/v1/telemedicina`)
+- `GET /` - Listar todas
+- `GET /ativos` - Listar ativas
+- `GET /search?q=termo` - Buscar por termo
+- `GET /estatisticas` - Estatísticas
+- `GET /integracao/:tipo` - Por tipo integração
+- `GET /plataforma/:tipo` - Por tipo plataforma
+- `GET /codigo/:codigo` - Buscar por código
+- `GET /cnpj/:cnpj` - Buscar por CNPJ
+- `POST /` - Criar nova
+- `PATCH /:id` - Atualizar
+- `PATCH /:id/toggle-status` - Alternar status
+- `PATCH /:id/status-integracao` - Atualizar status integração
+- `DELETE /:id` - Remover
+
+#### Vínculos (`/api/v1/telemedicina-exames`)
+- `GET /` - Listar todos vínculos
+- `GET /ativos` - Vínculos ativos
+- `GET /telemedicina/:id` - Exames de uma telemedicina
+- `GET /exame/:id` - Telemedicinas de um exame
+- `GET /sem-vinculo/:id` - Exames sem vínculo
+- `GET /search/:id?q=termo` - Buscar vínculos
+- `GET /estatisticas` - Estatísticas vínculos
+- `POST /` - Criar vínculo
+- `POST /vincular-automaticamente/:id` - Vínculo automático
+- `PATCH /:id` - Atualizar vínculo
+- `PATCH /:id/toggle-status` - Alternar status
+- `DELETE /:id` - Remover vínculo
+
+### Arquitetura Consistente
+O módulo segue o mesmo padrão dos outros módulos:
+```
+empresas (dados comuns)
+    ↑
+    | OneToOne
+    ├── laboratorios ✅
+    ├── convenios ✅
+    └── telemedicina ✅ (NOVO)
+```
+
 ## Próximos Passos Sugeridos
 
-1. Executar migration do módulo de laboratórios
+1. Executar migrations dos módulos (laboratórios, convênios, telemedicina)
 2. Criar testes para o módulo de laboratórios
 3. Implementar sistema de permissões granulares
 4. Adicionar rate limiting nos endpoints

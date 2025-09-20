@@ -5,9 +5,12 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
 import { Plano } from './plano.entity';
 import { Instrucao } from './instrucao.entity';
+import { Empresa } from '../../empresas/entities/empresa.entity';
 
 export enum TipoConvenio {
   PLANO_SAUDE = 'plano_saude',
@@ -23,35 +26,20 @@ export enum Modalidade {
   COPARTICIPACAO = 'coparticipacao',
 }
 
-export enum FormaPagamento {
-  BOLETO = 'boleto',
-  TRANSFERENCIA = 'transferencia',
-  DEPOSITO = 'deposito',
-  PIX = 'pix',
-}
-
 @Entity('convenios')
 export class Convenio {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column({ type: 'uuid', unique: true })
+  empresa_id: string;
+
+  @OneToOne(() => Empresa)
+  @JoinColumn({ name: 'empresa_id' })
+  empresa: Empresa;
+
   @Column({ type: 'varchar', length: 20, unique: true })
-  codigo: string;
-
-  @Column({ type: 'varchar', length: 255 })
-  razao_social: string;
-
-  @Column({ type: 'varchar', length: 255 })
-  nome_fantasia: string;
-
-  @Column({ type: 'varchar', length: 14, unique: true })
-  cnpj: string;
-
-  @Column({ type: 'varchar', length: 20, nullable: true })
-  inscricao_estadual: string;
-
-  @Column({ type: 'varchar', length: 20, nullable: true })
-  inscricao_municipal: string;
+  codigo_convenio: string;
 
   @Column({ type: 'varchar', length: 20, nullable: true })
   registro_ans: string;
@@ -62,68 +50,20 @@ export class Convenio {
   @Column({ type: 'enum', enum: Modalidade })
   modalidade: Modalidade;
 
-  @Column({ type: 'varchar', length: 255 })
-  endereco: string;
-
-  @Column({ type: 'varchar', length: 10 })
-  numero: string;
-
-  @Column({ type: 'varchar', length: 100, nullable: true })
-  complemento: string;
-
-  @Column({ type: 'varchar', length: 100 })
-  bairro: string;
-
-  @Column({ type: 'varchar', length: 100 })
-  cidade: string;
-
-  @Column({ type: 'char', length: 2 })
-  uf: string;
-
-  @Column({ type: 'varchar', length: 8 })
-  cep: string;
-
-  @Column({ type: 'varchar', length: 20 })
-  telefone_principal: string;
-
-  @Column({ type: 'varchar', length: 20, nullable: true })
-  telefone_secundario: string;
-
-  @Column({ type: 'varchar', length: 255 })
-  email_principal: string;
-
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  email_faturamento: string;
-
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  website: string;
-
   @Column({ type: 'int', default: 30 })
   prazo_pagamento: number;
 
   @Column({ type: 'int', nullable: true })
   dia_vencimento: number;
 
-  @Column({ type: 'enum', enum: FormaPagamento })
-  forma_pagamento: FormaPagamento;
-
-  @Column({ type: 'varchar', length: 100, nullable: true })
-  banco: string;
-
-  @Column({ type: 'varchar', length: 20, nullable: true })
-  agencia: string;
-
-  @Column({ type: 'varchar', length: 20, nullable: true })
-  conta: string;
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  email_faturamento: string;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   pix_key: string;
 
   @Column({ type: 'text', nullable: true })
-  observacoes: string;
-
-  @Column({ type: 'boolean', default: true })
-  ativo: boolean;
+  observacoes_convenio: string;
 
   @Column({ type: 'date', nullable: true })
   data_contrato: Date;
@@ -133,6 +73,18 @@ export class Convenio {
 
   @Column({ type: 'date', nullable: true })
   data_vigencia_fim: Date;
+
+  @Column({ type: 'boolean', default: true })
+  requer_autorizacao: boolean;
+
+  @Column({ type: 'boolean', default: false })
+  aceita_atendimento_online: boolean;
+
+  @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
+  percentual_coparticipacao: number;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  valor_consulta: number;
 
   @CreateDateColumn()
   created_at: Date;

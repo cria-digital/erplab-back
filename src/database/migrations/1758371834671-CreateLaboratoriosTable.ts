@@ -1,6 +1,13 @@
-import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableForeignKey,
+} from 'typeorm';
 
-export class CreateLaboratoriosTable1758371834671 implements MigrationInterface {
+export class CreateLaboratoriosTable1758371834671
+  implements MigrationInterface
+{
   public async up(queryRunner: QueryRunner): Promise<void> {
     // Criar enum para tipo de integração
     await queryRunner.query(`

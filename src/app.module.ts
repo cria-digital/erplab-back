@@ -19,6 +19,9 @@ import { EmpresasModule } from './modules/empresas/empresas.module';
 import { CommonModule } from './modules/common/common.module';
 import { ConveniosModule } from './modules/convenios/convenios.module';
 import { LaboratoriosModule } from './modules/laboratorios/laboratorios.module';
+import { TelemedicinaModule } from './modules/telemedicina/telemedicina.module';
+import { FornecedoresModule } from './modules/fornecedores/fornecedores.module';
+import { PrestadoresServicoModule } from './modules/prestadores-servico/prestadores-servico.module';
 
 @Module({
   imports: [
@@ -51,6 +54,9 @@ import { LaboratoriosModule } from './modules/laboratorios/laboratorios.module';
     EmpresasModule,
     ConveniosModule,
     LaboratoriosModule,
+    TelemedicinaModule,
+    FornecedoresModule,
+    PrestadoresServicoModule,
 
     // Próximos módulos a serem implementados:
     // FinanceiroModule,
