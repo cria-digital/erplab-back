@@ -111,4 +111,40 @@ export class EmpresasService {
     empresa.ativo = false;
     return await this.empresaRepository.save(empresa);
   }
+
+  // Métodos específicos para Laboratórios
+  async findAllLaboratorios(): Promise<Empresa[]> {
+    return await this.empresaRepository.find({
+      where: { tipoEmpresa: 'LABORATORIO_APOIO' as any },
+      order: { nomeFantasia: 'ASC' },
+    });
+  }
+
+  async findLaboratoriosAtivos(): Promise<Empresa[]> {
+    return await this.empresaRepository.find({
+      where: {
+        tipoEmpresa: 'LABORATORIO_APOIO' as any,
+        ativo: true
+      },
+      order: { nomeFantasia: 'ASC' },
+    });
+  }
+
+  // Métodos específicos para Convênios
+  async findAllConvenios(): Promise<Empresa[]> {
+    return await this.empresaRepository.find({
+      where: { tipoEmpresa: 'CONVENIOS' as any },
+      order: { nomeFantasia: 'ASC' },
+    });
+  }
+
+  async findConveniosAtivos(): Promise<Empresa[]> {
+    return await this.empresaRepository.find({
+      where: {
+        tipoEmpresa: 'CONVENIOS' as any,
+        ativo: true
+      },
+      order: { nomeFantasia: 'ASC' },
+    });
+  }
 }

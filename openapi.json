@@ -6525,6 +6525,402 @@
           "Instruções"
         ]
       }
+    },
+    "/api/v1/laboratorios": {
+      "post": {
+        "operationId": "LaboratorioController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateLaboratorioDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Laboratório criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Laboratorio"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito - Código ou CNPJ já existente"
+          }
+        },
+        "summary": "Criar novo laboratório",
+        "tags": [
+          "Laboratórios"
+        ]
+      },
+      "get": {
+        "operationId": "LaboratorioController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de laboratórios",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Laboratorio"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar todos os laboratórios",
+        "tags": [
+          "Laboratórios"
+        ]
+      }
+    },
+    "/api/v1/laboratorios/ativos": {
+      "get": {
+        "operationId": "LaboratorioController_findAtivos",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de laboratórios ativos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Laboratorio"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar laboratórios ativos",
+        "tags": [
+          "Laboratórios"
+        ]
+      }
+    },
+    "/api/v1/laboratorios/urgencia": {
+      "get": {
+        "operationId": "LaboratorioController_findAceitamUrgencia",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de laboratórios que aceitam urgência",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Laboratorio"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar laboratórios que aceitam urgência",
+        "tags": [
+          "Laboratórios"
+        ]
+      }
+    },
+    "/api/v1/laboratorios/search": {
+      "get": {
+        "operationId": "LaboratorioController_search",
+        "parameters": [
+          {
+            "name": "q",
+            "required": true,
+            "in": "query",
+            "description": "Termo de busca",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resultados da busca",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Laboratorio"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Buscar laboratórios",
+        "tags": [
+          "Laboratórios"
+        ]
+      }
+    },
+    "/api/v1/laboratorios/integracao/{tipo}": {
+      "get": {
+        "operationId": "LaboratorioController_findByIntegracao",
+        "parameters": [
+          {
+            "name": "tipo",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "enum": [
+                "api",
+                "webservice",
+                "manual",
+                "ftp",
+                "email"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Laboratórios com o tipo de integração especificado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Laboratorio"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Buscar laboratórios por tipo de integração",
+        "tags": [
+          "Laboratórios"
+        ]
+      }
+    },
+    "/api/v1/laboratorios/codigo/{codigo}": {
+      "get": {
+        "operationId": "LaboratorioController_findByCodigo",
+        "parameters": [
+          {
+            "name": "codigo",
+            "required": true,
+            "in": "path",
+            "description": "Código do laboratório",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Laboratório encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Laboratorio"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Laboratório não encontrado"
+          }
+        },
+        "summary": "Buscar laboratório por código",
+        "tags": [
+          "Laboratórios"
+        ]
+      }
+    },
+    "/api/v1/laboratorios/cnpj/{cnpj}": {
+      "get": {
+        "operationId": "LaboratorioController_findByCnpj",
+        "parameters": [
+          {
+            "name": "cnpj",
+            "required": true,
+            "in": "path",
+            "description": "CNPJ do laboratório",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Laboratório encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Laboratorio"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Laboratório não encontrado"
+          }
+        },
+        "summary": "Buscar laboratório por CNPJ",
+        "tags": [
+          "Laboratórios"
+        ]
+      }
+    },
+    "/api/v1/laboratorios/{id}": {
+      "get": {
+        "operationId": "LaboratorioController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do laboratório",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Laboratório encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Laboratorio"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Laboratório não encontrado"
+          }
+        },
+        "summary": "Buscar laboratório por ID",
+        "tags": [
+          "Laboratórios"
+        ]
+      },
+      "patch": {
+        "operationId": "LaboratorioController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do laboratório",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateLaboratorioDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Laboratório atualizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Laboratorio"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Laboratório não encontrado"
+          },
+          "409": {
+            "description": "Conflito - Código ou CNPJ já existente"
+          }
+        },
+        "summary": "Atualizar laboratório",
+        "tags": [
+          "Laboratórios"
+        ]
+      },
+      "delete": {
+        "operationId": "LaboratorioController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do laboratório",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Laboratório excluído"
+          },
+          "404": {
+            "description": "Laboratório não encontrado"
+          }
+        },
+        "summary": "Excluir laboratório",
+        "tags": [
+          "Laboratórios"
+        ]
+      }
+    },
+    "/api/v1/laboratorios/{id}/toggle-status": {
+      "patch": {
+        "operationId": "LaboratorioController_toggleStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do laboratório",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status alterado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Laboratorio"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Laboratório não encontrado"
+          }
+        },
+        "summary": "Alternar status do laboratório (ativo/inativo)",
+        "tags": [
+          "Laboratórios"
+        ]
+      }
     }
   },
   "info": {
@@ -11427,6 +11823,452 @@
           "created_by": {
             "type": "string",
             "description": "Criado por"
+          }
+        }
+      },
+      "CreateLaboratorioDto": {
+        "type": "object",
+        "properties": {
+          "codigo": {
+            "type": "string",
+            "description": "Código do laboratório",
+            "maxLength": 20
+          },
+          "razao_social": {
+            "type": "string",
+            "description": "Razão social",
+            "maxLength": 255
+          },
+          "nome_fantasia": {
+            "type": "string",
+            "description": "Nome fantasia",
+            "maxLength": 255
+          },
+          "cnpj": {
+            "type": "string",
+            "description": "CNPJ",
+            "minLength": 14,
+            "maxLength": 14
+          },
+          "inscricao_estadual": {
+            "type": "string",
+            "description": "Inscrição estadual"
+          },
+          "inscricao_municipal": {
+            "type": "string",
+            "description": "Inscrição municipal"
+          },
+          "endereco": {
+            "type": "string",
+            "description": "Endereço"
+          },
+          "numero": {
+            "type": "string",
+            "description": "Número"
+          },
+          "complemento": {
+            "type": "string",
+            "description": "Complemento"
+          },
+          "bairro": {
+            "type": "string",
+            "description": "Bairro"
+          },
+          "cidade": {
+            "type": "string",
+            "description": "Cidade"
+          },
+          "uf": {
+            "type": "string",
+            "description": "UF",
+            "minLength": 2,
+            "maxLength": 2
+          },
+          "cep": {
+            "type": "string",
+            "description": "CEP",
+            "minLength": 8,
+            "maxLength": 8
+          },
+          "telefone_principal": {
+            "type": "string",
+            "description": "Telefone principal"
+          },
+          "telefone_secundario": {
+            "type": "string",
+            "description": "Telefone secundário"
+          },
+          "email_principal": {
+            "type": "string",
+            "description": "Email principal"
+          },
+          "email_faturamento": {
+            "type": "string",
+            "description": "Email faturamento"
+          },
+          "website": {
+            "type": "string",
+            "description": "Website"
+          },
+          "responsavel_tecnico": {
+            "type": "string",
+            "description": "Responsável técnico"
+          },
+          "conselho_responsavel": {
+            "type": "string",
+            "description": "Conselho do responsável"
+          },
+          "numero_conselho": {
+            "type": "string",
+            "description": "Número do conselho"
+          },
+          "tipo_integracao": {
+            "type": "string",
+            "enum": [
+              "api",
+              "webservice",
+              "manual",
+              "ftp",
+              "email"
+            ],
+            "description": "Tipo de integração",
+            "default": "manual"
+          },
+          "url_integracao": {
+            "type": "string",
+            "description": "URL de integração"
+          },
+          "token_integracao": {
+            "type": "string",
+            "description": "Token de integração"
+          },
+          "usuario_integracao": {
+            "type": "string",
+            "description": "Usuário de integração"
+          },
+          "senha_integracao": {
+            "type": "string",
+            "description": "Senha de integração"
+          },
+          "configuracao_adicional": {
+            "type": "string",
+            "description": "Configuração adicional (JSON)"
+          },
+          "metodos_envio_resultado": {
+            "description": "Métodos de envio de resultado",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "portal_resultados_url": {
+            "type": "string",
+            "description": "URL do portal de resultados"
+          },
+          "prazo_entrega_normal": {
+            "type": "number",
+            "description": "Prazo entrega normal (dias)",
+            "default": 3
+          },
+          "prazo_entrega_urgente": {
+            "type": "number",
+            "description": "Prazo entrega urgente (dias)",
+            "default": 1
+          },
+          "taxa_urgencia": {
+            "type": "number",
+            "description": "Taxa de urgência"
+          },
+          "prazo_pagamento": {
+            "type": "number",
+            "description": "Prazo de pagamento (dias)",
+            "default": 30
+          },
+          "percentual_repasse": {
+            "type": "number",
+            "description": "Percentual de repasse"
+          },
+          "banco": {
+            "type": "string",
+            "description": "Banco"
+          },
+          "agencia": {
+            "type": "string",
+            "description": "Agência"
+          },
+          "conta": {
+            "type": "string",
+            "description": "Conta"
+          },
+          "pix_key": {
+            "type": "string",
+            "description": "Chave PIX"
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações"
+          },
+          "ativo": {
+            "type": "boolean",
+            "description": "Ativo",
+            "default": true
+          },
+          "aceita_urgencia": {
+            "type": "boolean",
+            "description": "Aceita urgência",
+            "default": false
+          },
+          "envia_resultado_automatico": {
+            "type": "boolean",
+            "description": "Envia resultado automático",
+            "default": true
+          },
+          "data_contrato": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data do contrato"
+          },
+          "data_vigencia_inicio": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data início vigência"
+          },
+          "data_vigencia_fim": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data fim vigência"
+          }
+        },
+        "required": [
+          "codigo",
+          "razao_social",
+          "nome_fantasia",
+          "cnpj",
+          "endereco",
+          "numero",
+          "bairro",
+          "cidade",
+          "uf",
+          "cep",
+          "telefone_principal",
+          "email_principal"
+        ]
+      },
+      "Laboratorio": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateLaboratorioDto": {
+        "type": "object",
+        "properties": {
+          "codigo": {
+            "type": "string",
+            "description": "Código do laboratório",
+            "maxLength": 20
+          },
+          "razao_social": {
+            "type": "string",
+            "description": "Razão social",
+            "maxLength": 255
+          },
+          "nome_fantasia": {
+            "type": "string",
+            "description": "Nome fantasia",
+            "maxLength": 255
+          },
+          "cnpj": {
+            "type": "string",
+            "description": "CNPJ",
+            "minLength": 14,
+            "maxLength": 14
+          },
+          "inscricao_estadual": {
+            "type": "string",
+            "description": "Inscrição estadual"
+          },
+          "inscricao_municipal": {
+            "type": "string",
+            "description": "Inscrição municipal"
+          },
+          "endereco": {
+            "type": "string",
+            "description": "Endereço"
+          },
+          "numero": {
+            "type": "string",
+            "description": "Número"
+          },
+          "complemento": {
+            "type": "string",
+            "description": "Complemento"
+          },
+          "bairro": {
+            "type": "string",
+            "description": "Bairro"
+          },
+          "cidade": {
+            "type": "string",
+            "description": "Cidade"
+          },
+          "uf": {
+            "type": "string",
+            "description": "UF",
+            "minLength": 2,
+            "maxLength": 2
+          },
+          "cep": {
+            "type": "string",
+            "description": "CEP",
+            "minLength": 8,
+            "maxLength": 8
+          },
+          "telefone_principal": {
+            "type": "string",
+            "description": "Telefone principal"
+          },
+          "telefone_secundario": {
+            "type": "string",
+            "description": "Telefone secundário"
+          },
+          "email_principal": {
+            "type": "string",
+            "description": "Email principal"
+          },
+          "email_faturamento": {
+            "type": "string",
+            "description": "Email faturamento"
+          },
+          "website": {
+            "type": "string",
+            "description": "Website"
+          },
+          "responsavel_tecnico": {
+            "type": "string",
+            "description": "Responsável técnico"
+          },
+          "conselho_responsavel": {
+            "type": "string",
+            "description": "Conselho do responsável"
+          },
+          "numero_conselho": {
+            "type": "string",
+            "description": "Número do conselho"
+          },
+          "tipo_integracao": {
+            "type": "string",
+            "enum": [
+              "api",
+              "webservice",
+              "manual",
+              "ftp",
+              "email"
+            ],
+            "description": "Tipo de integração",
+            "default": "manual"
+          },
+          "url_integracao": {
+            "type": "string",
+            "description": "URL de integração"
+          },
+          "token_integracao": {
+            "type": "string",
+            "description": "Token de integração"
+          },
+          "usuario_integracao": {
+            "type": "string",
+            "description": "Usuário de integração"
+          },
+          "senha_integracao": {
+            "type": "string",
+            "description": "Senha de integração"
+          },
+          "configuracao_adicional": {
+            "type": "string",
+            "description": "Configuração adicional (JSON)"
+          },
+          "metodos_envio_resultado": {
+            "description": "Métodos de envio de resultado",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "portal_resultados_url": {
+            "type": "string",
+            "description": "URL do portal de resultados"
+          },
+          "prazo_entrega_normal": {
+            "type": "number",
+            "description": "Prazo entrega normal (dias)",
+            "default": 3
+          },
+          "prazo_entrega_urgente": {
+            "type": "number",
+            "description": "Prazo entrega urgente (dias)",
+            "default": 1
+          },
+          "taxa_urgencia": {
+            "type": "number",
+            "description": "Taxa de urgência"
+          },
+          "prazo_pagamento": {
+            "type": "number",
+            "description": "Prazo de pagamento (dias)",
+            "default": 30
+          },
+          "percentual_repasse": {
+            "type": "number",
+            "description": "Percentual de repasse"
+          },
+          "banco": {
+            "type": "string",
+            "description": "Banco"
+          },
+          "agencia": {
+            "type": "string",
+            "description": "Agência"
+          },
+          "conta": {
+            "type": "string",
+            "description": "Conta"
+          },
+          "pix_key": {
+            "type": "string",
+            "description": "Chave PIX"
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações"
+          },
+          "ativo": {
+            "type": "boolean",
+            "description": "Ativo",
+            "default": true
+          },
+          "aceita_urgencia": {
+            "type": "boolean",
+            "description": "Aceita urgência",
+            "default": false
+          },
+          "envia_resultado_automatico": {
+            "type": "boolean",
+            "description": "Envia resultado automático",
+            "default": true
+          },
+          "data_contrato": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data do contrato"
+          },
+          "data_vigencia_inicio": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data início vigência"
+          },
+          "data_vigencia_fim": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data fim vigência"
           }
         }
       }

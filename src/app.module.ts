@@ -18,6 +18,7 @@ import { ProfissionaisModule } from './modules/profissionais/profissionais.modul
 import { EmpresasModule } from './modules/empresas/empresas.module';
 import { CommonModule } from './modules/common/common.module';
 import { ConveniosModule } from './modules/convenios/convenios.module';
+import { LaboratoriosModule } from './modules/laboratorios/laboratorios.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { ConveniosModule } from './modules/convenios/convenios.module';
     ProfissionaisModule,
     EmpresasModule,
     ConveniosModule,
+    LaboratoriosModule,
 
     // Próximos módulos a serem implementados:
     // FinanceiroModule,

@@ -293,12 +293,76 @@ curl -X GET http://localhost:10016/api/v1/usuarios \
 9. **Documentar API** com decorators do Swagger
 10. **Usar query parameters para códigos com caracteres especiais** - CNAEs têm barras no código (ex: `?codigo=8640-2/02` em vez de `/codigo/8640-2/02`)
 
+## Módulo de Laboratórios (Em Desenvolvimento)
+
+### Decisões de Arquitetura
+- **Estrutura similar a Convênios**: Laboratórios seguem o mesmo padrão de convênios
+- **Relacionamento com Empresas**: OneToOne com a tabela `empresas` via `empresa_id`
+- **Campos específicos apenas**: A tabela `laboratorios` contém apenas campos específicos de laboratório
+  - Dados comuns (CNPJ, razão social, endereço, etc) ficam na tabela `empresas`
+  - Dados específicos (integração, prazos de entrega, responsável técnico, etc) ficam em `laboratorios`
+
+### Estrutura da Tabela Laboratórios
+```sql
+laboratorios
+├── id (uuid)
+├── empresa_id (uuid, FK → empresas.id, UNIQUE)
+├── codigo_laboratorio (varchar 20, UNIQUE)
+├── responsavel_tecnico (varchar 255)
+├── conselho_responsavel (varchar 20)
+├── numero_conselho (varchar 20)
+├── tipo_integracao (enum: api, webservice, manual, ftp, email)
+├── url_integracao (varchar 255)
+├── token_integracao (varchar 255)
+├── usuario_integracao (varchar 100)
+├── senha_integracao (varchar 100)
+├── configuracao_adicional (text/json)
+├── metodos_envio_resultado (text/array)
+├── portal_resultados_url (varchar 255)
+├── prazo_entrega_normal (int, default: 3)
+├── prazo_entrega_urgente (int, default: 1)
+├── taxa_urgencia (decimal 10,2)
+├── percentual_repasse (decimal 5,2)
+├── aceita_urgencia (boolean, default: false)
+├── envia_resultado_automatico (boolean, default: true)
+├── observacoes (text)
+├── created_at (timestamp)
+└── updated_at (timestamp)
+```
+
+### Arquivos Criados
+- `src/modules/laboratorios/entities/laboratorio.entity.ts` - Entidade com relacionamento OneToOne para Empresa
+- `src/modules/laboratorios/dto/create-laboratorio.dto.ts` - DTO para criação (reutiliza estrutura de convênios)
+- `src/modules/laboratorios/dto/update-laboratorio.dto.ts` - DTO para atualização
+- `src/modules/laboratorios/services/laboratorio.service.ts` - Service com métodos CRUD e buscas específicas
+- `src/modules/laboratorios/controllers/laboratorio.controller.ts` - Controller com endpoints RESTful
+- `src/modules/laboratorios/laboratorios.module.ts` - Módulo do NestJS
+- `src/database/migrations/[timestamp]-CreateLaboratoriosTable.ts` - Migration criada manualmente
+
+### Status Atual
+- ✅ Entidade criada com campos específicos
+- ✅ DTOs criados reaproveitando estrutura de convênios
+- ✅ Service implementado com métodos similares a convênios
+- ✅ Controller com endpoints específicos para laboratórios
+- ✅ Módulo criado e registrado no AppModule
+- ✅ Migration manual criada (apenas campos específicos)
+- ⏳ Migration ainda não executada
+- ⏳ Testes ainda não realizados
+
+### Consideração sobre Herança vs Relacionamento
+- **Padrão escolhido**: Manter consistência com o módulo de Convênios
+- **Estrutura**: Relacionamento OneToOne com `empresas` (não herança de tabelas)
+- **Motivo**: TypeORM com PostgreSQL tem limitações para herança de tabelas
+- **Benefício**: Mantém dados normalizados e evita duplicação
+
 ## Próximos Passos Sugeridos
 
-1. Implementar sistema de permissões granulares
-2. Adicionar rate limiting nos endpoints
-3. Implementar cache com Redis
-4. Adicionar testes unitários e e2e
-5. Configurar CI/CD pipeline
-6. Implementar websockets para notificações real-time
-7. Adicionar sistema de filas para processamento assíncrono
+1. Executar migration do módulo de laboratórios
+2. Criar testes para o módulo de laboratórios
+3. Implementar sistema de permissões granulares
+4. Adicionar rate limiting nos endpoints
+5. Implementar cache com Redis
+6. Adicionar testes unitários e e2e
+7. Configurar CI/CD pipeline
+8. Implementar websockets para notificações real-time
+9. Adicionar sistema de filas para processamento assíncrono
