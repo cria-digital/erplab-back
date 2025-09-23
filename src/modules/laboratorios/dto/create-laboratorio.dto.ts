@@ -9,13 +9,9 @@ import {
   Length,
   IsNotEmpty,
   IsArray,
-  IsUrl,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import {
-  TipoIntegracao,
-  MetodoEnvioResultado,
-} from '../entities/laboratorio.entity';
+import { TipoIntegracao } from '../entities/laboratorio.entity';
 
 export class CreateLaboratorioDto {
   @ApiProperty({ description: 'Código do laboratório', maxLength: 20 })

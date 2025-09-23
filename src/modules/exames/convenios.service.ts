@@ -81,7 +81,7 @@ export class ConveniosService {
     };
   }
 
-  async findOne(id: number): Promise<Convenio> {
+  async findOne(id: string): Promise<Convenio> {
     const convenio = await this.convenioRepository.findOne({
       where: { id },
     });
@@ -108,7 +108,7 @@ export class ConveniosService {
   }
 
   async update(
-    id: number,
+    id: string,
     updateConvenioDto: UpdateConvenioDto,
   ): Promise<Convenio> {
     const convenio = await this.findOne(id);
@@ -146,7 +146,7 @@ export class ConveniosService {
     return await this.convenioRepository.save(convenio);
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: string): Promise<void> {
     const convenio = await this.findOne(id);
 
     // Verifica se o convênio está sendo usado em alguma ordem de serviço
@@ -179,7 +179,7 @@ export class ConveniosService {
   }
 
   async verificarAutorizacao(
-    convenioId: number,
+    convenioId: string,
   ): Promise<{ requerAutorizacao: boolean; requerSenha: boolean }> {
     const convenio = await this.findOne(convenioId);
     return {
@@ -188,7 +188,7 @@ export class ConveniosService {
     };
   }
 
-  async getRegrasConvenio(convenioId: number): Promise<any> {
+  async getRegrasConvenio(convenioId: string): Promise<any> {
     const convenio = await this.findOne(convenioId);
     return {
       percentualDesconto: convenio.percentual_desconto,

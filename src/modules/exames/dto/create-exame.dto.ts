@@ -87,11 +87,11 @@ export class CreateExameDto {
 
   @ApiProperty({
     description: 'ID do tipo de exame',
-    example: 1,
+    example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
   })
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
-  tipo_exame_id: number;
+  tipo_exame_id: string;
 
   @ApiProperty({
     description: 'Categoria geral do exame',
@@ -104,21 +104,21 @@ export class CreateExameDto {
 
   @ApiProperty({
     description: 'ID do subgrupo do exame',
-    example: 1,
+    example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
     required: false,
   })
-  @IsNumber()
+  @IsString()
   @IsOptional()
-  subgrupo_id?: number;
+  subgrupo_id?: string;
 
   @ApiProperty({
     description: 'ID do setor responsável',
-    example: 1,
+    example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
     required: false,
   })
-  @IsNumber()
+  @IsString()
   @IsOptional()
-  setor_id?: number;
+  setor_id?: string;
 
   @ApiProperty({
     description: 'Metodologia utilizada no exame',
@@ -251,12 +251,12 @@ export class CreateExameDto {
 
   @ApiProperty({
     description: 'ID do laboratório de apoio',
-    example: 1,
+    example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
     required: false,
   })
-  @IsNumber()
+  @IsString()
   @IsOptional()
-  laboratorio_apoio_id?: number;
+  laboratorio_apoio_id?: string;
 
   @ApiProperty({
     description: 'Destino do exame no sistema externo',
@@ -399,10 +399,10 @@ export class CreateExameDto {
 
   @ApiProperty({
     description: 'ID da empresa (null = disponível para todas)',
-    example: 1,
+    example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
     required: false,
   })
-  @IsNumber()
+  @IsString()
   @IsOptional()
-  empresa_id?: number;
+  empresa_id?: string;
 }

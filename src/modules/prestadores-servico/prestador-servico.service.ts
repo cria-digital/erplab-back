@@ -61,7 +61,7 @@ export class PrestadorServicoService {
       // Criar a empresa primeiro
       const empresa = this.empresaRepository.create({
         ...createDto.empresa,
-        tipoEmpresa: TipoEmpresaEnum.PRESTADOR_SERVICO,
+        tipoEmpresa: TipoEmpresaEnum.PRESTADORES_SERVICOS,
       });
       const savedEmpresa = await queryRunner.manager.save(empresa);
 

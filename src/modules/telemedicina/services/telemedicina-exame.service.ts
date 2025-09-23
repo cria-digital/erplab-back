@@ -49,11 +49,12 @@ export class TelemedicinaExameService {
   async findByTelemedicina(
     telemedicinaId: string,
   ): Promise<TelemedicinaExame[]> {
-    return await this.telemedicinaExameRepository.find({
-      where: { telemedicina_id: telemedicinaId },
-      relations: ['exame'],
-      order: { 'exame.nome': 'ASC' },
-    });
+    return await this.telemedicinaExameRepository
+      .createQueryBuilder('te')
+      .leftJoinAndSelect('te.exame', 'exame')
+      .where('te.telemedicina_id = :telemedicinaId', { telemedicinaId })
+      .orderBy('exame.nome', 'ASC')
+      .getMany();
   }
 
   async findByExame(exameId: string): Promise<TelemedicinaExame[]> {
@@ -171,7 +172,7 @@ export class TelemedicinaExameService {
           ativo: true,
         });
         vinculados++;
-      } catch (error) {
+      } catch {
         // Se não conseguir vincular, continua para o próximo
         continue;
       }

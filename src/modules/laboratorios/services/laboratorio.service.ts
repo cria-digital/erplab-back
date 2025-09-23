@@ -21,20 +21,11 @@ export class LaboratorioService {
   ): Promise<Laboratorio> {
     // Verificar duplicidade de código
     const existingCodigo = await this.laboratorioRepository.findOne({
-      where: { codigo: createLaboratorioDto.codigo },
+      where: { codigo_laboratorio: createLaboratorioDto.codigo },
     });
 
     if (existingCodigo) {
       throw new ConflictException('Já existe um laboratório com este código');
-    }
-
-    // Verificar duplicidade de CNPJ
-    const existingCnpj = await this.laboratorioRepository.findOne({
-      where: { cnpj: createLaboratorioDto.cnpj },
-    });
-
-    if (existingCnpj) {
-      throw new ConflictException('Já existe um laboratório com este CNPJ');
     }
 
     const laboratorio = this.laboratorioRepository.create(createLaboratorioDto);
@@ -43,7 +34,8 @@ export class LaboratorioService {
 
   async findAll(): Promise<Laboratorio[]> {
     return await this.laboratorioRepository.find({
-      order: { nome_fantasia: 'ASC' },
+      relations: ['empresa'],
+      order: { codigo_laboratorio: 'ASC' },
     });
   }
 
@@ -61,7 +53,8 @@ export class LaboratorioService {
 
   async findByCodigo(codigo: string): Promise<Laboratorio> {
     const laboratorio = await this.laboratorioRepository.findOne({
-      where: { codigo },
+      where: { codigo_laboratorio: codigo },
+      relations: ['empresa'],
     });
 
     if (!laboratorio) {
@@ -75,7 +68,8 @@ export class LaboratorioService {
 
   async findByCnpj(cnpj: string): Promise<Laboratorio> {
     const laboratorio = await this.laboratorioRepository.findOne({
-      where: { cnpj },
+      where: { empresa: { cnpj } },
+      relations: ['empresa'],
     });
 
     if (!laboratorio) {
@@ -89,8 +83,9 @@ export class LaboratorioService {
 
   async findAtivos(): Promise<Laboratorio[]> {
     return await this.laboratorioRepository.find({
-      where: { ativo: true },
-      order: { nome_fantasia: 'ASC' },
+      where: { empresa: { ativo: true } },
+      relations: ['empresa'],
+      order: { codigo_laboratorio: 'ASC' },
     });
   }
 
@@ -98,9 +93,10 @@ export class LaboratorioService {
     return await this.laboratorioRepository.find({
       where: {
         tipo_integracao: tipo as any,
-        ativo: true,
+        empresa: { ativo: true },
       },
-      order: { nome_fantasia: 'ASC' },
+      relations: ['empresa'],
+      order: { codigo_laboratorio: 'ASC' },
     });
   }
 
@@ -108,9 +104,10 @@ export class LaboratorioService {
     return await this.laboratorioRepository.find({
       where: {
         aceita_urgencia: true,
-        ativo: true,
+        empresa: { ativo: true },
       },
-      order: { nome_fantasia: 'ASC' },
+      relations: ['empresa'],
+      order: { codigo_laboratorio: 'ASC' },
     });
   }
 
@@ -123,28 +120,14 @@ export class LaboratorioService {
     // Verificar duplicidade de código se foi alterado
     if (
       updateLaboratorioDto.codigo &&
-      updateLaboratorioDto.codigo !== laboratorio.codigo
+      updateLaboratorioDto.codigo !== laboratorio.codigo_laboratorio
     ) {
       const existingCodigo = await this.laboratorioRepository.findOne({
-        where: { codigo: updateLaboratorioDto.codigo },
+        where: { codigo_laboratorio: updateLaboratorioDto.codigo },
       });
 
       if (existingCodigo) {
         throw new ConflictException('Já existe um laboratório com este código');
-      }
-    }
-
-    // Verificar duplicidade de CNPJ se foi alterado
-    if (
-      updateLaboratorioDto.cnpj &&
-      updateLaboratorioDto.cnpj !== laboratorio.cnpj
-    ) {
-      const existingCnpj = await this.laboratorioRepository.findOne({
-        where: { cnpj: updateLaboratorioDto.cnpj },
-      });
-
-      if (existingCnpj) {
-        throw new ConflictException('Já existe um laboratório com este CNPJ');
       }
     }
 
@@ -158,19 +141,30 @@ export class LaboratorioService {
   }
 
   async toggleStatus(id: string): Promise<Laboratorio> {
-    const laboratorio = await this.findOne(id);
-    laboratorio.ativo = !laboratorio.ativo;
+    const laboratorio = await this.laboratorioRepository.findOne({
+      where: { id },
+      relations: ['empresa'],
+    });
+
+    if (!laboratorio) {
+      throw new NotFoundException(`Laboratório com ID ${id} não encontrado`);
+    }
+
+    laboratorio.empresa.ativo = !laboratorio.empresa.ativo;
     return await this.laboratorioRepository.save(laboratorio);
   }
 
   async search(query: string): Promise<Laboratorio[]> {
     return await this.laboratorioRepository
       .createQueryBuilder('laboratorio')
-      .where('laboratorio.nome_fantasia ILIKE :query', { query: `%${query}%` })
-      .orWhere('laboratorio.razao_social ILIKE :query', { query: `%${query}%` })
-      .orWhere('laboratorio.cnpj LIKE :query', { query: `%${query}%` })
-      .orWhere('laboratorio.codigo LIKE :query', { query: `%${query}%` })
-      .orderBy('laboratorio.nome_fantasia', 'ASC')
+      .leftJoinAndSelect('laboratorio.empresa', 'empresa')
+      .where('empresa.nomeFantasia ILIKE :query', { query: `%${query}%` })
+      .orWhere('empresa.razaoSocial ILIKE :query', { query: `%${query}%` })
+      .orWhere('empresa.cnpj LIKE :query', { query: `%${query}%` })
+      .orWhere('laboratorio.codigo_laboratorio LIKE :query', {
+        query: `%${query}%`,
+      })
+      .orderBy('empresa.nomeFantasia', 'ASC')
       .getMany();
   }
 }

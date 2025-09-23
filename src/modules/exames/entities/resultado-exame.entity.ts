@@ -15,20 +15,18 @@ import { Exame } from './exame.entity';
 @Index(['ordem_servico_exame_id'])
 @Index(['parametro'])
 export class ResultadoExame {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({
-    type: 'int',
     comment: 'ID do exame na ordem de serviço',
   })
-  ordem_servico_exame_id: number;
+  ordem_servico_exame_id: string;
 
   @Column({
-    type: 'int',
     comment: 'ID do exame',
   })
-  exame_id: number;
+  exame_id: string;
 
   // Parâmetro e resultado
   @Column({
@@ -273,11 +271,10 @@ export class ResultadoExame {
   data_qc: Date;
 
   @Column({
-    type: 'int',
     nullable: true,
     comment: 'ID do responsável pelo QC',
   })
-  qc_responsavel_id: number;
+  qc_responsavel_id: string;
 
   // Ordem de exibição
   @Column({

@@ -13,8 +13,8 @@ import { Exame } from './exame.entity';
 @Index(['codigo'])
 @Index(['nome'])
 export class TipoExame {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({
     type: 'varchar',

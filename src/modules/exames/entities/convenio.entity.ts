@@ -12,8 +12,8 @@ import {
 @Index(['nome'])
 @Index(['cnpj'])
 export class Convenio {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({
     type: 'varchar',

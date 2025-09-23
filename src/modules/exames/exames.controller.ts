@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   Query,
-  ParseIntPipe,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -167,7 +166,7 @@ export class ExamesController {
   })
   @ApiParam({
     name: 'tipoId',
-    type: Number,
+    type: String,
     description: 'ID do tipo de exame',
   })
   @ApiResponse({
@@ -176,7 +175,7 @@ export class ExamesController {
     type: [Exame],
   })
   async findByTipo(
-    @Param('tipoId', ParseIntPipe) tipoId: number,
+    @Param('tipoId') tipoId: string,
   ): Promise<ApiResponseType<Exame[]>> {
     const exames = await this.examesService.findByTipo(tipoId);
     return {
@@ -193,7 +192,7 @@ export class ExamesController {
   })
   @ApiParam({
     name: 'laboratorioId',
-    type: Number,
+    type: String,
     description: 'ID do laboratório de apoio',
   })
   @ApiResponse({
@@ -202,7 +201,7 @@ export class ExamesController {
     type: [Exame],
   })
   async findByLaboratorioApoio(
-    @Param('laboratorioId', ParseIntPipe) laboratorioId: number,
+    @Param('laboratorioId') laboratorioId: string,
   ): Promise<ApiResponseType<Exame[]>> {
     const exames =
       await this.examesService.findByLaboratorioApoio(laboratorioId);
@@ -350,7 +349,7 @@ export class ExamesController {
   })
   @ApiParam({
     name: 'id',
-    type: Number,
+    type: String,
     description: 'ID do exame',
   })
   @ApiResponse({
@@ -362,9 +361,7 @@ export class ExamesController {
     status: 404,
     description: 'Exame não encontrado',
   })
-  async findOne(
-    @Param('id', ParseIntPipe) id: number,
-  ): Promise<ApiResponseType<Exame>> {
+  async findOne(@Param('id') id: string): Promise<ApiResponseType<Exame>> {
     const exame = await this.examesService.findOne(id);
     return {
       message: 'Exame encontrado com sucesso',
@@ -379,7 +376,7 @@ export class ExamesController {
   })
   @ApiParam({
     name: 'id',
-    type: Number,
+    type: String,
     description: 'ID do exame',
   })
   @ApiBody({ type: UpdateExameDto })
@@ -397,7 +394,7 @@ export class ExamesController {
     description: 'Código interno já existe em outro exame',
   })
   async update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body() updateExameDto: UpdateExameDto,
   ): Promise<ApiResponseType<Exame>> {
     const exame = await this.examesService.update(id, updateExameDto);
@@ -414,7 +411,7 @@ export class ExamesController {
   })
   @ApiParam({
     name: 'id',
-    type: Number,
+    type: String,
     description: 'ID do exame',
   })
   @ApiResponse({
@@ -425,9 +422,7 @@ export class ExamesController {
     status: 404,
     description: 'Exame não encontrado',
   })
-  async remove(
-    @Param('id', ParseIntPipe) id: number,
-  ): Promise<ApiResponseType> {
+  async remove(@Param('id') id: string): Promise<ApiResponseType> {
     await this.examesService.remove(id);
     return {
       message: 'Exame desativado com sucesso',
@@ -445,8 +440,8 @@ export class ExamesController {
       properties: {
         ids: {
           type: 'array',
-          items: { type: 'number' },
-          example: [1, 2, 3],
+          items: { type: 'string' },
+          example: ['uuid1', 'uuid2', 'uuid3'],
         },
         status: {
           type: 'string',
@@ -461,7 +456,7 @@ export class ExamesController {
     description: 'Status atualizados com sucesso',
   })
   async bulkUpdateStatus(
-    @Body() body: { ids: number[]; status: string },
+    @Body() body: { ids: string[]; status: string },
   ): Promise<ApiResponseType> {
     await this.examesService.bulkUpdateStatus(body.ids, body.status);
     return {

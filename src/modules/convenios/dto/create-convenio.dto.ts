@@ -5,14 +5,13 @@ import {
   IsOptional,
   IsBoolean,
   IsNumber,
-  IsDateString,
   Length,
   IsNotEmpty,
   ValidateNested,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { TipoConvenio, Modalidade } from '../entities/convenio.entity';
+import { TipoFaturamento, StatusConvenio } from '../entities/convenio.entity';
 import { CreateEmpresaDto } from '../../empresas/dto/create-empresa.dto';
 
 export class CreateConvenioDto {
@@ -28,67 +27,115 @@ export class CreateConvenioDto {
   @Length(1, 20)
   codigo_convenio: string;
 
+  @ApiProperty({ description: 'Nome do convênio', required: false })
+  @IsOptional()
+  @IsString()
+  @Length(0, 255)
+  nome?: string;
+
   @ApiProperty({ description: 'Registro ANS', required: false })
   @IsOptional()
   @IsString()
   @Length(0, 20)
   registro_ans?: string;
 
-  @ApiProperty({ enum: TipoConvenio, description: 'Tipo do convênio' })
-  @IsNotEmpty()
-  @IsEnum(TipoConvenio)
-  tipo_convenio: TipoConvenio;
-
-  @ApiProperty({ enum: Modalidade, description: 'Modalidade do convênio' })
-  @IsNotEmpty()
-  @IsEnum(Modalidade)
-  modalidade: Modalidade;
-
-  @ApiProperty({ description: 'Prazo de pagamento em dias', default: 30 })
+  @ApiProperty({ description: 'Tem integração API', default: false })
   @IsOptional()
-  @IsNumber()
-  prazo_pagamento?: number;
+  @IsBoolean()
+  tem_integracao_api?: boolean;
 
-  @ApiProperty({ description: 'Dia de vencimento', required: false })
-  @IsOptional()
-  @IsNumber()
-  dia_vencimento?: number;
-
-  @ApiProperty({ description: 'Email de faturamento', required: false })
-  @IsOptional()
-  @IsEmail()
-  email_faturamento?: string;
-
-  @ApiProperty({ description: 'Chave PIX', required: false })
+  @ApiProperty({ description: 'URL da API', required: false })
   @IsOptional()
   @IsString()
   @Length(0, 255)
-  pix_key?: string;
+  url_api?: string;
 
-  @ApiProperty({ description: 'Observações do convênio', required: false })
+  @ApiProperty({ description: 'Token da API', required: false })
   @IsOptional()
   @IsString()
-  observacoes_convenio?: string;
-
-  @ApiProperty({ description: 'Data do contrato', required: false })
-  @IsOptional()
-  @IsDateString()
-  data_contrato?: Date;
-
-  @ApiProperty({ description: 'Data de início da vigência', required: false })
-  @IsOptional()
-  @IsDateString()
-  data_vigencia_inicio?: Date;
-
-  @ApiProperty({ description: 'Data de fim da vigência', required: false })
-  @IsOptional()
-  @IsDateString()
-  data_vigencia_fim?: Date;
+  @Length(0, 255)
+  token_api?: string;
 
   @ApiProperty({ description: 'Requer autorização', default: true })
   @IsOptional()
   @IsBoolean()
   requer_autorizacao?: boolean;
+
+  @ApiProperty({ description: 'Requer senha', default: false })
+  @IsOptional()
+  @IsBoolean()
+  requer_senha?: boolean;
+
+  @ApiProperty({ description: 'Validade da guia em dias', required: false })
+  @IsOptional()
+  @IsNumber()
+  validade_guia_dias?: number;
+
+  @ApiProperty({
+    enum: TipoFaturamento,
+    description: 'Tipo de faturamento',
+    required: false,
+  })
+  @IsOptional()
+  @IsEnum(TipoFaturamento)
+  tipo_faturamento?: TipoFaturamento;
+
+  @ApiProperty({ description: 'Portal de envio', required: false })
+  @IsOptional()
+  @IsString()
+  @Length(0, 255)
+  portal_envio?: string;
+
+  @ApiProperty({ description: 'Dia de fechamento', required: false })
+  @IsOptional()
+  @IsNumber()
+  dia_fechamento?: number;
+
+  @ApiProperty({ description: 'Prazo de pagamento em dias', default: 30 })
+  @IsOptional()
+  @IsNumber()
+  prazo_pagamento_dias?: number;
+
+  @ApiProperty({ description: 'Percentual de desconto', required: false })
+  @IsOptional()
+  @IsNumber()
+  percentual_desconto?: number;
+
+  @ApiProperty({ description: 'Tabela de preços', required: false })
+  @IsOptional()
+  @IsString()
+  @Length(0, 255)
+  tabela_precos?: string;
+
+  @ApiProperty({ description: 'Telefone', required: false })
+  @IsOptional()
+  @IsString()
+  @Length(0, 20)
+  telefone?: string;
+
+  @ApiProperty({ description: 'Email', required: false })
+  @IsOptional()
+  @IsEmail()
+  email?: string;
+
+  @ApiProperty({ description: 'Nome do contato', required: false })
+  @IsOptional()
+  @IsString()
+  @Length(0, 255)
+  contato_nome?: string;
+
+  @ApiProperty({ description: 'Regras específicas (JSON)', required: false })
+  @IsOptional()
+  regras_especificas?: any;
+
+  @ApiProperty({
+    enum: StatusConvenio,
+    description: 'Status do convênio',
+    default: StatusConvenio.ATIVO,
+  })
+  @IsOptional()
+  @IsEnum(StatusConvenio)
+  status?: StatusConvenio;
 
   @ApiProperty({ description: 'Aceita atendimento online', default: false })
   @IsOptional()
@@ -104,4 +151,9 @@ export class CreateConvenioDto {
   @IsOptional()
   @IsNumber()
   valor_consulta?: number;
+
+  @ApiProperty({ description: 'Observações do convênio', required: false })
+  @IsOptional()
+  @IsString()
+  observacoes_convenio?: string;
 }

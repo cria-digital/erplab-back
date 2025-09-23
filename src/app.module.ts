@@ -22,6 +22,7 @@ import { LaboratoriosModule } from './modules/laboratorios/laboratorios.module';
 import { TelemedicinaModule } from './modules/telemedicina/telemedicina.module';
 import { FornecedoresModule } from './modules/fornecedores/fornecedores.module';
 import { PrestadoresServicoModule } from './modules/prestadores-servico/prestadores-servico.module';
+import { KitsModule } from './modules/kits/kits.module';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import { PrestadoresServicoModule } from './modules/prestadores-servico/prestado
     TelemedicinaModule,
     FornecedoresModule,
     PrestadoresServicoModule,
+    KitsModule,
 
     // Próximos módulos a serem implementados:
     // FinanceiroModule,

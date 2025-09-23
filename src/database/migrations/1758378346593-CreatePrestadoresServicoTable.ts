@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner, Table, Index } from 'typeorm';
+import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
 export class CreatePrestadoresServicoTable1758378346593
   implements MigrationInterface
@@ -328,21 +328,15 @@ export class CreatePrestadoresServicoTable1758378346593
     );
 
     // Criar índices para prestadores_servico
-    await queryRunner.createIndex(
-      'prestadores_servico',
-      new Index({
-        name: 'IDX_prestador_servico_status_contrato',
-        columnNames: ['status_contrato'],
-      }),
-    );
+    await queryRunner.query(`
+      CREATE INDEX "IDX_prestador_servico_status_contrato"
+      ON "prestadores_servico" ("status_contrato")
+    `);
 
-    await queryRunner.createIndex(
-      'prestadores_servico',
-      new Index({
-        name: 'IDX_prestador_servico_tipo_contrato',
-        columnNames: ['tipo_contrato'],
-      }),
-    );
+    await queryRunner.query(`
+      CREATE INDEX "IDX_prestador_servico_tipo_contrato"
+      ON "prestadores_servico" ("tipo_contrato")
+    `);
 
     // Criar tabela prestador_servico_categorias
     await queryRunner.createTable(
@@ -466,23 +460,16 @@ export class CreatePrestadoresServicoTable1758378346593
     );
 
     // Criar índice único para evitar duplicação de tipo de serviço por prestador
-    await queryRunner.createIndex(
-      'prestador_servico_categorias',
-      new Index({
-        name: 'IDX_prestador_servico_categoria_unique',
-        columnNames: ['prestador_servico_id', 'tipo_servico'],
-        isUnique: true,
-      }),
-    );
+    await queryRunner.query(`
+      CREATE UNIQUE INDEX "IDX_prestador_servico_categoria_unique"
+      ON "prestador_servico_categorias" ("prestador_servico_id", "tipo_servico")
+    `);
 
     // Criar índice para busca por status ativo
-    await queryRunner.createIndex(
-      'prestador_servico_categorias',
-      new Index({
-        name: 'IDX_prestador_servico_categoria_ativo',
-        columnNames: ['ativo'],
-      }),
-    );
+    await queryRunner.query(`
+      CREATE INDEX "IDX_prestador_servico_categoria_ativo"
+      ON "prestador_servico_categorias" ("ativo")
+    `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

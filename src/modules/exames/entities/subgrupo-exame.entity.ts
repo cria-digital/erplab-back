@@ -11,8 +11,8 @@ import {
 @Index(['codigo'])
 @Index(['nome'])
 export class SubgrupoExame {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({
     type: 'varchar',

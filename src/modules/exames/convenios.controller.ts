@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   Query,
-  ParseIntPipe,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -195,7 +194,7 @@ export class ConveniosController {
   })
   @ApiParam({
     name: 'id',
-    type: Number,
+    type: String,
     description: 'ID do convênio',
   })
   @ApiResponse({
@@ -210,7 +209,7 @@ export class ConveniosController {
     },
   })
   async verificarAutorizacao(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
   ): Promise<ApiResponseType<any>> {
     const autorizacao = await this.conveniosService.verificarAutorizacao(id);
     return {
@@ -226,7 +225,7 @@ export class ConveniosController {
   })
   @ApiParam({
     name: 'id',
-    type: Number,
+    type: String,
     description: 'ID do convênio',
   })
   @ApiResponse({
@@ -243,7 +242,7 @@ export class ConveniosController {
     },
   })
   async getRegrasConvenio(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
   ): Promise<ApiResponseType<any>> {
     const regras = await this.conveniosService.getRegrasConvenio(id);
     return {
@@ -288,7 +287,7 @@ export class ConveniosController {
   })
   @ApiParam({
     name: 'id',
-    type: Number,
+    type: String,
     description: 'ID do convênio',
   })
   @ApiResponse({
@@ -300,9 +299,7 @@ export class ConveniosController {
     status: 404,
     description: 'Convênio não encontrado',
   })
-  async findOne(
-    @Param('id', ParseIntPipe) id: number,
-  ): Promise<ApiResponseType<Convenio>> {
+  async findOne(@Param('id') id: string): Promise<ApiResponseType<Convenio>> {
     const convenio = await this.conveniosService.findOne(id);
     return {
       message: 'Convênio encontrado com sucesso',
@@ -317,7 +314,7 @@ export class ConveniosController {
   })
   @ApiParam({
     name: 'id',
-    type: Number,
+    type: String,
     description: 'ID do convênio',
   })
   @ApiBody({ type: UpdateConvenioDto })
@@ -335,7 +332,7 @@ export class ConveniosController {
     description: 'Código ou CNPJ já existe em outro convênio',
   })
   async update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body() updateConvenioDto: UpdateConvenioDto,
   ): Promise<ApiResponseType<Convenio>> {
     const convenio = await this.conveniosService.update(id, updateConvenioDto);
@@ -352,7 +349,7 @@ export class ConveniosController {
   })
   @ApiParam({
     name: 'id',
-    type: Number,
+    type: String,
     description: 'ID do convênio',
   })
   @ApiResponse({
@@ -363,9 +360,7 @@ export class ConveniosController {
     status: 404,
     description: 'Convênio não encontrado',
   })
-  async remove(
-    @Param('id', ParseIntPipe) id: number,
-  ): Promise<ApiResponseType> {
+  async remove(@Param('id') id: string): Promise<ApiResponseType> {
     await this.conveniosService.remove(id);
     return {
       message: 'Convênio desativado com sucesso',

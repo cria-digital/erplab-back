@@ -19,20 +19,18 @@ import { LaboratorioApoio } from './laboratorio-apoio.entity';
 @Index(['status'])
 @Index(['codigo_amostra'])
 export class OrdemServicoExame {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({
-    type: 'int',
     comment: 'ID da ordem de serviço',
   })
-  ordem_servico_id: number;
+  ordem_servico_id: string;
 
   @Column({
-    type: 'int',
     comment: 'ID do exame',
   })
-  exame_id: number;
+  exame_id: string;
 
   @Column({
     type: 'int',
@@ -113,11 +111,10 @@ export class OrdemServicoExame {
   data_coleta: Date;
 
   @Column({
-    type: 'int',
     nullable: true,
     comment: 'ID do profissional que coletou',
   })
-  coletor_id: number;
+  coletor_id: string;
 
   @Column({
     type: 'varchar',
@@ -161,11 +158,10 @@ export class OrdemServicoExame {
   data_envio_apoio: Date;
 
   @Column({
-    type: 'int',
     nullable: true,
     comment: 'ID do laboratório de apoio destinatário',
   })
-  laboratorio_apoio_id: number;
+  laboratorio_apoio_id: string;
 
   @Column({
     type: 'varchar',
@@ -199,18 +195,16 @@ export class OrdemServicoExame {
   data_liberacao: Date;
 
   @Column({
-    type: 'int',
     nullable: true,
     comment: 'ID do analista/biomédico',
   })
-  analista_id: number;
+  analista_id: string;
 
   @Column({
-    type: 'int',
     nullable: true,
     comment: 'ID do responsável técnico que liberou',
   })
-  liberado_por: number;
+  liberado_por: string;
 
   // Repetição
   @Column({
@@ -221,11 +215,10 @@ export class OrdemServicoExame {
   is_repeticao: boolean;
 
   @Column({
-    type: 'int',
     nullable: true,
     comment: 'ID do exame original (se for repetição)',
   })
-  exame_original_id: number;
+  exame_original_id: string;
 
   @Column({
     type: 'text',
@@ -280,11 +273,10 @@ export class OrdemServicoExame {
   data_controle_qualidade: Date;
 
   @Column({
-    type: 'int',
     nullable: true,
     comment: 'ID do responsável pelo controle de qualidade',
   })
-  responsavel_controle_id: number;
+  responsavel_controle_id: string;
 
   // Urgência
   @Column({

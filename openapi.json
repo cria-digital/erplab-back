@@ -3306,7 +3306,7 @@
             "in": "path",
             "description": "ID do tipo de exame",
             "schema": {
-              "type": "number"
+              "type": "string"
             }
           }
         ],
@@ -3347,7 +3347,7 @@
             "in": "path",
             "description": "ID do laboratório de apoio",
             "schema": {
-              "type": "number"
+              "type": "string"
             }
           }
         ],
@@ -3591,7 +3591,7 @@
             "in": "path",
             "description": "ID do exame",
             "schema": {
-              "type": "number"
+              "type": "string"
             }
           }
         ],
@@ -3630,7 +3630,7 @@
             "in": "path",
             "description": "ID do exame",
             "schema": {
-              "type": "number"
+              "type": "string"
             }
           }
         ],
@@ -3682,7 +3682,7 @@
             "in": "path",
             "description": "ID do exame",
             "schema": {
-              "type": "number"
+              "type": "string"
             }
           }
         ],
@@ -3720,12 +3720,12 @@
                   "ids": {
                     "type": "array",
                     "items": {
-                      "type": "number"
+                      "type": "string"
                     },
                     "example": [
-                      1,
-                      2,
-                      3
+                      "uuid1",
+                      "uuid2",
+                      "uuid3"
                     ]
                   },
                   "status": {
@@ -3929,7 +3929,7 @@
             "in": "path",
             "description": "ID do convênio",
             "schema": {
-              "type": "number"
+              "type": "string"
             }
           }
         ],
@@ -3975,7 +3975,7 @@
             "in": "path",
             "description": "ID do convênio",
             "schema": {
-              "type": "number"
+              "type": "string"
             }
           }
         ],
@@ -4380,7 +4380,7 @@
             "in": "path",
             "description": "ID do tipo de exame",
             "schema": {
-              "type": "number"
+              "type": "string"
             }
           }
         ],
@@ -4418,7 +4418,7 @@
             "in": "path",
             "description": "ID do tipo de exame",
             "schema": {
-              "type": "number"
+              "type": "string"
             }
           }
         ],
@@ -4469,7 +4469,7 @@
             "in": "path",
             "description": "ID do tipo de exame",
             "schema": {
-              "type": "number"
+              "type": "string"
             }
           }
         ],
@@ -6921,6 +6921,3613 @@
           "Laboratórios"
         ]
       }
+    },
+    "/api/v1/telemedicina": {
+      "post": {
+        "operationId": "TelemedicinaController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTelemedicinaDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Telemedicina criada com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Telemedicina"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos."
+          },
+          "409": {
+            "description": "Código ou CNPJ já existe."
+          }
+        },
+        "summary": "Criar nova empresa de telemedicina",
+        "tags": [
+          "Telemedicina"
+        ]
+      },
+      "get": {
+        "operationId": "TelemedicinaController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de telemedicinas retornada com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Telemedicina"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar todas as empresas de telemedicina",
+        "tags": [
+          "Telemedicina"
+        ]
+      }
+    },
+    "/api/v1/telemedicina/ativos": {
+      "get": {
+        "operationId": "TelemedicinaController_findAtivos",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de telemedicinas ativas.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Telemedicina"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar telemedicinas ativas",
+        "tags": [
+          "Telemedicina"
+        ]
+      }
+    },
+    "/api/v1/telemedicina/search": {
+      "get": {
+        "operationId": "TelemedicinaController_search",
+        "parameters": [
+          {
+            "name": "q",
+            "required": true,
+            "in": "query",
+            "description": "Termo de busca",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resultados da busca.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Telemedicina"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Buscar telemedicinas por termo",
+        "tags": [
+          "Telemedicina"
+        ]
+      }
+    },
+    "/api/v1/telemedicina/estatisticas": {
+      "get": {
+        "operationId": "TelemedicinaController_getEstatisticas",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Estatísticas retornadas com sucesso."
+          }
+        },
+        "summary": "Obter estatísticas das telemedicinas",
+        "tags": [
+          "Telemedicina"
+        ]
+      }
+    },
+    "/api/v1/telemedicina/integracao/{tipo}": {
+      "get": {
+        "operationId": "TelemedicinaController_findByIntegracao",
+        "parameters": [
+          {
+            "name": "tipo",
+            "required": true,
+            "in": "path",
+            "description": "Tipo de integração",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de telemedicinas por tipo de integração.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Telemedicina"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Buscar telemedicinas por tipo de integração",
+        "tags": [
+          "Telemedicina"
+        ]
+      }
+    },
+    "/api/v1/telemedicina/plataforma/{tipo}": {
+      "get": {
+        "operationId": "TelemedicinaController_findByPlataforma",
+        "parameters": [
+          {
+            "name": "tipo",
+            "required": true,
+            "in": "path",
+            "description": "Tipo de plataforma",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de telemedicinas por tipo de plataforma.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Telemedicina"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Buscar telemedicinas por tipo de plataforma",
+        "tags": [
+          "Telemedicina"
+        ]
+      }
+    },
+    "/api/v1/telemedicina/codigo/{codigo}": {
+      "get": {
+        "operationId": "TelemedicinaController_findByCodigo",
+        "parameters": [
+          {
+            "name": "codigo",
+            "required": true,
+            "in": "path",
+            "description": "Código da telemedicina",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Telemedicina encontrada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Telemedicina"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Telemedicina não encontrada."
+          }
+        },
+        "summary": "Buscar telemedicina por código",
+        "tags": [
+          "Telemedicina"
+        ]
+      }
+    },
+    "/api/v1/telemedicina/cnpj/{cnpj}": {
+      "get": {
+        "operationId": "TelemedicinaController_findByCnpj",
+        "parameters": [
+          {
+            "name": "cnpj",
+            "required": true,
+            "in": "path",
+            "description": "CNPJ da empresa",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Telemedicina encontrada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Telemedicina"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Telemedicina não encontrada."
+          }
+        },
+        "summary": "Buscar telemedicina por CNPJ",
+        "tags": [
+          "Telemedicina"
+        ]
+      }
+    },
+    "/api/v1/telemedicina/{id}": {
+      "get": {
+        "operationId": "TelemedicinaController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da telemedicina",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Telemedicina encontrada.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Telemedicina"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Telemedicina não encontrada."
+          }
+        },
+        "summary": "Buscar telemedicina por ID",
+        "tags": [
+          "Telemedicina"
+        ]
+      },
+      "patch": {
+        "operationId": "TelemedicinaController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da telemedicina",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTelemedicinaDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Telemedicina atualizada com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Telemedicina"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Telemedicina não encontrada."
+          },
+          "409": {
+            "description": "Código ou CNPJ já existe."
+          }
+        },
+        "summary": "Atualizar telemedicina",
+        "tags": [
+          "Telemedicina"
+        ]
+      },
+      "delete": {
+        "operationId": "TelemedicinaController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da telemedicina",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Telemedicina removida com sucesso."
+          },
+          "404": {
+            "description": "Telemedicina não encontrada."
+          }
+        },
+        "summary": "Remover telemedicina",
+        "tags": [
+          "Telemedicina"
+        ]
+      }
+    },
+    "/api/v1/telemedicina/{id}/toggle-status": {
+      "patch": {
+        "operationId": "TelemedicinaController_toggleStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da telemedicina",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status alterado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Telemedicina"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Telemedicina não encontrada."
+          }
+        },
+        "summary": "Alternar status da telemedicina",
+        "tags": [
+          "Telemedicina"
+        ]
+      }
+    },
+    "/api/v1/telemedicina/{id}/status-integracao": {
+      "patch": {
+        "operationId": "TelemedicinaController_updateStatusIntegracao",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da telemedicina",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status da integração atualizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Telemedicina"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Atualizar status da integração",
+        "tags": [
+          "Telemedicina"
+        ]
+      }
+    },
+    "/api/v1/telemedicina-exames": {
+      "post": {
+        "operationId": "TelemedicinaExameController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTelemedicinaExameDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Vínculo criado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TelemedicinaExame"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos."
+          },
+          "409": {
+            "description": "Vínculo já existe."
+          }
+        },
+        "summary": "Vincular exame à telemedicina",
+        "tags": [
+          "Telemedicina - Exames"
+        ]
+      },
+      "get": {
+        "operationId": "TelemedicinaExameController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de vínculos retornada com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TelemedicinaExame"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar todos os vínculos telemedicina-exame",
+        "tags": [
+          "Telemedicina - Exames"
+        ]
+      }
+    },
+    "/api/v1/telemedicina-exames/ativos": {
+      "get": {
+        "operationId": "TelemedicinaExameController_findAtivos",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de vínculos ativos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TelemedicinaExame"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar vínculos ativos",
+        "tags": [
+          "Telemedicina - Exames"
+        ]
+      }
+    },
+    "/api/v1/telemedicina-exames/telemedicina/{telemedicinaId}": {
+      "get": {
+        "operationId": "TelemedicinaExameController_findByTelemedicina",
+        "parameters": [
+          {
+            "name": "telemedicinaId",
+            "required": true,
+            "in": "path",
+            "description": "ID da telemedicina",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de exames vinculados.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TelemedicinaExame"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar exames vinculados a uma telemedicina",
+        "tags": [
+          "Telemedicina - Exames"
+        ]
+      }
+    },
+    "/api/v1/telemedicina-exames/exame/{exameId}": {
+      "get": {
+        "operationId": "TelemedicinaExameController_findByExame",
+        "parameters": [
+          {
+            "name": "exameId",
+            "required": true,
+            "in": "path",
+            "description": "ID do exame",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de telemedicinas vinculadas.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TelemedicinaExame"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar telemedicinas vinculadas a um exame",
+        "tags": [
+          "Telemedicina - Exames"
+        ]
+      }
+    },
+    "/api/v1/telemedicina-exames/sem-vinculo/{telemedicinaId}": {
+      "get": {
+        "operationId": "TelemedicinaExameController_findSemVinculo",
+        "parameters": [
+          {
+            "name": "telemedicinaId",
+            "required": true,
+            "in": "path",
+            "description": "ID da telemedicina",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de exames sem vínculo."
+          }
+        },
+        "summary": "Listar exames sem vínculo com a telemedicina",
+        "tags": [
+          "Telemedicina - Exames"
+        ]
+      }
+    },
+    "/api/v1/telemedicina-exames/search/{telemedicinaId}": {
+      "get": {
+        "operationId": "TelemedicinaExameController_search",
+        "parameters": [
+          {
+            "name": "telemedicinaId",
+            "required": true,
+            "in": "path",
+            "description": "ID da telemedicina",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "required": true,
+            "in": "query",
+            "description": "Termo de busca",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resultados da busca.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TelemedicinaExame"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Buscar vínculos por termo",
+        "tags": [
+          "Telemedicina - Exames"
+        ]
+      }
+    },
+    "/api/v1/telemedicina-exames/estatisticas": {
+      "get": {
+        "operationId": "TelemedicinaExameController_getEstatisticas",
+        "parameters": [
+          {
+            "name": "telemedicinaId",
+            "required": false,
+            "in": "query",
+            "description": "ID da telemedicina (opcional)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Estatísticas retornadas com sucesso."
+          }
+        },
+        "summary": "Obter estatísticas dos vínculos",
+        "tags": [
+          "Telemedicina - Exames"
+        ]
+      }
+    },
+    "/api/v1/telemedicina-exames/vincular-automaticamente/{telemedicinaId}": {
+      "post": {
+        "operationId": "TelemedicinaExameController_vincularAutomaticamente",
+        "parameters": [
+          {
+            "name": "telemedicinaId",
+            "required": true,
+            "in": "path",
+            "description": "ID da telemedicina",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Vinculação automática realizada."
+          }
+        },
+        "summary": "Vincular exames automaticamente",
+        "tags": [
+          "Telemedicina - Exames"
+        ]
+      }
+    },
+    "/api/v1/telemedicina-exames/{id}": {
+      "get": {
+        "operationId": "TelemedicinaExameController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do vínculo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Vínculo encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TelemedicinaExame"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Vínculo não encontrado."
+          }
+        },
+        "summary": "Buscar vínculo por ID",
+        "tags": [
+          "Telemedicina - Exames"
+        ]
+      },
+      "patch": {
+        "operationId": "TelemedicinaExameController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do vínculo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTelemedicinaExameDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Vínculo atualizado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TelemedicinaExame"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Vínculo não encontrado."
+          },
+          "409": {
+            "description": "Vínculo já existe."
+          }
+        },
+        "summary": "Atualizar vínculo telemedicina-exame",
+        "tags": [
+          "Telemedicina - Exames"
+        ]
+      },
+      "delete": {
+        "operationId": "TelemedicinaExameController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do vínculo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Vínculo removido com sucesso."
+          },
+          "404": {
+            "description": "Vínculo não encontrado."
+          }
+        },
+        "summary": "Remover vínculo telemedicina-exame",
+        "tags": [
+          "Telemedicina - Exames"
+        ]
+      }
+    },
+    "/api/v1/telemedicina-exames/{id}/toggle-status": {
+      "patch": {
+        "operationId": "TelemedicinaExameController_toggleStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do vínculo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status alterado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TelemedicinaExame"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Vínculo não encontrado."
+          }
+        },
+        "summary": "Alternar status do vínculo",
+        "tags": [
+          "Telemedicina - Exames"
+        ]
+      }
+    },
+    "/api/v1/fornecedores": {
+      "post": {
+        "operationId": "FornecedorController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFornecedorDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Fornecedor criado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fornecedor"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos."
+          },
+          "409": {
+            "description": "Código ou CNPJ já existe."
+          }
+        },
+        "summary": "Criar novo fornecedor",
+        "tags": [
+          "Fornecedores"
+        ]
+      },
+      "get": {
+        "operationId": "FornecedorController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de fornecedores retornada com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Fornecedor"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar todos os fornecedores",
+        "tags": [
+          "Fornecedores"
+        ]
+      }
+    },
+    "/api/v1/fornecedores/ativos": {
+      "get": {
+        "operationId": "FornecedorController_findAtivos",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de fornecedores ativos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Fornecedor"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar fornecedores ativos",
+        "tags": [
+          "Fornecedores"
+        ]
+      }
+    },
+    "/api/v1/fornecedores/pendentes": {
+      "get": {
+        "operationId": "FornecedorController_findPendentesAprovacao",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de fornecedores pendentes.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Fornecedor"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar fornecedores pendentes de aprovação",
+        "tags": [
+          "Fornecedores"
+        ]
+      }
+    },
+    "/api/v1/fornecedores/search": {
+      "get": {
+        "operationId": "FornecedorController_search",
+        "parameters": [
+          {
+            "name": "q",
+            "required": true,
+            "in": "query",
+            "description": "Termo de busca",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resultados da busca.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Fornecedor"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Buscar fornecedores por termo",
+        "tags": [
+          "Fornecedores"
+        ]
+      }
+    },
+    "/api/v1/fornecedores/estatisticas": {
+      "get": {
+        "operationId": "FornecedorController_getEstatisticas",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Estatísticas retornadas com sucesso."
+          }
+        },
+        "summary": "Obter estatísticas dos fornecedores",
+        "tags": [
+          "Fornecedores"
+        ]
+      }
+    },
+    "/api/v1/fornecedores/regiao": {
+      "get": {
+        "operationId": "FornecedorController_getFornecedoresPorRegiao",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Fornecedores por região."
+          }
+        },
+        "summary": "Obter fornecedores por região",
+        "tags": [
+          "Fornecedores"
+        ]
+      }
+    },
+    "/api/v1/fornecedores/status/{status}": {
+      "get": {
+        "operationId": "FornecedorController_findByStatus",
+        "parameters": [
+          {
+            "name": "status",
+            "required": true,
+            "in": "path",
+            "description": "Status do fornecedor",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de fornecedores por status.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Fornecedor"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Buscar fornecedores por status",
+        "tags": [
+          "Fornecedores"
+        ]
+      }
+    },
+    "/api/v1/fornecedores/categoria/{categoria}": {
+      "get": {
+        "operationId": "FornecedorController_findByCategoria",
+        "parameters": [
+          {
+            "name": "categoria",
+            "required": true,
+            "in": "path",
+            "description": "Categoria de insumos",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de fornecedores por categoria.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Fornecedor"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Buscar fornecedores por categoria",
+        "tags": [
+          "Fornecedores"
+        ]
+      }
+    },
+    "/api/v1/fornecedores/regiao/{estados}": {
+      "get": {
+        "operationId": "FornecedorController_findByRegiao",
+        "parameters": [
+          {
+            "name": "estados",
+            "required": true,
+            "in": "path",
+            "description": "Estados separados por vírgula (UF)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de fornecedores que atendem a região.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Fornecedor"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Buscar fornecedores que atendem determinados estados",
+        "tags": [
+          "Fornecedores"
+        ]
+      }
+    },
+    "/api/v1/fornecedores/codigo/{codigo}": {
+      "get": {
+        "operationId": "FornecedorController_findByCodigo",
+        "parameters": [
+          {
+            "name": "codigo",
+            "required": true,
+            "in": "path",
+            "description": "Código do fornecedor",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fornecedor encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fornecedor"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fornecedor não encontrado."
+          }
+        },
+        "summary": "Buscar fornecedor por código",
+        "tags": [
+          "Fornecedores"
+        ]
+      }
+    },
+    "/api/v1/fornecedores/cnpj/{cnpj}": {
+      "get": {
+        "operationId": "FornecedorController_findByCnpj",
+        "parameters": [
+          {
+            "name": "cnpj",
+            "required": true,
+            "in": "path",
+            "description": "CNPJ da empresa",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fornecedor encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fornecedor"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fornecedor não encontrado."
+          }
+        },
+        "summary": "Buscar fornecedor por CNPJ",
+        "tags": [
+          "Fornecedores"
+        ]
+      }
+    },
+    "/api/v1/fornecedores/{id}": {
+      "get": {
+        "operationId": "FornecedorController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do fornecedor",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fornecedor encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fornecedor"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fornecedor não encontrado."
+          }
+        },
+        "summary": "Buscar fornecedor por ID",
+        "tags": [
+          "Fornecedores"
+        ]
+      },
+      "patch": {
+        "operationId": "FornecedorController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do fornecedor",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateFornecedorDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Fornecedor atualizado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fornecedor"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fornecedor não encontrado."
+          },
+          "409": {
+            "description": "Código ou CNPJ já existe."
+          }
+        },
+        "summary": "Atualizar fornecedor",
+        "tags": [
+          "Fornecedores"
+        ]
+      },
+      "delete": {
+        "operationId": "FornecedorController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do fornecedor",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fornecedor removido com sucesso."
+          },
+          "404": {
+            "description": "Fornecedor não encontrado."
+          }
+        },
+        "summary": "Remover fornecedor",
+        "tags": [
+          "Fornecedores"
+        ]
+      }
+    },
+    "/api/v1/fornecedores/{id}/toggle-status": {
+      "patch": {
+        "operationId": "FornecedorController_toggleStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do fornecedor",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status alterado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fornecedor"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fornecedor não encontrado."
+          }
+        },
+        "summary": "Alternar status do fornecedor",
+        "tags": [
+          "Fornecedores"
+        ]
+      }
+    },
+    "/api/v1/fornecedores/{id}/aprovar": {
+      "patch": {
+        "operationId": "FornecedorController_aprovarFornecedor",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do fornecedor",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fornecedor aprovado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fornecedor"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Aprovar fornecedor",
+        "tags": [
+          "Fornecedores"
+        ]
+      }
+    },
+    "/api/v1/fornecedores/{id}/reprovar": {
+      "patch": {
+        "operationId": "FornecedorController_reprovarFornecedor",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do fornecedor",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fornecedor reprovado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fornecedor"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Reprovar fornecedor",
+        "tags": [
+          "Fornecedores"
+        ]
+      }
+    },
+    "/api/v1/fornecedores/{id}/avaliar": {
+      "patch": {
+        "operationId": "FornecedorController_atualizarAvaliacao",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do fornecedor",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Avaliação registrada com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fornecedor"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Avaliar fornecedor",
+        "tags": [
+          "Fornecedores"
+        ]
+      }
+    },
+    "/api/v1/fornecedor-insumos": {
+      "post": {
+        "operationId": "FornecedorInsumoController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFornecedorInsumoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Insumo cadastrado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FornecedorInsumo"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dados inválidos."
+          },
+          "409": {
+            "description": "Código interno já existe para este fornecedor."
+          }
+        },
+        "summary": "Cadastrar novo insumo para fornecedor",
+        "tags": [
+          "Fornecedores - Insumos"
+        ]
+      },
+      "get": {
+        "operationId": "FornecedorInsumoController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de insumos retornada com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FornecedorInsumo"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar todos os insumos",
+        "tags": [
+          "Fornecedores - Insumos"
+        ]
+      }
+    },
+    "/api/v1/fornecedor-insumos/ativos": {
+      "get": {
+        "operationId": "FornecedorInsumoController_findAtivos",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de insumos ativos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FornecedorInsumo"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar insumos ativos e disponíveis",
+        "tags": [
+          "Fornecedores - Insumos"
+        ]
+      }
+    },
+    "/api/v1/fornecedor-insumos/promocoes": {
+      "get": {
+        "operationId": "FornecedorInsumoController_findPromocoes",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de insumos em promoção.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FornecedorInsumo"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar insumos em promoção",
+        "tags": [
+          "Fornecedores - Insumos"
+        ]
+      }
+    },
+    "/api/v1/fornecedor-insumos/estoque-baixo": {
+      "get": {
+        "operationId": "FornecedorInsumoController_findComEstoqueBaixo",
+        "parameters": [
+          {
+            "name": "minimo",
+            "required": false,
+            "in": "query",
+            "description": "Quantidade mínima (padrão: 10)",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de insumos com estoque baixo.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FornecedorInsumo"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar insumos com estoque baixo",
+        "tags": [
+          "Fornecedores - Insumos"
+        ]
+      }
+    },
+    "/api/v1/fornecedor-insumos/vencendo-validade": {
+      "get": {
+        "operationId": "FornecedorInsumoController_findVencendoValidade",
+        "parameters": [
+          {
+            "name": "dias",
+            "required": false,
+            "in": "query",
+            "description": "Dias para vencimento (padrão: 30)",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de insumos vencendo validade.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FornecedorInsumo"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar insumos vencendo validade",
+        "tags": [
+          "Fornecedores - Insumos"
+        ]
+      }
+    },
+    "/api/v1/fornecedor-insumos/fornecedor/{fornecedorId}": {
+      "get": {
+        "operationId": "FornecedorInsumoController_findByFornecedor",
+        "parameters": [
+          {
+            "name": "fornecedorId",
+            "required": true,
+            "in": "path",
+            "description": "ID do fornecedor",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de insumos do fornecedor.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FornecedorInsumo"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar insumos de um fornecedor",
+        "tags": [
+          "Fornecedores - Insumos"
+        ]
+      }
+    },
+    "/api/v1/fornecedor-insumos/categoria/{categoria}": {
+      "get": {
+        "operationId": "FornecedorInsumoController_findByCategoria",
+        "parameters": [
+          {
+            "name": "categoria",
+            "required": true,
+            "in": "path",
+            "description": "Categoria do insumo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de insumos por categoria.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FornecedorInsumo"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar insumos por categoria",
+        "tags": [
+          "Fornecedores - Insumos"
+        ]
+      }
+    },
+    "/api/v1/fornecedor-insumos/status/{status}": {
+      "get": {
+        "operationId": "FornecedorInsumoController_findByStatus",
+        "parameters": [
+          {
+            "name": "status",
+            "required": true,
+            "in": "path",
+            "description": "Status do insumo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de insumos por status.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FornecedorInsumo"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Listar insumos por status",
+        "tags": [
+          "Fornecedores - Insumos"
+        ]
+      }
+    },
+    "/api/v1/fornecedor-insumos/codigo-barras/{codigo}": {
+      "get": {
+        "operationId": "FornecedorInsumoController_findByCodigoBarras",
+        "parameters": [
+          {
+            "name": "codigo",
+            "required": true,
+            "in": "path",
+            "description": "Código de barras",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Insumos encontrados.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FornecedorInsumo"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Buscar insumos por código de barras",
+        "tags": [
+          "Fornecedores - Insumos"
+        ]
+      }
+    },
+    "/api/v1/fornecedor-insumos/search": {
+      "get": {
+        "operationId": "FornecedorInsumoController_searchGlobal",
+        "parameters": [
+          {
+            "name": "q",
+            "required": true,
+            "in": "query",
+            "description": "Termo de busca",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resultados da busca.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FornecedorInsumo"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Buscar insumos globalmente",
+        "tags": [
+          "Fornecedores - Insumos"
+        ]
+      }
+    },
+    "/api/v1/fornecedor-insumos/search/{fornecedorId}": {
+      "get": {
+        "operationId": "FornecedorInsumoController_search",
+        "parameters": [
+          {
+            "name": "fornecedorId",
+            "required": true,
+            "in": "path",
+            "description": "ID do fornecedor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "required": true,
+            "in": "query",
+            "description": "Termo de busca",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resultados da busca.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FornecedorInsumo"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Buscar insumos de um fornecedor específico",
+        "tags": [
+          "Fornecedores - Insumos"
+        ]
+      }
+    },
+    "/api/v1/fornecedor-insumos/estatisticas": {
+      "get": {
+        "operationId": "FornecedorInsumoController_getEstatisticas",
+        "parameters": [
+          {
+            "name": "fornecedorId",
+            "required": false,
+            "in": "query",
+            "description": "ID do fornecedor (opcional)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Estatísticas retornadas com sucesso."
+          }
+        },
+        "summary": "Obter estatísticas dos insumos",
+        "tags": [
+          "Fornecedores - Insumos"
+        ]
+      }
+    },
+    "/api/v1/fornecedor-insumos/fornecedor/{fornecedorId}/codigo/{codigo}": {
+      "get": {
+        "operationId": "FornecedorInsumoController_findByCodigoInterno",
+        "parameters": [
+          {
+            "name": "fornecedorId",
+            "required": true,
+            "in": "path",
+            "description": "ID do fornecedor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "codigo",
+            "required": true,
+            "in": "path",
+            "description": "Código interno",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Insumo encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FornecedorInsumo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Insumo não encontrado."
+          }
+        },
+        "summary": "Buscar insumo por código interno do fornecedor",
+        "tags": [
+          "Fornecedores - Insumos"
+        ]
+      }
+    },
+    "/api/v1/fornecedor-insumos/{id}": {
+      "get": {
+        "operationId": "FornecedorInsumoController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do insumo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Insumo encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FornecedorInsumo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Insumo não encontrado."
+          }
+        },
+        "summary": "Buscar insumo por ID",
+        "tags": [
+          "Fornecedores - Insumos"
+        ]
+      },
+      "patch": {
+        "operationId": "FornecedorInsumoController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do insumo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateFornecedorInsumoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Insumo atualizado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FornecedorInsumo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Insumo não encontrado."
+          }
+        },
+        "summary": "Atualizar insumo",
+        "tags": [
+          "Fornecedores - Insumos"
+        ]
+      },
+      "delete": {
+        "operationId": "FornecedorInsumoController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do insumo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Insumo removido com sucesso."
+          },
+          "404": {
+            "description": "Insumo não encontrado."
+          }
+        },
+        "summary": "Remover insumo",
+        "tags": [
+          "Fornecedores - Insumos"
+        ]
+      }
+    },
+    "/api/v1/fornecedor-insumos/{id}/toggle-status": {
+      "patch": {
+        "operationId": "FornecedorInsumoController_toggleStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do insumo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status alterado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FornecedorInsumo"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Alternar status do insumo",
+        "tags": [
+          "Fornecedores - Insumos"
+        ]
+      }
+    },
+    "/api/v1/fornecedor-insumos/{id}/estoque": {
+      "patch": {
+        "operationId": "FornecedorInsumoController_atualizarEstoque",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do insumo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Estoque atualizado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FornecedorInsumo"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Atualizar estoque do insumo",
+        "tags": [
+          "Fornecedores - Insumos"
+        ]
+      }
+    },
+    "/api/v1/fornecedor-insumos/{id}/preco": {
+      "patch": {
+        "operationId": "FornecedorInsumoController_atualizarPreco",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do insumo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Preço atualizado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FornecedorInsumo"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Atualizar preço do insumo",
+        "tags": [
+          "Fornecedores - Insumos"
+        ]
+      }
+    },
+    "/api/v1/fornecedor-insumos/{id}/promocao": {
+      "patch": {
+        "operationId": "FornecedorInsumoController_adicionarPromocao",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do insumo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Promoção adicionada com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FornecedorInsumo"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Adicionar promoção ao insumo",
+        "tags": [
+          "Fornecedores - Insumos"
+        ]
+      }
+    },
+    "/api/v1/fornecedor-insumos/{id}/remover-promocao": {
+      "patch": {
+        "operationId": "FornecedorInsumoController_removerPromocao",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do insumo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Promoção removida com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FornecedorInsumo"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Remover promoção do insumo",
+        "tags": [
+          "Fornecedores - Insumos"
+        ]
+      }
+    },
+    "/api/v1/fornecedor-insumos/{id}/avaliar": {
+      "patch": {
+        "operationId": "FornecedorInsumoController_avaliarProduto",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do insumo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Avaliação registrada com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FornecedorInsumo"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Avaliar produto",
+        "tags": [
+          "Fornecedores - Insumos"
+        ]
+      }
+    },
+    "/api/v1/fornecedor-insumos/{id}/registrar-pedido": {
+      "patch": {
+        "operationId": "FornecedorInsumoController_registrarPedido",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do insumo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pedido registrado com sucesso."
+          }
+        },
+        "summary": "Registrar pedido do insumo",
+        "tags": [
+          "Fornecedores - Insumos"
+        ]
+      }
+    },
+    "/api/v1/prestadores-servico": {
+      "post": {
+        "operationId": "PrestadorServicoController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePrestadorServicoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Prestador criado com sucesso"
+          },
+          "409": {
+            "description": "Prestador já existe"
+          }
+        },
+        "summary": "Criar novo prestador de serviço",
+        "tags": [
+          "Prestadores de Serviço"
+        ]
+      },
+      "get": {
+        "operationId": "PrestadorServicoController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de prestadores"
+          }
+        },
+        "summary": "Listar todos os prestadores de serviço",
+        "tags": [
+          "Prestadores de Serviço"
+        ]
+      }
+    },
+    "/api/v1/prestadores-servico/ativos": {
+      "get": {
+        "operationId": "PrestadorServicoController_findActive",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de prestadores ativos"
+          }
+        },
+        "summary": "Listar prestadores ativos",
+        "tags": [
+          "Prestadores de Serviço"
+        ]
+      }
+    },
+    "/api/v1/prestadores-servico/urgencia": {
+      "get": {
+        "operationId": "PrestadorServicoController_findComUrgencia",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de prestadores com atendimento urgente"
+          }
+        },
+        "summary": "Listar prestadores que atendem urgência",
+        "tags": [
+          "Prestadores de Serviço"
+        ]
+      }
+    },
+    "/api/v1/prestadores-servico/24x7": {
+      "get": {
+        "operationId": "PrestadorServicoController_findCom24x7",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de prestadores 24x7"
+          }
+        },
+        "summary": "Listar prestadores com suporte 24x7",
+        "tags": [
+          "Prestadores de Serviço"
+        ]
+      }
+    },
+    "/api/v1/prestadores-servico/search": {
+      "get": {
+        "operationId": "PrestadorServicoController_search",
+        "parameters": [
+          {
+            "name": "q",
+            "required": true,
+            "in": "query",
+            "description": "Termo de busca",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Prestadores encontrados"
+          }
+        },
+        "summary": "Buscar prestadores por termo",
+        "tags": [
+          "Prestadores de Serviço"
+        ]
+      }
+    },
+    "/api/v1/prestadores-servico/estatisticas": {
+      "get": {
+        "operationId": "PrestadorServicoController_getEstatisticas",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Estatísticas"
+          }
+        },
+        "summary": "Obter estatísticas dos prestadores",
+        "tags": [
+          "Prestadores de Serviço"
+        ]
+      }
+    },
+    "/api/v1/prestadores-servico/contratos-vencendo": {
+      "get": {
+        "operationId": "PrestadorServicoController_getContratosVencendo",
+        "parameters": [
+          {
+            "name": "dias",
+            "required": false,
+            "in": "query",
+            "description": "Dias para vencimento",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contratos vencendo"
+          }
+        },
+        "summary": "Listar contratos próximos ao vencimento",
+        "tags": [
+          "Prestadores de Serviço"
+        ]
+      }
+    },
+    "/api/v1/prestadores-servico/renovacoes-automaticas": {
+      "get": {
+        "operationId": "PrestadorServicoController_getRenovacoesAutomaticas",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Contratos para renovação"
+          }
+        },
+        "summary": "Listar contratos com renovação automática próxima",
+        "tags": [
+          "Prestadores de Serviço"
+        ]
+      }
+    },
+    "/api/v1/prestadores-servico/status/{status}": {
+      "get": {
+        "operationId": "PrestadorServicoController_findByStatus",
+        "parameters": [
+          {
+            "name": "status",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "enum": [
+                "ativo",
+                "inativo",
+                "suspenso",
+                "em_analise",
+                "cancelado"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Prestadores encontrados"
+          }
+        },
+        "summary": "Buscar prestadores por status do contrato",
+        "tags": [
+          "Prestadores de Serviço"
+        ]
+      }
+    },
+    "/api/v1/prestadores-servico/tipo-contrato/{tipo}": {
+      "get": {
+        "operationId": "PrestadorServicoController_findByTipoContrato",
+        "parameters": [
+          {
+            "name": "tipo",
+            "required": true,
+            "in": "path",
+            "description": "Tipo de contrato",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Prestadores encontrados"
+          }
+        },
+        "summary": "Buscar prestadores por tipo de contrato",
+        "tags": [
+          "Prestadores de Serviço"
+        ]
+      }
+    },
+    "/api/v1/prestadores-servico/codigo/{codigo}": {
+      "get": {
+        "operationId": "PrestadorServicoController_findByCodigo",
+        "parameters": [
+          {
+            "name": "codigo",
+            "required": true,
+            "in": "path",
+            "description": "Código do prestador",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Prestador encontrado"
+          },
+          "404": {
+            "description": "Prestador não encontrado"
+          }
+        },
+        "summary": "Buscar prestador por código",
+        "tags": [
+          "Prestadores de Serviço"
+        ]
+      }
+    },
+    "/api/v1/prestadores-servico/cnpj/{cnpj}": {
+      "get": {
+        "operationId": "PrestadorServicoController_findByCnpj",
+        "parameters": [
+          {
+            "name": "cnpj",
+            "required": true,
+            "in": "path",
+            "description": "CNPJ do prestador",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Prestador encontrado"
+          },
+          "404": {
+            "description": "Prestador não encontrado"
+          }
+        },
+        "summary": "Buscar prestador por CNPJ",
+        "tags": [
+          "Prestadores de Serviço"
+        ]
+      }
+    },
+    "/api/v1/prestadores-servico/{id}": {
+      "get": {
+        "operationId": "PrestadorServicoController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do prestador",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Prestador encontrado"
+          },
+          "404": {
+            "description": "Prestador não encontrado"
+          }
+        },
+        "summary": "Buscar prestador por ID",
+        "tags": [
+          "Prestadores de Serviço"
+        ]
+      },
+      "patch": {
+        "operationId": "PrestadorServicoController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do prestador",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePrestadorServicoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Prestador atualizado"
+          },
+          "404": {
+            "description": "Prestador não encontrado"
+          }
+        },
+        "summary": "Atualizar prestador",
+        "tags": [
+          "Prestadores de Serviço"
+        ]
+      },
+      "delete": {
+        "operationId": "PrestadorServicoController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do prestador",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Prestador removido"
+          },
+          "404": {
+            "description": "Prestador não encontrado"
+          }
+        },
+        "summary": "Remover prestador",
+        "tags": [
+          "Prestadores de Serviço"
+        ]
+      }
+    },
+    "/api/v1/prestadores-servico/{id}/status/{status}": {
+      "patch": {
+        "operationId": "PrestadorServicoController_updateStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do prestador",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "enum": [
+                "ativo",
+                "inativo",
+                "suspenso",
+                "em_analise",
+                "cancelado"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status atualizado"
+          },
+          "404": {
+            "description": "Prestador não encontrado"
+          }
+        },
+        "summary": "Atualizar status do contrato",
+        "tags": [
+          "Prestadores de Serviço"
+        ]
+      }
+    },
+    "/api/v1/prestadores-servico/{id}/toggle-status": {
+      "patch": {
+        "operationId": "PrestadorServicoController_toggleStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do prestador",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status alternado"
+          },
+          "404": {
+            "description": "Prestador não encontrado"
+          }
+        },
+        "summary": "Alternar status ativo/inativo",
+        "tags": [
+          "Prestadores de Serviço"
+        ]
+      }
+    },
+    "/api/v1/prestadores-servico/{id}/avaliar": {
+      "post": {
+        "operationId": "PrestadorServicoController_avaliar",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do prestador",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Avaliação registrada"
+          },
+          "404": {
+            "description": "Prestador não encontrado"
+          }
+        },
+        "summary": "Avaliar prestador",
+        "tags": [
+          "Prestadores de Serviço"
+        ]
+      }
+    },
+    "/api/v1/prestadores-servico/{id}/incrementar-servicos": {
+      "post": {
+        "operationId": "PrestadorServicoController_incrementarServicos",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do prestador",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contador incrementado"
+          },
+          "404": {
+            "description": "Prestador não encontrado"
+          }
+        },
+        "summary": "Incrementar contador de serviços prestados",
+        "tags": [
+          "Prestadores de Serviço"
+        ]
+      }
+    },
+    "/api/v1/prestador-servico-categorias": {
+      "post": {
+        "operationId": "PrestadorServicoCategoriaController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePrestadorServicoCategoriaDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Categoria criada com sucesso"
+          },
+          "404": {
+            "description": "Prestador não encontrado"
+          },
+          "409": {
+            "description": "Categoria já existe"
+          }
+        },
+        "summary": "Criar nova categoria de serviço",
+        "tags": [
+          "Prestadores de Serviço - Categorias"
+        ]
+      },
+      "get": {
+        "operationId": "PrestadorServicoCategoriaController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de categorias"
+          }
+        },
+        "summary": "Listar todas as categorias",
+        "tags": [
+          "Prestadores de Serviço - Categorias"
+        ]
+      }
+    },
+    "/api/v1/prestador-servico-categorias/ativas": {
+      "get": {
+        "operationId": "PrestadorServicoCategoriaController_findActive",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de categorias ativas"
+          }
+        },
+        "summary": "Listar categorias ativas",
+        "tags": [
+          "Prestadores de Serviço - Categorias"
+        ]
+      }
+    },
+    "/api/v1/prestador-servico-categorias/estatisticas": {
+      "get": {
+        "operationId": "PrestadorServicoCategoriaController_getEstatisticasPorTipo",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Estatísticas"
+          }
+        },
+        "summary": "Obter estatísticas por tipo de serviço",
+        "tags": [
+          "Prestadores de Serviço - Categorias"
+        ]
+      }
+    },
+    "/api/v1/prestador-servico-categorias/prestador/{prestadorId}": {
+      "get": {
+        "operationId": "PrestadorServicoCategoriaController_findByPrestador",
+        "parameters": [
+          {
+            "name": "prestadorId",
+            "required": true,
+            "in": "path",
+            "description": "ID do prestador",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Categorias do prestador"
+          }
+        },
+        "summary": "Listar categorias de um prestador",
+        "tags": [
+          "Prestadores de Serviço - Categorias"
+        ]
+      },
+      "delete": {
+        "operationId": "PrestadorServicoCategoriaController_removeByPrestador",
+        "parameters": [
+          {
+            "name": "prestadorId",
+            "required": true,
+            "in": "path",
+            "description": "ID do prestador",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Categorias removidas"
+          }
+        },
+        "summary": "Remover todas as categorias de um prestador",
+        "tags": [
+          "Prestadores de Serviço - Categorias"
+        ]
+      }
+    },
+    "/api/v1/prestador-servico-categorias/prestador/{prestadorId}/ativas": {
+      "get": {
+        "operationId": "PrestadorServicoCategoriaController_findActiveByPrestador",
+        "parameters": [
+          {
+            "name": "prestadorId",
+            "required": true,
+            "in": "path",
+            "description": "ID do prestador",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Categorias ativas do prestador"
+          }
+        },
+        "summary": "Listar categorias ativas de um prestador",
+        "tags": [
+          "Prestadores de Serviço - Categorias"
+        ]
+      }
+    },
+    "/api/v1/prestador-servico-categorias/prestador/{prestadorId}/estatisticas": {
+      "get": {
+        "operationId": "PrestadorServicoCategoriaController_getEstatisticasPrestador",
+        "parameters": [
+          {
+            "name": "prestadorId",
+            "required": true,
+            "in": "path",
+            "description": "ID do prestador",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Estatísticas do prestador"
+          }
+        },
+        "summary": "Obter estatísticas de categorias de um prestador",
+        "tags": [
+          "Prestadores de Serviço - Categorias"
+        ]
+      }
+    },
+    "/api/v1/prestador-servico-categorias/tipo/{tipo}": {
+      "get": {
+        "operationId": "PrestadorServicoCategoriaController_findByTipo",
+        "parameters": [
+          {
+            "name": "tipo",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "enum": [
+                "manutencao_equipamentos",
+                "prestadores_exames",
+                "honorario_contabeis",
+                "honorario_consultoria",
+                "honorario_advocaticio",
+                "internet_telefonia",
+                "agua",
+                "energia",
+                "suporte_software",
+                "desenvolvimento_software",
+                "seguranca_monitoramento",
+                "outros_servicos_pf",
+                "outros_servicos_pj",
+                "limpeza_conservacao",
+                "transporte_logistica",
+                "marketing_publicidade",
+                "recursos_humanos",
+                "treinamento_capacitacao",
+                "arquitetura_engenharia",
+                "vigilancia_sanitaria",
+                "calibracao_metrologia"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Categorias do tipo"
+          }
+        },
+        "summary": "Listar categorias por tipo de serviço",
+        "tags": [
+          "Prestadores de Serviço - Categorias"
+        ]
+      }
+    },
+    "/api/v1/prestador-servico-categorias/tipo/{tipo}/prestadores": {
+      "get": {
+        "operationId": "PrestadorServicoCategoriaController_getPrestadoresPorCategoria",
+        "parameters": [
+          {
+            "name": "tipo",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "enum": [
+                "manutencao_equipamentos",
+                "prestadores_exames",
+                "honorario_contabeis",
+                "honorario_consultoria",
+                "honorario_advocaticio",
+                "internet_telefonia",
+                "agua",
+                "energia",
+                "suporte_software",
+                "desenvolvimento_software",
+                "seguranca_monitoramento",
+                "outros_servicos_pf",
+                "outros_servicos_pj",
+                "limpeza_conservacao",
+                "transporte_logistica",
+                "marketing_publicidade",
+                "recursos_humanos",
+                "treinamento_capacitacao",
+                "arquitetura_engenharia",
+                "vigilancia_sanitaria",
+                "calibracao_metrologia"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Prestadores com a categoria"
+          }
+        },
+        "summary": "Listar prestadores por tipo de categoria",
+        "tags": [
+          "Prestadores de Serviço - Categorias"
+        ]
+      }
+    },
+    "/api/v1/prestador-servico-categorias/{id}": {
+      "get": {
+        "operationId": "PrestadorServicoCategoriaController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da categoria",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Categoria encontrada"
+          },
+          "404": {
+            "description": "Categoria não encontrada"
+          }
+        },
+        "summary": "Buscar categoria por ID",
+        "tags": [
+          "Prestadores de Serviço - Categorias"
+        ]
+      },
+      "patch": {
+        "operationId": "PrestadorServicoCategoriaController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da categoria",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePrestadorServicoCategoriaDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Categoria atualizada"
+          },
+          "404": {
+            "description": "Categoria não encontrada"
+          }
+        },
+        "summary": "Atualizar categoria",
+        "tags": [
+          "Prestadores de Serviço - Categorias"
+        ]
+      },
+      "delete": {
+        "operationId": "PrestadorServicoCategoriaController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da categoria",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Categoria removida"
+          },
+          "404": {
+            "description": "Categoria não encontrada"
+          }
+        },
+        "summary": "Remover categoria",
+        "tags": [
+          "Prestadores de Serviço - Categorias"
+        ]
+      }
+    },
+    "/api/v1/prestador-servico-categorias/{id}/toggle-status": {
+      "patch": {
+        "operationId": "PrestadorServicoCategoriaController_toggleStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da categoria",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status alternado"
+          },
+          "404": {
+            "description": "Categoria não encontrada"
+          }
+        },
+        "summary": "Alternar status ativo/inativo da categoria",
+        "tags": [
+          "Prestadores de Serviço - Categorias"
+        ]
+      }
+    },
+    "/api/v1/prestador-servico-categorias/importar/{prestadorId}": {
+      "post": {
+        "operationId": "PrestadorServicoCategoriaController_importarCategorias",
+        "parameters": [
+          {
+            "name": "prestadorId",
+            "required": true,
+            "in": "path",
+            "description": "ID do prestador",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Categorias importadas"
+          },
+          "404": {
+            "description": "Prestador não encontrado"
+          }
+        },
+        "summary": "Importar categorias em lote para um prestador",
+        "tags": [
+          "Prestadores de Serviço - Categorias"
+        ]
+      }
+    },
+    "/api/v1/kits": {
+      "post": {
+        "operationId": "KitsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateKitDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Kit criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Kit"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Exame, unidade ou convênio não encontrado"
+          },
+          "409": {
+            "description": "Código interno já existe"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Criar um novo kit de exames",
+        "tags": [
+          "Kits"
+        ]
+      },
+      "get": {
+        "operationId": "KitsController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de kits retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Kit"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar todos os kits",
+        "tags": [
+          "Kits"
+        ]
+      }
+    },
+    "/api/v1/kits/ativos": {
+      "get": {
+        "operationId": "KitsController_findAtivos",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de kits ativos retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Kit"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar apenas kits ativos",
+        "tags": [
+          "Kits"
+        ]
+      }
+    },
+    "/api/v1/kits/codigo/{codigo}": {
+      "get": {
+        "operationId": "KitsController_findByCodigo",
+        "parameters": [
+          {
+            "name": "codigo",
+            "required": true,
+            "in": "path",
+            "description": "Código interno do kit",
+            "schema": {
+              "example": "KIT001",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Kit encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Kit"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Kit não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar kit por código interno",
+        "tags": [
+          "Kits"
+        ]
+      }
+    },
+    "/api/v1/kits/unidade/{unidadeId}": {
+      "get": {
+        "operationId": "KitsController_findByUnidade",
+        "parameters": [
+          {
+            "name": "unidadeId",
+            "required": true,
+            "in": "path",
+            "description": "ID da unidade de saúde",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de kits da unidade",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Kit"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar kits disponíveis em uma unidade",
+        "tags": [
+          "Kits"
+        ]
+      }
+    },
+    "/api/v1/kits/convenio/{convenioId}": {
+      "get": {
+        "operationId": "KitsController_findByConvenio",
+        "parameters": [
+          {
+            "name": "convenioId",
+            "required": true,
+            "in": "path",
+            "description": "ID do convênio",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de kits do convênio",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Kit"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar kits aceitos por um convênio",
+        "tags": [
+          "Kits"
+        ]
+      }
+    },
+    "/api/v1/kits/{id}": {
+      "get": {
+        "operationId": "KitsController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do kit",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Kit encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Kit"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Kit não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar kit por ID",
+        "tags": [
+          "Kits"
+        ]
+      },
+      "patch": {
+        "operationId": "KitsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do kit",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateKitDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Kit atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Kit"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Kit não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Atualizar dados de um kit",
+        "tags": [
+          "Kits"
+        ]
+      },
+      "delete": {
+        "operationId": "KitsController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do kit",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Kit removido com sucesso"
+          },
+          "404": {
+            "description": "Kit não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Remover um kit",
+        "tags": [
+          "Kits"
+        ]
+      }
+    },
+    "/api/v1/kits/{id}/toggle-status": {
+      "patch": {
+        "operationId": "KitsController_toggleStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do kit",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status do kit alterado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Kit"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Kit não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Alternar status do kit (ativo/inativo)",
+        "tags": [
+          "Kits"
+        ]
+      }
+    },
+    "/api/v1/kits/{id}/duplicate": {
+      "post": {
+        "operationId": "KitsController_duplicateKit",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do kit a ser duplicado",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          },
+          {
+            "name": "codigoInterno",
+            "required": true,
+            "in": "query",
+            "description": "Novo código interno para o kit duplicado",
+            "schema": {
+              "example": "KIT002",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Kit duplicado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Kit"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Kit original não encontrado"
+          },
+          "409": {
+            "description": "Código interno já existe"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Duplicar um kit existente",
+        "tags": [
+          "Kits"
+        ]
+      }
     }
   },
   "info": {
@@ -7946,9 +11553,9 @@
             "example": "Paciente com alergia a dipirona"
           },
           "convenio_id": {
-            "type": "number",
+            "type": "string",
             "description": "ID do convênio",
-            "example": 1
+            "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
           },
           "plano": {
             "type": "string",
@@ -8024,9 +11631,9 @@
             "maxLength": 2
           },
           "empresa_id": {
-            "type": "number",
+            "type": "string",
             "description": "ID da empresa/filial",
-            "example": 1
+            "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
           }
         },
         "required": [
@@ -8159,9 +11766,9 @@
             "example": "Paciente com alergia a dipirona"
           },
           "convenio_id": {
-            "type": "number",
+            "type": "string",
             "description": "ID do convênio",
-            "example": 1
+            "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
           },
           "plano": {
             "type": "string",
@@ -8237,9 +11844,9 @@
             "maxLength": 2
           },
           "empresa_id": {
-            "type": "number",
+            "type": "string",
             "description": "ID da empresa/filial",
-            "example": 1
+            "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
           }
         }
       },
@@ -9201,9 +12808,9 @@
             "maxLength": 20
           },
           "tipo_exame_id": {
-            "type": "number",
+            "type": "string",
             "description": "ID do tipo de exame",
-            "example": 1
+            "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
           },
           "categoria": {
             "type": "string",
@@ -9217,14 +12824,14 @@
             "example": "laboratorio"
           },
           "subgrupo_id": {
-            "type": "number",
+            "type": "string",
             "description": "ID do subgrupo do exame",
-            "example": 1
+            "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
           },
           "setor_id": {
-            "type": "number",
+            "type": "string",
             "description": "ID do setor responsável",
-            "example": 1
+            "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
           },
           "metodologia": {
             "type": "string",
@@ -9311,9 +12918,9 @@
             "default": "interno"
           },
           "laboratorio_apoio_id": {
-            "type": "number",
+            "type": "string",
             "description": "ID do laboratório de apoio",
-            "example": 1
+            "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
           },
           "destino_exame": {
             "type": "string",
@@ -9424,9 +13031,9 @@
             "default": "ativo"
           },
           "empresa_id": {
-            "type": "number",
+            "type": "string",
             "description": "ID da empresa (null = disponível para todas)",
-            "example": 1
+            "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
           }
         },
         "required": [
@@ -9492,9 +13099,9 @@
             "maxLength": 20
           },
           "tipo_exame_id": {
-            "type": "number",
+            "type": "string",
             "description": "ID do tipo de exame",
-            "example": 1
+            "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
           },
           "categoria": {
             "type": "string",
@@ -9508,14 +13115,14 @@
             "example": "laboratorio"
           },
           "subgrupo_id": {
-            "type": "number",
+            "type": "string",
             "description": "ID do subgrupo do exame",
-            "example": 1
+            "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
           },
           "setor_id": {
-            "type": "number",
+            "type": "string",
             "description": "ID do setor responsável",
-            "example": 1
+            "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
           },
           "metodologia": {
             "type": "string",
@@ -9602,9 +13209,9 @@
             "default": "interno"
           },
           "laboratorio_apoio_id": {
-            "type": "number",
+            "type": "string",
             "description": "ID do laboratório de apoio",
-            "example": 1
+            "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
           },
           "destino_exame": {
             "type": "string",
@@ -9715,198 +13322,148 @@
             "default": "ativo"
           },
           "empresa_id": {
-            "type": "number",
+            "type": "string",
             "description": "ID da empresa (null = disponível para todas)",
-            "example": 1
+            "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
           }
         }
       },
       "CreateConvenioDto": {
         "type": "object",
         "properties": {
-          "codigo": {
+          "empresa": {
+            "description": "Dados da empresa",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CreateEmpresaDto"
+              }
+            ]
+          },
+          "codigo_convenio": {
             "type": "string",
             "description": "Código do convênio",
             "maxLength": 20
           },
-          "razao_social": {
+          "nome": {
             "type": "string",
-            "description": "Razão social do convênio",
-            "maxLength": 255
-          },
-          "nome_fantasia": {
-            "type": "string",
-            "description": "Nome fantasia do convênio",
-            "maxLength": 255
-          },
-          "cnpj": {
-            "type": "string",
-            "description": "CNPJ do convênio",
-            "minLength": 14,
-            "maxLength": 14
-          },
-          "inscricao_estadual": {
-            "type": "string",
-            "description": "Inscrição estadual"
-          },
-          "inscricao_municipal": {
-            "type": "string",
-            "description": "Inscrição municipal"
+            "description": "Nome do convênio"
           },
           "registro_ans": {
             "type": "string",
             "description": "Registro ANS"
           },
-          "tipo_convenio": {
+          "tem_integracao_api": {
+            "type": "boolean",
+            "description": "Tem integração API",
+            "default": false
+          },
+          "url_api": {
+            "type": "string",
+            "description": "URL da API"
+          },
+          "token_api": {
+            "type": "string",
+            "description": "Token da API"
+          },
+          "requer_autorizacao": {
+            "type": "boolean",
+            "description": "Requer autorização",
+            "default": true
+          },
+          "requer_senha": {
+            "type": "boolean",
+            "description": "Requer senha",
+            "default": false
+          },
+          "validade_guia_dias": {
+            "type": "number",
+            "description": "Validade da guia em dias"
+          },
+          "tipo_faturamento": {
             "type": "string",
             "enum": [
-              "plano_saude",
-              "particular",
-              "sus",
-              "cooperativa",
-              "outro"
+              "mensal",
+              "quinzenal",
+              "semanal",
+              "avulso"
             ],
-            "description": "Tipo do convênio"
+            "description": "Tipo de faturamento"
           },
-          "modalidade": {
+          "portal_envio": {
             "type": "string",
-            "enum": [
-              "pre_pagamento",
-              "pos_pagamento",
-              "coparticipacao"
-            ],
-            "description": "Modalidade do convênio"
+            "description": "Portal de envio"
           },
-          "endereco": {
-            "type": "string",
-            "description": "Endereço"
+          "dia_fechamento": {
+            "type": "number",
+            "description": "Dia de fechamento"
           },
-          "numero": {
-            "type": "string",
-            "description": "Número"
-          },
-          "complemento": {
-            "type": "string",
-            "description": "Complemento"
-          },
-          "bairro": {
-            "type": "string",
-            "description": "Bairro"
-          },
-          "cidade": {
-            "type": "string",
-            "description": "Cidade"
-          },
-          "uf": {
-            "type": "string",
-            "description": "UF",
-            "minLength": 2,
-            "maxLength": 2
-          },
-          "cep": {
-            "type": "string",
-            "description": "CEP",
-            "minLength": 8,
-            "maxLength": 8
-          },
-          "telefone_principal": {
-            "type": "string",
-            "description": "Telefone principal"
-          },
-          "telefone_secundario": {
-            "type": "string",
-            "description": "Telefone secundário"
-          },
-          "email_principal": {
-            "type": "string",
-            "description": "Email principal"
-          },
-          "email_faturamento": {
-            "type": "string",
-            "description": "Email de faturamento"
-          },
-          "website": {
-            "type": "string",
-            "description": "Website"
-          },
-          "prazo_pagamento": {
+          "prazo_pagamento_dias": {
             "type": "number",
             "description": "Prazo de pagamento em dias",
             "default": 30
           },
-          "dia_vencimento": {
+          "percentual_desconto": {
             "type": "number",
-            "description": "Dia de vencimento"
+            "description": "Percentual de desconto"
           },
-          "forma_pagamento": {
+          "tabela_precos": {
+            "type": "string",
+            "description": "Tabela de preços"
+          },
+          "telefone": {
+            "type": "string",
+            "description": "Telefone"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email"
+          },
+          "contato_nome": {
+            "type": "string",
+            "description": "Nome do contato"
+          },
+          "regras_especificas": {
+            "type": "object",
+            "description": "Regras específicas (JSON)"
+          },
+          "status": {
             "type": "string",
             "enum": [
-              "boleto",
-              "transferencia",
-              "deposito",
-              "pix"
+              "ativo",
+              "inativo",
+              "suspenso",
+              "bloqueado"
             ],
-            "description": "Forma de pagamento"
+            "description": "Status do convênio",
+            "default": "ativo"
           },
-          "banco": {
-            "type": "string",
-            "description": "Banco"
-          },
-          "agencia": {
-            "type": "string",
-            "description": "Agência"
-          },
-          "conta": {
-            "type": "string",
-            "description": "Conta"
-          },
-          "pix_key": {
-            "type": "string",
-            "description": "Chave PIX"
-          },
-          "observacoes": {
-            "type": "string",
-            "description": "Observações"
-          },
-          "ativo": {
+          "aceita_atendimento_online": {
             "type": "boolean",
-            "description": "Status ativo",
-            "default": true
+            "description": "Aceita atendimento online",
+            "default": false
           },
-          "data_contrato": {
-            "format": "date-time",
-            "type": "string",
-            "description": "Data do contrato"
+          "percentual_coparticipacao": {
+            "type": "number",
+            "description": "Percentual de coparticipação"
           },
-          "data_vigencia_inicio": {
-            "format": "date-time",
-            "type": "string",
-            "description": "Data de início da vigência"
+          "valor_consulta": {
+            "type": "number",
+            "description": "Valor da consulta"
           },
-          "data_vigencia_fim": {
-            "format": "date-time",
+          "observacoes_convenio": {
             "type": "string",
-            "description": "Data de fim da vigência"
+            "description": "Observações do convênio"
           }
         },
         "required": [
-          "codigo",
-          "razao_social",
-          "nome_fantasia",
-          "cnpj",
-          "tipo_convenio",
-          "modalidade",
-          "endereco",
-          "numero",
-          "bairro",
-          "cidade",
-          "uf",
-          "cep",
-          "telefone_principal",
-          "email_principal",
-          "prazo_pagamento",
-          "forma_pagamento",
-          "ativo"
+          "empresa",
+          "codigo_convenio",
+          "tem_integracao_api",
+          "requer_autorizacao",
+          "requer_senha",
+          "prazo_pagamento_dias",
+          "status",
+          "aceita_atendimento_online"
         ]
       },
       "Convenio": {
@@ -9916,169 +13473,128 @@
       "UpdateConvenioDto": {
         "type": "object",
         "properties": {
-          "codigo": {
+          "empresa": {
+            "description": "Dados da empresa",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CreateEmpresaDto"
+              }
+            ]
+          },
+          "codigo_convenio": {
             "type": "string",
             "description": "Código do convênio",
             "maxLength": 20
           },
-          "razao_social": {
+          "nome": {
             "type": "string",
-            "description": "Razão social do convênio",
-            "maxLength": 255
-          },
-          "nome_fantasia": {
-            "type": "string",
-            "description": "Nome fantasia do convênio",
-            "maxLength": 255
-          },
-          "cnpj": {
-            "type": "string",
-            "description": "CNPJ do convênio",
-            "minLength": 14,
-            "maxLength": 14
-          },
-          "inscricao_estadual": {
-            "type": "string",
-            "description": "Inscrição estadual"
-          },
-          "inscricao_municipal": {
-            "type": "string",
-            "description": "Inscrição municipal"
+            "description": "Nome do convênio"
           },
           "registro_ans": {
             "type": "string",
             "description": "Registro ANS"
           },
-          "tipo_convenio": {
+          "tem_integracao_api": {
+            "type": "boolean",
+            "description": "Tem integração API",
+            "default": false
+          },
+          "url_api": {
+            "type": "string",
+            "description": "URL da API"
+          },
+          "token_api": {
+            "type": "string",
+            "description": "Token da API"
+          },
+          "requer_autorizacao": {
+            "type": "boolean",
+            "description": "Requer autorização",
+            "default": true
+          },
+          "requer_senha": {
+            "type": "boolean",
+            "description": "Requer senha",
+            "default": false
+          },
+          "validade_guia_dias": {
+            "type": "number",
+            "description": "Validade da guia em dias"
+          },
+          "tipo_faturamento": {
             "type": "string",
             "enum": [
-              "plano_saude",
-              "particular",
-              "sus",
-              "cooperativa",
-              "outro"
+              "mensal",
+              "quinzenal",
+              "semanal",
+              "avulso"
             ],
-            "description": "Tipo do convênio"
+            "description": "Tipo de faturamento"
           },
-          "modalidade": {
+          "portal_envio": {
             "type": "string",
-            "enum": [
-              "pre_pagamento",
-              "pos_pagamento",
-              "coparticipacao"
-            ],
-            "description": "Modalidade do convênio"
+            "description": "Portal de envio"
           },
-          "endereco": {
-            "type": "string",
-            "description": "Endereço"
+          "dia_fechamento": {
+            "type": "number",
+            "description": "Dia de fechamento"
           },
-          "numero": {
-            "type": "string",
-            "description": "Número"
-          },
-          "complemento": {
-            "type": "string",
-            "description": "Complemento"
-          },
-          "bairro": {
-            "type": "string",
-            "description": "Bairro"
-          },
-          "cidade": {
-            "type": "string",
-            "description": "Cidade"
-          },
-          "uf": {
-            "type": "string",
-            "description": "UF",
-            "minLength": 2,
-            "maxLength": 2
-          },
-          "cep": {
-            "type": "string",
-            "description": "CEP",
-            "minLength": 8,
-            "maxLength": 8
-          },
-          "telefone_principal": {
-            "type": "string",
-            "description": "Telefone principal"
-          },
-          "telefone_secundario": {
-            "type": "string",
-            "description": "Telefone secundário"
-          },
-          "email_principal": {
-            "type": "string",
-            "description": "Email principal"
-          },
-          "email_faturamento": {
-            "type": "string",
-            "description": "Email de faturamento"
-          },
-          "website": {
-            "type": "string",
-            "description": "Website"
-          },
-          "prazo_pagamento": {
+          "prazo_pagamento_dias": {
             "type": "number",
             "description": "Prazo de pagamento em dias",
             "default": 30
           },
-          "dia_vencimento": {
+          "percentual_desconto": {
             "type": "number",
-            "description": "Dia de vencimento"
+            "description": "Percentual de desconto"
           },
-          "forma_pagamento": {
+          "tabela_precos": {
+            "type": "string",
+            "description": "Tabela de preços"
+          },
+          "telefone": {
+            "type": "string",
+            "description": "Telefone"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email"
+          },
+          "contato_nome": {
+            "type": "string",
+            "description": "Nome do contato"
+          },
+          "regras_especificas": {
+            "type": "object",
+            "description": "Regras específicas (JSON)"
+          },
+          "status": {
             "type": "string",
             "enum": [
-              "boleto",
-              "transferencia",
-              "deposito",
-              "pix"
+              "ativo",
+              "inativo",
+              "suspenso",
+              "bloqueado"
             ],
-            "description": "Forma de pagamento"
+            "description": "Status do convênio",
+            "default": "ativo"
           },
-          "banco": {
-            "type": "string",
-            "description": "Banco"
-          },
-          "agencia": {
-            "type": "string",
-            "description": "Agência"
-          },
-          "conta": {
-            "type": "string",
-            "description": "Conta"
-          },
-          "pix_key": {
-            "type": "string",
-            "description": "Chave PIX"
-          },
-          "observacoes": {
-            "type": "string",
-            "description": "Observações"
-          },
-          "ativo": {
+          "aceita_atendimento_online": {
             "type": "boolean",
-            "description": "Status ativo",
-            "default": true
+            "description": "Aceita atendimento online",
+            "default": false
           },
-          "data_contrato": {
-            "format": "date-time",
-            "type": "string",
-            "description": "Data do contrato"
+          "percentual_coparticipacao": {
+            "type": "number",
+            "description": "Percentual de coparticipação"
           },
-          "data_vigencia_inicio": {
-            "format": "date-time",
-            "type": "string",
-            "description": "Data de início da vigência"
+          "valor_consulta": {
+            "type": "number",
+            "description": "Valor da consulta"
           },
-          "data_vigencia_fim": {
-            "format": "date-time",
+          "observacoes_convenio": {
             "type": "string",
-            "description": "Data de fim da vigência"
+            "description": "Observações do convênio"
           }
         }
       },
@@ -12269,6 +15785,2429 @@
             "format": "date-time",
             "type": "string",
             "description": "Data fim vigência"
+          }
+        }
+      },
+      "CreateTelemedicinaDto": {
+        "type": "object",
+        "properties": {
+          "empresa": {
+            "description": "Dados da empresa",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CreateEmpresaDto"
+              }
+            ]
+          },
+          "codigo_telemedicina": {
+            "type": "string",
+            "description": "Código da telemedicina",
+            "maxLength": 20
+          },
+          "tipo_integracao": {
+            "type": "string",
+            "enum": [
+              "api_rest",
+              "webhook",
+              "hl7",
+              "fhir",
+              "manual",
+              "dicom"
+            ],
+            "description": "Tipo de integração"
+          },
+          "url_integracao": {
+            "type": "string",
+            "description": "URL de integração"
+          },
+          "token_integracao": {
+            "type": "string",
+            "description": "Token de integração"
+          },
+          "usuario_integracao": {
+            "type": "string",
+            "description": "Usuário de integração"
+          },
+          "senha_integracao": {
+            "type": "string",
+            "description": "Senha de integração"
+          },
+          "configuracao_adicional": {
+            "type": "string",
+            "description": "Configuração adicional em JSON"
+          },
+          "status_integracao": {
+            "type": "string",
+            "enum": [
+              "ativo",
+              "inativo",
+              "teste",
+              "manutencao"
+            ],
+            "description": "Status da integração"
+          },
+          "tipo_plataforma": {
+            "type": "string",
+            "enum": [
+              "web",
+              "mobile",
+              "desktop",
+              "hibrida"
+            ],
+            "description": "Tipo da plataforma"
+          },
+          "url_plataforma": {
+            "type": "string",
+            "description": "URL da plataforma"
+          },
+          "versao_sistema": {
+            "type": "string",
+            "description": "Versão do sistema"
+          },
+          "especialidades_atendidas": {
+            "description": "Especialidades atendidas",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tipos_consulta": {
+            "description": "Tipos de consulta",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "teleconsulta": {
+            "type": "boolean",
+            "description": "Oferece teleconsulta",
+            "default": false
+          },
+          "telediagnostico": {
+            "type": "boolean",
+            "description": "Oferece telediagnóstico",
+            "default": false
+          },
+          "telecirurgia": {
+            "type": "boolean",
+            "description": "Oferece telecirurgia",
+            "default": false
+          },
+          "telemonitoramento": {
+            "type": "boolean",
+            "description": "Oferece telemonitoramento",
+            "default": false
+          },
+          "tempo_consulta_padrao": {
+            "type": "number",
+            "description": "Tempo padrão de consulta em minutos"
+          },
+          "permite_agendamento_online": {
+            "type": "boolean",
+            "description": "Permite agendamento online",
+            "default": false
+          },
+          "permite_cancelamento_online": {
+            "type": "boolean",
+            "description": "Permite cancelamento online",
+            "default": false
+          },
+          "antecedencia_minima_agendamento": {
+            "type": "number",
+            "description": "Antecedência mínima para agendamento em horas"
+          },
+          "antecedencia_minima_cancelamento": {
+            "type": "number",
+            "description": "Antecedência mínima para cancelamento em horas"
+          },
+          "certificado_digital": {
+            "type": "string",
+            "description": "Certificado digital"
+          },
+          "suporte_gravacao": {
+            "type": "boolean",
+            "description": "Suporte à gravação",
+            "default": false
+          },
+          "suporte_streaming": {
+            "type": "boolean",
+            "description": "Suporte à streaming",
+            "default": false
+          },
+          "criptografia_end_to_end": {
+            "type": "boolean",
+            "description": "Criptografia end-to-end",
+            "default": true
+          },
+          "protocolo_seguranca": {
+            "type": "string",
+            "description": "Protocolo de segurança"
+          },
+          "valor_consulta_particular": {
+            "type": "number",
+            "description": "Valor da consulta particular"
+          },
+          "percentual_repasse": {
+            "type": "number",
+            "description": "Percentual de repasse"
+          },
+          "taxa_plataforma": {
+            "type": "number",
+            "description": "Taxa da plataforma"
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações gerais"
+          },
+          "requisitos_tecnicos": {
+            "type": "string",
+            "description": "Requisitos técnicos"
+          }
+        },
+        "required": [
+          "empresa",
+          "codigo_telemedicina",
+          "tipo_integracao",
+          "status_integracao",
+          "tipo_plataforma",
+          "teleconsulta",
+          "telediagnostico",
+          "telecirurgia",
+          "telemonitoramento",
+          "permite_agendamento_online",
+          "permite_cancelamento_online",
+          "suporte_gravacao",
+          "suporte_streaming",
+          "criptografia_end_to_end"
+        ]
+      },
+      "Telemedicina": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateTelemedicinaDto": {
+        "type": "object",
+        "properties": {
+          "empresa": {
+            "description": "Dados da empresa",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CreateEmpresaDto"
+              }
+            ]
+          },
+          "codigo_telemedicina": {
+            "type": "string",
+            "description": "Código da telemedicina",
+            "maxLength": 20
+          },
+          "tipo_integracao": {
+            "type": "string",
+            "enum": [
+              "api_rest",
+              "webhook",
+              "hl7",
+              "fhir",
+              "manual",
+              "dicom"
+            ],
+            "description": "Tipo de integração"
+          },
+          "url_integracao": {
+            "type": "string",
+            "description": "URL de integração"
+          },
+          "token_integracao": {
+            "type": "string",
+            "description": "Token de integração"
+          },
+          "usuario_integracao": {
+            "type": "string",
+            "description": "Usuário de integração"
+          },
+          "senha_integracao": {
+            "type": "string",
+            "description": "Senha de integração"
+          },
+          "configuracao_adicional": {
+            "type": "string",
+            "description": "Configuração adicional em JSON"
+          },
+          "status_integracao": {
+            "type": "string",
+            "enum": [
+              "ativo",
+              "inativo",
+              "teste",
+              "manutencao"
+            ],
+            "description": "Status da integração"
+          },
+          "tipo_plataforma": {
+            "type": "string",
+            "enum": [
+              "web",
+              "mobile",
+              "desktop",
+              "hibrida"
+            ],
+            "description": "Tipo da plataforma"
+          },
+          "url_plataforma": {
+            "type": "string",
+            "description": "URL da plataforma"
+          },
+          "versao_sistema": {
+            "type": "string",
+            "description": "Versão do sistema"
+          },
+          "especialidades_atendidas": {
+            "description": "Especialidades atendidas",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tipos_consulta": {
+            "description": "Tipos de consulta",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "teleconsulta": {
+            "type": "boolean",
+            "description": "Oferece teleconsulta",
+            "default": false
+          },
+          "telediagnostico": {
+            "type": "boolean",
+            "description": "Oferece telediagnóstico",
+            "default": false
+          },
+          "telecirurgia": {
+            "type": "boolean",
+            "description": "Oferece telecirurgia",
+            "default": false
+          },
+          "telemonitoramento": {
+            "type": "boolean",
+            "description": "Oferece telemonitoramento",
+            "default": false
+          },
+          "tempo_consulta_padrao": {
+            "type": "number",
+            "description": "Tempo padrão de consulta em minutos"
+          },
+          "permite_agendamento_online": {
+            "type": "boolean",
+            "description": "Permite agendamento online",
+            "default": false
+          },
+          "permite_cancelamento_online": {
+            "type": "boolean",
+            "description": "Permite cancelamento online",
+            "default": false
+          },
+          "antecedencia_minima_agendamento": {
+            "type": "number",
+            "description": "Antecedência mínima para agendamento em horas"
+          },
+          "antecedencia_minima_cancelamento": {
+            "type": "number",
+            "description": "Antecedência mínima para cancelamento em horas"
+          },
+          "certificado_digital": {
+            "type": "string",
+            "description": "Certificado digital"
+          },
+          "suporte_gravacao": {
+            "type": "boolean",
+            "description": "Suporte à gravação",
+            "default": false
+          },
+          "suporte_streaming": {
+            "type": "boolean",
+            "description": "Suporte à streaming",
+            "default": false
+          },
+          "criptografia_end_to_end": {
+            "type": "boolean",
+            "description": "Criptografia end-to-end",
+            "default": true
+          },
+          "protocolo_seguranca": {
+            "type": "string",
+            "description": "Protocolo de segurança"
+          },
+          "valor_consulta_particular": {
+            "type": "number",
+            "description": "Valor da consulta particular"
+          },
+          "percentual_repasse": {
+            "type": "number",
+            "description": "Percentual de repasse"
+          },
+          "taxa_plataforma": {
+            "type": "number",
+            "description": "Taxa da plataforma"
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações gerais"
+          },
+          "requisitos_tecnicos": {
+            "type": "string",
+            "description": "Requisitos técnicos"
+          }
+        }
+      },
+      "CreateTelemedicinaExameDto": {
+        "type": "object",
+        "properties": {
+          "telemedicina_id": {
+            "type": "string",
+            "description": "ID da telemedicina"
+          },
+          "exame_id": {
+            "type": "string",
+            "description": "ID do exame"
+          },
+          "codigo_telemedicina": {
+            "type": "string",
+            "description": "Código do exame na plataforma de telemedicina"
+          },
+          "nome_exame_telemedicina": {
+            "type": "string",
+            "description": "Nome do exame na plataforma de telemedicina"
+          },
+          "categoria_telemedicina": {
+            "type": "string",
+            "description": "Categoria na plataforma de telemedicina"
+          },
+          "ativo": {
+            "type": "boolean",
+            "description": "Vínculo ativo",
+            "default": true
+          },
+          "permite_upload_imagem": {
+            "type": "boolean",
+            "description": "Permite upload de imagem",
+            "default": false
+          },
+          "requer_especialista": {
+            "type": "boolean",
+            "description": "Requer especialista",
+            "default": false
+          },
+          "tempo_laudo_padrao": {
+            "type": "number",
+            "description": "Tempo padrão para laudo em horas"
+          },
+          "valor_laudo": {
+            "type": "number",
+            "description": "Valor do laudo"
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações"
+          }
+        },
+        "required": [
+          "telemedicina_id",
+          "exame_id",
+          "ativo",
+          "permite_upload_imagem",
+          "requer_especialista"
+        ]
+      },
+      "TelemedicinaExame": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateTelemedicinaExameDto": {
+        "type": "object",
+        "properties": {
+          "telemedicina_id": {
+            "type": "string",
+            "description": "ID da telemedicina"
+          },
+          "exame_id": {
+            "type": "string",
+            "description": "ID do exame"
+          },
+          "codigo_telemedicina": {
+            "type": "string",
+            "description": "Código do exame na plataforma de telemedicina"
+          },
+          "nome_exame_telemedicina": {
+            "type": "string",
+            "description": "Nome do exame na plataforma de telemedicina"
+          },
+          "categoria_telemedicina": {
+            "type": "string",
+            "description": "Categoria na plataforma de telemedicina"
+          },
+          "ativo": {
+            "type": "boolean",
+            "description": "Vínculo ativo",
+            "default": true
+          },
+          "permite_upload_imagem": {
+            "type": "boolean",
+            "description": "Permite upload de imagem",
+            "default": false
+          },
+          "requer_especialista": {
+            "type": "boolean",
+            "description": "Requer especialista",
+            "default": false
+          },
+          "tempo_laudo_padrao": {
+            "type": "number",
+            "description": "Tempo padrão para laudo em horas"
+          },
+          "valor_laudo": {
+            "type": "number",
+            "description": "Valor do laudo"
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações"
+          }
+        }
+      },
+      "CreateFornecedorDto": {
+        "type": "object",
+        "properties": {
+          "empresa": {
+            "description": "Dados da empresa",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CreateEmpresaDto"
+              }
+            ]
+          },
+          "codigo_fornecedor": {
+            "type": "string",
+            "description": "Código do fornecedor",
+            "maxLength": 20
+          },
+          "categorias_fornecidas": {
+            "type": "array",
+            "description": "Categorias de insumos fornecidas",
+            "items": {
+              "type": "string",
+              "enum": [
+                "reagentes_insumos",
+                "equipamentos_medicos",
+                "material_escritorio",
+                "uniformes_epi",
+                "medicamentos",
+                "outros"
+              ]
+            }
+          },
+          "metodos_transporte": {
+            "type": "array",
+            "description": "Métodos de transporte disponíveis",
+            "items": {
+              "type": "string",
+              "enum": [
+                "correios",
+                "transportadora",
+                "proprio",
+                "entrega_local",
+                "retirada"
+              ]
+            }
+          },
+          "formas_pagamento_aceitas": {
+            "type": "array",
+            "description": "Formas de pagamento aceitas",
+            "items": {
+              "type": "string",
+              "enum": [
+                "boleto",
+                "pix",
+                "transferencia",
+                "cartao_credito",
+                "cartao_debito",
+                "dinheiro",
+                "cheque",
+                "prazo_30_dias",
+                "prazo_60_dias",
+                "prazo_90_dias"
+              ]
+            }
+          },
+          "prazo_entrega_padrao": {
+            "type": "number",
+            "description": "Prazo de entrega padrão em dias",
+            "default": 7
+          },
+          "prazo_entrega_urgente": {
+            "type": "number",
+            "description": "Prazo de entrega urgente em dias"
+          },
+          "orcamento_minimo": {
+            "type": "number",
+            "description": "Orçamento mínimo para pedidos"
+          },
+          "orcamento_maximo": {
+            "type": "number",
+            "description": "Orçamento máximo para pedidos"
+          },
+          "desconto_padrao": {
+            "type": "number",
+            "description": "Desconto padrão em percentual"
+          },
+          "avaliacao_media": {
+            "type": "number",
+            "description": "Avaliação média de 0 a 5"
+          },
+          "total_avaliacoes": {
+            "type": "number",
+            "description": "Total de avaliações",
+            "default": 0
+          },
+          "status_fornecedor": {
+            "type": "string",
+            "enum": [
+              "ativo",
+              "inativo",
+              "bloqueado",
+              "pendente_aprovacao"
+            ],
+            "description": "Status do fornecedor"
+          },
+          "certificacoes": {
+            "description": "Certificações do fornecedor",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "possui_certificacao_iso": {
+            "type": "boolean",
+            "description": "Possui certificação ISO",
+            "default": false
+          },
+          "possui_licenca_anvisa": {
+            "type": "boolean",
+            "description": "Possui licença ANVISA",
+            "default": false
+          },
+          "data_vencimento_licencas": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data de vencimento das licenças"
+          },
+          "representante_comercial": {
+            "type": "string",
+            "description": "Nome do representante comercial"
+          },
+          "telefone_comercial": {
+            "type": "string",
+            "description": "Telefone comercial"
+          },
+          "email_comercial": {
+            "type": "string",
+            "description": "Email comercial"
+          },
+          "gerente_conta": {
+            "type": "string",
+            "description": "Gerente de conta"
+          },
+          "aceita_pedido_urgente": {
+            "type": "boolean",
+            "description": "Aceita pedido urgente",
+            "default": false
+          },
+          "entrega_sabado": {
+            "type": "boolean",
+            "description": "Faz entrega aos sábados",
+            "default": false
+          },
+          "entrega_domingo": {
+            "type": "boolean",
+            "description": "Faz entrega aos domingos",
+            "default": false
+          },
+          "horario_inicio_entrega": {
+            "type": "string",
+            "description": "Horário de início das entregas (HH:mm)"
+          },
+          "horario_fim_entrega": {
+            "type": "string",
+            "description": "Horário de fim das entregas (HH:mm)"
+          },
+          "estados_atendidos": {
+            "description": "Estados atendidos (UF)",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "cidades_atendidas": {
+            "description": "Cidades específicas atendidas",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "atende_todo_brasil": {
+            "type": "boolean",
+            "description": "Atende todo o Brasil",
+            "default": false
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações gerais"
+          },
+          "condicoes_especiais": {
+            "type": "string",
+            "description": "Condições especiais"
+          },
+          "historico_problemas": {
+            "type": "string",
+            "description": "Histórico de problemas"
+          },
+          "data_ultimo_pedido": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data do último pedido"
+          },
+          "data_proxima_avaliacao": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data da próxima avaliação"
+          },
+          "aprovado_por": {
+            "type": "string",
+            "description": "ID do usuário que aprovou"
+          },
+          "data_aprovacao": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data da aprovação"
+          }
+        },
+        "required": [
+          "empresa",
+          "codigo_fornecedor",
+          "prazo_entrega_padrao",
+          "total_avaliacoes",
+          "status_fornecedor",
+          "possui_certificacao_iso",
+          "possui_licenca_anvisa",
+          "aceita_pedido_urgente",
+          "entrega_sabado",
+          "entrega_domingo",
+          "atende_todo_brasil"
+        ]
+      },
+      "Fornecedor": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateFornecedorDto": {
+        "type": "object",
+        "properties": {
+          "empresa": {
+            "description": "Dados da empresa",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CreateEmpresaDto"
+              }
+            ]
+          },
+          "codigo_fornecedor": {
+            "type": "string",
+            "description": "Código do fornecedor",
+            "maxLength": 20
+          },
+          "categorias_fornecidas": {
+            "type": "array",
+            "description": "Categorias de insumos fornecidas",
+            "items": {
+              "type": "string",
+              "enum": [
+                "reagentes_insumos",
+                "equipamentos_medicos",
+                "material_escritorio",
+                "uniformes_epi",
+                "medicamentos",
+                "outros"
+              ]
+            }
+          },
+          "metodos_transporte": {
+            "type": "array",
+            "description": "Métodos de transporte disponíveis",
+            "items": {
+              "type": "string",
+              "enum": [
+                "correios",
+                "transportadora",
+                "proprio",
+                "entrega_local",
+                "retirada"
+              ]
+            }
+          },
+          "formas_pagamento_aceitas": {
+            "type": "array",
+            "description": "Formas de pagamento aceitas",
+            "items": {
+              "type": "string",
+              "enum": [
+                "boleto",
+                "pix",
+                "transferencia",
+                "cartao_credito",
+                "cartao_debito",
+                "dinheiro",
+                "cheque",
+                "prazo_30_dias",
+                "prazo_60_dias",
+                "prazo_90_dias"
+              ]
+            }
+          },
+          "prazo_entrega_padrao": {
+            "type": "number",
+            "description": "Prazo de entrega padrão em dias",
+            "default": 7
+          },
+          "prazo_entrega_urgente": {
+            "type": "number",
+            "description": "Prazo de entrega urgente em dias"
+          },
+          "orcamento_minimo": {
+            "type": "number",
+            "description": "Orçamento mínimo para pedidos"
+          },
+          "orcamento_maximo": {
+            "type": "number",
+            "description": "Orçamento máximo para pedidos"
+          },
+          "desconto_padrao": {
+            "type": "number",
+            "description": "Desconto padrão em percentual"
+          },
+          "avaliacao_media": {
+            "type": "number",
+            "description": "Avaliação média de 0 a 5"
+          },
+          "total_avaliacoes": {
+            "type": "number",
+            "description": "Total de avaliações",
+            "default": 0
+          },
+          "status_fornecedor": {
+            "type": "string",
+            "enum": [
+              "ativo",
+              "inativo",
+              "bloqueado",
+              "pendente_aprovacao"
+            ],
+            "description": "Status do fornecedor"
+          },
+          "certificacoes": {
+            "description": "Certificações do fornecedor",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "possui_certificacao_iso": {
+            "type": "boolean",
+            "description": "Possui certificação ISO",
+            "default": false
+          },
+          "possui_licenca_anvisa": {
+            "type": "boolean",
+            "description": "Possui licença ANVISA",
+            "default": false
+          },
+          "data_vencimento_licencas": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data de vencimento das licenças"
+          },
+          "representante_comercial": {
+            "type": "string",
+            "description": "Nome do representante comercial"
+          },
+          "telefone_comercial": {
+            "type": "string",
+            "description": "Telefone comercial"
+          },
+          "email_comercial": {
+            "type": "string",
+            "description": "Email comercial"
+          },
+          "gerente_conta": {
+            "type": "string",
+            "description": "Gerente de conta"
+          },
+          "aceita_pedido_urgente": {
+            "type": "boolean",
+            "description": "Aceita pedido urgente",
+            "default": false
+          },
+          "entrega_sabado": {
+            "type": "boolean",
+            "description": "Faz entrega aos sábados",
+            "default": false
+          },
+          "entrega_domingo": {
+            "type": "boolean",
+            "description": "Faz entrega aos domingos",
+            "default": false
+          },
+          "horario_inicio_entrega": {
+            "type": "string",
+            "description": "Horário de início das entregas (HH:mm)"
+          },
+          "horario_fim_entrega": {
+            "type": "string",
+            "description": "Horário de fim das entregas (HH:mm)"
+          },
+          "estados_atendidos": {
+            "description": "Estados atendidos (UF)",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "cidades_atendidas": {
+            "description": "Cidades específicas atendidas",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "atende_todo_brasil": {
+            "type": "boolean",
+            "description": "Atende todo o Brasil",
+            "default": false
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações gerais"
+          },
+          "condicoes_especiais": {
+            "type": "string",
+            "description": "Condições especiais"
+          },
+          "historico_problemas": {
+            "type": "string",
+            "description": "Histórico de problemas"
+          },
+          "data_ultimo_pedido": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data do último pedido"
+          },
+          "data_proxima_avaliacao": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data da próxima avaliação"
+          },
+          "aprovado_por": {
+            "type": "string",
+            "description": "ID do usuário que aprovou"
+          },
+          "data_aprovacao": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data da aprovação"
+          }
+        }
+      },
+      "CreateFornecedorInsumoDto": {
+        "type": "object",
+        "properties": {
+          "fornecedor_id": {
+            "type": "string",
+            "description": "ID do fornecedor"
+          },
+          "codigo_interno": {
+            "type": "string",
+            "description": "Código interno do fornecedor",
+            "maxLength": 50
+          },
+          "codigo_fabricante": {
+            "type": "string",
+            "description": "Código do fabricante",
+            "maxLength": 50
+          },
+          "codigo_barras": {
+            "type": "string",
+            "description": "Código de barras",
+            "maxLength": 50
+          },
+          "nome_insumo": {
+            "type": "string",
+            "description": "Nome do insumo",
+            "maxLength": 255
+          },
+          "descricao": {
+            "type": "string",
+            "description": "Descrição detalhada"
+          },
+          "marca": {
+            "type": "string",
+            "description": "Marca do produto",
+            "maxLength": 100
+          },
+          "fabricante": {
+            "type": "string",
+            "description": "Fabricante",
+            "maxLength": 100
+          },
+          "categoria": {
+            "type": "string",
+            "enum": [
+              "reagentes_insumos",
+              "equipamentos_medicos",
+              "material_escritorio",
+              "uniformes_epi",
+              "medicamentos",
+              "outros"
+            ],
+            "description": "Categoria do insumo"
+          },
+          "subcategoria": {
+            "type": "string",
+            "description": "Subcategoria",
+            "maxLength": 100
+          },
+          "grupo_produto": {
+            "type": "string",
+            "description": "Grupo do produto",
+            "maxLength": 100
+          },
+          "modelo": {
+            "type": "string",
+            "description": "Modelo",
+            "maxLength": 50
+          },
+          "especificacao_tecnica": {
+            "type": "string",
+            "description": "Especificação técnica",
+            "maxLength": 100
+          },
+          "cor": {
+            "type": "string",
+            "description": "Cor",
+            "maxLength": 50
+          },
+          "tamanho": {
+            "type": "string",
+            "description": "Tamanho",
+            "maxLength": 50
+          },
+          "voltagem": {
+            "type": "string",
+            "description": "Voltagem",
+            "maxLength": 50
+          },
+          "unidade_medida": {
+            "type": "string",
+            "enum": [
+              "unidade",
+              "caixa",
+              "pacote",
+              "frasco",
+              "litro",
+              "mililitro",
+              "quilograma",
+              "grama",
+              "metro",
+              "centimetro",
+              "par",
+              "conjunto"
+            ],
+            "description": "Unidade de medida"
+          },
+          "quantidade_embalagem": {
+            "type": "number",
+            "description": "Quantidade por embalagem",
+            "default": 1
+          },
+          "quantidade_minima_pedido": {
+            "type": "number",
+            "description": "Quantidade mínima de pedido"
+          },
+          "quantidade_maxima_pedido": {
+            "type": "number",
+            "description": "Quantidade máxima de pedido"
+          },
+          "estoque_disponivel": {
+            "type": "number",
+            "description": "Estoque disponível"
+          },
+          "preco_unitario": {
+            "type": "number",
+            "description": "Preço unitário"
+          },
+          "preco_promocional": {
+            "type": "number",
+            "description": "Preço promocional"
+          },
+          "data_inicio_promocao": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data de início da promoção"
+          },
+          "data_fim_promocao": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data de fim da promoção"
+          },
+          "desconto_quantidade": {
+            "type": "number",
+            "description": "Percentual de desconto por quantidade"
+          },
+          "quantidade_desconto": {
+            "type": "number",
+            "description": "Quantidade mínima para desconto"
+          },
+          "prazo_entrega_dias": {
+            "type": "number",
+            "description": "Prazo de entrega em dias"
+          },
+          "metodo_transporte_preferencial": {
+            "type": "string",
+            "enum": [
+              "correios",
+              "transportadora",
+              "proprio",
+              "entrega_local",
+              "retirada"
+            ],
+            "description": "Método de transporte preferencial"
+          },
+          "custo_frete": {
+            "type": "number",
+            "description": "Custo do frete"
+          },
+          "frete_gratis_acima_valor": {
+            "type": "boolean",
+            "description": "Frete grátis acima de um valor",
+            "default": false
+          },
+          "valor_frete_gratis": {
+            "type": "number",
+            "description": "Valor para frete grátis"
+          },
+          "formas_pagamento": {
+            "type": "array",
+            "description": "Formas de pagamento aceitas",
+            "items": {
+              "type": "string",
+              "enum": [
+                "boleto",
+                "pix",
+                "transferencia",
+                "cartao_credito",
+                "cartao_debito",
+                "dinheiro",
+                "cheque",
+                "prazo_30_dias",
+                "prazo_60_dias",
+                "prazo_90_dias"
+              ]
+            }
+          },
+          "prazo_pagamento_dias": {
+            "type": "number",
+            "description": "Prazo de pagamento em dias"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "disponivel",
+              "indisponivel",
+              "descontinuado",
+              "sob_consulta"
+            ],
+            "description": "Status do insumo"
+          },
+          "ativo": {
+            "type": "boolean",
+            "description": "Insumo ativo",
+            "default": true
+          },
+          "data_validade": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data de validade (produtos perecíveis)"
+          },
+          "prazo_validade_meses": {
+            "type": "number",
+            "description": "Prazo de validade padrão em meses"
+          },
+          "registro_anvisa": {
+            "type": "string",
+            "description": "Registro ANVISA",
+            "maxLength": 100
+          },
+          "registro_inmetro": {
+            "type": "string",
+            "description": "Registro INMETRO",
+            "maxLength": 100
+          },
+          "certificacoes_produto": {
+            "description": "Certificações do produto",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "requer_receita_medica": {
+            "type": "boolean",
+            "description": "Requer receita médica",
+            "default": false
+          },
+          "produto_controlado": {
+            "type": "boolean",
+            "description": "Produto controlado",
+            "default": false
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações"
+          },
+          "link_catalogo": {
+            "type": "string",
+            "description": "Link do catálogo",
+            "maxLength": 255
+          },
+          "imagem_url": {
+            "type": "string",
+            "description": "URL da imagem",
+            "maxLength": 255
+          },
+          "ficha_tecnica": {
+            "type": "string",
+            "description": "Ficha técnica"
+          },
+          "avaliacao_produto": {
+            "type": "number",
+            "description": "Avaliação do produto (0-5)"
+          }
+        },
+        "required": [
+          "fornecedor_id",
+          "codigo_interno",
+          "nome_insumo",
+          "categoria",
+          "unidade_medida",
+          "quantidade_embalagem",
+          "frete_gratis_acima_valor",
+          "status",
+          "ativo",
+          "requer_receita_medica",
+          "produto_controlado"
+        ]
+      },
+      "FornecedorInsumo": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateFornecedorInsumoDto": {
+        "type": "object",
+        "properties": {
+          "fornecedor_id": {
+            "type": "string",
+            "description": "ID do fornecedor"
+          },
+          "codigo_interno": {
+            "type": "string",
+            "description": "Código interno do fornecedor",
+            "maxLength": 50
+          },
+          "codigo_fabricante": {
+            "type": "string",
+            "description": "Código do fabricante",
+            "maxLength": 50
+          },
+          "codigo_barras": {
+            "type": "string",
+            "description": "Código de barras",
+            "maxLength": 50
+          },
+          "nome_insumo": {
+            "type": "string",
+            "description": "Nome do insumo",
+            "maxLength": 255
+          },
+          "descricao": {
+            "type": "string",
+            "description": "Descrição detalhada"
+          },
+          "marca": {
+            "type": "string",
+            "description": "Marca do produto",
+            "maxLength": 100
+          },
+          "fabricante": {
+            "type": "string",
+            "description": "Fabricante",
+            "maxLength": 100
+          },
+          "categoria": {
+            "type": "string",
+            "enum": [
+              "reagentes_insumos",
+              "equipamentos_medicos",
+              "material_escritorio",
+              "uniformes_epi",
+              "medicamentos",
+              "outros"
+            ],
+            "description": "Categoria do insumo"
+          },
+          "subcategoria": {
+            "type": "string",
+            "description": "Subcategoria",
+            "maxLength": 100
+          },
+          "grupo_produto": {
+            "type": "string",
+            "description": "Grupo do produto",
+            "maxLength": 100
+          },
+          "modelo": {
+            "type": "string",
+            "description": "Modelo",
+            "maxLength": 50
+          },
+          "especificacao_tecnica": {
+            "type": "string",
+            "description": "Especificação técnica",
+            "maxLength": 100
+          },
+          "cor": {
+            "type": "string",
+            "description": "Cor",
+            "maxLength": 50
+          },
+          "tamanho": {
+            "type": "string",
+            "description": "Tamanho",
+            "maxLength": 50
+          },
+          "voltagem": {
+            "type": "string",
+            "description": "Voltagem",
+            "maxLength": 50
+          },
+          "unidade_medida": {
+            "type": "string",
+            "enum": [
+              "unidade",
+              "caixa",
+              "pacote",
+              "frasco",
+              "litro",
+              "mililitro",
+              "quilograma",
+              "grama",
+              "metro",
+              "centimetro",
+              "par",
+              "conjunto"
+            ],
+            "description": "Unidade de medida"
+          },
+          "quantidade_embalagem": {
+            "type": "number",
+            "description": "Quantidade por embalagem",
+            "default": 1
+          },
+          "quantidade_minima_pedido": {
+            "type": "number",
+            "description": "Quantidade mínima de pedido"
+          },
+          "quantidade_maxima_pedido": {
+            "type": "number",
+            "description": "Quantidade máxima de pedido"
+          },
+          "estoque_disponivel": {
+            "type": "number",
+            "description": "Estoque disponível"
+          },
+          "preco_unitario": {
+            "type": "number",
+            "description": "Preço unitário"
+          },
+          "preco_promocional": {
+            "type": "number",
+            "description": "Preço promocional"
+          },
+          "data_inicio_promocao": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data de início da promoção"
+          },
+          "data_fim_promocao": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data de fim da promoção"
+          },
+          "desconto_quantidade": {
+            "type": "number",
+            "description": "Percentual de desconto por quantidade"
+          },
+          "quantidade_desconto": {
+            "type": "number",
+            "description": "Quantidade mínima para desconto"
+          },
+          "prazo_entrega_dias": {
+            "type": "number",
+            "description": "Prazo de entrega em dias"
+          },
+          "metodo_transporte_preferencial": {
+            "type": "string",
+            "enum": [
+              "correios",
+              "transportadora",
+              "proprio",
+              "entrega_local",
+              "retirada"
+            ],
+            "description": "Método de transporte preferencial"
+          },
+          "custo_frete": {
+            "type": "number",
+            "description": "Custo do frete"
+          },
+          "frete_gratis_acima_valor": {
+            "type": "boolean",
+            "description": "Frete grátis acima de um valor",
+            "default": false
+          },
+          "valor_frete_gratis": {
+            "type": "number",
+            "description": "Valor para frete grátis"
+          },
+          "formas_pagamento": {
+            "type": "array",
+            "description": "Formas de pagamento aceitas",
+            "items": {
+              "type": "string",
+              "enum": [
+                "boleto",
+                "pix",
+                "transferencia",
+                "cartao_credito",
+                "cartao_debito",
+                "dinheiro",
+                "cheque",
+                "prazo_30_dias",
+                "prazo_60_dias",
+                "prazo_90_dias"
+              ]
+            }
+          },
+          "prazo_pagamento_dias": {
+            "type": "number",
+            "description": "Prazo de pagamento em dias"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "disponivel",
+              "indisponivel",
+              "descontinuado",
+              "sob_consulta"
+            ],
+            "description": "Status do insumo"
+          },
+          "ativo": {
+            "type": "boolean",
+            "description": "Insumo ativo",
+            "default": true
+          },
+          "data_validade": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Data de validade (produtos perecíveis)"
+          },
+          "prazo_validade_meses": {
+            "type": "number",
+            "description": "Prazo de validade padrão em meses"
+          },
+          "registro_anvisa": {
+            "type": "string",
+            "description": "Registro ANVISA",
+            "maxLength": 100
+          },
+          "registro_inmetro": {
+            "type": "string",
+            "description": "Registro INMETRO",
+            "maxLength": 100
+          },
+          "certificacoes_produto": {
+            "description": "Certificações do produto",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "requer_receita_medica": {
+            "type": "boolean",
+            "description": "Requer receita médica",
+            "default": false
+          },
+          "produto_controlado": {
+            "type": "boolean",
+            "description": "Produto controlado",
+            "default": false
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações"
+          },
+          "link_catalogo": {
+            "type": "string",
+            "description": "Link do catálogo",
+            "maxLength": 255
+          },
+          "imagem_url": {
+            "type": "string",
+            "description": "URL da imagem",
+            "maxLength": 255
+          },
+          "ficha_tecnica": {
+            "type": "string",
+            "description": "Ficha técnica"
+          },
+          "avaliacao_produto": {
+            "type": "number",
+            "description": "Avaliação do produto (0-5)"
+          }
+        }
+      },
+      "CreatePrestadorServicoDto": {
+        "type": "object",
+        "properties": {
+          "empresa": {
+            "description": "Dados da empresa",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CreateEmpresaDto"
+              }
+            ]
+          },
+          "codigoPrestador": {
+            "type": "string",
+            "description": "Código único do prestador",
+            "example": "PSV001",
+            "minLength": 3,
+            "maxLength": 20
+          },
+          "tipoContrato": {
+            "type": "string",
+            "description": "Tipo de contrato",
+            "enum": [
+              "fixo",
+              "por_demanda",
+              "retainer",
+              "projeto"
+            ],
+            "example": "por_demanda"
+          },
+          "numeroContrato": {
+            "type": "string",
+            "description": "Número do contrato",
+            "example": "CONT-2025-001"
+          },
+          "dataInicioContrato": {
+            "type": "string",
+            "description": "Data de início do contrato",
+            "example": "2025-01-01"
+          },
+          "dataFimContrato": {
+            "type": "string",
+            "description": "Data de fim do contrato",
+            "example": "2025-12-31"
+          },
+          "renovacaoAutomatica": {
+            "type": "boolean",
+            "description": "Renovação automática do contrato",
+            "example": false,
+            "default": false
+          },
+          "prazoAvisoRenovacao": {
+            "type": "number",
+            "description": "Prazo em dias para aviso de renovação",
+            "example": 30
+          },
+          "formaPagamento": {
+            "type": "string",
+            "description": "Forma de pagamento",
+            "enum": [
+              "mensalidade",
+              "por_servico",
+              "hora_trabalhada",
+              "pacote_fechado",
+              "comissao",
+              "misto"
+            ],
+            "example": "por_servico"
+          },
+          "valorHora": {
+            "type": "number",
+            "description": "Valor por hora",
+            "example": 150
+          },
+          "valorMensal": {
+            "type": "number",
+            "description": "Valor mensal",
+            "example": 5000
+          },
+          "valorMinimo": {
+            "type": "number",
+            "description": "Valor mínimo",
+            "example": 500
+          },
+          "prazoPagamento": {
+            "type": "number",
+            "description": "Prazo de pagamento em dias",
+            "example": 30,
+            "default": 30
+          },
+          "diaVencimento": {
+            "type": "number",
+            "description": "Dia do vencimento",
+            "example": 10
+          },
+          "frequenciaPagamento": {
+            "type": "string",
+            "description": "Frequência de pagamento",
+            "enum": [
+              "diario",
+              "semanal",
+              "quinzenal",
+              "mensal",
+              "bimestral",
+              "trimestral",
+              "semestral",
+              "anual",
+              "por_servico"
+            ],
+            "example": "mensal"
+          },
+          "tipoPix": {
+            "type": "string",
+            "description": "Tipo de chave PIX",
+            "example": "CNPJ"
+          },
+          "chavePix": {
+            "type": "string",
+            "description": "Chave PIX",
+            "example": "11.222.333/0001-44"
+          },
+          "banco": {
+            "type": "string",
+            "description": "Código do banco",
+            "example": "001"
+          },
+          "agencia": {
+            "type": "string",
+            "description": "Agência bancária",
+            "example": "1234"
+          },
+          "conta": {
+            "type": "string",
+            "description": "Conta bancária",
+            "example": "12345-6"
+          },
+          "tipoConta": {
+            "type": "string",
+            "description": "Tipo de conta",
+            "example": "corrente"
+          },
+          "statusContrato": {
+            "type": "string",
+            "description": "Status do contrato",
+            "enum": [
+              "ativo",
+              "inativo",
+              "suspenso",
+              "em_analise",
+              "cancelado"
+            ],
+            "example": "em_analise"
+          },
+          "slaResposta": {
+            "type": "number",
+            "description": "SLA de resposta em horas",
+            "example": 4
+          },
+          "slaResolucao": {
+            "type": "number",
+            "description": "SLA de resolução em horas",
+            "example": 24
+          },
+          "horarioAtendimento": {
+            "type": "string",
+            "description": "Horário de atendimento",
+            "example": "08:00 - 18:00"
+          },
+          "diasAtendimento": {
+            "description": "Dias de atendimento",
+            "example": [
+              "segunda",
+              "terça",
+              "quarta",
+              "quinta",
+              "sexta"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "suporte24x7": {
+            "type": "boolean",
+            "description": "Suporte 24x7",
+            "example": false,
+            "default": false
+          },
+          "atendeUrgencia": {
+            "type": "boolean",
+            "description": "Atende urgência",
+            "example": true,
+            "default": false
+          },
+          "taxaUrgencia": {
+            "type": "number",
+            "description": "Taxa de urgência (%)",
+            "example": 50
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações"
+          },
+          "requisitosAcesso": {
+            "type": "string",
+            "description": "Requisitos de acesso"
+          },
+          "certificacoes": {
+            "description": "Certificações",
+            "example": [
+              "ISO 9001",
+              "ISO 27001"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "seguros": {
+            "description": "Seguros",
+            "example": [
+              "Responsabilidade Civil",
+              "Seguro Profissional"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "empresa",
+          "codigoPrestador",
+          "tipoContrato",
+          "renovacaoAutomatica",
+          "formaPagamento",
+          "prazoPagamento",
+          "frequenciaPagamento",
+          "statusContrato",
+          "suporte24x7",
+          "atendeUrgencia"
+        ]
+      },
+      "UpdatePrestadorServicoDto": {
+        "type": "object",
+        "properties": {
+          "tipoContrato": {
+            "type": "string",
+            "description": "Tipo de contrato",
+            "enum": [
+              "fixo",
+              "por_demanda",
+              "retainer",
+              "projeto"
+            ],
+            "example": "por_demanda"
+          },
+          "numeroContrato": {
+            "type": "string",
+            "description": "Número do contrato",
+            "example": "CONT-2025-001"
+          },
+          "dataInicioContrato": {
+            "type": "string",
+            "description": "Data de início do contrato",
+            "example": "2025-01-01"
+          },
+          "dataFimContrato": {
+            "type": "string",
+            "description": "Data de fim do contrato",
+            "example": "2025-12-31"
+          },
+          "renovacaoAutomatica": {
+            "type": "boolean",
+            "description": "Renovação automática do contrato",
+            "example": false,
+            "default": false
+          },
+          "prazoAvisoRenovacao": {
+            "type": "number",
+            "description": "Prazo em dias para aviso de renovação",
+            "example": 30
+          },
+          "formaPagamento": {
+            "type": "string",
+            "description": "Forma de pagamento",
+            "enum": [
+              "mensalidade",
+              "por_servico",
+              "hora_trabalhada",
+              "pacote_fechado",
+              "comissao",
+              "misto"
+            ],
+            "example": "por_servico"
+          },
+          "valorHora": {
+            "type": "number",
+            "description": "Valor por hora",
+            "example": 150
+          },
+          "valorMensal": {
+            "type": "number",
+            "description": "Valor mensal",
+            "example": 5000
+          },
+          "valorMinimo": {
+            "type": "number",
+            "description": "Valor mínimo",
+            "example": 500
+          },
+          "prazoPagamento": {
+            "type": "number",
+            "description": "Prazo de pagamento em dias",
+            "example": 30,
+            "default": 30
+          },
+          "diaVencimento": {
+            "type": "number",
+            "description": "Dia do vencimento",
+            "example": 10
+          },
+          "frequenciaPagamento": {
+            "type": "string",
+            "description": "Frequência de pagamento",
+            "enum": [
+              "diario",
+              "semanal",
+              "quinzenal",
+              "mensal",
+              "bimestral",
+              "trimestral",
+              "semestral",
+              "anual",
+              "por_servico"
+            ],
+            "example": "mensal"
+          },
+          "tipoPix": {
+            "type": "string",
+            "description": "Tipo de chave PIX",
+            "example": "CNPJ"
+          },
+          "chavePix": {
+            "type": "string",
+            "description": "Chave PIX",
+            "example": "11.222.333/0001-44"
+          },
+          "banco": {
+            "type": "string",
+            "description": "Código do banco",
+            "example": "001"
+          },
+          "agencia": {
+            "type": "string",
+            "description": "Agência bancária",
+            "example": "1234"
+          },
+          "conta": {
+            "type": "string",
+            "description": "Conta bancária",
+            "example": "12345-6"
+          },
+          "tipoConta": {
+            "type": "string",
+            "description": "Tipo de conta",
+            "example": "corrente"
+          },
+          "statusContrato": {
+            "type": "string",
+            "description": "Status do contrato",
+            "enum": [
+              "ativo",
+              "inativo",
+              "suspenso",
+              "em_analise",
+              "cancelado"
+            ],
+            "example": "em_analise"
+          },
+          "slaResposta": {
+            "type": "number",
+            "description": "SLA de resposta em horas",
+            "example": 4
+          },
+          "slaResolucao": {
+            "type": "number",
+            "description": "SLA de resolução em horas",
+            "example": 24
+          },
+          "horarioAtendimento": {
+            "type": "string",
+            "description": "Horário de atendimento",
+            "example": "08:00 - 18:00"
+          },
+          "diasAtendimento": {
+            "description": "Dias de atendimento",
+            "example": [
+              "segunda",
+              "terça",
+              "quarta",
+              "quinta",
+              "sexta"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "suporte24x7": {
+            "type": "boolean",
+            "description": "Suporte 24x7",
+            "example": false,
+            "default": false
+          },
+          "atendeUrgencia": {
+            "type": "boolean",
+            "description": "Atende urgência",
+            "example": true,
+            "default": false
+          },
+          "taxaUrgencia": {
+            "type": "number",
+            "description": "Taxa de urgência (%)",
+            "example": 50
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações"
+          },
+          "requisitosAcesso": {
+            "type": "string",
+            "description": "Requisitos de acesso"
+          },
+          "certificacoes": {
+            "description": "Certificações",
+            "example": [
+              "ISO 9001",
+              "ISO 27001"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "seguros": {
+            "description": "Seguros",
+            "example": [
+              "Responsabilidade Civil",
+              "Seguro Profissional"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "empresa": {
+            "description": "Dados da empresa para atualizar",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UpdateEmpresaDto"
+              }
+            ]
+          }
+        }
+      },
+      "CreatePrestadorServicoCategoriaDto": {
+        "type": "object",
+        "properties": {
+          "prestadorServicoId": {
+            "type": "string",
+            "description": "ID do prestador de serviço",
+            "example": "uuid-do-prestador"
+          },
+          "tipoServico": {
+            "type": "string",
+            "description": "Tipo de serviço",
+            "enum": [
+              "manutencao_equipamentos",
+              "prestadores_exames",
+              "honorario_contabeis",
+              "honorario_consultoria",
+              "honorario_advocaticio",
+              "internet_telefonia",
+              "agua",
+              "energia",
+              "suporte_software",
+              "desenvolvimento_software",
+              "seguranca_monitoramento",
+              "outros_servicos_pf",
+              "outros_servicos_pj",
+              "limpeza_conservacao",
+              "transporte_logistica",
+              "marketing_publicidade",
+              "recursos_humanos",
+              "treinamento_capacitacao",
+              "arquitetura_engenharia",
+              "vigilancia_sanitaria",
+              "calibracao_metrologia"
+            ],
+            "example": "manutencao_equipamentos"
+          },
+          "descricaoServico": {
+            "type": "string",
+            "description": "Descrição do serviço"
+          },
+          "valorPadrao": {
+            "type": "number",
+            "description": "Valor padrão do serviço",
+            "example": 500
+          },
+          "unidadeMedida": {
+            "type": "string",
+            "description": "Unidade de medida",
+            "example": "hora"
+          },
+          "prazoExecucao": {
+            "type": "number",
+            "description": "Prazo de execução em dias",
+            "example": 5
+          },
+          "periodicidade": {
+            "type": "string",
+            "description": "Periodicidade do serviço",
+            "example": "mensal"
+          },
+          "responsavelTecnico": {
+            "type": "string",
+            "description": "Responsável técnico",
+            "example": "João Silva"
+          },
+          "telefoneResponsavel": {
+            "type": "string",
+            "description": "Telefone do responsável",
+            "example": "(11) 98765-4321"
+          },
+          "emailResponsavel": {
+            "type": "string",
+            "description": "Email do responsável",
+            "example": "joao.silva@example.com"
+          },
+          "requerAprovacao": {
+            "type": "boolean",
+            "description": "Requer aprovação",
+            "example": true,
+            "default": true
+          },
+          "requerOrcamento": {
+            "type": "boolean",
+            "description": "Requer orçamento",
+            "example": false,
+            "default": false
+          },
+          "valorLimiteSemAprovacao": {
+            "type": "number",
+            "description": "Valor limite sem aprovação",
+            "example": 1000
+          },
+          "ativo": {
+            "type": "boolean",
+            "description": "Categoria ativa",
+            "example": true,
+            "default": true
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações"
+          }
+        },
+        "required": [
+          "prestadorServicoId",
+          "tipoServico",
+          "requerAprovacao",
+          "requerOrcamento",
+          "ativo"
+        ]
+      },
+      "UpdatePrestadorServicoCategoriaDto": {
+        "type": "object",
+        "properties": {
+          "descricaoServico": {
+            "type": "string",
+            "description": "Descrição do serviço"
+          },
+          "valorPadrao": {
+            "type": "number",
+            "description": "Valor padrão do serviço",
+            "example": 500
+          },
+          "unidadeMedida": {
+            "type": "string",
+            "description": "Unidade de medida",
+            "example": "hora"
+          },
+          "prazoExecucao": {
+            "type": "number",
+            "description": "Prazo de execução em dias",
+            "example": 5
+          },
+          "periodicidade": {
+            "type": "string",
+            "description": "Periodicidade do serviço",
+            "example": "mensal"
+          },
+          "responsavelTecnico": {
+            "type": "string",
+            "description": "Responsável técnico",
+            "example": "João Silva"
+          },
+          "telefoneResponsavel": {
+            "type": "string",
+            "description": "Telefone do responsável",
+            "example": "(11) 98765-4321"
+          },
+          "emailResponsavel": {
+            "type": "string",
+            "description": "Email do responsável",
+            "example": "joao.silva@example.com"
+          },
+          "requerAprovacao": {
+            "type": "boolean",
+            "description": "Requer aprovação",
+            "example": true,
+            "default": true
+          },
+          "requerOrcamento": {
+            "type": "boolean",
+            "description": "Requer orçamento",
+            "example": false,
+            "default": false
+          },
+          "valorLimiteSemAprovacao": {
+            "type": "number",
+            "description": "Valor limite sem aprovação",
+            "example": 1000
+          },
+          "ativo": {
+            "type": "boolean",
+            "description": "Categoria ativa",
+            "example": true,
+            "default": true
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações"
+          }
+        }
+      },
+      "CreateKitExameDto": {
+        "type": "object",
+        "properties": {
+          "exameId": {
+            "type": "string",
+            "description": "ID do exame a ser vinculado ao kit",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "quantidade": {
+            "type": "number",
+            "description": "Quantidade do exame no kit",
+            "example": 1,
+            "default": 1
+          },
+          "ordemInsercao": {
+            "type": "number",
+            "description": "Ordem de inserção/exibição do exame no kit",
+            "example": 1
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações específicas para este exame no kit",
+            "example": "Jejum de 12 horas necessário"
+          }
+        },
+        "required": [
+          "exameId"
+        ]
+      },
+      "CreateKitUnidadeDto": {
+        "type": "object",
+        "properties": {
+          "unidadeId": {
+            "type": "string",
+            "description": "ID da unidade de saúde",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "disponivel": {
+            "type": "boolean",
+            "description": "Se o kit está disponível nesta unidade",
+            "example": true,
+            "default": true
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações específicas para esta unidade",
+            "example": "Disponível apenas às segundas e quartas"
+          }
+        },
+        "required": [
+          "unidadeId"
+        ]
+      },
+      "CreateKitConvenioDto": {
+        "type": "object",
+        "properties": {
+          "convenioId": {
+            "type": "string",
+            "description": "ID do convênio",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "valorConvenio": {
+            "type": "number",
+            "description": "Valor do kit para este convênio específico",
+            "example": 250
+          },
+          "disponivel": {
+            "type": "boolean",
+            "description": "Se o kit está disponível para este convênio",
+            "example": true,
+            "default": true
+          },
+          "requerAutorizacao": {
+            "type": "boolean",
+            "description": "Se requer autorização do convênio",
+            "example": false,
+            "default": false
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações específicas para este convênio",
+            "example": "Necessária autorização prévia para maiores de 60 anos"
+          }
+        },
+        "required": [
+          "convenioId"
+        ]
+      },
+      "CreateKitDto": {
+        "type": "object",
+        "properties": {
+          "codigoInterno": {
+            "type": "string",
+            "description": "Código interno único do kit",
+            "example": "KIT001",
+            "maxLength": 50
+          },
+          "nomeKit": {
+            "type": "string",
+            "description": "Nome do kit",
+            "example": "Kit Check-up Básico",
+            "maxLength": 255
+          },
+          "descricao": {
+            "type": "string",
+            "description": "Descrição detalhada do kit",
+            "example": "Conjunto de exames básicos para check-up anual"
+          },
+          "tipoKit": {
+            "type": "string",
+            "description": "Tipo do kit",
+            "enum": [
+              "CHECK_UP",
+              "OCUPACIONAL",
+              "PRE_NATAL",
+              "COM_DESCRICAO",
+              "PERSONALIZADO"
+            ],
+            "example": "CHECK_UP"
+          },
+          "statusKit": {
+            "type": "string",
+            "description": "Status do kit",
+            "enum": [
+              "ATIVO",
+              "INATIVO",
+              "EM_REVISAO"
+            ],
+            "example": "ATIVO",
+            "default": "ATIVO"
+          },
+          "empresaId": {
+            "type": "string",
+            "description": "ID da empresa proprietária do kit",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "prazoPadraoEntrega": {
+            "type": "number",
+            "description": "Prazo padrão de entrega em dias",
+            "example": 3
+          },
+          "valorTotal": {
+            "type": "number",
+            "description": "Valor total do kit",
+            "example": 350
+          },
+          "precoKit": {
+            "type": "number",
+            "description": "Preço de venda do kit",
+            "example": 400
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações gerais sobre o kit",
+            "example": "Kit especial para campanhas de saúde"
+          },
+          "exames": {
+            "description": "Lista de exames do kit",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateKitExameDto"
+            }
+          },
+          "unidades": {
+            "description": "Lista de unidades onde o kit está disponível",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateKitUnidadeDto"
+            }
+          },
+          "convenios": {
+            "description": "Lista de convênios que aceitam o kit",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateKitConvenioDto"
+            }
+          }
+        },
+        "required": [
+          "codigoInterno",
+          "nomeKit",
+          "tipoKit",
+          "empresaId"
+        ]
+      },
+      "Kit": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateKitDto": {
+        "type": "object",
+        "properties": {
+          "nomeKit": {
+            "type": "string",
+            "description": "Nome do kit",
+            "example": "Kit Check-up Básico",
+            "maxLength": 255
+          },
+          "descricao": {
+            "type": "string",
+            "description": "Descrição detalhada do kit",
+            "example": "Conjunto de exames básicos para check-up anual"
+          },
+          "tipoKit": {
+            "type": "string",
+            "description": "Tipo do kit",
+            "enum": [
+              "CHECK_UP",
+              "OCUPACIONAL",
+              "PRE_NATAL",
+              "COM_DESCRICAO",
+              "PERSONALIZADO"
+            ],
+            "example": "CHECK_UP"
+          },
+          "statusKit": {
+            "type": "string",
+            "description": "Status do kit",
+            "enum": [
+              "ATIVO",
+              "INATIVO",
+              "EM_REVISAO"
+            ],
+            "example": "ATIVO",
+            "default": "ATIVO"
+          },
+          "prazoPadraoEntrega": {
+            "type": "number",
+            "description": "Prazo padrão de entrega em dias",
+            "example": 3
+          },
+          "valorTotal": {
+            "type": "number",
+            "description": "Valor total do kit",
+            "example": 350
+          },
+          "precoKit": {
+            "type": "number",
+            "description": "Preço de venda do kit",
+            "example": 400
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações gerais sobre o kit",
+            "example": "Kit especial para campanhas de saúde"
+          },
+          "exames": {
+            "description": "Lista de exames do kit",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateKitExameDto"
+            }
+          },
+          "unidades": {
+            "description": "Lista de unidades onde o kit está disponível",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateKitUnidadeDto"
+            }
+          },
+          "convenios": {
+            "description": "Lista de convênios que aceitam o kit",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateKitConvenioDto"
+            }
           }
         }
       }

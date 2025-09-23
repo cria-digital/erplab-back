@@ -12,7 +12,6 @@ import {
   Fornecedor,
   CategoriaInsumo,
   MetodoTransporte,
-  FormaPagamentoFornecedor,
 } from './fornecedor.entity';
 
 export enum UnidadeMedida {

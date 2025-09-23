@@ -22,7 +22,7 @@ describe('PacientesService', () => {
   };
 
   const mockPaciente: Partial<Paciente> = {
-    id: 1,
+    id: 'uuid-1',
     codigo_interno: 'PAC123456',
     nome: 'João da Silva',
     sexo: 'M',
@@ -39,7 +39,7 @@ describe('PacientesService', () => {
     bairro: 'Centro',
     cidade: 'São Paulo',
     estado: 'SP',
-    empresa_id: 1,
+    empresa_id: 'uuid-empresa-1',
     status: 'ativo',
     criado_em: new Date(),
     atualizado_em: new Date(),
@@ -84,7 +84,7 @@ describe('PacientesService', () => {
       bairro: 'Centro',
       cidade: 'São Paulo',
       estado: 'SP',
-      empresa_id: 1,
+      empresa_id: 'uuid-empresa-1',
     };
 
     it('deve criar um paciente com sucesso', async () => {
@@ -92,7 +92,7 @@ describe('PacientesService', () => {
       mockRepository.create.mockReturnValue(mockPaciente);
       mockRepository.save.mockResolvedValue(mockPaciente);
 
-      const result = await service.create(createPacienteDto, 1);
+      const result = await service.create(createPacienteDto, 'uuid-empresa-1');
 
       expect(result).toEqual(mockPaciente);
       expect(mockRepository.findOne).toHaveBeenCalledWith({
@@ -118,7 +118,7 @@ describe('PacientesService', () => {
       mockRepository.create.mockReturnValue(mockPaciente);
       mockRepository.save.mockResolvedValue(mockPaciente);
 
-      await service.create(createPacienteDto, 1);
+      await service.create(createPacienteDto, 'uuid-empresa-1');
 
       expect(mockRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -136,7 +136,7 @@ describe('PacientesService', () => {
       mockRepository.create.mockReturnValue(mockPaciente);
       mockRepository.save.mockResolvedValue(mockPaciente);
 
-      await service.create(dtoComCodigo, 1);
+      await service.create(dtoComCodigo, 'uuid-empresa-1');
 
       expect(mockRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -165,7 +165,7 @@ describe('PacientesService', () => {
       mockRepository.create.mockReturnValue(mockPaciente);
       mockRepository.save.mockResolvedValue(mockPaciente);
 
-      await service.create(createPacienteDto, 1);
+      await service.create(createPacienteDto, 'uuid-empresa-1');
 
       expect(mockRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -177,14 +177,14 @@ describe('PacientesService', () => {
     it('deve converter validade de convênio para Date quando fornecida', async () => {
       const dtoComConvenio = {
         ...createPacienteDto,
-        convenio_id: 1,
+        convenio_id: 'uuid-convenio-1',
         validade: '2025-12-31',
       };
       mockRepository.findOne.mockResolvedValue(null);
       mockRepository.create.mockReturnValue(mockPaciente);
       mockRepository.save.mockResolvedValue(mockPaciente);
 
-      await service.create(dtoComConvenio, 1);
+      await service.create(dtoComConvenio, 'uuid-empresa-1');
 
       expect(mockRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -293,7 +293,7 @@ describe('PacientesService', () => {
     it('deve retornar um paciente por ID', async () => {
       mockRepository.findOne.mockResolvedValue(mockPaciente);
 
-      const result = await service.findOne(1, 1);
+      const result = await service.findOne('uuid-1', 'uuid-empresa-1');
 
       expect(result).toEqual(mockPaciente);
       expect(mockRepository.findOne).toHaveBeenCalledWith({
@@ -304,7 +304,7 @@ describe('PacientesService', () => {
     it('deve lançar NotFoundException quando paciente não for encontrado', async () => {
       mockRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.findOne(999, 1)).rejects.toThrow(NotFoundException);
+      await expect(service.findOne('uuid-999', 1)).rejects.toThrow(NotFoundException);
       expect(mockRepository.findOne).toHaveBeenCalledWith({
         where: { id: 999, empresa_id: 1 },
       });
@@ -315,7 +315,7 @@ describe('PacientesService', () => {
     it('deve retornar um paciente por CPF e empresa', async () => {
       mockRepository.findOne.mockResolvedValue(mockPaciente);
 
-      const result = await service.findByCpf('12345678901', 1);
+      const result = await service.findByCpf('12345678901', 'uuid-empresa-1');
 
       expect(result).toEqual(mockPaciente);
       expect(mockRepository.findOne).toHaveBeenCalledWith({
@@ -326,7 +326,7 @@ describe('PacientesService', () => {
     it('deve retornar null quando paciente não for encontrado por CPF', async () => {
       mockRepository.findOne.mockResolvedValue(null);
 
-      const result = await service.findByCpf('99999999999', 1);
+      const result = await service.findByCpf('99999999999', 'uuid-empresa-1');
 
       expect(result).toBeNull();
     });
@@ -343,7 +343,7 @@ describe('PacientesService', () => {
       mockRepository.findOne.mockResolvedValue(mockPaciente);
       mockRepository.save.mockResolvedValue(pacienteAtualizado);
 
-      const result = await service.update(1, 1, updatePacienteDto, 2);
+      const result = await service.update(1, 1, updatePacienteDto, 'uuid-user-2');
 
       expect(result).toEqual(pacienteAtualizado);
       expect(mockRepository.findOne).toHaveBeenCalledWith({
@@ -362,7 +362,7 @@ describe('PacientesService', () => {
       mockRepository.findOne.mockResolvedValue(null);
 
       await expect(
-        service.update(999, 1, updatePacienteDto, 2),
+        service.update('uuid-999', 1, updatePacienteDto, 2),
       ).rejects.toThrow(NotFoundException);
       expect(mockRepository.save).not.toHaveBeenCalled();
     });
@@ -372,7 +372,7 @@ describe('PacientesService', () => {
       mockRepository.findOne.mockResolvedValue(mockPaciente);
       mockRepository.save.mockResolvedValue(mockPaciente);
 
-      await service.update(1, 1, updateDto, 2);
+      await service.update(1, 1, updateDto, 'uuid-user-2');
 
       expect(mockRepository.save).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -388,7 +388,7 @@ describe('PacientesService', () => {
       mockRepository.findOne.mockResolvedValue(mockPaciente);
       mockRepository.save.mockResolvedValue(pacienteInativo);
 
-      await service.remove(1, 1, 2);
+      await service.remove(1, 1, 'uuid-user-2');
 
       expect(mockRepository.findOne).toHaveBeenCalledWith({
         where: { id: 1, empresa_id: 1 },
@@ -405,7 +405,7 @@ describe('PacientesService', () => {
     it('deve lançar NotFoundException quando paciente não for encontrado', async () => {
       mockRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.remove(999, 1, 2)).rejects.toThrow(
+      await expect(service.remove('uuid-999', 1, 2)).rejects.toThrow(
         NotFoundException,
       );
       expect(mockRepository.save).not.toHaveBeenCalled();

@@ -16,11 +16,11 @@ import { Type } from 'class-transformer';
 export class ExameOrdemServicoDto {
   @ApiProperty({
     description: 'ID do exame',
-    example: 1,
+    example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
   })
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
-  exame_id: number;
+  exame_id: string;
 
   @ApiProperty({
     description: 'Quantidade do exame',
@@ -72,11 +72,11 @@ export class ExameOrdemServicoDto {
 export class CreateOrdemServicoDto {
   @ApiProperty({
     description: 'ID do paciente',
-    example: 1,
+    example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
   })
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
-  paciente_id: number;
+  paciente_id: string;
 
   @ApiProperty({
     description: 'ID da unidade de saúde',
@@ -285,9 +285,9 @@ export class CreateOrdemServicoDto {
 
   @ApiProperty({
     description: 'ID da empresa',
-    example: 1,
+    example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
   })
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
-  empresa_id: number;
+  empresa_id: string;
 }

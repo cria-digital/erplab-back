@@ -31,8 +31,8 @@ interface ApiResponse<T = any> {
 
 interface RequestWithUser {
   user: {
-    id: number;
-    empresa_id: number;
+    id: string;
+    empresa_id: string;
   };
 }
 
@@ -253,7 +253,7 @@ export class PacientesController {
     @Param('id') id: string,
     @Request() req: RequestWithUser,
   ): Promise<Paciente> {
-    return this.pacientesService.findOne(+id, req.user.empresa_id);
+    return this.pacientesService.findOne(id, req.user.empresa_id);
   }
 
   @Patch(':id')
@@ -282,7 +282,7 @@ export class PacientesController {
     @Request() req: RequestWithUser,
   ): Promise<ApiResponse<Paciente>> {
     const paciente = await this.pacientesService.update(
-      +id,
+      id,
       req.user.empresa_id,
       updatePacienteDto,
       req.user.id,
@@ -312,7 +312,7 @@ export class PacientesController {
     @Param('id') id: string,
     @Request() req: RequestWithUser,
   ): Promise<ApiResponse> {
-    await this.pacientesService.remove(+id, req.user.empresa_id, req.user.id);
+    await this.pacientesService.remove(id, req.user.empresa_id, req.user.id);
 
     return {
       message: 'Paciente removido com sucesso',
@@ -339,7 +339,7 @@ export class PacientesController {
     @Request() req: RequestWithUser,
   ): Promise<ApiResponse<Paciente>> {
     const paciente = await this.pacientesService.activate(
-      +id,
+      id,
       req.user.empresa_id,
       req.user.id,
     );
@@ -370,7 +370,7 @@ export class PacientesController {
     @Request() req: RequestWithUser,
   ): Promise<ApiResponse<Paciente>> {
     const paciente = await this.pacientesService.block(
-      +id,
+      id,
       req.user.empresa_id,
       req.user.id,
     );

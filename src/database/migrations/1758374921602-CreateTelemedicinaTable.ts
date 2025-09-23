@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner, Table, Index } from 'typeorm';
+import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
 export class CreateTelemedicinaTable1758374921602
   implements MigrationInterface
@@ -354,39 +354,32 @@ export class CreateTelemedicinaTable1758374921602
     );
 
     // Criar índices
-    await queryRunner.createIndex(
-      'telemedicina',
-      new Index('IDX_telemedicina_empresa_id', ['empresa_id']),
+    await queryRunner.query(
+      `CREATE INDEX "IDX_telemedicina_empresa_id" ON "telemedicina" ("empresa_id")`,
     );
 
-    await queryRunner.createIndex(
-      'telemedicina',
-      new Index('IDX_telemedicina_codigo', ['codigo_telemedicina']),
+    await queryRunner.query(
+      `CREATE INDEX "IDX_telemedicina_codigo" ON "telemedicina" ("codigo_telemedicina")`,
     );
 
-    await queryRunner.createIndex(
-      'telemedicina',
-      new Index('IDX_telemedicina_tipo_integracao', ['tipo_integracao']),
+    await queryRunner.query(
+      `CREATE INDEX "IDX_telemedicina_tipo_integracao" ON "telemedicina" ("tipo_integracao")`,
     );
 
-    await queryRunner.createIndex(
-      'telemedicina',
-      new Index('IDX_telemedicina_status_integracao', ['status_integracao']),
+    await queryRunner.query(
+      `CREATE INDEX "IDX_telemedicina_status_integracao" ON "telemedicina" ("status_integracao")`,
     );
 
-    await queryRunner.createIndex(
-      'telemedicina_exames',
-      new Index('IDX_telemedicina_exames_telemedicina_id', ['telemedicina_id']),
+    await queryRunner.query(
+      `CREATE INDEX "IDX_telemedicina_exames_telemedicina_id" ON "telemedicina_exames" ("telemedicina_id")`,
     );
 
-    await queryRunner.createIndex(
-      'telemedicina_exames',
-      new Index('IDX_telemedicina_exames_exame_id', ['exame_id']),
+    await queryRunner.query(
+      `CREATE INDEX "IDX_telemedicina_exames_exame_id" ON "telemedicina_exames" ("exame_id")`,
     );
 
-    await queryRunner.createIndex(
-      'telemedicina_exames',
-      new Index('IDX_telemedicina_exames_ativo', ['ativo']),
+    await queryRunner.query(
+      `CREATE INDEX "IDX_telemedicina_exames_ativo" ON "telemedicina_exames" ("ativo")`,
     );
   }
 

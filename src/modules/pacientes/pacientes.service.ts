@@ -41,7 +41,7 @@ export class PacientesService {
    */
   async create(
     createPacienteDto: CreatePacienteDto,
-    userId: number,
+    userId: string,
   ): Promise<Paciente> {
     // Verifica se já existe paciente com o CPF na empresa
     const pacienteExistente = await this.pacientesRepository.findOne({
@@ -84,7 +84,7 @@ export class PacientesService {
    * @returns Lista paginada de pacientes
    */
   async findAll(
-    empresaId: number,
+    empresaId: string,
     filters: PacientesFilters = {},
   ): Promise<PaginatedResult<Paciente>> {
     const { page = 1, limit = 10, nome, cpf, email, status } = filters;
@@ -159,7 +159,7 @@ export class PacientesService {
    * @param empresaId ID da empresa
    * @returns Paciente encontrado
    */
-  async findOne(id: number, empresaId: number): Promise<Paciente> {
+  async findOne(id: string, empresaId: string): Promise<Paciente> {
     const paciente = await this.pacientesRepository.findOne({
       where: { id, empresa_id: empresaId },
     });
@@ -177,7 +177,7 @@ export class PacientesService {
    * @param empresaId ID da empresa
    * @returns Paciente encontrado ou null
    */
-  async findByCpf(cpf: string, empresaId: number): Promise<Paciente | null> {
+  async findByCpf(cpf: string, empresaId: string): Promise<Paciente | null> {
     return await this.pacientesRepository.findOne({
       where: { cpf, empresa_id: empresaId },
     });
@@ -192,10 +192,10 @@ export class PacientesService {
    * @returns Paciente atualizado
    */
   async update(
-    id: number,
-    empresaId: number,
+    id: string,
+    empresaId: string,
     updatePacienteDto: UpdatePacienteDto,
-    userId: number,
+    userId: string,
   ): Promise<Paciente> {
     const paciente = await this.findOne(id, empresaId);
 
@@ -223,7 +223,7 @@ export class PacientesService {
    * @param empresaId ID da empresa
    * @param userId ID do usuário que está removendo
    */
-  async remove(id: number, empresaId: number, userId: number): Promise<void> {
+  async remove(id: string, empresaId: string, userId: string): Promise<void> {
     const paciente = await this.findOne(id, empresaId);
 
     paciente.status = 'inativo';
@@ -240,9 +240,9 @@ export class PacientesService {
    * @returns Paciente ativado
    */
   async activate(
-    id: number,
-    empresaId: number,
-    userId: number,
+    id: string,
+    empresaId: string,
+    userId: string,
   ): Promise<Paciente> {
     const paciente = await this.findOne(id, empresaId);
 
@@ -260,9 +260,9 @@ export class PacientesService {
    * @returns Paciente bloqueado
    */
   async block(
-    id: number,
-    empresaId: number,
-    userId: number,
+    id: string,
+    empresaId: string,
+    userId: string,
   ): Promise<Paciente> {
     const paciente = await this.findOne(id, empresaId);
 
@@ -281,7 +281,7 @@ export class PacientesService {
    */
   async searchByName(
     nome: string,
-    empresaId: number,
+    empresaId: string,
     limit: number = 10,
   ): Promise<Paciente[]> {
     return await this.pacientesRepository
@@ -299,7 +299,7 @@ export class PacientesService {
    * @param empresaId ID da empresa
    * @returns Estatísticas
    */
-  async getStats(empresaId: number) {
+  async getStats(empresaId: string) {
     const [total, ativos, inativos, bloqueados, comConvenio, semConvenio] =
       await Promise.all([
         this.pacientesRepository.count({ where: { empresa_id: empresaId } }),

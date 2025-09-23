@@ -22,8 +22,8 @@ import { LaboratorioApoio } from './laboratorio-apoio.entity';
 @Index(['codigo_loinc'])
 @Index(['nome'])
 export class Exame {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({
     type: 'varchar',
@@ -83,10 +83,9 @@ export class Exame {
 
   // Tipo e categoria
   @Column({
-    type: 'int',
     comment: 'ID do tipo de exame',
   })
-  tipo_exame_id: number;
+  tipo_exame_id: string;
 
   @Column({
     type: 'enum',
@@ -96,18 +95,16 @@ export class Exame {
   categoria: string;
 
   @Column({
-    type: 'int',
     nullable: true,
     comment: 'ID do subgrupo',
   })
-  subgrupo_id: number;
+  subgrupo_id: string;
 
   @Column({
-    type: 'int',
     nullable: true,
     comment: 'ID do setor responsável',
   })
-  setor_id: number;
+  setor_id: string;
 
   @Column({
     type: 'varchar',
@@ -236,11 +233,10 @@ export class Exame {
   tipo_realizacao: string;
 
   @Column({
-    type: 'int',
     nullable: true,
     comment: 'ID do laboratório de apoio',
   })
-  laboratorio_apoio_id: number;
+  laboratorio_apoio_id: string;
 
   @Column({
     type: 'varchar',
@@ -354,11 +350,10 @@ export class Exame {
 
   // Multi-empresa
   @Column({
-    type: 'int',
     nullable: true,
     comment: 'ID da empresa (null = disponível para todas)',
   })
-  empresa_id: number;
+  empresa_id: string;
 
   // Campos de auditoria
   @CreateDateColumn({
@@ -374,18 +369,16 @@ export class Exame {
   atualizado_em: Date;
 
   @Column({
-    type: 'int',
     nullable: true,
     comment: 'ID do usuário que criou o registro',
   })
-  criado_por: number;
+  criado_por: string;
 
   @Column({
-    type: 'int',
     nullable: true,
     comment: 'ID do usuário que atualizou o registro',
   })
-  atualizado_por: number;
+  atualizado_por: string;
 
   // Relacionamentos
   @ManyToOne(() => TipoExame, { eager: false })

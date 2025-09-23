@@ -11,8 +11,8 @@ import {
 @Index(['codigo'])
 @Index(['nome'])
 export class LaboratorioApoio {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({
     type: 'varchar',

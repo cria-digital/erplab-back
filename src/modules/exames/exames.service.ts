@@ -70,7 +70,7 @@ export class ExamesService {
     };
   }
 
-  async findOne(id: number): Promise<Exame> {
+  async findOne(id: string): Promise<Exame> {
     const exame = await this.exameRepository.findOne({
       where: { id },
       relations: ['tipoExame', 'subgrupo', 'setor', 'laboratorioApoio'],
@@ -96,7 +96,7 @@ export class ExamesService {
     return exame;
   }
 
-  async update(id: number, updateExameDto: UpdateExameDto): Promise<Exame> {
+  async update(id: string, updateExameDto: UpdateExameDto): Promise<Exame> {
     const exame = await this.findOne(id);
 
     // Se está alterando o código, verifica se não existe outro com o mesmo código
@@ -119,7 +119,7 @@ export class ExamesService {
     return await this.exameRepository.save(exame);
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: string): Promise<void> {
     const exame = await this.findOne(id);
 
     // Verifica se o exame está sendo usado em alguma ordem de serviço
@@ -138,7 +138,7 @@ export class ExamesService {
     });
   }
 
-  async findByTipo(tipoExameId: number): Promise<Exame[]> {
+  async findByTipo(tipoExameId: string): Promise<Exame[]> {
     return await this.exameRepository.find({
       where: { tipo_exame_id: tipoExameId, status: 'ativo' },
       relations: ['tipoExame', 'subgrupo', 'setor'],
@@ -146,7 +146,7 @@ export class ExamesService {
     });
   }
 
-  async findByLaboratorioApoio(laboratorioId: number): Promise<Exame[]> {
+  async findByLaboratorioApoio(laboratorioId: string): Promise<Exame[]> {
     return await this.exameRepository.find({
       where: { laboratorio_apoio_id: laboratorioId, status: 'ativo' },
       relations: ['laboratorioApoio'],
@@ -189,7 +189,7 @@ export class ExamesService {
     });
   }
 
-  async bulkUpdateStatus(ids: number[], status: string): Promise<void> {
+  async bulkUpdateStatus(ids: string[], status: string): Promise<void> {
     if (!['ativo', 'inativo', 'suspenso'].includes(status)) {
       throw new BadRequestException('Status inválido');
     }

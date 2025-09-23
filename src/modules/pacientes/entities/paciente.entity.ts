@@ -13,8 +13,8 @@ import {
 @Index(['contatos'])
 @Index(['nome'])
 export class Paciente {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({
     type: 'varchar',
@@ -133,11 +133,10 @@ export class Paciente {
 
   // Informações de convênio
   @Column({
-    type: 'int',
     nullable: true,
     comment: 'ID do convênio',
   })
-  convenio_id: number;
+  convenio_id: string;
 
   @Column({
     type: 'varchar',
@@ -248,10 +247,9 @@ export class Paciente {
 
   // Multi-empresa
   @Column({
-    type: 'int',
     comment: 'ID da empresa (CNPJ/Filial)',
   })
-  empresa_id: number;
+  empresa_id: string;
 
   // Campos de auditoria
   @CreateDateColumn({
@@ -267,18 +265,16 @@ export class Paciente {
   atualizado_em: Date;
 
   @Column({
-    type: 'int',
     nullable: true,
     comment: 'ID do usuário que criou o registro',
   })
-  criado_por: number;
+  criado_por: string;
 
   @Column({
-    type: 'int',
     nullable: true,
     comment: 'ID do usuário que atualizou o registro',
   })
-  atualizado_por: number;
+  atualizado_por: string;
 
   // Relacionamentos (serão implementados quando as outras entidades existirem)
   convenio?: any;

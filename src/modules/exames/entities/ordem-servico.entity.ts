@@ -21,8 +21,8 @@ import { Convenio } from './convenio.entity';
 @Index(['paciente_id'])
 @Index(['status'])
 export class OrdemServico {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({
     type: 'varchar',
@@ -42,10 +42,9 @@ export class OrdemServico {
 
   // Paciente
   @Column({
-    type: 'int',
     comment: 'ID do paciente',
   })
-  paciente_id: number;
+  paciente_id: string;
 
   // Unidade de atendimento
   @Column({
@@ -121,11 +120,10 @@ export class OrdemServico {
 
   // Convênio (se aplicável)
   @Column({
-    type: 'int',
     nullable: true,
     comment: 'ID do convênio',
   })
-  convenio_id: number;
+  convenio_id: string;
 
   @Column({
     type: 'varchar',
@@ -290,18 +288,16 @@ export class OrdemServico {
 
   // Rastreabilidade
   @Column({
-    type: 'int',
     nullable: true,
     comment: 'ID do atendente que criou a OS',
   })
-  atendente_id: number;
+  atendente_id: string;
 
   @Column({
-    type: 'int',
     nullable: true,
     comment: 'ID do profissional que realizou a coleta',
   })
-  coletor_id: number;
+  coletor_id: string;
 
   @Column({
     type: 'jsonb',
@@ -312,10 +308,9 @@ export class OrdemServico {
 
   // Multi-empresa
   @Column({
-    type: 'int',
     comment: 'ID da empresa',
   })
-  empresa_id: number;
+  empresa_id: string;
 
   // Campos de auditoria
   @CreateDateColumn({
@@ -331,18 +326,16 @@ export class OrdemServico {
   atualizado_em: Date;
 
   @Column({
-    type: 'int',
     nullable: true,
     comment: 'ID do usuário que criou o registro',
   })
-  criado_por: number;
+  criado_por: string;
 
   @Column({
-    type: 'int',
     nullable: true,
     comment: 'ID do usuário que atualizou o registro',
   })
-  atualizado_por: number;
+  atualizado_por: string;
 
   // Relacionamentos
   @ManyToOne(() => Paciente, { eager: false })

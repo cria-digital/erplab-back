@@ -62,7 +62,7 @@ export class TiposExameService {
     };
   }
 
-  async findOne(id: number): Promise<TipoExame> {
+  async findOne(id: string): Promise<TipoExame> {
     const tipoExame = await this.tipoExameRepository.findOne({
       where: { id },
       relations: ['exames'],
@@ -90,7 +90,7 @@ export class TiposExameService {
   }
 
   async update(
-    id: number,
+    id: string,
     updateTipoExameDto: UpdateTipoExameDto,
   ): Promise<TipoExame> {
     const tipoExame = await this.findOne(id);
@@ -114,7 +114,7 @@ export class TiposExameService {
     return await this.tipoExameRepository.save(tipoExame);
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: string): Promise<void> {
     const tipoExame = await this.findOne(id);
 
     if (tipoExame.exames && tipoExame.exames.length > 0) {

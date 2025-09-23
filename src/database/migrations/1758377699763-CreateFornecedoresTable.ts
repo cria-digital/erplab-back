@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner, Table, Index } from 'typeorm';
+import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
 export class CreateFornecedoresTable1758377699763
   implements MigrationInterface
@@ -645,44 +645,36 @@ export class CreateFornecedoresTable1758377699763
     );
 
     // Criar índices
-    await queryRunner.createIndex(
-      'fornecedores',
-      new Index('IDX_fornecedores_empresa_id', ['empresa_id']),
+    await queryRunner.query(
+      `CREATE INDEX "IDX_fornecedores_empresa_id" ON "fornecedores" ("empresa_id")`,
     );
 
-    await queryRunner.createIndex(
-      'fornecedores',
-      new Index('IDX_fornecedores_codigo', ['codigo_fornecedor']),
+    await queryRunner.query(
+      `CREATE INDEX "IDX_fornecedores_codigo" ON "fornecedores" ("codigo_fornecedor")`,
     );
 
-    await queryRunner.createIndex(
-      'fornecedores',
-      new Index('IDX_fornecedores_status', ['status_fornecedor']),
+    await queryRunner.query(
+      `CREATE INDEX "IDX_fornecedores_status" ON "fornecedores" ("status_fornecedor")`,
     );
 
-    await queryRunner.createIndex(
-      'fornecedor_insumos',
-      new Index('IDX_fornecedor_insumos_fornecedor_id', ['fornecedor_id']),
+    await queryRunner.query(
+      `CREATE INDEX "IDX_fornecedor_insumos_fornecedor_id" ON "fornecedor_insumos" ("fornecedor_id")`,
     );
 
-    await queryRunner.createIndex(
-      'fornecedor_insumos',
-      new Index('IDX_fornecedor_insumos_categoria', ['categoria']),
+    await queryRunner.query(
+      `CREATE INDEX "IDX_fornecedor_insumos_categoria" ON "fornecedor_insumos" ("categoria")`,
     );
 
-    await queryRunner.createIndex(
-      'fornecedor_insumos',
-      new Index('IDX_fornecedor_insumos_status', ['status']),
+    await queryRunner.query(
+      `CREATE INDEX "IDX_fornecedor_insumos_status" ON "fornecedor_insumos" ("status")`,
     );
 
-    await queryRunner.createIndex(
-      'fornecedor_insumos',
-      new Index('IDX_fornecedor_insumos_ativo', ['ativo']),
+    await queryRunner.query(
+      `CREATE INDEX "IDX_fornecedor_insumos_ativo" ON "fornecedor_insumos" ("ativo")`,
     );
 
-    await queryRunner.createIndex(
-      'fornecedor_insumos',
-      new Index('IDX_fornecedor_insumos_codigo_barras', ['codigo_barras']),
+    await queryRunner.query(
+      `CREATE INDEX "IDX_fornecedor_insumos_codigo_barras" ON "fornecedor_insumos" ("codigo_barras")`,
     );
   }
 

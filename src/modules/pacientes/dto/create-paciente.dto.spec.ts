@@ -25,7 +25,7 @@ describe('CreatePacienteDto', () => {
       dto.bairro = 'Bela Vista';
       dto.cidade = 'São Paulo';
       dto.estado = 'SP';
-      dto.empresa_id = 1;
+      dto.empresa_id = 'empresa-uuid-1';
 
       const errors = await validate(dto);
       expect(errors).toHaveLength(0);
@@ -46,7 +46,7 @@ describe('CreatePacienteDto', () => {
       dto.bairro = 'Bela Vista';
       dto.cidade = 'São Paulo';
       dto.estado = 'SP';
-      dto.empresa_id = 1;
+      dto.empresa_id = 'empresa-uuid-1';
 
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
@@ -68,7 +68,7 @@ describe('CreatePacienteDto', () => {
       dto.bairro = 'Bela Vista';
       dto.cidade = 'São Paulo';
       dto.estado = 'SP';
-      dto.empresa_id = 1;
+      dto.empresa_id = 'empresa-uuid-1';
 
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
@@ -118,7 +118,7 @@ describe('CreatePacienteDto', () => {
       dto.bairro = 'Bela Vista';
       dto.cidade = 'São Paulo';
       dto.estado = 'SP';
-      dto.empresa_id = 1;
+      dto.empresa_id = 'empresa-uuid-1';
     });
 
     it('deve validar formato do email', async () => {
@@ -192,7 +192,7 @@ describe('CreatePacienteDto', () => {
       dto.bairro = 'Bela Vista';
       dto.cidade = 'São Paulo';
       dto.estado = 'SP';
-      dto.empresa_id = 1;
+      dto.empresa_id = 'empresa-uuid-1';
     });
 
     it('deve aceitar campos opcionais', async () => {
@@ -208,7 +208,7 @@ describe('CreatePacienteDto', () => {
     });
 
     it('deve aceitar informações de convênio opcionais', async () => {
-      dto.convenio_id = 1;
+      dto.convenio_id = 'convenio-uuid-1';
       dto.plano = 'Plus';
       dto.validade = '2025-12-31';
       dto.matricula = '123456789';

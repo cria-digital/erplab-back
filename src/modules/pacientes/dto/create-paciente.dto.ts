@@ -6,8 +6,6 @@ import {
   IsNotEmpty,
   IsDateString,
   Length,
-  IsInt,
-  Min,
   Matches,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
@@ -188,12 +186,11 @@ export class CreatePacienteDto {
   // Informações de convênio (opcionais)
   @ApiPropertyOptional({
     description: 'ID do convênio',
-    example: 1,
+    example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
   })
   @IsOptional()
-  @IsInt({ message: 'convenio_id deve ser um número inteiro' })
-  @Min(1, { message: 'convenio_id deve ser maior que 0' })
-  convenio_id?: number;
+  @IsString({ message: 'convenio_id deve ser uma string' })
+  convenio_id?: string;
 
   @ApiPropertyOptional({
     description: 'Nome do plano',
@@ -327,10 +324,9 @@ export class CreatePacienteDto {
 
   @ApiProperty({
     description: 'ID da empresa/filial',
-    example: 1,
+    example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
   })
   @IsNotEmpty({ message: 'empresa_id é obrigatório' })
-  @IsInt({ message: 'empresa_id deve ser um número inteiro' })
-  @Min(1, { message: 'empresa_id deve ser maior que 0' })
-  empresa_id: number;
+  @IsString({ message: 'empresa_id deve ser uma string' })
+  empresa_id: string;
 }

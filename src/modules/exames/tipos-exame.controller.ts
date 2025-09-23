@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   Query,
-  ParseIntPipe,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -177,7 +176,7 @@ export class TiposExameController {
   @ApiOperation({ summary: 'Buscar tipo de exame por ID' })
   @ApiParam({
     name: 'id',
-    type: Number,
+    type: String,
     description: 'ID do tipo de exame',
   })
   @ApiResponse({
@@ -189,9 +188,7 @@ export class TiposExameController {
     status: 404,
     description: 'Tipo de exame não encontrado',
   })
-  async findOne(
-    @Param('id', ParseIntPipe) id: number,
-  ): Promise<ApiResponseType<TipoExame>> {
+  async findOne(@Param('id') id: string): Promise<ApiResponseType<TipoExame>> {
     const data = await this.tiposExameService.findOne(id);
     return {
       success: true,
@@ -231,7 +228,7 @@ export class TiposExameController {
   @ApiOperation({ summary: 'Atualizar tipo de exame' })
   @ApiParam({
     name: 'id',
-    type: Number,
+    type: String,
     description: 'ID do tipo de exame',
   })
   @ApiResponse({
@@ -248,7 +245,7 @@ export class TiposExameController {
     description: 'Código já existe em outro tipo',
   })
   async update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body() updateTipoExameDto: UpdateTipoExameDto,
   ): Promise<ApiResponseType<TipoExame>> {
     const data = await this.tiposExameService.update(id, updateTipoExameDto);
@@ -263,7 +260,7 @@ export class TiposExameController {
   @ApiOperation({ summary: 'Desativar tipo de exame' })
   @ApiParam({
     name: 'id',
-    type: Number,
+    type: String,
     description: 'ID do tipo de exame',
   })
   @ApiResponse({
@@ -278,9 +275,7 @@ export class TiposExameController {
     status: 409,
     description: 'Não é possível excluir tipo com exames vinculados',
   })
-  async remove(
-    @Param('id', ParseIntPipe) id: number,
-  ): Promise<ApiResponseType<void>> {
+  async remove(@Param('id') id: string): Promise<ApiResponseType<void>> {
     await this.tiposExameService.remove(id);
     return {
       success: true,

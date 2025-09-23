@@ -7,7 +7,6 @@ import {
   IsNumber,
   IsArray,
   IsDateString,
-  IsEmail,
   IsNotEmpty,
   ValidateNested,
   MinLength,

@@ -24,7 +24,7 @@ describe('PacientesController', () => {
   };
 
   const mockPaciente: Paciente = {
-    id: 1,
+    id: 'paciente-uuid-1',
     codigo_interno: 'PAC123456',
     nome: 'João da Silva',
     nome_social: null,
@@ -56,11 +56,11 @@ describe('PacientesController', () => {
     estado: 'SP',
     foto_url: null,
     status: 'ativo',
-    empresa_id: 1,
+    empresa_id: 'empresa-uuid-1',
     criado_em: new Date(),
     atualizado_em: new Date(),
-    criado_por: 1,
-    atualizado_por: 1,
+    criado_por: 'user-uuid-1',
+    atualizado_por: 'user-uuid-1',
     // Métodos da entity
     getCpfFormatado: () => '123.456.789-01',
     getIdade: () => 33,
@@ -71,7 +71,7 @@ describe('PacientesController', () => {
   } as any;
 
   const mockRequest = {
-    user: { id: 1, empresa_id: 1 },
+    user: { id: 'user-uuid-1', empresa_id: 'empresa-uuid-1' },
     headers: { 'x-empresa-id': '1' },
   };
 
@@ -115,7 +115,7 @@ describe('PacientesController', () => {
       bairro: 'Centro',
       cidade: 'São Paulo',
       estado: 'SP',
-      empresa_id: 1,
+      empresa_id: 'empresa-uuid-1',
     };
 
     it('deve criar um paciente com sucesso', async () => {

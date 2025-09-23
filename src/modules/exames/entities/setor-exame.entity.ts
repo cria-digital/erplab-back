@@ -11,8 +11,8 @@ import {
 @Index(['codigo'])
 @Index(['nome'])
 export class SetorExame {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({
     type: 'varchar',
@@ -53,11 +53,12 @@ export class SetorExame {
   ramal: string;
 
   @Column({
-    type: 'int',
+    type: 'varchar',
+    length: 36,
     nullable: true,
     comment: 'ID do responsável pelo setor',
   })
-  responsavel_id: number;
+  responsavel_id: string;
 
   @Column({
     type: 'int',
