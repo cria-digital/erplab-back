@@ -3,6 +3,7 @@
 ## Setup Inicial do Sistema
 
 ### Criação do Primeiro Usuário
+
 - **Endpoint especial**: `POST /api/v1/auth/setup`
 - **Email fixo**: `diegosoek@gmail.com`
 - **Funcionalidade**: Cria o usuário administrador inicial quando o sistema está vazio
@@ -17,6 +18,7 @@
 - **Resposta de erro**: HTTP 400 se já existir usuário no sistema
 
 ### Usuário de Teste Criado
+
 - **Email**: `diegosoek@gmail.com`
 - **Senha**: `Admin123!`
 - **Cargo**: Administrador do Sistema
@@ -26,11 +28,13 @@
 ## Estrutura do Projeto
 
 ### Padrões de Organização de Módulos
+
 - **Estrutura de módulos**: Seguir padrão flat - services e controllers ficam na raiz do módulo, NÃO em subpastas
   - ✅ Correto: `/src/modules/usuarios/usuarios.service.ts`
   - ❌ Errado: `/src/modules/usuarios/services/usuarios.service.ts`
 
 ### Convenções de Nomenclatura
+
 - **TypeScript/JavaScript**: camelCase para propriedades e métodos
 - **Banco de dados**: snake_case para colunas
   - Exemplo: `nome_completo` no banco → `nomeCompleto` no TypeScript
@@ -39,7 +43,9 @@
 ## Autenticação JWT
 
 ### Implementação Completa
+
 1. **Dependências necessárias**:
+
    ```bash
    npm install @nestjs/jwt @nestjs/passport passport passport-jwt @types/passport-jwt
    ```
@@ -54,6 +60,7 @@
    - `decorators/current-user.decorator.ts` - Obter usuário atual
 
 3. **Configuração no .env**:
+
    ```env
    JWT_SECRET=sua-chave-secreta
    JWT_EXPIRES_IN=24h
@@ -66,6 +73,7 @@
 ## HTTP Request Files (REST Client)
 
 ### Organização
+
 - **Localização**: `/http-requests/[nome-modulo]/`
 - **Estrutura**: Um arquivo por funcionalidade
   - `criar-[entidade].http`
@@ -75,11 +83,13 @@
   - `exemplos-completos.http`
 
 ### Variáveis de Ambiente
+
 - Definidas em `/http-client.env.json`
 - Variáveis padrão: `{{baseUrl}}`, `{{contentType}}`, `{{token}}`
 - Separação por ambiente: development, staging, production
 
 ### Formato dos Requests
+
 ```http
 ### Descrição do Request
 METHOD {{baseUrl}}/endpoint
@@ -99,30 +109,53 @@ Authorization: Bearer {{token}}
 
 ## Boas Práticas Identificadas
 
-### Sempre Executar Build e Lint (OBRIGATÓRIO)
+### Sempre Executar Build, Lint e Testes (OBRIGATÓRIO)
+
 ```bash
 npm run build  # Verificar erros TypeScript
 npm run lint   # Verificar padrões de código
+npm test       # Executar testes unitários
 ```
+
 **IMPORTANTE**: SEMPRE executar estes comandos ao finalizar qualquer implementação ou alteração de código.
 
+**REGRA CRÍTICA PARA TESTES**: A cada novo teste criado, SEMPRE executar:
+
+1. `npm run build` - Garantir que não há erros de TypeScript
+2. `npm run lint` - Verificar padrões de código
+3. `npm test` - Executar TODOS os testes para garantir que nada quebrou
+
+Essa validação deve ser feita IMEDIATAMENTE após criar cada arquivo de teste, antes de prosseguir para o próximo.
+
+### Pipeline de Qualidade Implementado
+
+1. **Testes Automatizados**: Unitários e E2E configurados
+2. **Hooks Pre-commit**: Lint, build e testes executam automaticamente
+3. **CI/CD**: GitHub Actions valida código em PRs e pushes
+4. **Cobertura de Código**: Mínimo 80% de cobertura
+5. **Security Audit**: Verificação automática de vulnerabilidades
+
 ### Módulo de Auditoria
+
 - Registrar todas as operações críticas
 - Tipos de log: ACESSO, ALTERACAO, ERRO, ACAO
 - Níveis: INFO, WARNING, ERROR, CRITICAL
 - Integração automática em services de outros módulos
 
 ### Tratamento de Senhas
+
 - Sempre usar bcrypt para hash
 - Salt rounds: 10
 - Nunca retornar hash de senha nas respostas
 - Implementar bloqueio após tentativas falhas (5 tentativas = 30 min bloqueio)
 
 ### Soft Delete
+
 - Preferir desativação (`ativo: false`) em vez de exclusão física
 - Manter histórico para auditoria
 
 ### Validação e DTOs
+
 - Usar class-validator para validações
 - Documentar com @ApiProperty do Swagger
 - Separar DTOs de Create e Update
@@ -131,6 +164,7 @@ npm run lint   # Verificar padrões de código
 ## APIs Disponíveis
 
 ### Módulo Common (APIs Auxiliares)
+
 - **CEP** (`/api/v1/cep`)
   - `GET /{cep}` - Buscar endereço por CEP (público)
   - Retorna dados compatíveis com cadastro de unidades
@@ -149,6 +183,7 @@ npm run lint   # Verificar padrões de código
   - **Paginação**: Implementada com metadados (total, totalPages, hasPrevPage, hasNextPage)
 
 ### Módulo de Exames (26 endpoints)
+
 - **Exames** (`/api/v1/exames`)
   - CRUD completo de exames
   - Busca por categoria, tipo, laboratório
@@ -167,14 +202,20 @@ npm run lint   # Verificar padrões de código
 ## Comandos Úteis
 
 ### Desenvolvimento
+
 ```bash
 npm run start:dev     # Desenvolvimento com hot reload
 npm run build        # Compilar TypeScript
 npm run lint         # Verificar código
-npm run test         # Executar testes
+npm run test         # Executar testes unitários
+npm run test:watch   # Testes em modo watch
+npm run test:cov     # Testes com cobertura
+npm run test:e2e     # Executar testes E2E
+npm run pre-commit   # Executar validações pré-commit
 ```
 
 ### Seeders
+
 ```bash
 npm run seed        # Executa todos os seeders
 npm run seed:all    # Executa todos os seeders (alias)
@@ -182,11 +223,13 @@ npm run seed:cnae   # Executa apenas seeder de CNAEs
 ```
 
 **Seeder de CNAEs**:
+
 - Importa 12 CNAEs da área de saúde por padrão
 - Para importar TODOS os CNAEs: baixe JSON de https://servicodados.ibge.gov.br/api/v2/cnae/classes
 - Salve em `src/database/seeds/data/cnaes.json`
 
 ### Banco de Dados
+
 ```bash
 # SEMPRE usar o comando abaixo para gerar migrations (cria timestamp automático)
 npm run build && npx typeorm migration:generate -d dist/config/typeorm.config.js src/database/migrations/NomeDaMigration
@@ -196,6 +239,7 @@ npm run migration:revert  # Reverter última migration
 ```
 
 ### Testar Autenticação
+
 ```bash
 # Login
 curl -X POST http://localhost:10016/api/v1/auth/login \
@@ -211,6 +255,7 @@ curl -X GET http://localhost:10016/api/v1/usuarios \
 ## Estado Atual do Sistema
 
 ### Tabelas Criadas via Migrations
+
 - ✅ **usuarios** - Tabela principal de usuários
 - ✅ **usuarios_unidades** - Relacionamento usuário x unidade de saúde
 - ✅ **usuarios_permissoes** - Permissões de usuários
@@ -236,6 +281,7 @@ curl -X GET http://localhost:10016/api/v1/usuarios \
 - ✅ **cnaes** - Classificação Nacional de Atividades Econômicas
 
 ### Migrations Executadas
+
 1. `CreatePacientesTable1756931316461`
 2. `CreateUnidadesSaudeTable1757363365715`
 3. `CreateUsuariosTable1757583000000`
@@ -247,6 +293,7 @@ curl -X GET http://localhost:10016/api/v1/usuarios \
 ## Estrutura de Entidades
 
 ### Usuario
+
 - Autenticação com JWT
 - Suporte a 2FA (dois fatores)
 - Perguntas de recuperação de senha
@@ -255,12 +302,14 @@ curl -X GET http://localhost:10016/api/v1/usuarios \
 - Controle de tentativas de login e bloqueio temporário
 
 ### Auditoria
+
 - Log completo de todas as operações
 - Rastreamento de alterações com before/after
 - Filtros avançados para consulta
 - Estatísticas agregadas
 
 ### Módulo de Exames
+
 - **Exame**: Cadastro completo de exames com códigos TUSS, AMB, LOINC, SUS
 - **TipoExame**: Categorização de exames (laboratorial, imagem, procedimento)
 - **Convenio**: Gestão de convênios com configurações específicas
@@ -272,6 +321,7 @@ curl -X GET http://localhost:10016/api/v1/usuarios \
 - Soft delete em todas as entidades
 
 ### Módulo Common (APIs Auxiliares)
+
 - **API de CEP**: Busca endereços via ViaCEP com dados compatíveis para cadastros
 - **API de CNAE**: Consulta de CNAEs (Classificação Nacional de Atividades Econômicas)
 - **Entidade CNAE**: Estrutura completa com seção, divisão, grupo, classe e subclasse
@@ -284,18 +334,19 @@ curl -X GET http://localhost:10016/api/v1/usuarios \
 2. **NUNCA criar arquivos de migration manualmente** - SEMPRE usar `npm run migration:generate` ou `npm run migration:create` para gerar timestamp correto
 3. **NUNCA apagar migrations existentes** - Migrations são imutáveis após commit. Se houver problema, criar nova migration para corrigir
 4. **Não criar subpastas em módulos** - Manter estrutura flat
-3. **Sempre rodar build e lint** antes de considerar tarefa completa
-4. **Seguir padrões de nomenclatura** do projeto (snake_case no DB, camelCase no TS)
-5. **Organizar requests HTTP** em arquivos separados por operação
-6. **Usar variáveis de ambiente** para configurações sensíveis
-7. **Implementar auditoria** em operações críticas
-8. **Validar dados de entrada** com DTOs e class-validator
-9. **Documentar API** com decorators do Swagger
-10. **Usar query parameters para códigos com caracteres especiais** - CNAEs têm barras no código (ex: `?codigo=8640-2/02` em vez de `/codigo/8640-2/02`)
+5. **Sempre rodar build e lint** antes de considerar tarefa completa
+6. **Seguir padrões de nomenclatura** do projeto (snake_case no DB, camelCase no TS)
+7. **Organizar requests HTTP** em arquivos separados por operação
+8. **Usar variáveis de ambiente** para configurações sensíveis
+9. **Implementar auditoria** em operações críticas
+10. **Validar dados de entrada** com DTOs e class-validator
+11. **Documentar API** com decorators do Swagger
+12. **Usar query parameters para códigos com caracteres especiais** - CNAEs têm barras no código (ex: `?codigo=8640-2/02` em vez de `/codigo/8640-2/02`)
 
 ## Módulo de Laboratórios (Em Desenvolvimento)
 
 ### Decisões de Arquitetura
+
 - **Estrutura similar a Convênios**: Laboratórios seguem o mesmo padrão de convênios
 - **Relacionamento com Empresas**: OneToOne com a tabela `empresas` via `empresa_id`
 - **Campos específicos apenas**: A tabela `laboratorios` contém apenas campos específicos de laboratório
@@ -303,6 +354,7 @@ curl -X GET http://localhost:10016/api/v1/usuarios \
   - Dados específicos (integração, prazos de entrega, responsável técnico, etc) ficam em `laboratorios`
 
 ### Estrutura da Tabela Laboratórios
+
 ```sql
 laboratorios
 ├── id (uuid)
@@ -331,6 +383,7 @@ laboratorios
 ```
 
 ### Arquivos Criados
+
 - `src/modules/laboratorios/entities/laboratorio.entity.ts` - Entidade com relacionamento OneToOne para Empresa
 - `src/modules/laboratorios/dto/create-laboratorio.dto.ts` - DTO para criação (reutiliza estrutura de convênios)
 - `src/modules/laboratorios/dto/update-laboratorio.dto.ts` - DTO para atualização
@@ -340,6 +393,7 @@ laboratorios
 - `src/database/migrations/[timestamp]-CreateLaboratoriosTable.ts` - Migration criada manualmente
 
 ### Status Atual
+
 - ✅ Entidade criada com campos específicos
 - ✅ DTOs criados reaproveitando estrutura de convênios
 - ✅ Service implementado com métodos similares a convênios
@@ -350,6 +404,7 @@ laboratorios
 - ⏳ Testes ainda não realizados
 
 ### Consideração sobre Herança vs Relacionamento
+
 - **Padrão escolhido**: Relacionamento OneToOne com `empresas` (não herança de tabelas)
 - **Estrutura**: Dados comuns em `empresas`, dados específicos em tabelas próprias
 - **Motivo**: TypeORM com PostgreSQL tem limitações para herança de tabelas
@@ -358,10 +413,12 @@ laboratorios
 ## Módulo de Convênios (Refatorado)
 
 ### Refatoração Realizada (Janeiro 2025)
+
 - **Antes**: Tabela `convenios` com todos os campos (duplicando dados de empresa)
 - **Depois**: Relacionamento OneToOne com `empresas`, mantendo apenas campos específicos
 
 ### Nova Estrutura da Tabela Convênios
+
 ```sql
 convenios
 ├── id (uuid)
@@ -387,6 +444,7 @@ convenios
 ```
 
 ### Arquivos Modificados
+
 - `src/modules/convenios/entities/convenio.entity.ts` - Refatorado com OneToOne para Empresa
 - `src/modules/convenios/dto/create-convenio.dto.ts` - Atualizado para incluir dados de empresa
 - `src/modules/convenios/services/convenio.service.ts` - Refatorado com transações para criar empresa+convênio
@@ -394,6 +452,7 @@ convenios
 - `src/database/migrations/1758400000000-RefactorConveniosToUseEmpresas.ts` - Migration para migrar dados
 
 ### Padrão Arquitetural Estabelecido
+
 - **Empresas**: Tabela central com dados comuns (CNPJ, razão social, endereço, impostos, etc.)
 - **Módulos específicos**: Tabelas com relacionamento OneToOne e apenas campos específicos
 - **Benefícios**:
@@ -405,9 +464,11 @@ convenios
 ## Módulo de Telemedicina (Criado Janeiro 2025)
 
 ### Funcionalidades Implementadas
+
 Seguindo o padrão arquitetural estabelecido (OneToOne com Empresas), o módulo de telemedicina oferece:
 
 #### Características Principais
+
 - **Integração**: Suporte a múltiplos tipos (API REST, Webhook, HL7, FHIR, DICOM, Manual)
 - **Plataformas**: Web, Mobile, Desktop, Híbrida
 - **Serviços**: Teleconsulta, Telediagnóstico, Telecirurgia, Telemonitoramento
@@ -416,6 +477,7 @@ Seguindo o padrão arquitetural estabelecido (OneToOne com Empresas), o módulo 
 ### Nova Estrutura das Tabelas
 
 #### Tabela `telemedicina`
+
 ```sql
 telemedicina
 ├── id (uuid)
@@ -457,6 +519,7 @@ telemedicina
 ```
 
 #### Tabela `telemedicina_exames`
+
 ```sql
 telemedicina_exames
 ├── id (uuid)
@@ -477,6 +540,7 @@ telemedicina_exames
 ```
 
 ### Arquivos Criados
+
 - **Entidades**: `telemedicina.entity.ts`, `telemedicina-exame.entity.ts`
 - **DTOs**: `create-telemedicina.dto.ts`, `update-telemedicina.dto.ts`, `create-telemedicina-exame.dto.ts`, `update-telemedicina-exame.dto.ts`
 - **Services**: `telemedicina.service.ts`, `telemedicina-exame.service.ts`
@@ -485,7 +549,9 @@ telemedicina_exames
 - **Migration**: `1758374921602-CreateTelemedicinaTable.ts`
 
 ### Funcionalidades dos Services
+
 #### TelemedicinaService
+
 - CRUD completo com transações
 - Busca por código, CNPJ, tipo de integração, plataforma
 - Filtros por status e funcionalidades
@@ -493,6 +559,7 @@ telemedicina_exames
 - Atualização de status de integração
 
 #### TelemedicinaExameService
+
 - Gestão de vínculos exame-telemedicina
 - Vinculação automática por código
 - Busca de exames sem vínculo
@@ -502,6 +569,7 @@ telemedicina_exames
 ### API Endpoints
 
 #### Telemedicina (`/api/v1/telemedicina`)
+
 - `GET /` - Listar todas
 - `GET /ativos` - Listar ativas
 - `GET /search?q=termo` - Buscar por termo
@@ -517,6 +585,7 @@ telemedicina_exames
 - `DELETE /:id` - Remover
 
 #### Vínculos (`/api/v1/telemedicina-exames`)
+
 - `GET /` - Listar todos vínculos
 - `GET /ativos` - Vínculos ativos
 - `GET /telemedicina/:id` - Exames de uma telemedicina
@@ -531,7 +600,9 @@ telemedicina_exames
 - `DELETE /:id` - Remover vínculo
 
 ### Arquitetura Consistente
+
 O módulo segue o mesmo padrão dos outros módulos:
+
 ```
 empresas (dados comuns)
     ↑

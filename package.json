@@ -23,7 +23,9 @@
     "migration:generate": "npm run build && npx typeorm migration:generate -d dist/config/typeorm.config.js",
     "migration:run": "npm run build && npx typeorm migration:run -d dist/config/typeorm.config.js",
     "migration:revert": "npm run build && npx typeorm migration:revert -d dist/config/typeorm.config.js",
-    "seed": "npm run build && node dist/database/seeds/seed-all.js"
+    "seed": "npm run build && node dist/database/seeds/seed-all.js",
+    "prepare": "husky",
+    "pre-commit": "npm run lint && npm run build && npm run test"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^2.0.2",
@@ -76,7 +78,9 @@
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^9.1.2",
     "eslint-plugin-prettier": "^5.5.4",
+    "husky": "^9.1.7",
     "jest": "^29.7.0",
+    "lint-staged": "^16.2.0",
     "nodemon": "^3.1.10",
     "prettier": "^3.6.2",
     "source-map-support": "^0.5.21",
