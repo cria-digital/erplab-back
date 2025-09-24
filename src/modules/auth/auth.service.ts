@@ -143,8 +143,12 @@ export class AuthService {
       if (usuarios.total > 0) {
         throw new ConflictException('Já existe usuário cadastrado no sistema');
       }
-    } catch {
-      // Se der erro ao buscar (provavelmente tabela não existe), continua
+    } catch (error) {
+      // Se for ConflictException, relança
+      if (error instanceof ConflictException) {
+        throw error;
+      }
+      // Se der outro erro ao buscar (provavelmente tabela não existe), continua
       console.log('Criando primeiro usuário do sistema...');
     }
 

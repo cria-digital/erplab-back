@@ -14,6 +14,10 @@ describe('UsuariosController', () => {
     getStats: jest.fn(),
     changePassword: jest.fn(),
     findByEmail: jest.fn(),
+    activate: jest.fn(),
+    block: jest.fn(),
+    unblock: jest.fn(),
+    resetPassword: jest.fn(),
   };
 
   const mockRequest = {
@@ -136,6 +140,160 @@ describe('UsuariosController', () => {
         message: 'Usuário removido com sucesso',
       });
       expect(mockService.remove).toHaveBeenCalledWith(id, 'user-uuid-123');
+    });
+  });
+
+  describe('getStats', () => {
+    it('deve retornar estatísticas dos usuários', async () => {
+      const expected = {
+        total: 100,
+        ativos: 80,
+        inativos: 20,
+        bloqueados: 5,
+        com2FA: 15,
+      };
+
+      mockService.getStats.mockResolvedValue(expected);
+
+      const result = await controller.getStats();
+
+      expect(result).toEqual(expected);
+      expect(mockService.getStats).toHaveBeenCalled();
+    });
+  });
+
+  describe('getMe', () => {
+    it('deve retornar dados do usuário autenticado', async () => {
+      const expected = {
+        id: 'user-uuid-123',
+        email: 'admin@example.com',
+        nomeCompleto: 'Admin User',
+      };
+
+      mockService.findOne.mockResolvedValue(expected);
+
+      const result = await controller.getMe(mockRequest as any);
+
+      expect(result).toEqual(expected);
+      expect(mockService.findOne).toHaveBeenCalledWith('user-uuid-123');
+    });
+  });
+
+  describe('activate', () => {
+    it('deve ativar um usuário', async () => {
+      const id = '123';
+      const expected = {
+        id,
+        ativo: true,
+        nomeCompleto: 'Test User',
+      };
+
+      mockService.activate.mockResolvedValue(expected);
+
+      const result = await controller.activate(id, mockRequest as any);
+
+      expect(result).toEqual({
+        message: 'Usuário ativado com sucesso',
+        data: expected,
+      });
+      expect(mockService.activate).toHaveBeenCalledWith(id, 'user-uuid-123');
+    });
+  });
+
+  describe('block', () => {
+    it('deve bloquear um usuário por tempo determinado', async () => {
+      const id = '123';
+      const minutos = 30;
+      const expected = {
+        id,
+        bloqueadoAte: new Date(),
+        nomeCompleto: 'Test User',
+      };
+
+      mockService.block.mockResolvedValue(expected);
+
+      const result = await controller.block(id, minutos, mockRequest as any);
+
+      expect(result).toEqual({
+        message: 'Usuário bloqueado com sucesso',
+        data: expected,
+      });
+      expect(mockService.block).toHaveBeenCalledWith(
+        id,
+        minutos,
+        'user-uuid-123',
+      );
+    });
+  });
+
+  describe('unblock', () => {
+    it('deve desbloquear um usuário', async () => {
+      const id = '123';
+      const expected = {
+        id,
+        bloqueadoAte: null,
+        nomeCompleto: 'Test User',
+      };
+
+      mockService.unblock.mockResolvedValue(expected);
+
+      const result = await controller.unblock(id, mockRequest as any);
+
+      expect(result).toEqual({
+        message: 'Usuário desbloqueado com sucesso',
+        data: expected,
+      });
+      expect(mockService.unblock).toHaveBeenCalledWith(id, 'user-uuid-123');
+    });
+  });
+
+  describe('changePassword', () => {
+    it('deve alterar senha do usuário autenticado', async () => {
+      const changePasswordDto = {
+        senhaAtual: 'SenhaAtual123!',
+        novaSenha: 'NovaSenha123!',
+        confirmacaoSenha: 'NovaSenha123!',
+      };
+
+      mockService.changePassword.mockResolvedValue(undefined);
+
+      const result = await controller.changePassword(
+        changePasswordDto,
+        mockRequest as any,
+      );
+
+      expect(result).toEqual({
+        message: 'Senha alterada com sucesso',
+      });
+      expect(mockService.changePassword).toHaveBeenCalledWith(
+        'user-uuid-123',
+        changePasswordDto,
+      );
+    });
+  });
+
+  describe('resetPassword', () => {
+    it('deve resetar senha de um usuário', async () => {
+      const id = '123';
+      const novaSenha = 'NovaTemporaria123!';
+
+      mockService.resetPassword.mockResolvedValue(undefined);
+
+      const result = await controller.resetPassword(
+        id,
+        novaSenha,
+        mockRequest as any,
+      );
+
+      expect(result).toEqual({
+        message:
+          'Senha resetada com sucesso. O usuário deverá alterar a senha no próximo login.',
+      });
+      expect(mockService.resetPassword).toHaveBeenCalledWith(
+        id,
+        novaSenha,
+        'user-uuid-123',
+      );
     });
   });
 });

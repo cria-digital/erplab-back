@@ -32,12 +32,14 @@ describe('UsuariosService', () => {
 
   const mockUsuarioUnidadeRepository = {
     find: jest.fn(),
+    create: jest.fn((dto) => dto),
     save: jest.fn(),
     delete: jest.fn(),
   };
 
   const mockUsuarioPermissaoRepository = {
     find: jest.fn(),
+    create: jest.fn((dto) => dto),
     save: jest.fn(),
     delete: jest.fn(),
   };
@@ -45,6 +47,7 @@ describe('UsuariosService', () => {
   const mockAuditoriaService = {
     registrar: jest.fn(),
     registrarAlteracao: jest.fn(),
+    registrarAcesso: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -59,6 +62,7 @@ describe('UsuariosService', () => {
       getManyAndCount: jest.fn().mockResolvedValue([[], 0]),
       getOne: jest.fn(),
       getMany: jest.fn(),
+      getCount: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -109,14 +113,15 @@ describe('UsuariosService', () => {
       const mockUser = {
         hashRespostaRecuperacao: jest.fn(),
       };
+      mockUser.hashRespostaRecuperacao.mockResolvedValue(undefined);
 
       const savedUser = {
         id: 'uuid-123',
         ...createDto,
         senhaHash: hashedPassword,
         ativo: true,
-        created_at: new Date(),
-        updated_at: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       mockUsuarioRepository.findOne.mockResolvedValue(null); // Nenhum usuário existente
@@ -436,6 +441,352 @@ describe('UsuariosService', () => {
       const result = await service.findByEmail('naoexiste@example.com');
 
       expect(result).toBeNull();
+    });
+  });
+
+  describe('activate', () => {
+    it('deve ativar um usuário inativo', async () => {
+      const usuario = {
+        id: 'uuid-123',
+        ativo: false,
+        tentativasLoginFalhas: 3,
+        bloqueadoAte: new Date(),
+      };
+
+      const usuarioAtivado = {
+        ...usuario,
+        ativo: true,
+        tentativasLoginFalhas: 0,
+        bloqueadoAte: null,
+      };
+
+      mockUsuarioRepository.findOne.mockResolvedValue(usuario);
+      mockUsuarioRepository.save.mockResolvedValue(usuarioAtivado);
+
+      const result = await service.activate('uuid-123', 'admin-id');
+
+      expect(result).toEqual(usuarioAtivado);
+      expect(mockUsuarioRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({
+          ativo: true,
+          tentativasLoginFalhas: 0,
+          bloqueadoAte: null,
+        }),
+      );
+      expect(mockAuditoriaService.registrarAlteracao).toHaveBeenCalled();
+    });
+  });
+
+  describe('block', () => {
+    it('deve bloquear um usuário por tempo determinado', async () => {
+      const usuario = {
+        id: 'uuid-123',
+        bloqueadoAte: null,
+      };
+
+      mockUsuarioRepository.findOne.mockResolvedValue(usuario);
+      mockUsuarioRepository.save.mockResolvedValue({
+        ...usuario,
+        bloqueadoAte: expect.any(Date),
+      });
+
+      await service.block('uuid-123', 30, 'admin-id');
+
+      expect(mockUsuarioRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({
+          bloqueadoAte: expect.any(Date),
+        }),
+      );
+      expect(mockAuditoriaService.registrarAlteracao).toHaveBeenCalled();
+    });
+  });
+
+  describe('unblock', () => {
+    it('deve desbloquear um usuário bloqueado', async () => {
+      const usuario = {
+        id: 'uuid-123',
+        bloqueadoAte: new Date(),
+        tentativasLoginFalhas: 5,
+      };
+
+      const usuarioDesbloqueado = {
+        ...usuario,
+        bloqueadoAte: null,
+        tentativasLoginFalhas: 0,
+      };
+
+      mockUsuarioRepository.findOne.mockResolvedValue(usuario);
+      mockUsuarioRepository.save.mockResolvedValue(usuarioDesbloqueado);
+
+      const result = await service.unblock('uuid-123', 'admin-id');
+
+      expect(result).toEqual(usuarioDesbloqueado);
+      expect(mockUsuarioRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({
+          bloqueadoAte: null,
+          tentativasLoginFalhas: 0,
+        }),
+      );
+      expect(mockAuditoriaService.registrarAlteracao).toHaveBeenCalled();
+    });
+  });
+
+  describe('resetPassword', () => {
+    it('deve resetar senha do usuário', async () => {
+      const usuario = {
+        id: 'uuid-123',
+        senhaHash: 'old-hash',
+        resetarSenha: false,
+        tentativasLoginFalhas: 3,
+        bloqueadoAte: new Date(),
+      };
+
+      jest
+        .spyOn(bcrypt, 'hash')
+        .mockImplementation(() => Promise.resolve('new-hash'));
+
+      mockUsuarioRepository.findOne.mockResolvedValue(usuario);
+      mockUsuarioRepository.save.mockResolvedValue({
+        ...usuario,
+        senhaHash: 'new-hash',
+        resetarSenha: true,
+        tentativasLoginFalhas: 0,
+        bloqueadoAte: null,
+      });
+
+      await service.resetPassword('uuid-123', 'Nova123!', 'admin-id');
+
+      expect(mockUsuarioRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({
+          senhaHash: 'new-hash',
+          resetarSenha: true,
+          tentativasLoginFalhas: 0,
+          bloqueadoAte: null,
+        }),
+      );
+      expect(mockAuditoriaService.registrarAlteracao).toHaveBeenCalled();
+    });
+  });
+
+  describe('incrementarTentativasLogin', () => {
+    it('deve incrementar tentativas de login', async () => {
+      const usuario = {
+        id: 'uuid-123',
+        tentativasLoginFalhas: 2,
+        bloqueadoAte: null,
+      };
+
+      mockUsuarioRepository.findOne.mockResolvedValue(usuario);
+      mockUsuarioRepository.save.mockResolvedValue({
+        ...usuario,
+        tentativasLoginFalhas: 3,
+      });
+
+      await service.incrementarTentativasLogin('uuid-123');
+
+      expect(mockUsuarioRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({
+          tentativasLoginFalhas: 3,
+        }),
+      );
+    });
+
+    it('deve bloquear usuário após 5 tentativas', async () => {
+      const usuario = {
+        id: 'uuid-123',
+        tentativasLoginFalhas: 4,
+        bloqueadoAte: null,
+      };
+
+      mockUsuarioRepository.findOne.mockResolvedValue(usuario);
+      mockUsuarioRepository.save.mockResolvedValue({
+        ...usuario,
+        tentativasLoginFalhas: 5,
+        bloqueadoAte: expect.any(Date),
+      });
+
+      await service.incrementarTentativasLogin('uuid-123');
+
+      expect(mockUsuarioRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({
+          tentativasLoginFalhas: 5,
+          bloqueadoAte: expect.any(Date),
+        }),
+      );
+    });
+  });
+
+  describe('resetarTentativasLogin', () => {
+    it('deve resetar tentativas de login', async () => {
+      const usuario = {
+        id: 'uuid-123',
+        tentativasLoginFalhas: 3,
+        bloqueadoAte: new Date(),
+      };
+
+      mockUsuarioRepository.findOne.mockResolvedValue(usuario);
+      mockUsuarioRepository.save.mockResolvedValue({
+        ...usuario,
+        tentativasLoginFalhas: 0,
+        bloqueadoAte: null,
+      });
+
+      await service.resetarTentativasLogin('uuid-123');
+
+      expect(mockUsuarioRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({
+          tentativasLoginFalhas: 0,
+          bloqueadoAte: null,
+        }),
+      );
+    });
+  });
+
+  describe('atualizarUltimoLogin', () => {
+    it('deve atualizar último login e registrar acesso', async () => {
+      const usuario = {
+        id: 'uuid-123',
+        ultimoLogin: null,
+      };
+
+      mockUsuarioRepository.findOne.mockResolvedValue(usuario);
+      mockUsuarioRepository.save.mockResolvedValue({
+        ...usuario,
+        ultimoLogin: expect.any(Date),
+      });
+
+      await service.atualizarUltimoLogin('uuid-123');
+
+      expect(mockUsuarioRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({
+          ultimoLogin: expect.any(Date),
+        }),
+      );
+      expect(mockAuditoriaService.registrarAcesso).toHaveBeenCalledWith(
+        'uuid-123',
+        'Login',
+        'Sistema',
+        'Login realizado com sucesso',
+      );
+    });
+  });
+
+  describe('registrarLogout', () => {
+    it('deve registrar logout do usuário', async () => {
+      await service.registrarLogout('uuid-123');
+
+      expect(mockAuditoriaService.registrarAcesso).toHaveBeenCalledWith(
+        'uuid-123',
+        'Logout',
+        'Sistema',
+        'Logout realizado',
+      );
+    });
+  });
+
+  describe('getStats', () => {
+    it('deve retornar estatísticas dos usuários', async () => {
+      mockUsuarioRepository.count
+        .mockResolvedValueOnce(100) // total
+        .mockResolvedValueOnce(80) // ativos
+        .mockResolvedValueOnce(20) // inativos
+        .mockResolvedValueOnce(15); // com2FA
+
+      mockQueryBuilder.getCount.mockResolvedValue(5); // bloqueados
+
+      const result = await service.getStats();
+
+      expect(result).toEqual({
+        total: 100,
+        ativos: 80,
+        inativos: 20,
+        bloqueados: 5,
+        com2FA: 15,
+      });
+    });
+  });
+
+  describe('registrarTentativaFalha', () => {
+    it('deve incrementar tentativas de falha por email', async () => {
+      const usuario = {
+        id: 'uuid-123',
+        email: 'test@example.com',
+        tentativasLoginFalhas: 2,
+        bloqueadoAte: null,
+      };
+
+      mockUsuarioRepository.findOne.mockResolvedValue(usuario);
+      mockUsuarioRepository.save.mockResolvedValue({
+        ...usuario,
+        tentativasLoginFalhas: 3,
+      });
+
+      await service.registrarTentativaFalha('test@example.com');
+
+      expect(mockUsuarioRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({
+          tentativasLoginFalhas: 3,
+        }),
+      );
+    });
+
+    it('deve bloquear usuário após 5 tentativas por email', async () => {
+      const usuario = {
+        id: 'uuid-123',
+        email: 'test@example.com',
+        tentativasLoginFalhas: 4,
+        bloqueadoAte: null,
+      };
+
+      mockUsuarioRepository.findOne.mockResolvedValue(usuario);
+      mockUsuarioRepository.save.mockResolvedValue({
+        ...usuario,
+        tentativasLoginFalhas: 5,
+        bloqueadoAte: expect.any(Date),
+      });
+
+      await service.registrarTentativaFalha('test@example.com');
+
+      expect(mockUsuarioRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({
+          tentativasLoginFalhas: 5,
+          bloqueadoAte: expect.any(Date),
+        }),
+      );
+    });
+
+    it('não deve fazer nada se usuário não existir', async () => {
+      mockUsuarioRepository.findOne.mockResolvedValue(null);
+
+      await service.registrarTentativaFalha('inexistente@example.com');
+
+      expect(mockUsuarioRepository.save).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('registrarLoginSucesso', () => {
+    it('deve resetar tentativas e atualizar último login', async () => {
+      const usuario = {
+        id: 'uuid-123',
+        tentativasLoginFalhas: 3,
+        ultimoLogin: null,
+      };
+
+      mockUsuarioRepository.findOne.mockResolvedValue(usuario);
+      mockUsuarioRepository.save.mockResolvedValue({
+        ...usuario,
+        tentativasLoginFalhas: 0,
+        ultimoLogin: expect.any(Date),
+      });
+
+      await service.registrarLoginSucesso('uuid-123');
+
+      expect(mockUsuarioRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({
+          tentativasLoginFalhas: 0,
+          ultimoLogin: expect.any(Date),
+        }),
+      );
     });
   });
 });

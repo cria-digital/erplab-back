@@ -130,7 +130,10 @@ describe('PacientesController', () => {
         message: 'Paciente criado com sucesso',
         data: mockPaciente,
       });
-      expect(service.create).toHaveBeenCalledWith(createPacienteDto, 1);
+      expect(service.create).toHaveBeenCalledWith(
+        createPacienteDto,
+        'user-uuid-1',
+      );
     });
 
     it('deve retornar erro quando CPF já existir', async () => {
@@ -161,7 +164,10 @@ describe('PacientesController', () => {
       });
 
       expect(result).toEqual(paginatedResult);
-      expect(service.findAll).toHaveBeenCalledWith(1, { page: 1, limit: 10 });
+      expect(service.findAll).toHaveBeenCalledWith('empresa-uuid-1', {
+        page: 1,
+        limit: 10,
+      });
     });
 
     it('deve passar filtros para o service', async () => {
@@ -178,7 +184,7 @@ describe('PacientesController', () => {
 
       await controller.findAll(mockRequest as any, filters);
 
-      expect(service.findAll).toHaveBeenCalledWith(1, filters);
+      expect(service.findAll).toHaveBeenCalledWith('empresa-uuid-1', filters);
     });
   });
 
@@ -189,7 +195,7 @@ describe('PacientesController', () => {
       const result = await controller.findOne('1', mockRequest as any);
 
       expect(result).toEqual(mockPaciente);
-      expect(service.findOne).toHaveBeenCalledWith(1, 1);
+      expect(service.findOne).toHaveBeenCalledWith('1', 'empresa-uuid-1');
     });
 
     it('deve retornar erro quando paciente não for encontrado', async () => {
@@ -212,7 +218,10 @@ describe('PacientesController', () => {
       );
 
       expect(result).toEqual(mockPaciente);
-      expect(service.findByCpf).toHaveBeenCalledWith('12345678901', 1);
+      expect(service.findByCpf).toHaveBeenCalledWith(
+        '12345678901',
+        'empresa-uuid-1',
+      );
     });
 
     it('deve retornar null quando paciente não for encontrado por CPF', async () => {
@@ -247,7 +256,12 @@ describe('PacientesController', () => {
         message: 'Paciente atualizado com sucesso',
         data: pacienteAtualizado,
       });
-      expect(service.update).toHaveBeenCalledWith(1, 1, updatePacienteDto, 1);
+      expect(service.update).toHaveBeenCalledWith(
+        '1',
+        'empresa-uuid-1',
+        updatePacienteDto,
+        'user-uuid-1',
+      );
     });
 
     it('deve retornar erro quando paciente não for encontrado para atualização', async () => {
@@ -269,7 +283,11 @@ describe('PacientesController', () => {
       expect(result).toEqual({
         message: 'Paciente removido com sucesso',
       });
-      expect(service.remove).toHaveBeenCalledWith(1, 1, 1);
+      expect(service.remove).toHaveBeenCalledWith(
+        '1',
+        'empresa-uuid-1',
+        'user-uuid-1',
+      );
     });
 
     it('deve retornar erro quando paciente não for encontrado para remoção', async () => {
@@ -293,7 +311,11 @@ describe('PacientesController', () => {
         message: 'Paciente ativado com sucesso',
         data: pacienteAtivado,
       });
-      expect(service.activate).toHaveBeenCalledWith(1, 1, 1);
+      expect(service.activate).toHaveBeenCalledWith(
+        '1',
+        'empresa-uuid-1',
+        'user-uuid-1',
+      );
     });
   });
 
@@ -308,7 +330,11 @@ describe('PacientesController', () => {
         message: 'Paciente bloqueado com sucesso',
         data: pacienteBloqueado,
       });
-      expect(service.block).toHaveBeenCalledWith(1, 1, 1);
+      expect(service.block).toHaveBeenCalledWith(
+        '1',
+        'empresa-uuid-1',
+        'user-uuid-1',
+      );
     });
   });
 
@@ -322,7 +348,11 @@ describe('PacientesController', () => {
       });
 
       expect(result).toEqual(pacientes);
-      expect(service.searchByName).toHaveBeenCalledWith('João', 1, 5);
+      expect(service.searchByName).toHaveBeenCalledWith(
+        'João',
+        'empresa-uuid-1',
+        5,
+      );
     });
 
     it('deve usar limite padrão quando não fornecido', async () => {
@@ -330,7 +360,11 @@ describe('PacientesController', () => {
 
       await controller.search('João', mockRequest as any, {});
 
-      expect(service.searchByName).toHaveBeenCalledWith('João', 1, 10);
+      expect(service.searchByName).toHaveBeenCalledWith(
+        'João',
+        'empresa-uuid-1',
+        10,
+      );
     });
   });
 
@@ -354,7 +388,7 @@ describe('PacientesController', () => {
       const result = await controller.getStats(mockRequest as any);
 
       expect(result).toEqual(stats);
-      expect(service.getStats).toHaveBeenCalledWith(1);
+      expect(service.getStats).toHaveBeenCalledWith('empresa-uuid-1');
     });
   });
 });
