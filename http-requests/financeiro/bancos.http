@@ -1,0 +1,107 @@
+### Listar todos os bancos
+GET {{baseUrl}}/bancos
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [...],
+#   "total": 269
+# }
+
+###
+
+### Listar bancos ativos
+GET {{baseUrl}}/bancos/ativos
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar bancos por termo
+GET {{baseUrl}}/bancos/search?q=brasil
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar banco por código FEBRABAN
+GET {{baseUrl}}/bancos/codigo/001
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar banco por código interno
+GET {{baseUrl}}/bancos/codigo-interno/BB
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar banco por ID
+GET {{baseUrl}}/bancos/{{bancoId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "codigo": "001",
+#   "codigo_interno": "BB",
+#   "nome": "Banco do Brasil S.A.",
+#   "status": "ativo",
+#   "descricao": "Banco do Brasil S.A. - Código FEBRABAN: 001",
+#   "created_at": "2025-01-01T00:00:00.000Z",
+#   "updated_at": "2025-01-01T00:00:00.000Z"
+# }
+
+###
+
+### Criar novo banco
+POST {{baseUrl}}/bancos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo": "999",
+  "codigo_interno": "NOVO",
+  "nome": "Banco Novo S.A.",
+  "website": "https://www.banconovo.com.br",
+  "status": "ativo",
+  "descricao": "Novo banco digital"
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "id": "uuid",
+#   "codigo": "999",
+#   "codigo_interno": "NOVO",
+#   "nome": "Banco Novo S.A.",
+#   "website": "https://www.banconovo.com.br",
+#   "status": "ativo",
+#   "descricao": "Novo banco digital",
+#   "created_at": "2025-01-01T00:00:00.000Z",
+#   "updated_at": "2025-01-01T00:00:00.000Z"
+# }
+
+###
+
+### Atualizar banco
+PATCH {{baseUrl}}/bancos/{{bancoId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "website": "https://www.bancobrasil.com.br",
+  "descricao": "Banco do Brasil - Atualizado"
+}
+
+###
+
+### Alternar status do banco
+PATCH {{baseUrl}}/bancos/{{bancoId}}/toggle-status
+Authorization: Bearer {{token}}
+
+###
+
+### Deletar banco
+DELETE {{baseUrl}}/bancos/{{bancoId}}
+Authorization: Bearer {{token}}

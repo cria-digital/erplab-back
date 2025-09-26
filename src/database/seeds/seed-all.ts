@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../../app.module';
 import { CnaeSeedService } from './cnae-seed.service';
+import { BancoSeedService } from './banco-seed.service';
 
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
@@ -15,10 +16,10 @@ async function bootstrap() {
     console.log('1. Importando CNAEs...');
     await cnaeSeedService.seed();
 
-    // Futuros seeders podem ser adicionados aqui
-    // console.log('2. Importando outros dados...');
-    // const outroSeedService = app.get(OutroSeedService);
-    // await outroSeedService.seed();
+    // Executar seed de Bancos
+    const bancoSeedService = app.get(BancoSeedService);
+    console.log('2. Importando Bancos...');
+    await bancoSeedService.seed();
 
     console.log('\n==============================');
     console.log('Seed concluído com sucesso!');

@@ -1,0 +1,129 @@
+### Criar conta bancária - Conta Corrente Principal
+POST {{baseUrl}}/contas-bancarias
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "banco_id": "{{bancoId}}",
+  "unidade_saude_id": "{{unidadeId}}",
+  "codigo_interno": "CC001",
+  "nome_conta": "Conta Corrente Principal",
+  "tipo_conta": "corrente",
+  "agencia": "1234",
+  "digito_agencia": "5",
+  "numero_conta": "12345678",
+  "digito_conta": "9",
+  "titular": "Clínica Saúde Total Ltda",
+  "cpf_cnpj_titular": "12.345.678/0001-90",
+  "pix_tipo": "cnpj",
+  "pix_chave": "12.345.678/0001-90",
+  "status": "ativa",
+  "saldo_inicial": 1000.00,
+  "observacoes": "Conta principal para recebimentos"
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "id": "uuid",
+#   "banco_id": "uuid",
+#   "banco": {
+#     "id": "uuid",
+#     "nome": "Banco do Brasil S.A."
+#   },
+#   "unidade_saude_id": "uuid",
+#   "codigo_interno": "CC001",
+#   "nome_conta": "Conta Corrente Principal",
+#   "tipo_conta": "corrente",
+#   "status": "ativa",
+#   ...
+# }
+
+###
+
+### Criar conta bancária - Conta Poupança
+POST {{baseUrl}}/contas-bancarias
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "banco_id": "{{bancoId}}",
+  "unidade_saude_id": "{{unidadeId}}",
+  "codigo_interno": "CP001",
+  "nome_conta": "Conta Poupança Reserva",
+  "tipo_conta": "poupanca",
+  "agencia": "1234",
+  "numero_conta": "00012345",
+  "digito_conta": "8",
+  "titular": "Clínica Saúde Total Ltda",
+  "cpf_cnpj_titular": "12.345.678/0001-90",
+  "status": "ativa",
+  "saldo_inicial": 5000.00
+}
+
+###
+
+### Listar todas as contas bancárias
+GET {{baseUrl}}/contas-bancarias
+Authorization: Bearer {{token}}
+
+###
+
+### Listar contas ativas
+GET {{baseUrl}}/contas-bancarias/ativas
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar contas por unidade
+GET {{baseUrl}}/contas-bancarias/unidade/{{unidadeId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar contas por banco
+GET {{baseUrl}}/contas-bancarias/banco/{{bancoId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar contas por tipo
+GET {{baseUrl}}/contas-bancarias/tipo/corrente
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar conta por código interno
+GET {{baseUrl}}/contas-bancarias/codigo/CC001
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar conta por ID
+GET {{baseUrl}}/contas-bancarias/{{contaId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Atualizar conta bancária
+PATCH {{baseUrl}}/contas-bancarias/{{contaId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "pix_tipo": "email",
+  "pix_chave": "financeiro@clinicasaude.com.br",
+  "observacoes": "Conta atualizada com nova chave PIX"
+}
+
+###
+
+### Alternar status da conta
+PATCH {{baseUrl}}/contas-bancarias/{{contaId}}/toggle-status
+Authorization: Bearer {{token}}
+
+###
+
+### Deletar conta bancária
+DELETE {{baseUrl}}/contas-bancarias/{{contaId}}
+Authorization: Bearer {{token}}

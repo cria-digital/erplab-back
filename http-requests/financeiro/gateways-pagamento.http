@@ -1,0 +1,156 @@
+### Criar gateway de pagamento - Cielo
+POST {{baseUrl}}/gateways-pagamento
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "conta_bancaria_id": "{{contaId}}",
+  "codigo_interno": "CIELO001",
+  "nome_gateway": "Cielo - Máquina Principal",
+  "tipo_gateway": "cielo",
+  "modalidade": "todos",
+  "merchant_id": "1006993069",
+  "merchant_key": "25fbb99741c739dd84d7b06ec78c9bac718838630f30b112d033ce2e621b34f3",
+  "ambiente": "producao",
+  "taxa_credito": 2.39,
+  "taxa_debito": 1.19,
+  "taxa_pix": 0.99,
+  "taxa_boleto": 2.50,
+  "prazo_recebimento": 30,
+  "status": "ativo",
+  "observacoes": "Gateway principal para cartões"
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "id": "uuid",
+#   "conta_bancaria_id": "uuid",
+#   "codigo_interno": "CIELO001",
+#   "nome_gateway": "Cielo - Máquina Principal",
+#   "tipo_gateway": "cielo",
+#   "status": "ativo",
+#   ...
+# }
+
+###
+
+### Criar gateway de pagamento - Stone
+POST {{baseUrl}}/gateways-pagamento
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "conta_bancaria_id": "{{contaId}}",
+  "codigo_interno": "STONE001",
+  "nome_gateway": "Stone - Pagamentos Online",
+  "tipo_gateway": "stone",
+  "modalidade": "credito",
+  "api_key": "sk_test_YPvG5Q9KQNLZQzDT",
+  "api_secret": "ss_test_secret_key_stone",
+  "webhook_url": "https://api.clinica.com.br/webhooks/stone",
+  "webhook_secret": "webhook_secret_123",
+  "ambiente": "teste",
+  "taxa_credito": 2.19,
+  "prazo_recebimento": 2,
+  "status": "em_configuracao"
+}
+
+###
+
+### Criar gateway - MercadoPago
+POST {{baseUrl}}/gateways-pagamento
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "conta_bancaria_id": "{{contaId}}",
+  "codigo_interno": "MP001",
+  "nome_gateway": "MercadoPago - PIX e Boleto",
+  "tipo_gateway": "mercadopago",
+  "modalidade": "pix",
+  "api_key": "TEST-1234567890123456-123456-abcdef1234567890abcdef1234567890-123456789",
+  "ambiente": "teste",
+  "taxa_pix": 0.99,
+  "taxa_boleto": 3.49,
+  "prazo_recebimento": 1,
+  "status": "ativo",
+  "configuracao_adicional": {
+    "notification_url": "https://api.clinica.com.br/mp/notifications",
+    "auto_return": "approved"
+  }
+}
+
+###
+
+### Listar todos os gateways
+GET {{baseUrl}}/gateways-pagamento
+Authorization: Bearer {{token}}
+
+###
+
+### Listar gateways ativos
+GET {{baseUrl}}/gateways-pagamento/ativos
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar gateways por tipo
+GET {{baseUrl}}/gateways-pagamento/tipo/cielo
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar gateways por conta bancária
+GET {{baseUrl}}/gateways-pagamento/conta/{{contaId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar gateway por código interno
+GET {{baseUrl}}/gateways-pagamento/codigo/CIELO001
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar gateway por ID
+GET {{baseUrl}}/gateways-pagamento/{{gatewayId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Atualizar gateway
+PATCH {{baseUrl}}/gateways-pagamento/{{gatewayId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "taxa_credito": 1.99,
+  "taxa_debito": 0.99,
+  "ambiente": "producao",
+  "status": "ativo"
+}
+
+###
+
+### Alternar status do gateway
+PATCH {{baseUrl}}/gateways-pagamento/{{gatewayId}}/toggle-status
+Authorization: Bearer {{token}}
+
+###
+
+### Testar conexão do gateway
+POST {{baseUrl}}/gateways-pagamento/{{gatewayId}}/test-connection
+Authorization: Bearer {{token}}
+
+###
+
+### Obter estatísticas do gateway
+GET {{baseUrl}}/gateways-pagamento/{{gatewayId}}/stats
+Authorization: Bearer {{token}}
+
+###
+
+### Deletar gateway
+DELETE {{baseUrl}}/gateways-pagamento/{{gatewayId}}
+Authorization: Bearer {{token}}

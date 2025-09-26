@@ -23,6 +23,8 @@ import { TelemedicinaModule } from './modules/telemedicina/telemedicina.module';
 import { FornecedoresModule } from './modules/fornecedores/fornecedores.module';
 import { PrestadoresServicoModule } from './modules/prestadores-servico/prestadores-servico.module';
 import { KitsModule } from './modules/kits/kits.module';
+import { FinanceiroModule } from './modules/financeiro/financeiro.module';
+import { SeedModule } from './database/seeds/seed.module';
 
 @Module({
   imports: [
@@ -59,9 +61,10 @@ import { KitsModule } from './modules/kits/kits.module';
     FornecedoresModule,
     PrestadoresServicoModule,
     KitsModule,
+    FinanceiroModule,
+    SeedModule,
 
     // Próximos módulos a serem implementados:
-    // FinanceiroModule,
     // CrmModule,
     // EstoqueModule,
     // TissModule,
