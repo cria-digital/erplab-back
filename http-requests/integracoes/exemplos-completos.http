@@ -1,0 +1,224 @@
+### ==============================================
+### FLUXO COMPLETO - INTEGRAÇÃO COM LABORATÓRIO
+### ==============================================
+
+### 1. Criar integração com laboratório
+POST {{baseUrl}}/integracoes
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoIntegracao": "laboratorio_apoio",
+  "nomeIntegracao": "Laboratório Central Diagnósticos",
+  "descricaoApi": "Integração completa para envio de exames e recebimento de resultados",
+  "codigoIdentificacao": "LAB_CENTRAL_001",
+  "unidadeSaudeId": "{{userId}}",
+  "urlApiExames": "https://api.labcentral.com.br/v1/exames",
+  "urlApiGuiaExames": "https://api.labcentral.com.br/v1/guias",
+  "tokenAutenticacao": "Bearer lab_central_token_2025",
+  "chaveApi": "lab-central-api-key-67890",
+  "padraoComunicacao": "rest_api",
+  "formatoRetorno": "json",
+  "nomeLaboratorio": "Laboratório Central Diagnósticos S/A",
+  "urlBase": "https://api.labcentral.com.br",
+  "urlAutenticacao": "https://api.labcentral.com.br/oauth/token",
+  "urlConsulta": "https://api.labcentral.com.br/v1/status",
+  "urlEnvio": "https://api.labcentral.com.br/v1/solicitar",
+  "urlCallback": "https://nossa-clinica.com.br/webhook/lab-central",
+  "usuario": "integracao_clinica",
+  "senha": "senha_integracao_123",
+  "configuracoesAdicionais": {
+    "ambiente": "producao",
+    "timeout": 30000,
+    "retries": 3,
+    "webhook_secret": "webhook_secret_central_123"
+  },
+  "headersCustomizados": {
+    "X-Client-ID": "CLINICA_001",
+    "X-Integration-Version": "1.0.0"
+  },
+  "timeoutSegundos": 45,
+  "intervaloSincronizacaoMinutos": 30,
+  "limiteRequisicoesDia": 5000,
+  "observacoes": "Laboratório principal para exames de análises clínicas"
+}
+
+### 2. Verificar se a integração foi criada
+GET {{baseUrl}}/integracoes/codigo/LAB_CENTRAL_001
+Authorization: Bearer {{token}}
+
+### 3. Testar conexão
+POST {{baseUrl}}/integracoes/{{$guid}}/testar-conexao
+Authorization: Bearer {{token}}
+
+### 4. Ativar a integração (mudar status)
+PATCH {{baseUrl}}/integracoes/{{$guid}}/status?status=ativa
+Authorization: Bearer {{token}}
+
+### 5. Sincronizar dados
+POST {{baseUrl}}/integracoes/{{$guid}}/sincronizar
+Authorization: Bearer {{token}}
+
+### 6. Verificar estatísticas
+GET {{baseUrl}}/integracoes/estatisticas
+Authorization: Bearer {{token}}
+
+### ===========================================
+### FLUXO COMPLETO - INTEGRAÇÃO COM GATEWAY
+### ===========================================
+
+### 1. Criar integração com gateway de pagamento
+POST {{baseUrl}}/integracoes
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoIntegracao": "gateway_pagamento",
+  "nomeIntegracao": "Mercado Pago Business",
+  "descricaoApi": "Integração para processamento de pagamentos via Mercado Pago",
+  "codigoIdentificacao": "MP_BUSINESS_001",
+  "nomeGateway": "Mercado Pago",
+  "urlBase": "https://api.mercadopago.com",
+  "urlAutenticacao": "https://api.mercadopago.com/oauth/token",
+  "tokenAutenticacao": "TEST-1234567890-010203-abcdef1234567890-12345678",
+  "chaveApi": "APP_USR-1234567890123456-010203-abcdef1234567890abcdef12-12345678",
+  "padraoComunicacao": "rest_api",
+  "formatoRetorno": "json",
+  "configuracoesAdicionais": {
+    "environment": "production",
+    "currency": "BRL",
+    "payment_methods": ["credit_card", "debit_card", "pix"],
+    "webhook_version": "v1",
+    "notification_url": "https://nossa-clinica.com.br/webhook/mercadopago"
+  },
+  "headersCustomizados": {
+    "X-Idempotency-Key": "{{$guid}}",
+    "X-Source": "CLINICA_ERP"
+  },
+  "timeoutSegundos": 30,
+  "limiteRequisicoesDia": 10000,
+  "observacoes": "Gateway principal para pagamentos de consultas e exames"
+}
+
+### 2. Verificar se foi criada
+GET {{baseUrl}}/integracoes/codigo/MP_BUSINESS_001
+Authorization: Bearer {{token}}
+
+### 3. Testar conexão
+POST {{baseUrl}}/integracoes/{{$guid}}/testar-conexao
+Authorization: Bearer {{token}}
+
+### ===============================================
+### FLUXO COMPLETO - INTEGRAÇÃO COM TELEMEDICINA
+### ===============================================
+
+### 1. Criar integração com plataforma de telemedicina
+POST {{baseUrl}}/integracoes
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoIntegracao": "telemedicina",
+  "nomeIntegracao": "Doctoralia Teleconsulta",
+  "descricaoApi": "Integração para agendamento e realização de teleconsultas",
+  "codigoIdentificacao": "DOCTORALIA_001",
+  "urlBase": "https://api.doctoralia.com.br",
+  "urlAutenticacao": "https://api.doctoralia.com.br/oauth2/token",
+  "urlConsulta": "https://api.doctoralia.com.br/v1/appointments",
+  "urlEnvio": "https://api.doctoralia.com.br/v1/consultations",
+  "tokenAutenticacao": "OAuth2_access_token_doctoralia",
+  "padraoComunicacao": "rest_api",
+  "formatoRetorno": "json",
+  "configuracoesAdicionais": {
+    "oauth2": {
+      "client_id": "clinica_client_id_123",
+      "client_secret": "client_secret_abc456",
+      "scope": "appointments consultations patients"
+    },
+    "platform_settings": {
+      "room_duration": 60,
+      "recording_enabled": true,
+      "waiting_room": true
+    }
+  },
+  "headersCustomizados": {
+    "X-Platform": "ERPLAB",
+    "Accept": "application/vnd.doctoralia.v1+json"
+  },
+  "timeoutSegundos": 60,
+  "limiteRequisicoesDia": 2000,
+  "observacoes": "Plataforma para teleconsultas e agendamentos online"
+}
+
+### 2. Verificar criação
+GET {{baseUrl}}/integracoes/codigo/DOCTORALIA_001
+Authorization: Bearer {{token}}
+
+### 3. Testar e ativar
+POST {{baseUrl}}/integracoes/{{$guid}}/testar-conexao
+Authorization: Bearer {{token}}
+
+### ===============================
+### OPERAÇÕES DE MANUTENÇÃO
+### ===============================
+
+### Listar todas as integrações criadas
+GET {{baseUrl}}/integracoes
+Authorization: Bearer {{token}}
+
+### Pesquisar integrações por tipo
+GET {{baseUrl}}/integracoes/tipo/laboratorio_apoio
+Authorization: Bearer {{token}}
+
+### Pesquisar integrações ativas
+GET {{baseUrl}}/integracoes/ativas
+Authorization: Bearer {{token}}
+
+### Obter estatísticas finais
+GET {{baseUrl}}/integracoes/estatisticas
+Authorization: Bearer {{token}}
+
+### Buscar por termo
+GET {{baseUrl}}/integracoes/search?q=central
+Authorization: Bearer {{token}}
+
+### ===============================
+### CENÁRIOS DE ERRO COMUNS
+### ===============================
+
+### Tentar criar integração com código duplicado
+POST {{baseUrl}}/integracoes
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoIntegracao": "laboratorio_apoio",
+  "nomeIntegracao": "Laboratório Duplicado",
+  "codigoIdentificacao": "LAB_CENTRAL_001",
+  "urlApiExames": "https://api.test.com"
+}
+
+### Expected Response: 409 Conflict
+
+###
+
+### Buscar integração inexistente
+GET {{baseUrl}}/integracoes/codigo/CODIGO_INEXISTENTE
+Authorization: Bearer {{token}}
+
+### Expected Response: 404 Not Found
+
+###
+
+### Atualizar integração inexistente
+PATCH {{baseUrl}}/integracoes/00000000-0000-0000-0000-000000000000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nomeIntegracao": "Teste"
+}
+
+### Expected Response: 404 Not Found
+
+###

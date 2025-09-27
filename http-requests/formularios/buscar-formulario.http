@@ -1,0 +1,79 @@
+### Buscar formulário por ID
+GET {{baseUrl}}/formularios/550e8400-e29b-41d4-a716-446655440000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "550e8400-e29b-41d4-a716-446655440000",
+#   "codigoFormulario": "ANAM_001",
+#   "nomeFormulario": "Formulário de Anamnese Geral",
+#   "descricao": "Formulário padrão para coleta de dados de anamnese",
+#   "tipo": "anamnese",
+#   "status": "rascunho",
+#   "ativo": true,
+#   "campos": [...],
+#   "respostas": [...],
+#   "createdAt": "2025-01-21T10:00:00.000Z",
+#   "updatedAt": "2025-01-21T10:00:00.000Z"
+# }
+
+###
+
+### Buscar formulário por código
+GET {{baseUrl}}/formularios/codigo/ANAM_001
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar formulário por código - Exames
+GET {{baseUrl}}/formularios/codigo/EXAM_LAB_001
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar formulário por código - Satisfação
+GET {{baseUrl}}/formularios/codigo/SAT_001
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar formulário por código - Consentimento
+GET {{baseUrl}}/formularios/codigo/CONSENT_001
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar formulário por código - Triagem
+GET {{baseUrl}}/formularios/codigo/TRIAG_001
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar formulário inexistente (deve retornar 404)
+GET {{baseUrl}}/formularios/codigo/CODIGO_INEXISTENTE
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Formulário com código CODIGO_INEXISTENTE não encontrado",
+#   "error": "Not Found"
+# }
+
+###
+
+### Buscar formulário por ID inexistente (deve retornar 404)
+GET {{baseUrl}}/formularios/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Formulário com ID 00000000-0000-0000-0000-000000000000 não encontrado",
+#   "error": "Not Found"
+# }
+
+###

@@ -24,6 +24,8 @@ import { FornecedoresModule } from './modules/fornecedores/fornecedores.module';
 import { PrestadoresServicoModule } from './modules/prestadores-servico/prestadores-servico.module';
 import { KitsModule } from './modules/kits/kits.module';
 import { FinanceiroModule } from './modules/financeiro/financeiro.module';
+import { IntegracoesModule } from './modules/integracoes/integracoes.module';
+import { FormulariosModule } from './modules/formularios/formularios.module';
 import { SeedModule } from './database/seeds/seed.module';
 
 @Module({
@@ -62,6 +64,8 @@ import { SeedModule } from './database/seeds/seed.module';
     PrestadoresServicoModule,
     KitsModule,
     FinanceiroModule,
+    IntegracoesModule,
+    FormulariosModule,
     SeedModule,
 
     // Próximos módulos a serem implementados:
@@ -72,7 +76,6 @@ import { SeedModule } from './database/seeds/seed.module';
     // BiModule,
     // PortalClienteModule,
     // PortalMedicoModule,
-    // IntegracoesModule,
   ],
   controllers: [HealthController],
   providers: [

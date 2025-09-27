@@ -1,0 +1,169 @@
+### Pesquisar integrações por termo
+GET {{baseUrl}}/integracoes/search?q=laboratorio
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid-1",
+#     "nomeIntegracao": "Laboratório ABC",
+#     "tipoIntegracao": "laboratorio_apoio",
+#     "codigoIdentificacao": "LAB_ABC_001"
+#   }
+# ]
+
+###
+
+### Pesquisar por "telemedicina"
+GET {{baseUrl}}/integracoes/search?q=telemedicina
+Authorization: Bearer {{token}}
+
+###
+
+### Pesquisar por "pagamento"
+GET {{baseUrl}}/integracoes/search?q=pagamento
+Authorization: Bearer {{token}}
+
+###
+
+### Obter estatísticas das integrações
+GET {{baseUrl}}/integracoes/estatisticas
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "total": 15,
+#   "ativas": 12,
+#   "inativas": 3,
+#   "porTipo": [
+#     { "tipo": "laboratorio_apoio", "total": "8" },
+#     { "tipo": "telemedicina", "total": "3" },
+#     { "tipo": "gateway_pagamento", "total": "2" },
+#     { "tipo": "sefaz", "total": "2" }
+#   ],
+#   "porStatus": [
+#     { "status": "ativa", "total": "12" },
+#     { "status": "inativa", "total": "2" },
+#     { "status": "em_configuracao", "total": "1" }
+#   ]
+# }
+
+###
+
+### Alternar status ativo/inativo
+PATCH {{baseUrl}}/integracoes/550e8400-e29b-41d4-a716-446655440000/toggle-status
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "550e8400-e29b-41d4-a716-446655440000",
+#   "ativo": false,
+#   "updatedAt": "2025-01-21T16:00:00.000Z"
+# }
+
+###
+
+### Atualizar status da integração para "ativa"
+PATCH {{baseUrl}}/integracoes/550e8400-e29b-41d4-a716-446655440000/status?status=ativa
+Authorization: Bearer {{token}}
+
+###
+
+### Atualizar status da integração para "manutencao"
+PATCH {{baseUrl}}/integracoes/550e8400-e29b-41d4-a716-446655440000/status?status=manutencao
+Authorization: Bearer {{token}}
+
+###
+
+### Atualizar status da integração para "erro"
+PATCH {{baseUrl}}/integracoes/550e8400-e29b-41d4-a716-446655440000/status?status=erro
+Authorization: Bearer {{token}}
+
+###
+
+### Testar conexão da integração
+POST {{baseUrl}}/integracoes/550e8400-e29b-41d4-a716-446655440000/testar-conexao
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "sucesso": true,
+#   "mensagem": "Conexão testada com sucesso",
+#   "detalhes": {
+#     "url": "https://api.laboratorio-abc.com.br/v1/exames",
+#     "tipo": "laboratorio_apoio",
+#     "timestampTeste": "2025-01-21T16:05:00.000Z",
+#     "responseTime": 250,
+#     "statusCode": 200
+#   }
+# }
+
+###
+
+### Testar conexão que pode falhar
+POST {{baseUrl}}/integracoes/550e8400-e29b-41d4-a716-446655440000/testar-conexao
+Authorization: Bearer {{token}}
+
+### Expected Response (em caso de falha)
+# Status: 200 OK
+# {
+#   "sucesso": false,
+#   "mensagem": "Falha na conexão",
+#   "detalhes": {
+#     "url": "https://api.laboratorio-abc.com.br/v1/exames",
+#     "tipo": "laboratorio_apoio",
+#     "timestampTeste": "2025-01-21T16:05:00.000Z",
+#     "erro": "Connection timeout after 30s"
+#   }
+# }
+
+###
+
+### Sincronizar dados da integração
+POST {{baseUrl}}/integracoes/550e8400-e29b-41d4-a716-446655440000/sincronizar
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "sucesso": true,
+#   "dadosSincronizados": 150,
+#   "ultimaSincronizacao": "2025-01-21T16:10:00.000Z",
+#   "detalhes": {
+#     "examesNovos": 25,
+#     "resultadosAtualizados": 125,
+#     "erros": 0
+#   }
+# }
+
+###
+
+### Remover integração
+DELETE {{baseUrl}}/integracoes/550e8400-e29b-41d4-a716-446655440000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Integração removida com sucesso"
+# }
+
+###
+
+### Tentar remover integração inexistente (deve retornar 404)
+DELETE {{baseUrl}}/integracoes/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Integração com ID 00000000-0000-0000-0000-000000000000 não encontrada",
+#   "error": "Not Found"
+# }
+
+###

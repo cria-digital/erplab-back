@@ -10189,6 +10189,2901 @@
         "summary": "Alternar status do banco (ativo/inativo)",
         "tags": ["Bancos"]
       }
+    },
+    "/api/v1/api/v1/integracoes": {
+      "post": {
+        "operationId": "IntegracoesController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateIntegracaoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Integração criada com sucesso"
+          },
+          "400": {
+            "description": "Dados inválidos"
+          },
+          "409": {
+            "description": "Integração já existe"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Criar nova integração",
+        "tags": ["Integrações"]
+      },
+      "get": {
+        "operationId": "IntegracoesController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de integrações"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar todas as integrações",
+        "tags": ["Integrações"]
+      }
+    },
+    "/api/v1/api/v1/integracoes/ativos": {
+      "get": {
+        "operationId": "IntegracoesController_findAtivos",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de integrações ativas"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar integrações ativas",
+        "tags": ["Integrações"]
+      }
+    },
+    "/api/v1/api/v1/integracoes/search": {
+      "get": {
+        "operationId": "IntegracoesController_search",
+        "parameters": [
+          {
+            "name": "q",
+            "required": true,
+            "in": "query",
+            "description": "Termo de busca",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resultados da busca"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar integrações por termo",
+        "tags": ["Integrações"]
+      }
+    },
+    "/api/v1/api/v1/integracoes/estatisticas": {
+      "get": {
+        "operationId": "IntegracoesController_getEstatisticas",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Estatísticas das integrações"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Obter estatísticas das integrações",
+        "tags": ["Integrações"]
+      }
+    },
+    "/api/v1/api/v1/integracoes/tipo/{tipo}": {
+      "get": {
+        "operationId": "IntegracoesController_findByTipo",
+        "parameters": [
+          {
+            "name": "tipo",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "enum": [
+                "laboratorio_apoio",
+                "telemedicina",
+                "gateway_pagamento",
+                "banco",
+                "prefeitura_nfse",
+                "sefaz",
+                "receita_federal",
+                "power_bi",
+                "pabx",
+                "correios",
+                "ocr",
+                "convenios",
+                "adquirentes",
+                "pacs",
+                "email",
+                "whatsapp",
+                "concessionarias",
+                "outros"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de integrações do tipo especificado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar integrações por tipo",
+        "tags": ["Integrações"]
+      }
+    },
+    "/api/v1/api/v1/integracoes/status/{status}": {
+      "get": {
+        "operationId": "IntegracoesController_findByStatus",
+        "parameters": [
+          {
+            "name": "status",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "enum": [
+                "ativa",
+                "inativa",
+                "em_configuracao",
+                "erro",
+                "manutencao"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de integrações com o status especificado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar integrações por status",
+        "tags": ["Integrações"]
+      }
+    },
+    "/api/v1/api/v1/integracoes/unidade/{unidadeId}": {
+      "get": {
+        "operationId": "IntegracoesController_findByUnidadeSaude",
+        "parameters": [
+          {
+            "name": "unidadeId",
+            "required": true,
+            "in": "path",
+            "description": "ID da unidade de saúde",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de integrações da unidade"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar integrações por unidade de saúde",
+        "tags": ["Integrações"]
+      }
+    },
+    "/api/v1/api/v1/integracoes/codigo/{codigo}": {
+      "get": {
+        "operationId": "IntegracoesController_findByCodigo",
+        "parameters": [
+          {
+            "name": "codigo",
+            "required": true,
+            "in": "path",
+            "description": "Código da integração",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Integração encontrada"
+          },
+          "404": {
+            "description": "Integração não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar integração por código",
+        "tags": ["Integrações"]
+      }
+    },
+    "/api/v1/api/v1/integracoes/{id}": {
+      "get": {
+        "operationId": "IntegracoesController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da integração",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Integração encontrada"
+          },
+          "404": {
+            "description": "Integração não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar integração por ID",
+        "tags": ["Integrações"]
+      },
+      "patch": {
+        "operationId": "IntegracoesController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da integração",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateIntegracaoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Integração atualizada com sucesso"
+          },
+          "400": {
+            "description": "Dados inválidos"
+          },
+          "404": {
+            "description": "Integração não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Atualizar integração",
+        "tags": ["Integrações"]
+      },
+      "delete": {
+        "operationId": "IntegracoesController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da integração",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Integração removida com sucesso"
+          },
+          "404": {
+            "description": "Integração não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Remover integração",
+        "tags": ["Integrações"]
+      }
+    },
+    "/api/v1/api/v1/integracoes/{id}/toggle-status": {
+      "patch": {
+        "operationId": "IntegracoesController_toggleStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da integração",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status alterado com sucesso"
+          },
+          "404": {
+            "description": "Integração não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Alternar status ativo/inativo da integração",
+        "tags": ["Integrações"]
+      }
+    },
+    "/api/v1/api/v1/integracoes/{id}/status": {
+      "patch": {
+        "operationId": "IntegracoesController_updateStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da integração",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "ativa",
+                "inativa",
+                "em_configuracao",
+                "erro",
+                "manutencao"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status atualizado com sucesso"
+          },
+          "404": {
+            "description": "Integração não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Atualizar status da integração",
+        "tags": ["Integrações"]
+      }
+    },
+    "/api/v1/api/v1/integracoes/{id}/testar-conexao": {
+      "post": {
+        "operationId": "IntegracoesController_testarConexao",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da integração",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resultado do teste de conexão"
+          },
+          "404": {
+            "description": "Integração não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Testar conexão com a integração",
+        "tags": ["Integrações"]
+      }
+    },
+    "/api/v1/api/v1/formularios": {
+      "post": {
+        "operationId": "FormulariosController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFormularioDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Formulário criado com sucesso"
+          },
+          "400": {
+            "description": "Dados inválidos"
+          },
+          "409": {
+            "description": "Formulário já existe"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Criar novo formulário",
+        "tags": ["Formulários"]
+      },
+      "get": {
+        "operationId": "FormulariosController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de formulários"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar todos os formulários",
+        "tags": ["Formulários"]
+      }
+    },
+    "/api/v1/api/v1/formularios/ativos": {
+      "get": {
+        "operationId": "FormulariosController_findAtivos",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de formulários ativos"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar formulários ativos",
+        "tags": ["Formulários"]
+      }
+    },
+    "/api/v1/api/v1/formularios/publicados": {
+      "get": {
+        "operationId": "FormulariosController_findPublicados",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de formulários publicados"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar formulários publicados",
+        "tags": ["Formulários"]
+      }
+    },
+    "/api/v1/api/v1/formularios/search": {
+      "get": {
+        "operationId": "FormulariosController_search",
+        "parameters": [
+          {
+            "name": "q",
+            "required": true,
+            "in": "query",
+            "description": "Termo de busca",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resultados da busca"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar formulários por termo",
+        "tags": ["Formulários"]
+      }
+    },
+    "/api/v1/api/v1/formularios/estatisticas": {
+      "get": {
+        "operationId": "FormulariosController_getEstatisticas",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Estatísticas dos formulários"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Obter estatísticas dos formulários",
+        "tags": ["Formulários"]
+      }
+    },
+    "/api/v1/api/v1/formularios/tipo/{tipo}": {
+      "get": {
+        "operationId": "FormulariosController_findByTipo",
+        "parameters": [
+          {
+            "name": "tipo",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "enum": [
+                "exame",
+                "anamnese",
+                "prescricao",
+                "laudo",
+                "receita",
+                "atestado",
+                "declaracao",
+                "questionario",
+                "ficha_clinica",
+                "evolucao",
+                "termo_consentimento",
+                "customizado"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de formulários do tipo especificado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar formulários por tipo",
+        "tags": ["Formulários"]
+      }
+    },
+    "/api/v1/api/v1/formularios/status/{status}": {
+      "get": {
+        "operationId": "FormulariosController_findByStatus",
+        "parameters": [
+          {
+            "name": "status",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "enum": ["rascunho", "publicado", "arquivado", "em_revisao"],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de formulários com o status especificado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar formulários por status",
+        "tags": ["Formulários"]
+      }
+    },
+    "/api/v1/api/v1/formularios/unidade/{unidadeId}": {
+      "get": {
+        "operationId": "FormulariosController_findByUnidadeSaude",
+        "parameters": [
+          {
+            "name": "unidadeId",
+            "required": true,
+            "in": "path",
+            "description": "ID da unidade de saúde",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de formulários da unidade"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar formulários por unidade de saúde",
+        "tags": ["Formulários"]
+      }
+    },
+    "/api/v1/api/v1/formularios/codigo/{codigo}": {
+      "get": {
+        "operationId": "FormulariosController_findByCodigo",
+        "parameters": [
+          {
+            "name": "codigo",
+            "required": true,
+            "in": "path",
+            "description": "Código do formulário",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Formulário encontrado"
+          },
+          "404": {
+            "description": "Formulário não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar formulário por código",
+        "tags": ["Formulários"]
+      }
+    },
+    "/api/v1/api/v1/formularios/{id}": {
+      "get": {
+        "operationId": "FormulariosController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do formulário",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Formulário encontrado"
+          },
+          "404": {
+            "description": "Formulário não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar formulário por ID",
+        "tags": ["Formulários"]
+      },
+      "patch": {
+        "operationId": "FormulariosController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do formulário",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateFormularioDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Formulário atualizado com sucesso"
+          },
+          "400": {
+            "description": "Dados inválidos"
+          },
+          "404": {
+            "description": "Formulário não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Atualizar formulário",
+        "tags": ["Formulários"]
+      },
+      "delete": {
+        "operationId": "FormulariosController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do formulário",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Formulário removido com sucesso"
+          },
+          "400": {
+            "description": "Formulário não pode ser removido"
+          },
+          "404": {
+            "description": "Formulário não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Remover formulário",
+        "tags": ["Formulários"]
+      }
+    },
+    "/api/v1/api/v1/formularios/{id}/toggle-status": {
+      "patch": {
+        "operationId": "FormulariosController_toggleStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do formulário",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status alterado com sucesso"
+          },
+          "404": {
+            "description": "Formulário não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Alternar status ativo/inativo do formulário",
+        "tags": ["Formulários"]
+      }
+    },
+    "/api/v1/api/v1/formularios/{id}/status": {
+      "patch": {
+        "operationId": "FormulariosController_updateStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do formulário",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "enum": ["rascunho", "publicado", "arquivado", "em_revisao"],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status atualizado com sucesso"
+          },
+          "404": {
+            "description": "Formulário não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Atualizar status do formulário",
+        "tags": ["Formulários"]
+      }
+    },
+    "/api/v1/api/v1/formularios/{id}/publicar": {
+      "post": {
+        "operationId": "FormulariosController_publicar",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do formulário",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Formulário publicado com sucesso"
+          },
+          "400": {
+            "description": "Formulário não pode ser publicado"
+          },
+          "404": {
+            "description": "Formulário não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Publicar formulário",
+        "tags": ["Formulários"]
+      }
+    },
+    "/api/v1/api/v1/formularios/{id}/criar-versao": {
+      "post": {
+        "operationId": "FormulariosController_criarVersao",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do formulário",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Nova versão criada com sucesso"
+          },
+          "404": {
+            "description": "Formulário não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Criar nova versão do formulário",
+        "tags": ["Formulários"]
+      }
+    },
+    "/api/v1/api/v1/formularios/{id}/validar": {
+      "post": {
+        "operationId": "FormulariosController_validarFormulario",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do formulário",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resultado da validação"
+          },
+          "404": {
+            "description": "Formulário não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Validar formulário",
+        "tags": ["Formulários"]
+      }
+    },
+    "/api/v1/api/v1/campos-formulario": {
+      "post": {
+        "operationId": "CampoFormularioController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCampoFormularioDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Campo criado com sucesso"
+          },
+          "400": {
+            "description": "Dados inválidos"
+          },
+          "409": {
+            "description": "Campo já existe"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Criar novo campo de formulário",
+        "tags": ["Campos de Formulário"]
+      }
+    },
+    "/api/v1/api/v1/campos-formulario/formulario/{formularioId}": {
+      "get": {
+        "operationId": "CampoFormularioController_findByFormulario",
+        "parameters": [
+          {
+            "name": "formularioId",
+            "required": true,
+            "in": "path",
+            "description": "ID do formulário",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de campos do formulário"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar campos de um formulário",
+        "tags": ["Campos de Formulário"]
+      }
+    },
+    "/api/v1/api/v1/campos-formulario/formulario/{formularioId}/ativos": {
+      "get": {
+        "operationId": "CampoFormularioController_findAtivos",
+        "parameters": [
+          {
+            "name": "formularioId",
+            "required": true,
+            "in": "path",
+            "description": "ID do formulário",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de campos ativos do formulário"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar campos ativos de um formulário",
+        "tags": ["Campos de Formulário"]
+      }
+    },
+    "/api/v1/api/v1/campos-formulario/formulario/{formularioId}/obrigatorios": {
+      "get": {
+        "operationId": "CampoFormularioController_findObrigatorios",
+        "parameters": [
+          {
+            "name": "formularioId",
+            "required": true,
+            "in": "path",
+            "description": "ID do formulário",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de campos obrigatórios do formulário"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar campos obrigatórios de um formulário",
+        "tags": ["Campos de Formulário"]
+      }
+    },
+    "/api/v1/api/v1/campos-formulario/formulario/{formularioId}/tipo/{tipo}": {
+      "get": {
+        "operationId": "CampoFormularioController_findByTipo",
+        "parameters": [
+          {
+            "name": "formularioId",
+            "required": true,
+            "in": "path",
+            "description": "ID do formulário",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tipo",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "enum": [
+                "texto",
+                "texto_longo",
+                "texto_rico",
+                "email",
+                "url",
+                "telefone",
+                "cpf",
+                "cnpj",
+                "cep",
+                "numero",
+                "decimal",
+                "moeda",
+                "porcentagem",
+                "data",
+                "hora",
+                "data_hora",
+                "periodo_data",
+                "select",
+                "radio",
+                "checkbox",
+                "switch",
+                "multipla_escolha",
+                "arquivo",
+                "imagem",
+                "assinatura",
+                "localizacao",
+                "codigo_barras",
+                "qr_code",
+                "secao",
+                "separador",
+                "titulo",
+                "paragrafo",
+                "html",
+                "tabela",
+                "lista",
+                "matriz",
+                "formula",
+                "condicional"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de campos do tipo especificado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar campos por tipo em um formulário",
+        "tags": ["Campos de Formulário"]
+      }
+    },
+    "/api/v1/api/v1/campos-formulario/formulario/{formularioId}/search": {
+      "get": {
+        "operationId": "CampoFormularioController_search",
+        "parameters": [
+          {
+            "name": "formularioId",
+            "required": true,
+            "in": "path",
+            "description": "ID do formulário",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "required": true,
+            "in": "query",
+            "description": "Termo de busca",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resultados da busca"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar campos em um formulário",
+        "tags": ["Campos de Formulário"]
+      }
+    },
+    "/api/v1/api/v1/campos-formulario/formulario/{formularioId}/codigo/{codigo}": {
+      "get": {
+        "operationId": "CampoFormularioController_findByCodigo",
+        "parameters": [
+          {
+            "name": "formularioId",
+            "required": true,
+            "in": "path",
+            "description": "ID do formulário",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "codigo",
+            "required": true,
+            "in": "path",
+            "description": "Código do campo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Campo encontrado"
+          },
+          "404": {
+            "description": "Campo não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar campo por código em um formulário",
+        "tags": ["Campos de Formulário"]
+      }
+    },
+    "/api/v1/api/v1/campos-formulario/formulario/{formularioId}/estatisticas": {
+      "get": {
+        "operationId": "CampoFormularioController_getEstatisticas",
+        "parameters": [
+          {
+            "name": "formularioId",
+            "required": true,
+            "in": "path",
+            "description": "ID do formulário",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Estatísticas dos campos"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Obter estatísticas dos campos de um formulário",
+        "tags": ["Campos de Formulário"]
+      }
+    },
+    "/api/v1/api/v1/campos-formulario/{id}": {
+      "get": {
+        "operationId": "CampoFormularioController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do campo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Campo encontrado"
+          },
+          "404": {
+            "description": "Campo não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar campo por ID",
+        "tags": ["Campos de Formulário"]
+      },
+      "patch": {
+        "operationId": "CampoFormularioController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do campo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCampoFormularioDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Campo atualizado com sucesso"
+          },
+          "400": {
+            "description": "Dados inválidos"
+          },
+          "404": {
+            "description": "Campo não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Atualizar campo",
+        "tags": ["Campos de Formulário"]
+      },
+      "delete": {
+        "operationId": "CampoFormularioController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do campo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Campo removido com sucesso"
+          },
+          "404": {
+            "description": "Campo não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Remover campo",
+        "tags": ["Campos de Formulário"]
+      }
+    },
+    "/api/v1/api/v1/campos-formulario/formulario/{formularioId}/reordenar": {
+      "patch": {
+        "operationId": "CampoFormularioController_reordenar",
+        "parameters": [
+          {
+            "name": "formularioId",
+            "required": true,
+            "in": "path",
+            "description": "ID do formulário",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Campos reordenados com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Reordenar campos de um formulário",
+        "tags": ["Campos de Formulário"]
+      }
+    },
+    "/api/v1/api/v1/campos-formulario/{id}/duplicar": {
+      "post": {
+        "operationId": "CampoFormularioController_duplicar",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do campo",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "codigo",
+            "required": false,
+            "in": "query",
+            "description": "Novo código do campo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Campo duplicado com sucesso"
+          },
+          "400": {
+            "description": "Código já existe"
+          },
+          "404": {
+            "description": "Campo não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Duplicar campo",
+        "tags": ["Campos de Formulário"]
+      }
+    },
+    "/api/v1/api/v1/campos-formulario/{id}/toggle-status": {
+      "patch": {
+        "operationId": "CampoFormularioController_toggleStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do campo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status alterado com sucesso"
+          },
+          "404": {
+            "description": "Campo não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Alternar status ativo/inativo do campo",
+        "tags": ["Campos de Formulário"]
+      }
+    },
+    "/api/v1/api/v1/campos-formulario/{id}/status": {
+      "patch": {
+        "operationId": "CampoFormularioController_updateStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do campo",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "enum": ["ativo", "inativo", "oculto"],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status atualizado com sucesso"
+          },
+          "404": {
+            "description": "Campo não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Atualizar status do campo",
+        "tags": ["Campos de Formulário"]
+      }
+    },
+    "/api/v1/api/v1/campos-formulario/{id}/validar": {
+      "post": {
+        "operationId": "CampoFormularioController_validarCampo",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do campo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resultado da validação"
+          },
+          "404": {
+            "description": "Campo não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Validar campo",
+        "tags": ["Campos de Formulário"]
+      }
+    },
+    "/api/v1/api/v1/alternativas-campo": {
+      "post": {
+        "operationId": "AlternativaCampoController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAlternativaCampoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Alternativa criada com sucesso"
+          },
+          "400": {
+            "description": "Dados inválidos"
+          },
+          "409": {
+            "description": "Alternativa já existe"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Criar nova alternativa de campo",
+        "tags": ["Alternativas de Campo"]
+      }
+    },
+    "/api/v1/api/v1/alternativas-campo/campo/{campoId}": {
+      "get": {
+        "operationId": "AlternativaCampoController_findByCampo",
+        "parameters": [
+          {
+            "name": "campoId",
+            "required": true,
+            "in": "path",
+            "description": "ID do campo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de alternativas do campo"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar alternativas de um campo",
+        "tags": ["Alternativas de Campo"]
+      }
+    },
+    "/api/v1/api/v1/alternativas-campo/campo/{campoId}/ativas": {
+      "get": {
+        "operationId": "AlternativaCampoController_findAtivas",
+        "parameters": [
+          {
+            "name": "campoId",
+            "required": true,
+            "in": "path",
+            "description": "ID do campo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de alternativas ativas do campo"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar alternativas ativas de um campo",
+        "tags": ["Alternativas de Campo"]
+      }
+    },
+    "/api/v1/api/v1/alternativas-campo/campo/{campoId}/padrao": {
+      "get": {
+        "operationId": "AlternativaCampoController_findPadrao",
+        "parameters": [
+          {
+            "name": "campoId",
+            "required": true,
+            "in": "path",
+            "description": "ID do campo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de alternativas padrão do campo"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar alternativas padrão de um campo",
+        "tags": ["Alternativas de Campo"]
+      }
+    },
+    "/api/v1/api/v1/alternativas-campo/campo/{campoId}/search": {
+      "get": {
+        "operationId": "AlternativaCampoController_search",
+        "parameters": [
+          {
+            "name": "campoId",
+            "required": true,
+            "in": "path",
+            "description": "ID do campo",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "required": true,
+            "in": "query",
+            "description": "Termo de busca",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resultados da busca"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar alternativas em um campo",
+        "tags": ["Alternativas de Campo"]
+      }
+    },
+    "/api/v1/api/v1/alternativas-campo/campo/{campoId}/valor/{valor}": {
+      "get": {
+        "operationId": "AlternativaCampoController_findByValor",
+        "parameters": [
+          {
+            "name": "campoId",
+            "required": true,
+            "in": "path",
+            "description": "ID do campo",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "valor",
+            "required": true,
+            "in": "path",
+            "description": "Valor da alternativa",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Alternativa encontrada"
+          },
+          "404": {
+            "description": "Alternativa não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar alternativa por valor em um campo",
+        "tags": ["Alternativas de Campo"]
+      }
+    },
+    "/api/v1/api/v1/alternativas-campo/campo/{campoId}/codigo/{codigo}": {
+      "get": {
+        "operationId": "AlternativaCampoController_findByCodigo",
+        "parameters": [
+          {
+            "name": "campoId",
+            "required": true,
+            "in": "path",
+            "description": "ID do campo",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "codigo",
+            "required": true,
+            "in": "path",
+            "description": "Código da alternativa",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Alternativa encontrada"
+          },
+          "404": {
+            "description": "Alternativa não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar alternativa por código em um campo",
+        "tags": ["Alternativas de Campo"]
+      }
+    },
+    "/api/v1/api/v1/alternativas-campo/campo/{campoId}/estatisticas": {
+      "get": {
+        "operationId": "AlternativaCampoController_getEstatisticas",
+        "parameters": [
+          {
+            "name": "campoId",
+            "required": true,
+            "in": "path",
+            "description": "ID do campo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Estatísticas das alternativas"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Obter estatísticas das alternativas de um campo",
+        "tags": ["Alternativas de Campo"]
+      }
+    },
+    "/api/v1/api/v1/alternativas-campo/{id}": {
+      "get": {
+        "operationId": "AlternativaCampoController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da alternativa",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Alternativa encontrada"
+          },
+          "404": {
+            "description": "Alternativa não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar alternativa por ID",
+        "tags": ["Alternativas de Campo"]
+      },
+      "patch": {
+        "operationId": "AlternativaCampoController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da alternativa",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAlternativaCampoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Alternativa atualizada com sucesso"
+          },
+          "400": {
+            "description": "Dados inválidos"
+          },
+          "404": {
+            "description": "Alternativa não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Atualizar alternativa",
+        "tags": ["Alternativas de Campo"]
+      },
+      "delete": {
+        "operationId": "AlternativaCampoController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da alternativa",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Alternativa removida com sucesso"
+          },
+          "404": {
+            "description": "Alternativa não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Remover alternativa",
+        "tags": ["Alternativas de Campo"]
+      }
+    },
+    "/api/v1/api/v1/alternativas-campo/campo/{campoId}/reordenar": {
+      "patch": {
+        "operationId": "AlternativaCampoController_reordenar",
+        "parameters": [
+          {
+            "name": "campoId",
+            "required": true,
+            "in": "path",
+            "description": "ID do campo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Alternativas reordenadas com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Reordenar alternativas de um campo",
+        "tags": ["Alternativas de Campo"]
+      }
+    },
+    "/api/v1/api/v1/alternativas-campo/{id}/duplicar": {
+      "post": {
+        "operationId": "AlternativaCampoController_duplicar",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da alternativa",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "codigo",
+            "required": false,
+            "in": "query",
+            "description": "Novo código da alternativa",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Alternativa duplicada com sucesso"
+          },
+          "400": {
+            "description": "Código já existe"
+          },
+          "404": {
+            "description": "Alternativa não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Duplicar alternativa",
+        "tags": ["Alternativas de Campo"]
+      }
+    },
+    "/api/v1/api/v1/alternativas-campo/{id}/toggle-status": {
+      "patch": {
+        "operationId": "AlternativaCampoController_toggleStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da alternativa",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status alterado com sucesso"
+          },
+          "404": {
+            "description": "Alternativa não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Alternar status ativo/inativo da alternativa",
+        "tags": ["Alternativas de Campo"]
+      }
+    },
+    "/api/v1/api/v1/alternativas-campo/{id}/status": {
+      "patch": {
+        "operationId": "AlternativaCampoController_updateStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da alternativa",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "enum": ["ativa", "inativa"],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status atualizado com sucesso"
+          },
+          "404": {
+            "description": "Alternativa não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Atualizar status da alternativa",
+        "tags": ["Alternativas de Campo"]
+      }
+    },
+    "/api/v1/api/v1/alternativas-campo/{id}/definir-padrao": {
+      "post": {
+        "operationId": "AlternativaCampoController_definirPadrao",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da alternativa",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Alternativa definida como padrão"
+          },
+          "404": {
+            "description": "Alternativa não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Definir alternativa como padrão",
+        "tags": ["Alternativas de Campo"]
+      }
+    },
+    "/api/v1/api/v1/alternativas-campo/campo/{campoId}/remover-padrao": {
+      "delete": {
+        "operationId": "AlternativaCampoController_removerPadrao",
+        "parameters": [
+          {
+            "name": "campoId",
+            "required": true,
+            "in": "path",
+            "description": "ID do campo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Padrão removido com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Remover padrão de todas as alternativas do campo",
+        "tags": ["Alternativas de Campo"]
+      }
+    },
+    "/api/v1/api/v1/alternativas-campo/campo/{campoId}/importar": {
+      "post": {
+        "operationId": "AlternativaCampoController_importarAlternativas",
+        "parameters": [
+          {
+            "name": "campoId",
+            "required": true,
+            "in": "path",
+            "description": "ID do campo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Alternativas importadas com sucesso"
+          },
+          "400": {
+            "description": "Dados inválidos"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Importar alternativas para um campo",
+        "tags": ["Alternativas de Campo"]
+      }
+    },
+    "/api/v1/api/v1/respostas-formulario": {
+      "post": {
+        "operationId": "RespostaFormularioController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRespostaFormularioDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Resposta criada com sucesso"
+          },
+          "400": {
+            "description": "Dados inválidos"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Criar nova resposta de formulário",
+        "tags": ["Respostas de Formulário"]
+      },
+      "get": {
+        "operationId": "RespostaFormularioController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de respostas"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar todas as respostas",
+        "tags": ["Respostas de Formulário"]
+      }
+    },
+    "/api/v1/api/v1/respostas-formulario/completas": {
+      "get": {
+        "operationId": "RespostaFormularioController_findCompletas",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de respostas completas"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar respostas completas",
+        "tags": ["Respostas de Formulário"]
+      }
+    },
+    "/api/v1/api/v1/respostas-formulario/pendentes-revisao": {
+      "get": {
+        "operationId": "RespostaFormularioController_findPendentesRevisao",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de respostas pendentes de revisão"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar respostas pendentes de revisão",
+        "tags": ["Respostas de Formulário"]
+      }
+    },
+    "/api/v1/api/v1/respostas-formulario/assinadas-digitalmente": {
+      "get": {
+        "operationId": "RespostaFormularioController_findAssinadasDigitalmente",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de respostas assinadas digitalmente"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar respostas assinadas digitalmente",
+        "tags": ["Respostas de Formulário"]
+      }
+    },
+    "/api/v1/api/v1/respostas-formulario/search": {
+      "get": {
+        "operationId": "RespostaFormularioController_search",
+        "parameters": [
+          {
+            "name": "q",
+            "required": true,
+            "in": "query",
+            "description": "Termo de busca",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resultados da busca"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar respostas por termo",
+        "tags": ["Respostas de Formulário"]
+      }
+    },
+    "/api/v1/api/v1/respostas-formulario/estatisticas": {
+      "get": {
+        "operationId": "RespostaFormularioController_getEstatisticas",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Estatísticas das respostas"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Obter estatísticas das respostas",
+        "tags": ["Respostas de Formulário"]
+      }
+    },
+    "/api/v1/api/v1/respostas-formulario/formulario/{formularioId}": {
+      "get": {
+        "operationId": "RespostaFormularioController_findByFormulario",
+        "parameters": [
+          {
+            "name": "formularioId",
+            "required": true,
+            "in": "path",
+            "description": "ID do formulário",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de respostas do formulário"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar respostas de um formulário",
+        "tags": ["Respostas de Formulário"]
+      }
+    },
+    "/api/v1/api/v1/respostas-formulario/paciente/{pacienteId}": {
+      "get": {
+        "operationId": "RespostaFormularioController_findByPaciente",
+        "parameters": [
+          {
+            "name": "pacienteId",
+            "required": true,
+            "in": "path",
+            "description": "ID do paciente",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de respostas do paciente"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar respostas de um paciente",
+        "tags": ["Respostas de Formulário"]
+      }
+    },
+    "/api/v1/api/v1/respostas-formulario/usuario/{usuarioId}": {
+      "get": {
+        "operationId": "RespostaFormularioController_findByUsuario",
+        "parameters": [
+          {
+            "name": "usuarioId",
+            "required": true,
+            "in": "path",
+            "description": "ID do usuário",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de respostas do usuário"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar respostas de um usuário",
+        "tags": ["Respostas de Formulário"]
+      }
+    },
+    "/api/v1/api/v1/respostas-formulario/status/{status}": {
+      "get": {
+        "operationId": "RespostaFormularioController_findByStatus",
+        "parameters": [
+          {
+            "name": "status",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "enum": [
+                "rascunho",
+                "em_preenchimento",
+                "concluido",
+                "revisao",
+                "aprovado",
+                "rejeitado",
+                "cancelado"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de respostas com o status especificado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar respostas por status",
+        "tags": ["Respostas de Formulário"]
+      }
+    },
+    "/api/v1/api/v1/respostas-formulario/unidade/{unidadeId}": {
+      "get": {
+        "operationId": "RespostaFormularioController_findByUnidadeSaude",
+        "parameters": [
+          {
+            "name": "unidadeId",
+            "required": true,
+            "in": "path",
+            "description": "ID da unidade de saúde",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de respostas da unidade"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar respostas de uma unidade de saúde",
+        "tags": ["Respostas de Formulário"]
+      }
+    },
+    "/api/v1/api/v1/respostas-formulario/ordem-servico/{ordemId}": {
+      "get": {
+        "operationId": "RespostaFormularioController_findByOrdemServico",
+        "parameters": [
+          {
+            "name": "ordemId",
+            "required": true,
+            "in": "path",
+            "description": "ID da ordem de serviço",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de respostas da ordem de serviço"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar respostas de uma ordem de serviço",
+        "tags": ["Respostas de Formulário"]
+      }
+    },
+    "/api/v1/api/v1/respostas-formulario/codigo/{codigo}": {
+      "get": {
+        "operationId": "RespostaFormularioController_findByCodigo",
+        "parameters": [
+          {
+            "name": "codigo",
+            "required": true,
+            "in": "path",
+            "description": "Código da resposta",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resposta encontrada"
+          },
+          "404": {
+            "description": "Resposta não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar resposta por código",
+        "tags": ["Respostas de Formulário"]
+      }
+    },
+    "/api/v1/api/v1/respostas-formulario/{id}": {
+      "get": {
+        "operationId": "RespostaFormularioController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da resposta",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resposta encontrada"
+          },
+          "404": {
+            "description": "Resposta não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar resposta por ID",
+        "tags": ["Respostas de Formulário"]
+      },
+      "patch": {
+        "operationId": "RespostaFormularioController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da resposta",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRespostaFormularioDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resposta atualizada com sucesso"
+          },
+          "400": {
+            "description": "Dados inválidos ou resposta não pode ser editada"
+          },
+          "404": {
+            "description": "Resposta não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Atualizar resposta",
+        "tags": ["Respostas de Formulário"]
+      },
+      "delete": {
+        "operationId": "RespostaFormularioController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da resposta",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resposta removida com sucesso"
+          },
+          "400": {
+            "description": "Resposta não pode ser removida"
+          },
+          "404": {
+            "description": "Resposta não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Remover resposta",
+        "tags": ["Respostas de Formulário"]
+      }
+    },
+    "/api/v1/api/v1/respostas-formulario/{id}/status": {
+      "patch": {
+        "operationId": "RespostaFormularioController_updateStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da resposta",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "rascunho",
+                "em_preenchimento",
+                "concluido",
+                "revisao",
+                "aprovado",
+                "rejeitado",
+                "cancelado"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "observacoes",
+            "required": false,
+            "in": "query",
+            "description": "Observações sobre a alteração",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status atualizado com sucesso"
+          },
+          "400": {
+            "description": "Status não pode ser alterado"
+          },
+          "404": {
+            "description": "Resposta não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Atualizar status da resposta",
+        "tags": ["Respostas de Formulário"]
+      }
+    },
+    "/api/v1/api/v1/respostas-formulario/{id}/finalizar": {
+      "post": {
+        "operationId": "RespostaFormularioController_finalizar",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da resposta",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resposta finalizada com sucesso"
+          },
+          "400": {
+            "description": "Resposta não pode ser finalizada"
+          },
+          "404": {
+            "description": "Resposta não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Finalizar resposta",
+        "tags": ["Respostas de Formulário"]
+      }
+    },
+    "/api/v1/api/v1/respostas-formulario/{id}/assinar-digitalmente": {
+      "post": {
+        "operationId": "RespostaFormularioController_assinarDigitalmente",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da resposta",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resposta assinada digitalmente com sucesso"
+          },
+          "400": {
+            "description": "Resposta não pode ser assinada"
+          },
+          "404": {
+            "description": "Resposta não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Assinar resposta digitalmente",
+        "tags": ["Respostas de Formulário"]
+      }
+    },
+    "/api/v1/api/v1/respostas-formulario/{id}/calcular-percentual": {
+      "get": {
+        "operationId": "RespostaFormularioController_calcularPercentualCompleto",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da resposta",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Percentual calculado"
+          },
+          "404": {
+            "description": "Resposta não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Calcular percentual de completude da resposta",
+        "tags": ["Respostas de Formulário"]
+      }
+    },
+    "/api/v1/api/v1/respostas-formulario/{id}/duplicar": {
+      "post": {
+        "operationId": "RespostaFormularioController_duplicar",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da resposta",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pacienteId",
+            "required": false,
+            "in": "query",
+            "description": "ID do novo paciente",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Resposta duplicada com sucesso"
+          },
+          "404": {
+            "description": "Resposta não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Duplicar resposta",
+        "tags": ["Respostas de Formulário"]
+      }
+    },
+    "/api/v1/api/v1/respostas-formulario/{id}/validar": {
+      "post": {
+        "operationId": "RespostaFormularioController_validarResposta",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da resposta",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resultado da validação"
+          },
+          "404": {
+            "description": "Resposta não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Validar resposta",
+        "tags": ["Respostas de Formulário"]
+      }
     }
   },
   "info": {
@@ -17487,6 +20382,2514 @@
             "description": "Status do banco",
             "enum": ["ativo", "inativo"],
             "default": "ativo"
+          }
+        }
+      },
+      "CreateIntegracaoDto": {
+        "type": "object",
+        "properties": {
+          "tipoIntegracao": {
+            "type": "string",
+            "description": "Tipo da integração",
+            "enum": [
+              "laboratorio_apoio",
+              "telemedicina",
+              "gateway_pagamento",
+              "banco",
+              "prefeitura_nfse",
+              "sefaz",
+              "receita_federal",
+              "power_bi",
+              "pabx",
+              "correios",
+              "ocr",
+              "convenios",
+              "adquirentes",
+              "pacs",
+              "email",
+              "whatsapp",
+              "concessionarias",
+              "outros"
+            ],
+            "example": "laboratorio_apoio"
+          },
+          "nomeIntegracao": {
+            "type": "string",
+            "description": "Nome da integração",
+            "example": "Integração Laboratório DB",
+            "maxLength": 100
+          },
+          "descricaoApi": {
+            "type": "string",
+            "description": "Descrição da API",
+            "example": "Integração para busca de exames do laboratório DB",
+            "maxLength": 255
+          },
+          "codigoIdentificacao": {
+            "type": "string",
+            "description": "Código único de identificação",
+            "example": "LAB001",
+            "maxLength": 50
+          },
+          "unidadeSaudeId": {
+            "type": "string",
+            "description": "ID da unidade de saúde",
+            "example": "uuid-da-unidade"
+          },
+          "urlApiExames": {
+            "type": "string",
+            "description": "URL da API de exames",
+            "example": "https://api.db.com.br/exames",
+            "maxLength": 500
+          },
+          "urlApiGuiaExames": {
+            "type": "string",
+            "description": "URL da API de guia de exames",
+            "example": "https://api.db.com.br/guias",
+            "maxLength": 500
+          },
+          "tokenAutenticacao": {
+            "type": "string",
+            "description": "Token de autenticação",
+            "example": "bearer_token_aqui",
+            "maxLength": 500
+          },
+          "chaveApi": {
+            "type": "string",
+            "description": "Chave da API",
+            "example": "api_key_aqui",
+            "maxLength": 500
+          },
+          "padraoComunicacao": {
+            "type": "string",
+            "description": "Padrão de comunicação",
+            "enum": [
+              "rest_api",
+              "soap",
+              "graphql",
+              "webhook",
+              "ftp",
+              "sftp",
+              "email",
+              "database",
+              "file",
+              "manual"
+            ],
+            "example": "rest_api"
+          },
+          "formatoRetorno": {
+            "type": "string",
+            "description": "Formato de retorno",
+            "enum": ["json", "xml", "csv", "txt", "pdf", "html", "binary"],
+            "example": "json"
+          },
+          "nomeLaboratorio": {
+            "type": "string",
+            "description": "Nome do laboratório (se aplicável)",
+            "example": "Laboratório DB",
+            "maxLength": 100
+          },
+          "nomePrefeitura": {
+            "type": "string",
+            "description": "Nome da prefeitura (se aplicável)",
+            "example": "Prefeitura de São Roque",
+            "maxLength": 100
+          },
+          "nomeBanco": {
+            "type": "string",
+            "description": "Nome do banco (se aplicável)",
+            "example": "Banco Bradesco",
+            "maxLength": 100
+          },
+          "nomeGateway": {
+            "type": "string",
+            "description": "Nome do gateway (se aplicável)",
+            "example": "Mercado Pago",
+            "maxLength": 100
+          },
+          "nomeConvenio": {
+            "type": "string",
+            "description": "Nome do convênio (se aplicável)",
+            "example": "Intermédica",
+            "maxLength": 100
+          },
+          "nomeAdquirente": {
+            "type": "string",
+            "description": "Nome do adquirente (se aplicável)",
+            "example": "Cielo",
+            "maxLength": 100
+          },
+          "nomeConcessionaria": {
+            "type": "string",
+            "description": "Nome da concessionária (se aplicável)",
+            "example": "CPFL Energia",
+            "maxLength": 100
+          },
+          "urlBase": {
+            "type": "string",
+            "description": "URL base da API",
+            "example": "https://api.exemplo.com.br",
+            "maxLength": 500
+          },
+          "urlAutenticacao": {
+            "type": "string",
+            "description": "URL de autenticação",
+            "example": "https://api.exemplo.com.br/auth",
+            "maxLength": 500
+          },
+          "urlConsulta": {
+            "type": "string",
+            "description": "URL de consulta",
+            "example": "https://api.exemplo.com.br/consulta",
+            "maxLength": 500
+          },
+          "urlEnvio": {
+            "type": "string",
+            "description": "URL de envio",
+            "example": "https://api.exemplo.com.br/envio",
+            "maxLength": 500
+          },
+          "urlCallback": {
+            "type": "string",
+            "description": "URL de callback",
+            "example": "https://meusite.com.br/webhook",
+            "maxLength": 500
+          },
+          "usuario": {
+            "type": "string",
+            "description": "Usuário para autenticação",
+            "example": "usuario_api",
+            "maxLength": 255
+          },
+          "senha": {
+            "type": "string",
+            "description": "Senha para autenticação",
+            "example": "senha_secreta",
+            "maxLength": 255
+          },
+          "certificadoDigital": {
+            "type": "string",
+            "description": "Caminho do certificado digital",
+            "example": "/path/to/certificate.pfx",
+            "maxLength": 500
+          },
+          "senhaCertificado": {
+            "type": "string",
+            "description": "Senha do certificado digital",
+            "example": "senha_certificado",
+            "maxLength": 255
+          },
+          "configuracoesAdicionais": {
+            "type": "object",
+            "description": "Configurações adicionais em JSON",
+            "example": {
+              "retry": 3,
+              "timeout": 30000
+            }
+          },
+          "headersCustomizados": {
+            "type": "object",
+            "description": "Headers customizados em JSON",
+            "example": {
+              "Content-Type": "application/json",
+              "X-API-Version": "v1"
+            }
+          },
+          "parametrosConexao": {
+            "type": "object",
+            "description": "Parâmetros de conexão em JSON",
+            "example": {
+              "pool_size": 10,
+              "keep_alive": true
+            }
+          },
+          "status": {
+            "type": "string",
+            "description": "Status da integração",
+            "enum": [
+              "ativa",
+              "inativa",
+              "em_configuracao",
+              "erro",
+              "manutencao"
+            ],
+            "example": "em_configuracao"
+          },
+          "ativo": {
+            "type": "boolean",
+            "description": "Se a integração está ativa",
+            "example": true
+          },
+          "timeoutSegundos": {
+            "type": "number",
+            "description": "Timeout em segundos",
+            "example": 30,
+            "minimum": 1,
+            "maximum": 300
+          },
+          "intervaloSincronizacaoMinutos": {
+            "type": "number",
+            "description": "Intervalo de sincronização em minutos",
+            "example": 60,
+            "minimum": 1,
+            "maximum": 1440
+          },
+          "limiteRequisicoesDia": {
+            "type": "number",
+            "description": "Limite de requisições por dia",
+            "example": 1000,
+            "minimum": 1
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações sobre a integração",
+            "example": "Integração configurada para ambiente de produção",
+            "maxLength": 255
+          }
+        },
+        "required": ["tipoIntegracao", "nomeIntegracao", "codigoIdentificacao"]
+      },
+      "UpdateIntegracaoDto": {
+        "type": "object",
+        "properties": {
+          "tipoIntegracao": {
+            "type": "string",
+            "description": "Tipo da integração",
+            "enum": [
+              "laboratorio_apoio",
+              "telemedicina",
+              "gateway_pagamento",
+              "banco",
+              "prefeitura_nfse",
+              "sefaz",
+              "receita_federal",
+              "power_bi",
+              "pabx",
+              "correios",
+              "ocr",
+              "convenios",
+              "adquirentes",
+              "pacs",
+              "email",
+              "whatsapp",
+              "concessionarias",
+              "outros"
+            ],
+            "example": "laboratorio_apoio"
+          },
+          "nomeIntegracao": {
+            "type": "string",
+            "description": "Nome da integração",
+            "example": "Integração Laboratório DB",
+            "maxLength": 100
+          },
+          "descricaoApi": {
+            "type": "string",
+            "description": "Descrição da API",
+            "example": "Integração para busca de exames do laboratório DB",
+            "maxLength": 255
+          },
+          "codigoIdentificacao": {
+            "type": "string",
+            "description": "Código único de identificação",
+            "example": "LAB001",
+            "maxLength": 50
+          },
+          "unidadeSaudeId": {
+            "type": "string",
+            "description": "ID da unidade de saúde",
+            "example": "uuid-da-unidade"
+          },
+          "urlApiExames": {
+            "type": "string",
+            "description": "URL da API de exames",
+            "example": "https://api.db.com.br/exames",
+            "maxLength": 500
+          },
+          "urlApiGuiaExames": {
+            "type": "string",
+            "description": "URL da API de guia de exames",
+            "example": "https://api.db.com.br/guias",
+            "maxLength": 500
+          },
+          "tokenAutenticacao": {
+            "type": "string",
+            "description": "Token de autenticação",
+            "example": "bearer_token_aqui",
+            "maxLength": 500
+          },
+          "chaveApi": {
+            "type": "string",
+            "description": "Chave da API",
+            "example": "api_key_aqui",
+            "maxLength": 500
+          },
+          "padraoComunicacao": {
+            "type": "string",
+            "description": "Padrão de comunicação",
+            "enum": [
+              "rest_api",
+              "soap",
+              "graphql",
+              "webhook",
+              "ftp",
+              "sftp",
+              "email",
+              "database",
+              "file",
+              "manual"
+            ],
+            "example": "rest_api"
+          },
+          "formatoRetorno": {
+            "type": "string",
+            "description": "Formato de retorno",
+            "enum": ["json", "xml", "csv", "txt", "pdf", "html", "binary"],
+            "example": "json"
+          },
+          "nomeLaboratorio": {
+            "type": "string",
+            "description": "Nome do laboratório (se aplicável)",
+            "example": "Laboratório DB",
+            "maxLength": 100
+          },
+          "nomePrefeitura": {
+            "type": "string",
+            "description": "Nome da prefeitura (se aplicável)",
+            "example": "Prefeitura de São Roque",
+            "maxLength": 100
+          },
+          "nomeBanco": {
+            "type": "string",
+            "description": "Nome do banco (se aplicável)",
+            "example": "Banco Bradesco",
+            "maxLength": 100
+          },
+          "nomeGateway": {
+            "type": "string",
+            "description": "Nome do gateway (se aplicável)",
+            "example": "Mercado Pago",
+            "maxLength": 100
+          },
+          "nomeConvenio": {
+            "type": "string",
+            "description": "Nome do convênio (se aplicável)",
+            "example": "Intermédica",
+            "maxLength": 100
+          },
+          "nomeAdquirente": {
+            "type": "string",
+            "description": "Nome do adquirente (se aplicável)",
+            "example": "Cielo",
+            "maxLength": 100
+          },
+          "nomeConcessionaria": {
+            "type": "string",
+            "description": "Nome da concessionária (se aplicável)",
+            "example": "CPFL Energia",
+            "maxLength": 100
+          },
+          "urlBase": {
+            "type": "string",
+            "description": "URL base da API",
+            "example": "https://api.exemplo.com.br",
+            "maxLength": 500
+          },
+          "urlAutenticacao": {
+            "type": "string",
+            "description": "URL de autenticação",
+            "example": "https://api.exemplo.com.br/auth",
+            "maxLength": 500
+          },
+          "urlConsulta": {
+            "type": "string",
+            "description": "URL de consulta",
+            "example": "https://api.exemplo.com.br/consulta",
+            "maxLength": 500
+          },
+          "urlEnvio": {
+            "type": "string",
+            "description": "URL de envio",
+            "example": "https://api.exemplo.com.br/envio",
+            "maxLength": 500
+          },
+          "urlCallback": {
+            "type": "string",
+            "description": "URL de callback",
+            "example": "https://meusite.com.br/webhook",
+            "maxLength": 500
+          },
+          "usuario": {
+            "type": "string",
+            "description": "Usuário para autenticação",
+            "example": "usuario_api",
+            "maxLength": 255
+          },
+          "senha": {
+            "type": "string",
+            "description": "Senha para autenticação",
+            "example": "senha_secreta",
+            "maxLength": 255
+          },
+          "certificadoDigital": {
+            "type": "string",
+            "description": "Caminho do certificado digital",
+            "example": "/path/to/certificate.pfx",
+            "maxLength": 500
+          },
+          "senhaCertificado": {
+            "type": "string",
+            "description": "Senha do certificado digital",
+            "example": "senha_certificado",
+            "maxLength": 255
+          },
+          "configuracoesAdicionais": {
+            "type": "object",
+            "description": "Configurações adicionais em JSON",
+            "example": {
+              "retry": 3,
+              "timeout": 30000
+            }
+          },
+          "headersCustomizados": {
+            "type": "object",
+            "description": "Headers customizados em JSON",
+            "example": {
+              "Content-Type": "application/json",
+              "X-API-Version": "v1"
+            }
+          },
+          "parametrosConexao": {
+            "type": "object",
+            "description": "Parâmetros de conexão em JSON",
+            "example": {
+              "pool_size": 10,
+              "keep_alive": true
+            }
+          },
+          "status": {
+            "type": "string",
+            "description": "Status da integração",
+            "enum": [
+              "ativa",
+              "inativa",
+              "em_configuracao",
+              "erro",
+              "manutencao"
+            ],
+            "example": "em_configuracao"
+          },
+          "ativo": {
+            "type": "boolean",
+            "description": "Se a integração está ativa",
+            "example": true
+          },
+          "timeoutSegundos": {
+            "type": "number",
+            "description": "Timeout em segundos",
+            "example": 30,
+            "minimum": 1,
+            "maximum": 300
+          },
+          "intervaloSincronizacaoMinutos": {
+            "type": "number",
+            "description": "Intervalo de sincronização em minutos",
+            "example": 60,
+            "minimum": 1,
+            "maximum": 1440
+          },
+          "limiteRequisicoesDia": {
+            "type": "number",
+            "description": "Limite de requisições por dia",
+            "example": 1000,
+            "minimum": 1
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações sobre a integração",
+            "example": "Integração configurada para ambiente de produção",
+            "maxLength": 255
+          }
+        }
+      },
+      "CreateFormularioDto": {
+        "type": "object",
+        "properties": {
+          "codigoFormulario": {
+            "type": "string",
+            "description": "Código único do formulário",
+            "example": "FORM001",
+            "maxLength": 50
+          },
+          "nomeFormulario": {
+            "type": "string",
+            "description": "Nome do formulário",
+            "example": "Formulário de Anamnese Cardiológica",
+            "maxLength": 255
+          },
+          "descricao": {
+            "type": "string",
+            "description": "Descrição do formulário",
+            "example": "Formulário para coleta de dados de anamnese cardiológica"
+          },
+          "tipo": {
+            "type": "string",
+            "description": "Tipo do formulário",
+            "enum": [
+              "exame",
+              "anamnese",
+              "prescricao",
+              "laudo",
+              "receita",
+              "atestado",
+              "declaracao",
+              "questionario",
+              "ficha_clinica",
+              "evolucao",
+              "termo_consentimento",
+              "customizado"
+            ],
+            "example": "anamnese"
+          },
+          "categoria": {
+            "type": "string",
+            "description": "Categoria do formulário",
+            "enum": [
+              "clinico",
+              "administrativo",
+              "financeiro",
+              "operacional",
+              "qualidade",
+              "pesquisa"
+            ],
+            "example": "clinico"
+          },
+          "unidadeSaudeId": {
+            "type": "string",
+            "description": "ID da unidade de saúde",
+            "example": "uuid-da-unidade"
+          },
+          "versao": {
+            "type": "number",
+            "description": "Versão do formulário",
+            "example": 1,
+            "minimum": 1
+          },
+          "status": {
+            "type": "string",
+            "description": "Status do formulário",
+            "enum": ["rascunho", "publicado", "arquivado", "em_revisao"],
+            "example": "rascunho"
+          },
+          "ativo": {
+            "type": "boolean",
+            "description": "Se o formulário está ativo",
+            "example": true
+          },
+          "obrigatorio": {
+            "type": "boolean",
+            "description": "Se o formulário é obrigatório",
+            "example": false
+          },
+          "permiteEdicao": {
+            "type": "boolean",
+            "description": "Se permite edição após preenchimento",
+            "example": true
+          },
+          "requerAssinatura": {
+            "type": "boolean",
+            "description": "Se requer assinatura digital",
+            "example": false
+          },
+          "permiteAnexos": {
+            "type": "boolean",
+            "description": "Se permite anexar arquivos",
+            "example": false
+          },
+          "maxAnexos": {
+            "type": "number",
+            "description": "Número máximo de anexos",
+            "example": 5,
+            "minimum": 1,
+            "maximum": 20
+          },
+          "geraPdf": {
+            "type": "boolean",
+            "description": "Se gera PDF automaticamente",
+            "example": false
+          },
+          "enviaEmail": {
+            "type": "boolean",
+            "description": "Se envia por email automaticamente",
+            "example": false
+          },
+          "exibirNumeracao": {
+            "type": "boolean",
+            "description": "Se exibe numeração dos campos",
+            "example": true
+          },
+          "exibirProgresso": {
+            "type": "boolean",
+            "description": "Se exibe barra de progresso",
+            "example": false
+          },
+          "permiteSalvarRascunho": {
+            "type": "boolean",
+            "description": "Se permite salvar como rascunho",
+            "example": true
+          },
+          "validacaoTempoReal": {
+            "type": "boolean",
+            "description": "Se valida em tempo real",
+            "example": true
+          },
+          "perfisAcesso": {
+            "description": "Perfis de acesso permitidos",
+            "example": ["medico", "enfermeiro", "admin"],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "departamentosAcesso": {
+            "description": "Departamentos com acesso",
+            "example": ["cardiologia", "clinica-geral"],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "templateCabecalho": {
+            "type": "string",
+            "description": "Template do cabeçalho",
+            "example": "<h1>Formulário de Anamnese</h1>"
+          },
+          "templateRodape": {
+            "type": "string",
+            "description": "Template do rodapé",
+            "example": "<p>Documento gerado automaticamente</p>"
+          },
+          "estilosCustomizados": {
+            "type": "object",
+            "description": "Estilos CSS customizados",
+            "example": {
+              "backgroundColor": "#f5f5f5",
+              "fontSize": "14px"
+            }
+          },
+          "configuracoesExtras": {
+            "type": "object",
+            "description": "Configurações extras do formulário",
+            "example": {
+              "autoSave": true,
+              "theme": "light"
+            }
+          },
+          "regrasValidacao": {
+            "type": "object",
+            "description": "Regras de validação customizadas",
+            "example": {
+              "requiredFields": ["nome", "cpf"]
+            }
+          },
+          "regrasVisibilidade": {
+            "type": "object",
+            "description": "Regras de visibilidade dos campos",
+            "example": {
+              "showOnCondition": {
+                "field": "tipo",
+                "value": "urgente"
+              }
+            }
+          },
+          "logicaCondicional": {
+            "type": "object",
+            "description": "Lógica condicional entre campos",
+            "example": {
+              "if": "campo1 == \"sim\"",
+              "then": "show campo2"
+            }
+          },
+          "webhookUrl": {
+            "type": "string",
+            "description": "URL do webhook para notificações",
+            "example": "https://meusite.com.br/webhook/formulario",
+            "maxLength": 500
+          },
+          "integracaoConfig": {
+            "type": "object",
+            "description": "Configurações de integração",
+            "example": {
+              "syncWithERP": true,
+              "updatePatient": true
+            }
+          },
+          "gatilhosAutomacao": {
+            "type": "object",
+            "description": "Gatilhos de automação",
+            "example": {
+              "onComplete": "sendEmail",
+              "onSave": "updateRecord"
+            }
+          },
+          "validoDe": {
+            "type": "string",
+            "description": "Data de início da validade",
+            "example": "2025-01-01"
+          },
+          "validoAte": {
+            "type": "string",
+            "description": "Data de fim da validade",
+            "example": "2025-12-31"
+          },
+          "formularioPaiId": {
+            "type": "string",
+            "description": "ID do formulário pai (para sub-formulários)",
+            "example": "uuid-do-formulario-pai"
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações sobre o formulário",
+            "example": "Formulário revisado pela equipe médica"
+          },
+          "metadados": {
+            "type": "object",
+            "description": "Metadados adicionais",
+            "example": {
+              "author": "Dr. João",
+              "department": "Cardiologia"
+            }
+          },
+          "tags": {
+            "description": "Tags para categorização",
+            "example": ["cardiologia", "anamnese", "urgente"],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": ["codigoFormulario", "nomeFormulario", "tipo"]
+      },
+      "UpdateFormularioDto": {
+        "type": "object",
+        "properties": {
+          "codigoFormulario": {
+            "type": "string",
+            "description": "Código único do formulário",
+            "example": "FORM001",
+            "maxLength": 50
+          },
+          "nomeFormulario": {
+            "type": "string",
+            "description": "Nome do formulário",
+            "example": "Formulário de Anamnese Cardiológica",
+            "maxLength": 255
+          },
+          "descricao": {
+            "type": "string",
+            "description": "Descrição do formulário",
+            "example": "Formulário para coleta de dados de anamnese cardiológica"
+          },
+          "tipo": {
+            "type": "string",
+            "description": "Tipo do formulário",
+            "enum": [
+              "exame",
+              "anamnese",
+              "prescricao",
+              "laudo",
+              "receita",
+              "atestado",
+              "declaracao",
+              "questionario",
+              "ficha_clinica",
+              "evolucao",
+              "termo_consentimento",
+              "customizado"
+            ],
+            "example": "anamnese"
+          },
+          "categoria": {
+            "type": "string",
+            "description": "Categoria do formulário",
+            "enum": [
+              "clinico",
+              "administrativo",
+              "financeiro",
+              "operacional",
+              "qualidade",
+              "pesquisa"
+            ],
+            "example": "clinico"
+          },
+          "unidadeSaudeId": {
+            "type": "string",
+            "description": "ID da unidade de saúde",
+            "example": "uuid-da-unidade"
+          },
+          "versao": {
+            "type": "number",
+            "description": "Versão do formulário",
+            "example": 1,
+            "minimum": 1
+          },
+          "status": {
+            "type": "string",
+            "description": "Status do formulário",
+            "enum": ["rascunho", "publicado", "arquivado", "em_revisao"],
+            "example": "rascunho"
+          },
+          "ativo": {
+            "type": "boolean",
+            "description": "Se o formulário está ativo",
+            "example": true
+          },
+          "obrigatorio": {
+            "type": "boolean",
+            "description": "Se o formulário é obrigatório",
+            "example": false
+          },
+          "permiteEdicao": {
+            "type": "boolean",
+            "description": "Se permite edição após preenchimento",
+            "example": true
+          },
+          "requerAssinatura": {
+            "type": "boolean",
+            "description": "Se requer assinatura digital",
+            "example": false
+          },
+          "permiteAnexos": {
+            "type": "boolean",
+            "description": "Se permite anexar arquivos",
+            "example": false
+          },
+          "maxAnexos": {
+            "type": "number",
+            "description": "Número máximo de anexos",
+            "example": 5,
+            "minimum": 1,
+            "maximum": 20
+          },
+          "geraPdf": {
+            "type": "boolean",
+            "description": "Se gera PDF automaticamente",
+            "example": false
+          },
+          "enviaEmail": {
+            "type": "boolean",
+            "description": "Se envia por email automaticamente",
+            "example": false
+          },
+          "exibirNumeracao": {
+            "type": "boolean",
+            "description": "Se exibe numeração dos campos",
+            "example": true
+          },
+          "exibirProgresso": {
+            "type": "boolean",
+            "description": "Se exibe barra de progresso",
+            "example": false
+          },
+          "permiteSalvarRascunho": {
+            "type": "boolean",
+            "description": "Se permite salvar como rascunho",
+            "example": true
+          },
+          "validacaoTempoReal": {
+            "type": "boolean",
+            "description": "Se valida em tempo real",
+            "example": true
+          },
+          "perfisAcesso": {
+            "description": "Perfis de acesso permitidos",
+            "example": ["medico", "enfermeiro", "admin"],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "departamentosAcesso": {
+            "description": "Departamentos com acesso",
+            "example": ["cardiologia", "clinica-geral"],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "templateCabecalho": {
+            "type": "string",
+            "description": "Template do cabeçalho",
+            "example": "<h1>Formulário de Anamnese</h1>"
+          },
+          "templateRodape": {
+            "type": "string",
+            "description": "Template do rodapé",
+            "example": "<p>Documento gerado automaticamente</p>"
+          },
+          "estilosCustomizados": {
+            "type": "object",
+            "description": "Estilos CSS customizados",
+            "example": {
+              "backgroundColor": "#f5f5f5",
+              "fontSize": "14px"
+            }
+          },
+          "configuracoesExtras": {
+            "type": "object",
+            "description": "Configurações extras do formulário",
+            "example": {
+              "autoSave": true,
+              "theme": "light"
+            }
+          },
+          "regrasValidacao": {
+            "type": "object",
+            "description": "Regras de validação customizadas",
+            "example": {
+              "requiredFields": ["nome", "cpf"]
+            }
+          },
+          "regrasVisibilidade": {
+            "type": "object",
+            "description": "Regras de visibilidade dos campos",
+            "example": {
+              "showOnCondition": {
+                "field": "tipo",
+                "value": "urgente"
+              }
+            }
+          },
+          "logicaCondicional": {
+            "type": "object",
+            "description": "Lógica condicional entre campos",
+            "example": {
+              "if": "campo1 == \"sim\"",
+              "then": "show campo2"
+            }
+          },
+          "webhookUrl": {
+            "type": "string",
+            "description": "URL do webhook para notificações",
+            "example": "https://meusite.com.br/webhook/formulario",
+            "maxLength": 500
+          },
+          "integracaoConfig": {
+            "type": "object",
+            "description": "Configurações de integração",
+            "example": {
+              "syncWithERP": true,
+              "updatePatient": true
+            }
+          },
+          "gatilhosAutomacao": {
+            "type": "object",
+            "description": "Gatilhos de automação",
+            "example": {
+              "onComplete": "sendEmail",
+              "onSave": "updateRecord"
+            }
+          },
+          "validoDe": {
+            "type": "string",
+            "description": "Data de início da validade",
+            "example": "2025-01-01"
+          },
+          "validoAte": {
+            "type": "string",
+            "description": "Data de fim da validade",
+            "example": "2025-12-31"
+          },
+          "formularioPaiId": {
+            "type": "string",
+            "description": "ID do formulário pai (para sub-formulários)",
+            "example": "uuid-do-formulario-pai"
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações sobre o formulário",
+            "example": "Formulário revisado pela equipe médica"
+          },
+          "metadados": {
+            "type": "object",
+            "description": "Metadados adicionais",
+            "example": {
+              "author": "Dr. João",
+              "department": "Cardiologia"
+            }
+          },
+          "tags": {
+            "description": "Tags para categorização",
+            "example": ["cardiologia", "anamnese", "urgente"],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CreateCampoFormularioDto": {
+        "type": "object",
+        "properties": {
+          "formularioId": {
+            "type": "string",
+            "description": "ID do formulário",
+            "example": "uuid-do-formulario"
+          },
+          "codigoCampo": {
+            "type": "string",
+            "description": "Código único do campo",
+            "example": "CAMPO001",
+            "maxLength": 50
+          },
+          "nomeCampo": {
+            "type": "string",
+            "description": "Nome do campo",
+            "example": "Nome do Paciente",
+            "maxLength": 255
+          },
+          "descricao": {
+            "type": "string",
+            "description": "Descrição do campo",
+            "example": "Campo para inserir o nome completo do paciente"
+          },
+          "placeholder": {
+            "type": "string",
+            "description": "Texto placeholder",
+            "example": "Digite o nome completo"
+          },
+          "textoAjuda": {
+            "type": "string",
+            "description": "Texto de ajuda",
+            "example": "Insira o nome completo sem abreviações"
+          },
+          "tipoCampo": {
+            "type": "string",
+            "description": "Tipo do campo",
+            "enum": [
+              "texto",
+              "texto_longo",
+              "texto_rico",
+              "email",
+              "url",
+              "telefone",
+              "cpf",
+              "cnpj",
+              "cep",
+              "numero",
+              "decimal",
+              "moeda",
+              "porcentagem",
+              "data",
+              "hora",
+              "data_hora",
+              "periodo_data",
+              "select",
+              "radio",
+              "checkbox",
+              "switch",
+              "multipla_escolha",
+              "arquivo",
+              "imagem",
+              "assinatura",
+              "localizacao",
+              "codigo_barras",
+              "qr_code",
+              "secao",
+              "separador",
+              "titulo",
+              "paragrafo",
+              "html",
+              "tabela",
+              "lista",
+              "matriz",
+              "formula",
+              "condicional"
+            ],
+            "example": "texto"
+          },
+          "ordem": {
+            "type": "number",
+            "description": "Ordem do campo no formulário",
+            "example": 1,
+            "minimum": 0
+          },
+          "obrigatorio": {
+            "type": "boolean",
+            "description": "Se o campo é obrigatório",
+            "example": true
+          },
+          "somenteLeitura": {
+            "type": "boolean",
+            "description": "Se o campo é somente leitura",
+            "example": false
+          },
+          "tamanhoMinimo": {
+            "type": "number",
+            "description": "Tamanho mínimo (caracteres ou valor)",
+            "example": 3,
+            "minimum": 0
+          },
+          "tamanhoMaximo": {
+            "type": "number",
+            "description": "Tamanho máximo (caracteres ou valor)",
+            "example": 100,
+            "minimum": 1
+          },
+          "valorMinimo": {
+            "type": "number",
+            "description": "Valor mínimo (para campos numéricos)",
+            "example": 0
+          },
+          "valorMaximo": {
+            "type": "number",
+            "description": "Valor máximo (para campos numéricos)",
+            "example": 1000
+          },
+          "mascara": {
+            "type": "string",
+            "description": "Máscara de formatação",
+            "example": "(##) #####-####",
+            "maxLength": 255
+          },
+          "regex": {
+            "type": "string",
+            "description": "Expressão regular para validação",
+            "example": "^[a-zA-Z\\s]+$",
+            "maxLength": 500
+          },
+          "mensagemErro": {
+            "type": "string",
+            "description": "Mensagem de erro personalizada",
+            "example": "Por favor, insira um nome válido"
+          },
+          "valorPadrao": {
+            "type": "string",
+            "description": "Valor padrão do campo",
+            "example": "Não informado"
+          },
+          "opcoesSelecao": {
+            "type": "object",
+            "description": "Opções de seleção (para campos de seleção)",
+            "example": [
+              {
+                "value": "M",
+                "label": "Masculino"
+              },
+              {
+                "value": "F",
+                "label": "Feminino"
+              }
+            ]
+          },
+          "permiteMultiplaSelecao": {
+            "type": "boolean",
+            "description": "Se permite múltipla seleção",
+            "example": false
+          },
+          "permiteOutro": {
+            "type": "boolean",
+            "description": "Se permite opção \"Outro\"",
+            "example": false
+          },
+          "tiposArquivoAceitos": {
+            "description": "Tipos de arquivo aceitos",
+            "example": ["pdf", "jpg", "png"],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tamanhoMaximoArquivoMb": {
+            "type": "number",
+            "description": "Tamanho máximo do arquivo em MB",
+            "example": 10,
+            "minimum": 1,
+            "maximum": 100
+          },
+          "permiteMultiplosArquivos": {
+            "type": "boolean",
+            "description": "Se permite múltiplos arquivos",
+            "example": false
+          },
+          "maxArquivos": {
+            "type": "number",
+            "description": "Número máximo de arquivos",
+            "example": 5,
+            "minimum": 1,
+            "maximum": 20
+          },
+          "larguraColuna": {
+            "type": "number",
+            "description": "Largura da coluna (1-12)",
+            "example": 6,
+            "minimum": 1,
+            "maximum": 12
+          },
+          "alinhamento": {
+            "type": "string",
+            "description": "Alinhamento do texto",
+            "example": "left",
+            "enum": ["left", "center", "right"]
+          },
+          "estilosCss": {
+            "type": "object",
+            "description": "Estilos CSS customizados",
+            "example": {
+              "color": "#333",
+              "backgroundColor": "#f9f9f9"
+            }
+          },
+          "classesCss": {
+            "description": "Classes CSS",
+            "example": ["form-control", "required-field"],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "icone": {
+            "type": "string",
+            "description": "Ícone do campo",
+            "example": "fas fa-user",
+            "maxLength": 50
+          },
+          "condicoesVisibilidade": {
+            "type": "object",
+            "description": "Condições de visibilidade",
+            "example": {
+              "showIf": {
+                "field": "tipo",
+                "equals": "pessoa_fisica"
+              }
+            }
+          },
+          "condicoesObrigatoriedade": {
+            "type": "object",
+            "description": "Condições de obrigatoriedade",
+            "example": {
+              "requiredIf": {
+                "field": "categoria",
+                "equals": "urgente"
+              }
+            }
+          },
+          "condicoesValidacao": {
+            "type": "object",
+            "description": "Condições de validação customizadas",
+            "example": {
+              "validateIf": {
+                "field": "idade",
+                "greaterThan": 18
+              }
+            }
+          },
+          "formulaCalculo": {
+            "type": "string",
+            "description": "Fórmula de cálculo (para campos calculados)",
+            "example": "campo1 + campo2 * 0.1"
+          },
+          "camposDependentes": {
+            "description": "IDs dos campos dependentes",
+            "example": ["campo2", "campo3"],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "dependeDe": {
+            "description": "IDs dos campos dos quais este depende",
+            "example": ["campo_principal"],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "campoIntegracao": {
+            "type": "string",
+            "description": "Campo correspondente na integração",
+            "example": "patient_name",
+            "maxLength": 255
+          },
+          "urlBuscaDados": {
+            "type": "string",
+            "description": "URL para buscar dados externos",
+            "example": "https://api.exemplo.com/buscar/{valor}",
+            "maxLength": 500
+          },
+          "mapeamentoDados": {
+            "type": "object",
+            "description": "Mapeamento de dados externos",
+            "example": {
+              "sourceField": "name",
+              "targetField": "nomePaciente"
+            }
+          },
+          "unidadeMedida": {
+            "type": "string",
+            "description": "Unidade de medida (para campos de exames)",
+            "example": "mg/dL",
+            "maxLength": 50
+          },
+          "valoresReferencia": {
+            "type": "object",
+            "description": "Valores de referência (para campos de exames)",
+            "example": {
+              "min": 70,
+              "max": 100,
+              "unit": "mg/dL"
+            }
+          },
+          "status": {
+            "type": "string",
+            "description": "Status do campo",
+            "enum": ["ativo", "inativo", "oculto"],
+            "example": "ativo"
+          },
+          "ativo": {
+            "type": "boolean",
+            "description": "Se o campo está ativo",
+            "example": true
+          },
+          "visivelImpressao": {
+            "type": "boolean",
+            "description": "Se é visível na impressão",
+            "example": true
+          },
+          "visivelPortal": {
+            "type": "boolean",
+            "description": "Se é visível no portal do paciente",
+            "example": true
+          },
+          "metadados": {
+            "type": "object",
+            "description": "Metadados adicionais",
+            "example": {
+              "category": "personal_data",
+              "required_profile": "admin"
+            }
+          },
+          "configuracoesExtras": {
+            "type": "object",
+            "description": "Configurações extras",
+            "example": {
+              "autoComplete": true,
+              "spellCheck": false
+            }
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações sobre o campo",
+            "example": "Campo obrigatório para pacientes acima de 65 anos"
+          }
+        },
+        "required": ["formularioId", "codigoCampo", "nomeCampo", "tipoCampo"]
+      },
+      "UpdateCampoFormularioDto": {
+        "type": "object",
+        "properties": {
+          "formularioId": {
+            "type": "string",
+            "description": "ID do formulário",
+            "example": "uuid-do-formulario"
+          },
+          "codigoCampo": {
+            "type": "string",
+            "description": "Código único do campo",
+            "example": "CAMPO001",
+            "maxLength": 50
+          },
+          "nomeCampo": {
+            "type": "string",
+            "description": "Nome do campo",
+            "example": "Nome do Paciente",
+            "maxLength": 255
+          },
+          "descricao": {
+            "type": "string",
+            "description": "Descrição do campo",
+            "example": "Campo para inserir o nome completo do paciente"
+          },
+          "placeholder": {
+            "type": "string",
+            "description": "Texto placeholder",
+            "example": "Digite o nome completo"
+          },
+          "textoAjuda": {
+            "type": "string",
+            "description": "Texto de ajuda",
+            "example": "Insira o nome completo sem abreviações"
+          },
+          "tipoCampo": {
+            "type": "string",
+            "description": "Tipo do campo",
+            "enum": [
+              "texto",
+              "texto_longo",
+              "texto_rico",
+              "email",
+              "url",
+              "telefone",
+              "cpf",
+              "cnpj",
+              "cep",
+              "numero",
+              "decimal",
+              "moeda",
+              "porcentagem",
+              "data",
+              "hora",
+              "data_hora",
+              "periodo_data",
+              "select",
+              "radio",
+              "checkbox",
+              "switch",
+              "multipla_escolha",
+              "arquivo",
+              "imagem",
+              "assinatura",
+              "localizacao",
+              "codigo_barras",
+              "qr_code",
+              "secao",
+              "separador",
+              "titulo",
+              "paragrafo",
+              "html",
+              "tabela",
+              "lista",
+              "matriz",
+              "formula",
+              "condicional"
+            ],
+            "example": "texto"
+          },
+          "ordem": {
+            "type": "number",
+            "description": "Ordem do campo no formulário",
+            "example": 1,
+            "minimum": 0
+          },
+          "obrigatorio": {
+            "type": "boolean",
+            "description": "Se o campo é obrigatório",
+            "example": true
+          },
+          "somenteLeitura": {
+            "type": "boolean",
+            "description": "Se o campo é somente leitura",
+            "example": false
+          },
+          "tamanhoMinimo": {
+            "type": "number",
+            "description": "Tamanho mínimo (caracteres ou valor)",
+            "example": 3,
+            "minimum": 0
+          },
+          "tamanhoMaximo": {
+            "type": "number",
+            "description": "Tamanho máximo (caracteres ou valor)",
+            "example": 100,
+            "minimum": 1
+          },
+          "valorMinimo": {
+            "type": "number",
+            "description": "Valor mínimo (para campos numéricos)",
+            "example": 0
+          },
+          "valorMaximo": {
+            "type": "number",
+            "description": "Valor máximo (para campos numéricos)",
+            "example": 1000
+          },
+          "mascara": {
+            "type": "string",
+            "description": "Máscara de formatação",
+            "example": "(##) #####-####",
+            "maxLength": 255
+          },
+          "regex": {
+            "type": "string",
+            "description": "Expressão regular para validação",
+            "example": "^[a-zA-Z\\s]+$",
+            "maxLength": 500
+          },
+          "mensagemErro": {
+            "type": "string",
+            "description": "Mensagem de erro personalizada",
+            "example": "Por favor, insira um nome válido"
+          },
+          "valorPadrao": {
+            "type": "string",
+            "description": "Valor padrão do campo",
+            "example": "Não informado"
+          },
+          "opcoesSelecao": {
+            "type": "object",
+            "description": "Opções de seleção (para campos de seleção)",
+            "example": [
+              {
+                "value": "M",
+                "label": "Masculino"
+              },
+              {
+                "value": "F",
+                "label": "Feminino"
+              }
+            ]
+          },
+          "permiteMultiplaSelecao": {
+            "type": "boolean",
+            "description": "Se permite múltipla seleção",
+            "example": false
+          },
+          "permiteOutro": {
+            "type": "boolean",
+            "description": "Se permite opção \"Outro\"",
+            "example": false
+          },
+          "tiposArquivoAceitos": {
+            "description": "Tipos de arquivo aceitos",
+            "example": ["pdf", "jpg", "png"],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tamanhoMaximoArquivoMb": {
+            "type": "number",
+            "description": "Tamanho máximo do arquivo em MB",
+            "example": 10,
+            "minimum": 1,
+            "maximum": 100
+          },
+          "permiteMultiplosArquivos": {
+            "type": "boolean",
+            "description": "Se permite múltiplos arquivos",
+            "example": false
+          },
+          "maxArquivos": {
+            "type": "number",
+            "description": "Número máximo de arquivos",
+            "example": 5,
+            "minimum": 1,
+            "maximum": 20
+          },
+          "larguraColuna": {
+            "type": "number",
+            "description": "Largura da coluna (1-12)",
+            "example": 6,
+            "minimum": 1,
+            "maximum": 12
+          },
+          "alinhamento": {
+            "type": "string",
+            "description": "Alinhamento do texto",
+            "example": "left",
+            "enum": ["left", "center", "right"]
+          },
+          "estilosCss": {
+            "type": "object",
+            "description": "Estilos CSS customizados",
+            "example": {
+              "color": "#333",
+              "backgroundColor": "#f9f9f9"
+            }
+          },
+          "classesCss": {
+            "description": "Classes CSS",
+            "example": ["form-control", "required-field"],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "icone": {
+            "type": "string",
+            "description": "Ícone do campo",
+            "example": "fas fa-user",
+            "maxLength": 50
+          },
+          "condicoesVisibilidade": {
+            "type": "object",
+            "description": "Condições de visibilidade",
+            "example": {
+              "showIf": {
+                "field": "tipo",
+                "equals": "pessoa_fisica"
+              }
+            }
+          },
+          "condicoesObrigatoriedade": {
+            "type": "object",
+            "description": "Condições de obrigatoriedade",
+            "example": {
+              "requiredIf": {
+                "field": "categoria",
+                "equals": "urgente"
+              }
+            }
+          },
+          "condicoesValidacao": {
+            "type": "object",
+            "description": "Condições de validação customizadas",
+            "example": {
+              "validateIf": {
+                "field": "idade",
+                "greaterThan": 18
+              }
+            }
+          },
+          "formulaCalculo": {
+            "type": "string",
+            "description": "Fórmula de cálculo (para campos calculados)",
+            "example": "campo1 + campo2 * 0.1"
+          },
+          "camposDependentes": {
+            "description": "IDs dos campos dependentes",
+            "example": ["campo2", "campo3"],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "dependeDe": {
+            "description": "IDs dos campos dos quais este depende",
+            "example": ["campo_principal"],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "campoIntegracao": {
+            "type": "string",
+            "description": "Campo correspondente na integração",
+            "example": "patient_name",
+            "maxLength": 255
+          },
+          "urlBuscaDados": {
+            "type": "string",
+            "description": "URL para buscar dados externos",
+            "example": "https://api.exemplo.com/buscar/{valor}",
+            "maxLength": 500
+          },
+          "mapeamentoDados": {
+            "type": "object",
+            "description": "Mapeamento de dados externos",
+            "example": {
+              "sourceField": "name",
+              "targetField": "nomePaciente"
+            }
+          },
+          "unidadeMedida": {
+            "type": "string",
+            "description": "Unidade de medida (para campos de exames)",
+            "example": "mg/dL",
+            "maxLength": 50
+          },
+          "valoresReferencia": {
+            "type": "object",
+            "description": "Valores de referência (para campos de exames)",
+            "example": {
+              "min": 70,
+              "max": 100,
+              "unit": "mg/dL"
+            }
+          },
+          "status": {
+            "type": "string",
+            "description": "Status do campo",
+            "enum": ["ativo", "inativo", "oculto"],
+            "example": "ativo"
+          },
+          "ativo": {
+            "type": "boolean",
+            "description": "Se o campo está ativo",
+            "example": true
+          },
+          "visivelImpressao": {
+            "type": "boolean",
+            "description": "Se é visível na impressão",
+            "example": true
+          },
+          "visivelPortal": {
+            "type": "boolean",
+            "description": "Se é visível no portal do paciente",
+            "example": true
+          },
+          "metadados": {
+            "type": "object",
+            "description": "Metadados adicionais",
+            "example": {
+              "category": "personal_data",
+              "required_profile": "admin"
+            }
+          },
+          "configuracoesExtras": {
+            "type": "object",
+            "description": "Configurações extras",
+            "example": {
+              "autoComplete": true,
+              "spellCheck": false
+            }
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações sobre o campo",
+            "example": "Campo obrigatório para pacientes acima de 65 anos"
+          }
+        }
+      },
+      "CreateAlternativaCampoDto": {
+        "type": "object",
+        "properties": {
+          "campoFormularioId": {
+            "type": "string",
+            "description": "ID do campo formulário",
+            "example": "uuid-do-campo"
+          },
+          "codigoAlternativa": {
+            "type": "string",
+            "description": "Código único da alternativa",
+            "example": "ALT001",
+            "maxLength": 50
+          },
+          "valor": {
+            "type": "string",
+            "description": "Valor da alternativa",
+            "example": "M",
+            "maxLength": 255
+          },
+          "textoAlternativa": {
+            "type": "string",
+            "description": "Rótulo exibido da alternativa",
+            "example": "Masculino",
+            "maxLength": 255
+          },
+          "descricao": {
+            "type": "string",
+            "description": "Descrição detalhada da alternativa",
+            "example": "Opção para seleção do sexo masculino"
+          },
+          "ordem": {
+            "type": "number",
+            "description": "Ordem de exibição da alternativa",
+            "example": 1,
+            "minimum": 0
+          },
+          "selecionadoPadrao": {
+            "type": "boolean",
+            "description": "Se a alternativa está selecionada por padrão",
+            "example": false
+          },
+          "exclusiva": {
+            "type": "boolean",
+            "description": "Se a alternativa é exclusiva (deseleciona outras)",
+            "example": false
+          },
+          "pontuacao": {
+            "type": "number",
+            "description": "Score/pontuação da alternativa",
+            "example": 10
+          },
+          "peso": {
+            "type": "number",
+            "description": "Peso da alternativa para cálculos",
+            "example": 1.5
+          },
+          "cor": {
+            "type": "string",
+            "description": "Cor de exibição da alternativa",
+            "example": "#FF0000",
+            "maxLength": 7
+          },
+          "icone": {
+            "type": "string",
+            "description": "Ícone da alternativa",
+            "example": "fas fa-check",
+            "maxLength": 50
+          },
+          "imagemUrl": {
+            "type": "string",
+            "description": "URL de imagem da alternativa",
+            "example": "https://exemplo.com/imagem.png",
+            "maxLength": 500
+          },
+          "condicoesExibicao": {
+            "type": "object",
+            "description": "Condições para exibir a alternativa",
+            "example": {
+              "showIf": {
+                "field": "idade",
+                "greaterThan": 18
+              }
+            }
+          },
+          "acoesTrigger": {
+            "type": "object",
+            "description": "Ações executadas quando selecionada",
+            "example": {
+              "action": "show",
+              "targets": ["campo2", "campo3"]
+            }
+          },
+          "camposExibir": {
+            "description": "Campos que devem ser exibidos ao selecionar",
+            "example": ["campo_detalhes", "campo_observacoes"],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "camposOcultar": {
+            "description": "Campos que devem ser ocultados ao selecionar",
+            "example": ["campo_outro"],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "gruposAfetados": {
+            "description": "Grupos de campos afetados pela seleção",
+            "example": ["grupo_endereco", "grupo_contato"],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "urlDadosRelacionados": {
+            "type": "string",
+            "description": "URL para buscar dados relacionados",
+            "example": "https://api.exemplo.com/dados/{valor}",
+            "maxLength": 500
+          },
+          "mapeamentoDados": {
+            "type": "object",
+            "description": "Mapeamento de dados externos",
+            "example": {
+              "sourceField": "name",
+              "targetField": "nome"
+            }
+          },
+          "status": {
+            "type": "string",
+            "description": "Status da alternativa",
+            "enum": ["ativa", "inativa"],
+            "example": "ativa"
+          },
+          "ativo": {
+            "type": "boolean",
+            "description": "Se a alternativa está ativa",
+            "example": true
+          },
+          "visivelImpressao": {
+            "type": "boolean",
+            "description": "Se é visível na impressão",
+            "example": true
+          },
+          "visivelPortal": {
+            "type": "boolean",
+            "description": "Se é visível no portal do paciente",
+            "example": true
+          },
+          "estilosCss": {
+            "type": "object",
+            "description": "Estilos CSS customizados",
+            "example": {
+              "backgroundColor": "#f0f0f0",
+              "fontWeight": "bold"
+            }
+          },
+          "classesCss": {
+            "description": "Classes CSS da alternativa",
+            "example": ["option-primary", "highlighted"],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "atributosHtml": {
+            "type": "object",
+            "description": "Atributos HTML customizados",
+            "example": {
+              "data-toggle": "tooltip",
+              "title": "Informação adicional"
+            }
+          },
+          "validacoesEspecificas": {
+            "type": "object",
+            "description": "Validações específicas da alternativa",
+            "example": {
+              "required": ["campo_observacao"]
+            }
+          },
+          "configuracoesExtras": {
+            "type": "object",
+            "description": "Configurações extras da alternativa",
+            "example": {
+              "allowCustomInput": true,
+              "maxLength": 100
+            }
+          },
+          "metadados": {
+            "type": "object",
+            "description": "Metadados adicionais",
+            "example": {
+              "category": "demographics",
+              "analytics_track": true
+            }
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações sobre a alternativa",
+            "example": "Alternativa padrão para novos formulários"
+          }
+        },
+        "required": [
+          "campoFormularioId",
+          "codigoAlternativa",
+          "valor",
+          "textoAlternativa"
+        ]
+      },
+      "UpdateAlternativaCampoDto": {
+        "type": "object",
+        "properties": {
+          "campoFormularioId": {
+            "type": "string",
+            "description": "ID do campo formulário",
+            "example": "uuid-do-campo"
+          },
+          "codigoAlternativa": {
+            "type": "string",
+            "description": "Código único da alternativa",
+            "example": "ALT001",
+            "maxLength": 50
+          },
+          "valor": {
+            "type": "string",
+            "description": "Valor da alternativa",
+            "example": "M",
+            "maxLength": 255
+          },
+          "textoAlternativa": {
+            "type": "string",
+            "description": "Rótulo exibido da alternativa",
+            "example": "Masculino",
+            "maxLength": 255
+          },
+          "descricao": {
+            "type": "string",
+            "description": "Descrição detalhada da alternativa",
+            "example": "Opção para seleção do sexo masculino"
+          },
+          "ordem": {
+            "type": "number",
+            "description": "Ordem de exibição da alternativa",
+            "example": 1,
+            "minimum": 0
+          },
+          "selecionadoPadrao": {
+            "type": "boolean",
+            "description": "Se a alternativa está selecionada por padrão",
+            "example": false
+          },
+          "exclusiva": {
+            "type": "boolean",
+            "description": "Se a alternativa é exclusiva (deseleciona outras)",
+            "example": false
+          },
+          "pontuacao": {
+            "type": "number",
+            "description": "Score/pontuação da alternativa",
+            "example": 10
+          },
+          "peso": {
+            "type": "number",
+            "description": "Peso da alternativa para cálculos",
+            "example": 1.5
+          },
+          "cor": {
+            "type": "string",
+            "description": "Cor de exibição da alternativa",
+            "example": "#FF0000",
+            "maxLength": 7
+          },
+          "icone": {
+            "type": "string",
+            "description": "Ícone da alternativa",
+            "example": "fas fa-check",
+            "maxLength": 50
+          },
+          "imagemUrl": {
+            "type": "string",
+            "description": "URL de imagem da alternativa",
+            "example": "https://exemplo.com/imagem.png",
+            "maxLength": 500
+          },
+          "condicoesExibicao": {
+            "type": "object",
+            "description": "Condições para exibir a alternativa",
+            "example": {
+              "showIf": {
+                "field": "idade",
+                "greaterThan": 18
+              }
+            }
+          },
+          "acoesTrigger": {
+            "type": "object",
+            "description": "Ações executadas quando selecionada",
+            "example": {
+              "action": "show",
+              "targets": ["campo2", "campo3"]
+            }
+          },
+          "camposExibir": {
+            "description": "Campos que devem ser exibidos ao selecionar",
+            "example": ["campo_detalhes", "campo_observacoes"],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "camposOcultar": {
+            "description": "Campos que devem ser ocultados ao selecionar",
+            "example": ["campo_outro"],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "gruposAfetados": {
+            "description": "Grupos de campos afetados pela seleção",
+            "example": ["grupo_endereco", "grupo_contato"],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "urlDadosRelacionados": {
+            "type": "string",
+            "description": "URL para buscar dados relacionados",
+            "example": "https://api.exemplo.com/dados/{valor}",
+            "maxLength": 500
+          },
+          "mapeamentoDados": {
+            "type": "object",
+            "description": "Mapeamento de dados externos",
+            "example": {
+              "sourceField": "name",
+              "targetField": "nome"
+            }
+          },
+          "status": {
+            "type": "string",
+            "description": "Status da alternativa",
+            "enum": ["ativa", "inativa"],
+            "example": "ativa"
+          },
+          "ativo": {
+            "type": "boolean",
+            "description": "Se a alternativa está ativa",
+            "example": true
+          },
+          "visivelImpressao": {
+            "type": "boolean",
+            "description": "Se é visível na impressão",
+            "example": true
+          },
+          "visivelPortal": {
+            "type": "boolean",
+            "description": "Se é visível no portal do paciente",
+            "example": true
+          },
+          "estilosCss": {
+            "type": "object",
+            "description": "Estilos CSS customizados",
+            "example": {
+              "backgroundColor": "#f0f0f0",
+              "fontWeight": "bold"
+            }
+          },
+          "classesCss": {
+            "description": "Classes CSS da alternativa",
+            "example": ["option-primary", "highlighted"],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "atributosHtml": {
+            "type": "object",
+            "description": "Atributos HTML customizados",
+            "example": {
+              "data-toggle": "tooltip",
+              "title": "Informação adicional"
+            }
+          },
+          "validacoesEspecificas": {
+            "type": "object",
+            "description": "Validações específicas da alternativa",
+            "example": {
+              "required": ["campo_observacao"]
+            }
+          },
+          "configuracoesExtras": {
+            "type": "object",
+            "description": "Configurações extras da alternativa",
+            "example": {
+              "allowCustomInput": true,
+              "maxLength": 100
+            }
+          },
+          "metadados": {
+            "type": "object",
+            "description": "Metadados adicionais",
+            "example": {
+              "category": "demographics",
+              "analytics_track": true
+            }
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações sobre a alternativa",
+            "example": "Alternativa padrão para novos formulários"
+          }
+        }
+      },
+      "CreateRespostaFormularioDto": {
+        "type": "object",
+        "properties": {
+          "formularioId": {
+            "type": "string",
+            "description": "ID do formulário",
+            "example": "uuid-do-formulario"
+          },
+          "pacienteId": {
+            "type": "string",
+            "description": "ID do paciente (se aplicável)",
+            "example": "uuid-do-paciente"
+          },
+          "usuarioId": {
+            "type": "string",
+            "description": "ID do usuário que preencheu",
+            "example": "uuid-do-usuario"
+          },
+          "unidadeSaudeId": {
+            "type": "string",
+            "description": "ID da unidade de saúde",
+            "example": "uuid-da-unidade"
+          },
+          "ordemServicoId": {
+            "type": "string",
+            "description": "ID da ordem de serviço (se aplicável)",
+            "example": "uuid-da-ordem"
+          },
+          "codigoResposta": {
+            "type": "string",
+            "description": "Código único da resposta",
+            "example": "RESP001",
+            "maxLength": 50
+          },
+          "status": {
+            "type": "string",
+            "description": "Status da resposta",
+            "enum": [
+              "rascunho",
+              "em_preenchimento",
+              "concluido",
+              "revisao",
+              "aprovado",
+              "rejeitado",
+              "cancelado"
+            ],
+            "example": "rascunho"
+          },
+          "dadosResposta": {
+            "type": "object",
+            "description": "Dados da resposta em JSON",
+            "example": {
+              "nome_paciente": "João Silva",
+              "idade": 35,
+              "sintomas": ["febre", "tosse"],
+              "exame_solicitado": "hemograma"
+            }
+          },
+          "metadadosSessao": {
+            "type": "object",
+            "description": "Metadados da sessão",
+            "example": {
+              "userAgent": "Mozilla/5.0...",
+              "ip": "192.168.1.1",
+              "startTime": "2025-01-01T10:00:00Z",
+              "duration": 300
+            }
+          },
+          "respostaCompleta": {
+            "type": "boolean",
+            "description": "Se é uma resposta completa",
+            "example": false
+          },
+          "requerRevisao": {
+            "type": "boolean",
+            "description": "Se requer revisão",
+            "example": false
+          },
+          "assinadaDigitalmente": {
+            "type": "boolean",
+            "description": "Se foi assinada digitalmente",
+            "example": false
+          },
+          "hashAssinatura": {
+            "type": "string",
+            "description": "Hash da assinatura digital",
+            "example": "sha256:abc123...",
+            "maxLength": 500
+          },
+          "certificadoDigital": {
+            "type": "string",
+            "description": "Certificado digital usado",
+            "example": "CN=João Silva, OU=...",
+            "maxLength": 500
+          },
+          "percentualCompleto": {
+            "type": "number",
+            "description": "Percentual de completude da resposta",
+            "example": 85.5
+          },
+          "score": {
+            "type": "number",
+            "description": "Score/pontuação calculada",
+            "example": 75.2
+          },
+          "tempoPreenchimento": {
+            "type": "number",
+            "description": "Tempo total de preenchimento em segundos",
+            "example": 480
+          },
+          "numeroRevisoes": {
+            "type": "number",
+            "description": "Número de revisões feitas",
+            "example": 2
+          },
+          "anexosIds": {
+            "description": "IDs dos anexos associados",
+            "example": ["uuid-anexo-1", "uuid-anexo-2"],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações sobre a resposta",
+            "example": "Paciente relatou sintomas há 3 dias"
+          },
+          "observacoesRevisao": {
+            "type": "string",
+            "description": "Observações da revisão",
+            "example": "Verificar campo de alergias"
+          },
+          "dataVencimento": {
+            "type": "string",
+            "description": "Data de vencimento da resposta",
+            "example": "2025-12-31"
+          },
+          "permiteEdicaoAposFinal": {
+            "type": "boolean",
+            "description": "Se permite edição após finalização",
+            "example": false
+          },
+          "motivoAlteracao": {
+            "type": "string",
+            "description": "Motivo da última alteração",
+            "example": "Correção de dados pessoais"
+          },
+          "configuracoes": {
+            "type": "object",
+            "description": "Configurações específicas da resposta",
+            "example": {
+              "notifications": true,
+              "autoSave": false
+            }
+          },
+          "metadados": {
+            "type": "object",
+            "description": "Metadados adicionais",
+            "example": {
+              "source": "mobile_app",
+              "version": "1.2.3"
+            }
+          }
+        },
+        "required": ["formularioId"]
+      },
+      "UpdateRespostaFormularioDto": {
+        "type": "object",
+        "properties": {
+          "formularioId": {
+            "type": "string",
+            "description": "ID do formulário",
+            "example": "uuid-do-formulario"
+          },
+          "pacienteId": {
+            "type": "string",
+            "description": "ID do paciente (se aplicável)",
+            "example": "uuid-do-paciente"
+          },
+          "usuarioId": {
+            "type": "string",
+            "description": "ID do usuário que preencheu",
+            "example": "uuid-do-usuario"
+          },
+          "unidadeSaudeId": {
+            "type": "string",
+            "description": "ID da unidade de saúde",
+            "example": "uuid-da-unidade"
+          },
+          "ordemServicoId": {
+            "type": "string",
+            "description": "ID da ordem de serviço (se aplicável)",
+            "example": "uuid-da-ordem"
+          },
+          "codigoResposta": {
+            "type": "string",
+            "description": "Código único da resposta",
+            "example": "RESP001",
+            "maxLength": 50
+          },
+          "status": {
+            "type": "string",
+            "description": "Status da resposta",
+            "enum": [
+              "rascunho",
+              "em_preenchimento",
+              "concluido",
+              "revisao",
+              "aprovado",
+              "rejeitado",
+              "cancelado"
+            ],
+            "example": "rascunho"
+          },
+          "dadosResposta": {
+            "type": "object",
+            "description": "Dados da resposta em JSON",
+            "example": {
+              "nome_paciente": "João Silva",
+              "idade": 35,
+              "sintomas": ["febre", "tosse"],
+              "exame_solicitado": "hemograma"
+            }
+          },
+          "metadadosSessao": {
+            "type": "object",
+            "description": "Metadados da sessão",
+            "example": {
+              "userAgent": "Mozilla/5.0...",
+              "ip": "192.168.1.1",
+              "startTime": "2025-01-01T10:00:00Z",
+              "duration": 300
+            }
+          },
+          "respostaCompleta": {
+            "type": "boolean",
+            "description": "Se é uma resposta completa",
+            "example": false
+          },
+          "requerRevisao": {
+            "type": "boolean",
+            "description": "Se requer revisão",
+            "example": false
+          },
+          "assinadaDigitalmente": {
+            "type": "boolean",
+            "description": "Se foi assinada digitalmente",
+            "example": false
+          },
+          "hashAssinatura": {
+            "type": "string",
+            "description": "Hash da assinatura digital",
+            "example": "sha256:abc123...",
+            "maxLength": 500
+          },
+          "certificadoDigital": {
+            "type": "string",
+            "description": "Certificado digital usado",
+            "example": "CN=João Silva, OU=...",
+            "maxLength": 500
+          },
+          "percentualCompleto": {
+            "type": "number",
+            "description": "Percentual de completude da resposta",
+            "example": 85.5
+          },
+          "score": {
+            "type": "number",
+            "description": "Score/pontuação calculada",
+            "example": 75.2
+          },
+          "tempoPreenchimento": {
+            "type": "number",
+            "description": "Tempo total de preenchimento em segundos",
+            "example": 480
+          },
+          "numeroRevisoes": {
+            "type": "number",
+            "description": "Número de revisões feitas",
+            "example": 2
+          },
+          "anexosIds": {
+            "description": "IDs dos anexos associados",
+            "example": ["uuid-anexo-1", "uuid-anexo-2"],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações sobre a resposta",
+            "example": "Paciente relatou sintomas há 3 dias"
+          },
+          "observacoesRevisao": {
+            "type": "string",
+            "description": "Observações da revisão",
+            "example": "Verificar campo de alergias"
+          },
+          "dataVencimento": {
+            "type": "string",
+            "description": "Data de vencimento da resposta",
+            "example": "2025-12-31"
+          },
+          "permiteEdicaoAposFinal": {
+            "type": "boolean",
+            "description": "Se permite edição após finalização",
+            "example": false
+          },
+          "motivoAlteracao": {
+            "type": "string",
+            "description": "Motivo da última alteração",
+            "example": "Correção de dados pessoais"
+          },
+          "configuracoes": {
+            "type": "object",
+            "description": "Configurações específicas da resposta",
+            "example": {
+              "notifications": true,
+              "autoSave": false
+            }
+          },
+          "metadados": {
+            "type": "object",
+            "description": "Metadados adicionais",
+            "example": {
+              "source": "mobile_app",
+              "version": "1.2.3"
+            }
           }
         }
       }

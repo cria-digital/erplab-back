@@ -1,0 +1,118 @@
+### Atualizar formulário completo
+PATCH {{baseUrl}}/formularios/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nomeFormulario": "Formulário de Anamnese Geral - Atualizado",
+  "descricao": "Formulário padrão atualizado para coleta de dados de anamnese de pacientes - versão 2025",
+  "tags": ["anamnese", "clinico", "geral", "2025"],
+  "configuracoes": {
+    "permitirSalvarParcial": true,
+    "exigirAssinaturaDigital": true,
+    "tempoLimiteMinutos": 90,
+    "notificarProfissional": true,
+    "enviarCopiaEmail": true
+  },
+  "metadados": {
+    "autor": "Dr. João Silva",
+    "revisor": "Dra. Maria Santos",
+    "especialidade": "Clínica Geral",
+    "versaoMinimaSistema": "1.2.0",
+    "dataRevisao": "2025-01-21"
+  },
+  "observacoes": "Formulário atualizado com novos campos obrigatórios conforme protocolo 2025"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "550e8400-e29b-41d4-a716-446655440000",
+#   "nomeFormulario": "Formulário de Anamnese Geral - Atualizado",
+#   "descricao": "Formulário padrão atualizado para coleta...",
+#   "updatedAt": "2025-01-21T15:30:00.000Z"
+# }
+
+###
+
+### Atualizar apenas configurações
+PATCH {{baseUrl}}/formularios/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "configuracoes": {
+    "tempoLimiteMinutos": 120,
+    "exigirAssinaturaDigital": true,
+    "permitirEdicaoApósEnvio": false,
+    "enviarNotificacaoVencimento": true
+  }
+}
+
+###
+
+### Atualizar tags e metadados
+PATCH {{baseUrl}}/formularios/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tags": ["anamnese", "clinico", "geral", "atualizado", "v2"],
+  "metadados": {
+    "versao_protocolo": "2025.1",
+    "data_ultima_revisao": "2025-01-21",
+    "revisor": "Comissão Médica",
+    "aprovado_por": "Diretor Técnico"
+  }
+}
+
+###
+
+### Atualizar apenas observações
+PATCH {{baseUrl}}/formularios/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "observacoes": "Formulário revisado e aprovado pelo conselho médico em janeiro/2025. Inclui novas diretrizes do CFM."
+}
+
+###
+
+### Tentar atualizar código (deve dar erro se já existir)
+PATCH {{baseUrl}}/formularios/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoFormulario": "EXAM_LAB_001"
+}
+
+### Expected Response (se código já existir)
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Já existe um formulário com o código EXAM_LAB_001",
+#   "error": "Bad Request"
+# }
+
+###
+
+### Atualizar formulário inexistente (deve retornar 404)
+PATCH {{baseUrl}}/formularios/00000000-0000-0000-0000-000000000000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nomeFormulario": "Teste"
+}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Formulário com ID 00000000-0000-0000-0000-000000000000 não encontrado",
+#   "error": "Not Found"
+# }
+
+###

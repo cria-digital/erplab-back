@@ -1,0 +1,72 @@
+### Buscar integração por ID
+GET {{baseUrl}}/integracoes/550e8400-e29b-41d4-a716-446655440000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "550e8400-e29b-41d4-a716-446655440000",
+#   "tipoIntegracao": "laboratorio_apoio",
+#   "nomeIntegracao": "Laboratório ABC Diagnósticos",
+#   "descricaoApi": "Integração para envio de exames e recebimento de resultados",
+#   "codigoIdentificacao": "LAB_ABC_001",
+#   "unidadeSaude": { ... },
+#   "status": "ativa",
+#   "ativo": true,
+#   "createdAt": "2025-01-21T10:00:00.000Z",
+#   "updatedAt": "2025-01-21T10:00:00.000Z"
+# }
+
+###
+
+### Buscar integração por código
+GET {{baseUrl}}/integracoes/codigo/LAB_ABC_001
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar integração por código - Gateway PagSeguro
+GET {{baseUrl}}/integracoes/codigo/PAG_SEG_001
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar integração por código - SEFAZ SP
+GET {{baseUrl}}/integracoes/codigo/SEFAZ_SP_001
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar integração por código - Telemedicina
+GET {{baseUrl}}/integracoes/codigo/TELE_PRO_001
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar integração inexistente (deve retornar 404)
+GET {{baseUrl}}/integracoes/codigo/CODIGO_INEXISTENTE
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Integração com código CODIGO_INEXISTENTE não encontrada",
+#   "error": "Not Found"
+# }
+
+###
+
+### Buscar integração por ID inexistente (deve retornar 404)
+GET {{baseUrl}}/integracoes/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Integração com ID 00000000-0000-0000-0000-000000000000 não encontrada",
+#   "error": "Not Found"
+# }
+
+###

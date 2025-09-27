@@ -1,0 +1,146 @@
+### Criar formulário de anamnese
+POST {{baseUrl}}/formularios
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoFormulario": "ANAM_001",
+  "nomeFormulario": "Formulário de Anamnese Geral",
+  "descricao": "Formulário padrão para coleta de dados de anamnese de pacientes",
+  "tipo": "anamnese",
+  "categoria": "clinico",
+  "versao": 1,
+  "unidadeSaudeId": "{{userId}}",
+  "tags": ["anamnese", "clinico", "geral"],
+  "configuracoes": {
+    "permitirSalvarParcial": true,
+    "exigirAssinaturaDigital": false,
+    "tempoLimiteMinutos": 60,
+    "notificarProfissional": true
+  },
+  "metadados": {
+    "autor": "Dr. João Silva",
+    "especialidade": "Clínica Geral",
+    "versaoMinimaSistema": "1.0.0"
+  },
+  "observacoes": "Formulário padrão para primeira consulta"
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "id": "uuid-do-formulario",
+#   "codigoFormulario": "ANAM_001",
+#   "nomeFormulario": "Formulário de Anamnese Geral",
+#   "tipo": "anamnese",
+#   "versao": 1,
+#   "status": "rascunho",
+#   "ativo": true,
+#   "createdAt": "2025-01-21T10:00:00.000Z"
+# }
+
+###
+
+### Criar formulário de exame
+POST {{baseUrl}}/formularios
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoFormulario": "EXAM_LAB_001",
+  "nomeFormulario": "Solicitação de Exames Laboratoriais",
+  "descricao": "Formulário para solicitação de exames de análises clínicas",
+  "tipo": "exame",
+  "categoria": "laboratorial",
+  "unidadeSaudeId": "{{userId}}",
+  "tags": ["exames", "laboratorio", "solicitacao"],
+  "configuracoes": {
+    "permitirSalvarParcial": false,
+    "exigirAssinaturaDigital": true,
+    "tempoLimiteMinutos": 30,
+    "notificarProfissional": true,
+    "enviarPorEmail": true
+  },
+  "observacoes": "Formulário para pedidos de exames laboratoriais"
+}
+
+###
+
+### Criar questionário de satisfação
+POST {{baseUrl}}/formularios
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoFormulario": "SAT_001",
+  "nomeFormulario": "Questionário de Satisfação do Paciente",
+  "descricao": "Avaliação da satisfação do paciente com o atendimento",
+  "tipo": "questionario",
+  "categoria": "satisfacao",
+  "unidadeSaudeId": "{{userId}}",
+  "tags": ["satisfacao", "qualidade", "avaliacao"],
+  "configuracoes": {
+    "anonimo": true,
+    "permitirSalvarParcial": true,
+    "exigirAssinaturaDigital": false,
+    "tempoLimiteMinutos": 15
+  },
+  "metadados": {
+    "objetivo": "Melhoria contínua da qualidade",
+    "frequencia": "Pós-consulta"
+  }
+}
+
+###
+
+### Criar formulário de consentimento
+POST {{baseUrl}}/formularios
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoFormulario": "CONSENT_001",
+  "nomeFormulario": "Termo de Consentimento Livre e Esclarecido",
+  "descricao": "Formulário de consentimento para procedimentos médicos",
+  "tipo": "consentimento",
+  "categoria": "legal",
+  "unidadeSaudeId": "{{userId}}",
+  "tags": ["consentimento", "legal", "procedimento"],
+  "configuracoes": {
+    "permitirSalvarParcial": false,
+    "exigirAssinaturaDigital": true,
+    "obrigatorioAntesProcedimento": true,
+    "validadeDias": 30
+  },
+  "observacoes": "Documento legal obrigatório para procedimentos invasivos"
+}
+
+###
+
+### Criar formulário de triagem
+POST {{baseUrl}}/formularios
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoFormulario": "TRIAG_001",
+  "nomeFormulario": "Formulário de Triagem - COVID-19",
+  "descricao": "Formulário de triagem para sintomas de COVID-19",
+  "tipo": "triagem",
+  "categoria": "infectologia",
+  "versao": 2,
+  "unidadeSaudeId": "{{userId}}",
+  "tags": ["triagem", "covid", "sintomas", "screening"],
+  "configuracoes": {
+    "permitirSalvarParcial": false,
+    "preenchimentoObrigatorio": true,
+    "calcularRisco": true,
+    "alertarAltoRisco": true
+  },
+  "metadados": {
+    "protocolo": "MS-COVID-19-V2",
+    "validadeProtocolo": "2025-12-31"
+  }
+}
+
+###

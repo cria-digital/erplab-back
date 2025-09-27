@@ -1,0 +1,152 @@
+### Criar integração com Laboratório de Apoio
+POST {{baseUrl}}/integracoes
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoIntegracao": "laboratorio_apoio",
+  "nomeIntegracao": "Laboratório ABC Diagnósticos",
+  "descricaoApi": "Integração para envio de exames e recebimento de resultados",
+  "codigoIdentificacao": "LAB_ABC_001",
+  "unidadeSaudeId": "{{userId}}",
+  "urlApiExames": "https://api.laboratorio-abc.com.br/v1/exames",
+  "urlApiGuiaExames": "https://api.laboratorio-abc.com.br/v1/guias",
+  "tokenAutenticacao": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+  "chaveApi": "abc-lab-key-12345",
+  "padraoComunicacao": "rest_api",
+  "formatoRetorno": "json",
+  "nomeLaboratorio": "Laboratório ABC Diagnósticos Ltda",
+  "urlBase": "https://api.laboratorio-abc.com.br",
+  "urlAutenticacao": "https://api.laboratorio-abc.com.br/auth/token",
+  "urlConsulta": "https://api.laboratorio-abc.com.br/v1/consultas",
+  "urlEnvio": "https://api.laboratorio-abc.com.br/v1/upload",
+  "urlCallback": "https://nossa-api.com.br/webhook/lab-abc",
+  "usuario": "usuario_integracao",
+  "senha": "senha_super_secreta",
+  "configuracoesAdicionais": {
+    "timeout": 30000,
+    "retries": 3,
+    "compression": true
+  },
+  "headersCustomizados": {
+    "X-Client-Version": "1.0.0",
+    "X-Integration-Source": "ERP-LAB"
+  },
+  "parametrosConexao": {
+    "ssl_verify": true,
+    "follow_redirects": true,
+    "max_redirects": 5
+  },
+  "timeoutSegundos": 45,
+  "intervaloSincronizacaoMinutos": 30,
+  "limiteRequisicoesDia": 10000,
+  "observacoes": "Laboratório principal para exames de rotina e urgência"
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "id": "uuid-da-integracao",
+#   "tipoIntegracao": "laboratorio_apoio",
+#   "nomeIntegracao": "Laboratório ABC Diagnósticos",
+#   "codigoIdentificacao": "LAB_ABC_001",
+#   "status": "em_configuracao",
+#   "ativo": true,
+#   "createdAt": "2025-01-21T10:00:00.000Z",
+#   "updatedAt": "2025-01-21T10:00:00.000Z"
+# }
+
+###
+
+### Criar integração com Telemedicina
+POST {{baseUrl}}/integracoes
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoIntegracao": "telemedicina",
+  "nomeIntegracao": "Plataforma TeleMed Pro",
+  "descricaoApi": "Integração para agendamento e realização de teleconsultas",
+  "codigoIdentificacao": "TELE_PRO_001",
+  "unidadeSaudeId": "{{userId}}",
+  "urlBase": "https://api.telemedpro.com.br",
+  "urlAutenticacao": "https://api.telemedpro.com.br/oauth/token",
+  "urlConsulta": "https://api.telemedpro.com.br/v2/consultas",
+  "urlEnvio": "https://api.telemedpro.com.br/v2/agendamentos",
+  "tokenAutenticacao": "OAuth2 access_token_here",
+  "padraoComunicacao": "rest_api",
+  "formatoRetorno": "json",
+  "configuracoesAdicionais": {
+    "oauth2": {
+      "client_id": "client_123456",
+      "client_secret": "secret_abcdef",
+      "scope": "consultas agendamentos"
+    },
+    "webhook_secret": "webhook_secret_key"
+  },
+  "headersCustomizados": {
+    "X-Platform": "ERPLAB",
+    "Accept": "application/vnd.telemedpro.v2+json"
+  },
+  "timeoutSegundos": 60,
+  "limiteRequisicoesDia": 5000,
+  "observacoes": "Plataforma para teleconsultas e telediagnósticos"
+}
+
+###
+
+### Criar integração com Gateway de Pagamento
+POST {{baseUrl}}/integracoes
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoIntegracao": "gateway_pagamento",
+  "nomeIntegracao": "PagSeguro Business",
+  "descricaoApi": "Integração para processamento de pagamentos",
+  "codigoIdentificacao": "PAG_SEG_001",
+  "nomeGateway": "PagSeguro",
+  "urlBase": "https://ws.pagseguro.uol.com.br",
+  "urlAutenticacao": "https://ws.pagseguro.uol.com.br/oauth2/token",
+  "chaveApi": "pagseguro_api_key_12345",
+  "usuario": "vendedor@clinica.com.br",
+  "senha": "token_pagseguro_12345",
+  "padraoComunicacao": "rest_api",
+  "formatoRetorno": "xml",
+  "configuracoesAdicionais": {
+    "environment": "production",
+    "currency": "BRL",
+    "payment_methods": ["credit_card", "debit_card", "pix", "boleto"]
+  },
+  "timeoutSegundos": 30,
+  "limiteRequisicoesDia": 50000,
+  "observacoes": "Gateway principal para pagamentos da clínica"
+}
+
+###
+
+### Criar integração com SEFAZ
+POST {{baseUrl}}/integracoes
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoIntegracao": "sefaz",
+  "nomeIntegracao": "SEFAZ SP - NFCe",
+  "descricaoApi": "Integração para emissão de NFCe",
+  "codigoIdentificacao": "SEFAZ_SP_001",
+  "urlBase": "https://nfce.fazenda.sp.gov.br",
+  "certificadoDigital": "certificado_a1_base64_encoded",
+  "senhaCertificado": "senha_do_certificado",
+  "padraoComunicacao": "soap",
+  "formatoRetorno": "xml",
+  "configuracoesAdicionais": {
+    "uf": "SP",
+    "ambiente": "producao",
+    "serie_nfce": "001"
+  },
+  "timeoutSegundos": 120,
+  "observacoes": "Integração para emissão de Nota Fiscal de Consumidor Eletrônica"
+}
+
+###

@@ -1,0 +1,210 @@
+### Pesquisar formulários por termo
+GET {{baseUrl}}/formularios/search?q=anamnese
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid-1",
+#     "nomeFormulario": "Formulário de Anamnese Geral",
+#     "codigoFormulario": "ANAM_001",
+#     "tipo": "anamnese",
+#     "status": "rascunho"
+#   }
+# ]
+
+###
+
+### Pesquisar por "exame"
+GET {{baseUrl}}/formularios/search?q=exame
+Authorization: Bearer {{token}}
+
+###
+
+### Pesquisar por "satisfação"
+GET {{baseUrl}}/formularios/search?q=satisfação
+Authorization: Bearer {{token}}
+
+###
+
+### Pesquisar por "covid"
+GET {{baseUrl}}/formularios/search?q=covid
+Authorization: Bearer {{token}}
+
+###
+
+### Obter estatísticas dos formulários
+GET {{baseUrl}}/formularios/estatisticas
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "total": 25,
+#   "ativos": 20,
+#   "inativos": 5,
+#   "publicados": 15,
+#   "comRespostas": 8,
+#   "porTipo": [
+#     { "tipo": "anamnese", "total": "10" },
+#     { "tipo": "exame", "total": "8" },
+#     { "tipo": "questionario", "total": "4" },
+#     { "tipo": "consentimento", "total": "2" },
+#     { "tipo": "triagem", "total": "1" }
+#   ],
+#   "porStatus": [
+#     { "status": "publicado", "total": "15" },
+#     { "status": "rascunho", "total": "8" },
+#     { "status": "arquivado", "total": "2" }
+#   ]
+# }
+
+###
+
+### Alternar status ativo/inativo
+PATCH {{baseUrl}}/formularios/550e8400-e29b-41d4-a716-446655440000/toggle-status
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "550e8400-e29b-41d4-a716-446655440000",
+#   "ativo": false,
+#   "updatedAt": "2025-01-21T16:00:00.000Z"
+# }
+
+###
+
+### Atualizar status do formulário para "publicado"
+PATCH {{baseUrl}}/formularios/550e8400-e29b-41d4-a716-446655440000/status?status=publicado
+Authorization: Bearer {{token}}
+
+###
+
+### Atualizar status do formulário para "arquivado"
+PATCH {{baseUrl}}/formularios/550e8400-e29b-41d4-a716-446655440000/status?status=arquivado
+Authorization: Bearer {{token}}
+
+###
+
+### Atualizar status do formulário para "rascunho"
+PATCH {{baseUrl}}/formularios/550e8400-e29b-41d4-a716-446655440000/status?status=rascunho
+Authorization: Bearer {{token}}
+
+###
+
+### Publicar formulário
+POST {{baseUrl}}/formularios/550e8400-e29b-41d4-a716-446655440000/publicar
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "550e8400-e29b-41d4-a716-446655440000",
+#   "status": "publicado",
+#   "ativo": true,
+#   "dataPublicacao": "2025-01-21T16:05:00.000Z"
+# }
+
+###
+
+### Tentar publicar formulário sem campos (deve dar erro)
+POST {{baseUrl}}/formularios/550e8400-e29b-41d4-a716-446655440000/publicar
+Authorization: Bearer {{token}}
+
+### Expected Response (se não tiver campos)
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Não é possível publicar formulário sem campos",
+#   "error": "Bad Request"
+# }
+
+###
+
+### Criar nova versão do formulário
+POST {{baseUrl}}/formularios/550e8400-e29b-41d4-a716-446655440000/criar-versao
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "id": "new-uuid-version",
+#   "codigoFormulario": "ANAM_001_V2",
+#   "versao": 2,
+#   "status": "rascunho",
+#   "formularioPaiId": "550e8400-e29b-41d4-a716-446655440000",
+#   "createdAt": "2025-01-21T16:10:00.000Z"
+# }
+
+###
+
+### Validar formulário
+POST {{baseUrl}}/formularios/550e8400-e29b-41d4-a716-446655440000/validar
+Authorization: Bearer {{token}}
+
+### Expected Response (formulário válido)
+# Status: 200 OK
+# {
+#   "valido": true,
+#   "erros": []
+# }
+
+###
+
+### Validar formulário inválido
+POST {{baseUrl}}/formularios/550e8400-e29b-41d4-a716-446655440000/validar
+Authorization: Bearer {{token}}
+
+### Expected Response (formulário inválido)
+# Status: 200 OK
+# {
+#   "valido": false,
+#   "erros": [
+#     "Formulário deve ter pelo menos um campo",
+#     "Formulário deve ter pelo menos um campo obrigatório"
+#   ]
+# }
+
+###
+
+### Remover formulário
+DELETE {{baseUrl}}/formularios/550e8400-e29b-41d4-a716-446655440000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Formulário removido com sucesso"
+# }
+
+###
+
+### Tentar remover formulário publicado (deve dar erro)
+DELETE {{baseUrl}}/formularios/550e8400-e29b-41d4-a716-446655440000
+Authorization: Bearer {{token}}
+
+### Expected Response (se formulário estiver publicado)
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Não é possível excluir formulário publicado",
+#   "error": "Bad Request"
+# }
+
+###
+
+### Tentar remover formulário inexistente (deve retornar 404)
+DELETE {{baseUrl}}/formularios/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Formulário com ID 00000000-0000-0000-0000-000000000000 não encontrado",
+#   "error": "Not Found"
+# }
+
+###

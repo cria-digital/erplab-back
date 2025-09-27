@@ -1,0 +1,124 @@
+### Atualizar integração completa
+PATCH {{baseUrl}}/integracoes/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nomeIntegracao": "Laboratório ABC Diagnósticos - Atualizado",
+  "descricaoApi": "Integração atualizada para envio de exames e recebimento de resultados em tempo real",
+  "urlApiExames": "https://api.laboratorio-abc.com.br/v2/exames",
+  "urlApiGuiaExames": "https://api.laboratorio-abc.com.br/v2/guias",
+  "tokenAutenticacao": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9_NOVO",
+  "configuracoesAdicionais": {
+    "timeout": 45000,
+    "retries": 5,
+    "compression": true,
+    "rate_limit": 1000
+  },
+  "timeoutSegundos": 60,
+  "intervaloSincronizacaoMinutos": 15,
+  "limiteRequisicoesDia": 15000,
+  "observacoes": "Laboratório principal para exames de rotina e urgência - Configuração atualizada em 2025"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "550e8400-e29b-41d4-a716-446655440000",
+#   "nomeIntegracao": "Laboratório ABC Diagnósticos - Atualizado",
+#   "descricaoApi": "Integração atualizada para envio de exames...",
+#   "updatedAt": "2025-01-21T15:30:00.000Z"
+# }
+
+###
+
+### Atualizar apenas token de autenticação
+PATCH {{baseUrl}}/integracoes/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tokenAutenticacao": "Bearer NEW_TOKEN_2025_01_21"
+}
+
+###
+
+### Atualizar configurações de timeout e limites
+PATCH {{baseUrl}}/integracoes/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "timeoutSegundos": 90,
+  "limiteRequisicoesDia": 20000,
+  "intervaloSincronizacaoMinutos": 10
+}
+
+###
+
+### Atualizar URLs da integração
+PATCH {{baseUrl}}/integracoes/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "urlBase": "https://api-v2.laboratorio-abc.com.br",
+  "urlApiExames": "https://api-v2.laboratorio-abc.com.br/exames",
+  "urlApiGuiaExames": "https://api-v2.laboratorio-abc.com.br/guias",
+  "urlCallback": "https://nossa-api-nova.com.br/webhook/lab-abc"
+}
+
+###
+
+### Atualizar headers customizados
+PATCH {{baseUrl}}/integracoes/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "headersCustomizados": {
+    "X-Client-Version": "2.0.0",
+    "X-Integration-Source": "ERP-LAB-V2",
+    "X-Environment": "production"
+  }
+}
+
+###
+
+### Tentar atualizar código (deve dar erro se já existir)
+PATCH {{baseUrl}}/integracoes/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoIdentificacao": "CODIGO_EXISTENTE"
+}
+
+### Expected Response (se código já existir)
+# Status: 409 Conflict
+# {
+#   "statusCode": 409,
+#   "message": "Já existe uma integração com o código CODIGO_EXISTENTE",
+#   "error": "Conflict"
+# }
+
+###
+
+### Atualizar integração inexistente (deve retornar 404)
+PATCH {{baseUrl}}/integracoes/00000000-0000-0000-0000-000000000000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nomeIntegracao": "Teste"
+}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Integração com ID 00000000-0000-0000-0000-000000000000 não encontrada",
+#   "error": "Not Found"
+# }
+
+###
