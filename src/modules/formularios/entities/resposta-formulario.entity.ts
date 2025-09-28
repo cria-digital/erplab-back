@@ -25,9 +25,9 @@ export enum StatusResposta {
 }
 
 @Entity('respostas_formulario')
-@Index(['formulario_id', 'paciente_id'])
-@Index(['status', 'created_at'])
-@Index(['codigo_resposta'], { unique: true })
+@Index(['formularioId', 'pacienteId'])
+@Index(['status', 'createdAt'])
+@Index(['codigoResposta'], { unique: true })
 export class RespostaFormulario {
   @PrimaryGeneratedColumn('uuid')
   id: string;

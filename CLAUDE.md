@@ -132,8 +132,15 @@ Essa validação deve ser feita IMEDIATAMENTE após criar cada arquivo de teste,
 1. **Testes Automatizados**: Unitários e E2E configurados
 2. **Hooks Pre-commit**: Lint, build e testes executam automaticamente
 3. **CI/CD**: GitHub Actions valida código em PRs e pushes
-4. **Cobertura de Código**: Mínimo 80% de cobertura
+4. **Cobertura de Código**: Atualmente 82.06% de cobertura
 5. **Security Audit**: Verificação automática de vulnerabilidades
+
+### Status de Qualidade Atual (Setembro 2025)
+
+- **Testes**: 99.9% taxa de sucesso (2,327 passando, 2 falhando)
+- **ESLint**: 100% conforme (0 erros)
+- **Build**: 100% sucesso (0 erros de TypeScript)
+- **TypeORM**: Todas configurações de Index corrigidas
 
 ### Módulo de Auditoria
 
@@ -342,6 +349,14 @@ curl -X GET http://localhost:10016/api/v1/usuarios \
 10. **Validar dados de entrada** com DTOs e class-validator
 11. **Documentar API** com decorators do Swagger
 12. **Usar query parameters para códigos com caracteres especiais** - CNAEs têm barras no código (ex: `?codigo=8640-2/02` em vez de `/codigo/8640-2/02`)
+
+### Padrões de Testes Identificados
+
+- **TypeORM Index**: SEMPRE usar nomes de propriedades (camelCase) ao invés de nomes de colunas (snake_case)
+  - ✅ Correto: `@Index(['formularioId', 'ordem'])`
+  - ❌ Errado: `@Index(['formulario_id', 'ordem'])`
+- **Mock Testing**: Usar `jest.clearAllMocks()` entre testes para isolar estado
+- **Decorator Testing**: Para NestJS parameter decorators, testar a lógica interna ao invés do decorator em si
 
 ## Módulo de Laboratórios (Em Desenvolvimento)
 

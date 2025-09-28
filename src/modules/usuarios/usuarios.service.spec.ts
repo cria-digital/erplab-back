@@ -789,4 +789,250 @@ describe('UsuariosService', () => {
       );
     });
   });
+
+  describe('create - casos adicionais', () => {
+    it('deve hashear resposta de recuperação quando fornecida', async () => {
+      const createUsuarioDto = {
+        email: 'novo@example.com',
+        senha: 'senha123',
+        nomeCompleto: 'Novo Usuário',
+        cpf: '12345678901',
+        respostaRecuperacao: 'resposta-secreta',
+      };
+
+      const mockUsuario = {
+        ...createUsuarioDto,
+        id: 'uuid-novo',
+        hashRespostaRecuperacao: jest.fn(),
+      };
+
+      mockUsuarioRepository.findOne.mockResolvedValue(null);
+      mockUsuarioRepository.create.mockReturnValue(mockUsuario);
+      mockUsuarioRepository.save.mockResolvedValue(mockUsuario);
+
+      await service.create(createUsuarioDto);
+
+      expect(mockUsuario.hashRespostaRecuperacao).toHaveBeenCalledWith(
+        'resposta-secreta',
+      );
+    });
+
+    it('deve criar unidades quando unidadesIds fornecidos', async () => {
+      const createUsuarioDto = {
+        email: 'novo@example.com',
+        senha: 'senha123',
+        nomeCompleto: 'Novo Usuário',
+        unidadesIds: ['unidade-1', 'unidade-2'],
+      };
+
+      const mockUsuario = {
+        ...createUsuarioDto,
+        id: 'uuid-novo',
+      };
+
+      mockUsuarioRepository.findOne.mockResolvedValue(null);
+      mockUsuarioRepository.create.mockReturnValue(mockUsuario);
+      mockUsuarioRepository.save.mockResolvedValue(mockUsuario);
+      mockUsuarioUnidadeRepository.save.mockResolvedValue([]);
+
+      await service.create(createUsuarioDto);
+
+      expect(mockUsuarioUnidadeRepository.create).toHaveBeenCalledTimes(2);
+      expect(mockUsuarioUnidadeRepository.save).toHaveBeenCalled();
+    });
+
+    it('deve criar permissões quando permissoesIds fornecidos', async () => {
+      const createUsuarioDto = {
+        email: 'novo@example.com',
+        senha: 'senha123',
+        nomeCompleto: 'Novo Usuário',
+        permissoesIds: ['perm-1', 'perm-2'],
+      };
+
+      const mockUsuario = {
+        ...createUsuarioDto,
+        id: 'uuid-novo',
+      };
+
+      mockUsuarioRepository.findOne.mockResolvedValue(null);
+      mockUsuarioRepository.create.mockReturnValue(mockUsuario);
+      mockUsuarioRepository.save.mockResolvedValue(mockUsuario);
+      mockUsuarioPermissaoRepository.save.mockResolvedValue([]);
+
+      await service.create(createUsuarioDto);
+
+      expect(mockUsuarioPermissaoRepository.create).toHaveBeenCalledTimes(2);
+      expect(mockUsuarioPermissaoRepository.save).toHaveBeenCalled();
+    });
+  });
+
+  describe('findAll - filtros adicionais', () => {
+    it('deve aplicar filtro por cpf', async () => {
+      mockQueryBuilder.getManyAndCount.mockResolvedValue([[], 0]);
+
+      await service.findAll({ cpf: '12345678901' });
+
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+        'usuario.cpf = :cpf',
+        { cpf: '12345678901' },
+      );
+    });
+
+    it('deve aplicar filtro por unidadeId', async () => {
+      mockQueryBuilder.getManyAndCount.mockResolvedValue([[], 0]);
+
+      await service.findAll({ unidadeId: 'unidade-123' });
+
+      expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
+        'unidades.unidadeSaudeId = :unidadeId',
+        { unidadeId: 'unidade-123' },
+      );
+    });
+  });
+
+  describe('update - casos adicionais', () => {
+    it('deve hashear nova senha quando fornecida', async () => {
+      const usuario = {
+        id: 'uuid-123',
+        email: 'test@example.com',
+        nomeCompleto: 'Test User',
+      };
+
+      const updateDto = {
+        senha: 'nova-senha-123',
+      };
+
+      mockUsuarioRepository.findOne.mockResolvedValue(usuario);
+      mockUsuarioRepository.save.mockResolvedValue(usuario);
+
+      const hashSpy = jest
+        .spyOn(bcrypt, 'hash')
+        .mockResolvedValue('senha-hasheada' as never);
+
+      await service.update('uuid-123', updateDto, 'admin-id');
+
+      expect(hashSpy).toHaveBeenCalledWith('nova-senha-123', 10);
+      expect(mockUsuarioRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({
+          senhaHash: 'senha-hasheada',
+        }),
+      );
+
+      hashSpy.mockRestore();
+    });
+
+    it('deve hashear nova resposta de recuperação quando fornecida', async () => {
+      const usuario = {
+        id: 'uuid-123',
+        email: 'test@example.com',
+        nomeCompleto: 'Test User',
+        hashRespostaRecuperacao: jest.fn(),
+      };
+
+      const updateDto = {
+        respostaRecuperacao: 'nova-resposta',
+      };
+
+      mockUsuarioRepository.findOne.mockResolvedValue(usuario);
+      mockUsuarioRepository.save.mockResolvedValue(usuario);
+
+      await service.update('uuid-123', updateDto, 'admin-id');
+
+      expect(usuario.hashRespostaRecuperacao).toHaveBeenCalledWith(
+        'nova-resposta',
+      );
+    });
+
+    it('deve atualizar unidades quando fornecidas', async () => {
+      const usuario = {
+        id: 'uuid-123',
+        email: 'test@example.com',
+      };
+
+      const updateDto = {
+        unidadesIds: ['nova-unidade-1', 'nova-unidade-2'],
+      };
+
+      mockUsuarioRepository.findOne.mockResolvedValue(usuario);
+      mockUsuarioRepository.save.mockResolvedValue(usuario);
+      mockUsuarioUnidadeRepository.delete.mockResolvedValue({});
+      mockUsuarioUnidadeRepository.save.mockResolvedValue([]);
+
+      await service.update('uuid-123', updateDto, 'admin-id');
+
+      expect(mockUsuarioUnidadeRepository.delete).toHaveBeenCalledWith({
+        usuario: { id: 'uuid-123' },
+      });
+      expect(mockUsuarioUnidadeRepository.create).toHaveBeenCalledTimes(2);
+      expect(mockUsuarioUnidadeRepository.save).toHaveBeenCalled();
+    });
+
+    it('deve remover unidades quando array vazio fornecido', async () => {
+      const usuario = {
+        id: 'uuid-123',
+        email: 'test@example.com',
+      };
+
+      const updateDto = {
+        unidadesIds: [],
+      };
+
+      mockUsuarioRepository.findOne.mockResolvedValue(usuario);
+      mockUsuarioRepository.save.mockResolvedValue(usuario);
+      mockUsuarioUnidadeRepository.delete.mockResolvedValue({});
+
+      await service.update('uuid-123', updateDto, 'admin-id');
+
+      expect(mockUsuarioUnidadeRepository.delete).toHaveBeenCalledWith({
+        usuario: { id: 'uuid-123' },
+      });
+      expect(mockUsuarioUnidadeRepository.save).not.toHaveBeenCalled();
+    });
+
+    it('deve atualizar permissões quando fornecidas', async () => {
+      const usuario = {
+        id: 'uuid-123',
+        email: 'test@example.com',
+      };
+
+      const updateDto = {
+        permissoesIds: ['nova-perm-1', 'nova-perm-2'],
+      };
+
+      mockUsuarioRepository.findOne.mockResolvedValue(usuario);
+      mockUsuarioRepository.save.mockResolvedValue(usuario);
+      mockUsuarioPermissaoRepository.delete.mockResolvedValue({});
+      mockUsuarioPermissaoRepository.save.mockResolvedValue([]);
+
+      await service.update('uuid-123', updateDto, 'admin-id');
+
+      expect(mockUsuarioPermissaoRepository.delete).toHaveBeenCalledWith({
+        usuario: { id: 'uuid-123' },
+      });
+      expect(mockUsuarioPermissaoRepository.create).toHaveBeenCalledTimes(2);
+      expect(mockUsuarioPermissaoRepository.save).toHaveBeenCalled();
+    });
+
+    it('deve remover permissões quando array vazio fornecido', async () => {
+      const usuario = {
+        id: 'uuid-123',
+        email: 'test@example.com',
+      };
+
+      const updateDto = {
+        permissoesIds: [],
+      };
+
+      mockUsuarioRepository.findOne.mockResolvedValue(usuario);
+      mockUsuarioRepository.save.mockResolvedValue(usuario);
+      mockUsuarioPermissaoRepository.delete.mockResolvedValue({});
+
+      await service.update('uuid-123', updateDto, 'admin-id');
+
+      expect(mockUsuarioPermissaoRepository.delete).toHaveBeenCalledWith({
+        usuario: { id: 'uuid-123' },
+      });
+      expect(mockUsuarioPermissaoRepository.save).not.toHaveBeenCalled();
+    });
+  });
 });

@@ -45,8 +45,8 @@ export enum CategoriaFormulario {
 
 @Entity('formularios')
 @Index(['tipo', 'status'])
-@Index(['codigo_formulario'], { unique: true })
-@Index(['unidade_saude_id'])
+@Index(['codigoFormulario'], { unique: true })
+@Index(['unidadeSaudeId'])
 export class Formulario {
   @PrimaryGeneratedColumn('uuid')
   id: string;

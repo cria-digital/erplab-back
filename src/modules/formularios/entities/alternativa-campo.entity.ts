@@ -16,8 +16,8 @@ export enum StatusAlternativa {
 }
 
 @Entity('alternativas_campo')
-@Index(['campo_formulario_id', 'ordem'])
-@Index(['codigo_alternativa'], { unique: true })
+@Index(['campoFormularioId', 'ordem'])
+@Index(['codigoAlternativa'], { unique: true })
 export class AlternativaCampo {
   @PrimaryGeneratedColumn('uuid')
   id: string;

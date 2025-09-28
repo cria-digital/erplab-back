@@ -73,9 +73,9 @@ export enum StatusCampo {
 }
 
 @Entity('campos_formulario')
-@Index(['formulario_id', 'ordem'])
-@Index(['tipo_campo'])
-@Index(['codigo_campo'], { unique: true })
+@Index(['formularioId', 'ordem'])
+@Index(['tipoCampo'])
+@Index(['codigoCampo'], { unique: true })
 export class CampoFormulario {
   @PrimaryGeneratedColumn('uuid')
   id: string;

@@ -406,6 +406,8 @@ export class UnidadeSaudeService {
    * Valida CNPJ
    */
   private validateCnpj(cnpj: string): boolean {
+    if (!cnpj || typeof cnpj !== 'string') return false;
+
     cnpj = cnpj.replace(/[^\d]+/g, '');
 
     if (cnpj.length !== 14) return false;

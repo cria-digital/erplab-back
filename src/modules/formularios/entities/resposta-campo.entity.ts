@@ -12,7 +12,7 @@ import { RespostaFormulario } from './resposta-formulario.entity';
 import { CampoFormulario } from './campo-formulario.entity';
 
 @Entity('respostas_campo')
-@Index(['resposta_formulario_id', 'campo_formulario_id'], { unique: true })
+@Index(['respostaFormularioId', 'campoFormularioId'], { unique: true })
 export class RespostaCampo {
   @PrimaryGeneratedColumn('uuid')
   id: string;

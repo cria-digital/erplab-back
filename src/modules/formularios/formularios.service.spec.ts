@@ -467,6 +467,77 @@ describe('FormulariosService', () => {
     });
   });
 
+  describe('findByStatus', () => {
+    it('should return forms by status', async () => {
+      const formularios = [mockFormulario];
+      mockRepository.find.mockResolvedValue(formularios);
+
+      const result = await service.findByStatus(StatusFormulario.RASCUNHO);
+
+      expect(mockRepository.find).toHaveBeenCalledWith({
+        where: { status: StatusFormulario.RASCUNHO },
+        relations: ['campos'],
+        order: { nomeFormulario: 'ASC' },
+      });
+      expect(result).toEqual(formularios);
+    });
+  });
+
+  describe('findByUnidadeSaude', () => {
+    it('should return forms by unidade saude', async () => {
+      const formularios = [mockFormulario];
+      mockRepository.find.mockResolvedValue(formularios);
+
+      const result = await service.findByUnidadeSaude('unidade-uuid-1');
+
+      expect(mockRepository.find).toHaveBeenCalledWith({
+        where: { unidadeSaudeId: 'unidade-uuid-1' },
+        relations: ['campos'],
+        order: { nomeFormulario: 'ASC' },
+      });
+      expect(result).toEqual(formularios);
+    });
+  });
+
+  describe('toggleStatus', () => {
+    it('should toggle form status', async () => {
+      const formulario = { ...mockFormulario, ativo: true };
+      const toggledFormulario = { ...formulario, ativo: false };
+
+      mockRepository.findOne.mockResolvedValue(formulario);
+      mockRepository.save.mockResolvedValue(toggledFormulario);
+
+      const result = await service.toggleStatus('formulario-uuid-1');
+
+      expect(result.ativo).toBe(false);
+      expect(mockRepository.save).toHaveBeenCalledWith(toggledFormulario);
+    });
+  });
+
+  describe('updateStatus', () => {
+    it('should update form status', async () => {
+      const formulario = {
+        ...mockFormulario,
+        status: StatusFormulario.RASCUNHO,
+      };
+      const updatedFormulario = {
+        ...formulario,
+        status: StatusFormulario.PUBLICADO,
+      };
+
+      mockRepository.findOne.mockResolvedValue(formulario);
+      mockRepository.save.mockResolvedValue(updatedFormulario);
+
+      const result = await service.updateStatus(
+        'formulario-uuid-1',
+        StatusFormulario.PUBLICADO,
+      );
+
+      expect(result.status).toBe(StatusFormulario.PUBLICADO);
+      expect(mockRepository.save).toHaveBeenCalledWith(updatedFormulario);
+    });
+  });
+
   describe('getEstatisticas', () => {
     it('should return form statistics', async () => {
       const mockPorTipo = [
@@ -526,6 +597,67 @@ describe('FormulariosService', () => {
         porStatus: mockPorStatus,
       });
       expect(mockRepository.count).toHaveBeenCalledTimes(4);
+    });
+  });
+
+  describe('validarFormulario - edge cases', () => {
+    it('should validate form without required fields', async () => {
+      const formWithoutRequiredFields = {
+        ...mockFormulario,
+        campos: [
+          { id: 'campo-1', codigoCampo: 'CAMPO1', obrigatorio: false },
+          { id: 'campo-2', codigoCampo: 'CAMPO2', obrigatorio: false },
+        ],
+      };
+
+      mockRepository.findOne.mockResolvedValue(formWithoutRequiredFields);
+
+      const result = await service.validarFormulario('formulario-uuid-1');
+
+      expect(result.valido).toBe(false);
+      expect(result.erros).toContain(
+        'Formulário deve ter pelo menos um campo obrigatório',
+      );
+    });
+  });
+
+  describe('update - edge cases', () => {
+    it('should update form without changing code', async () => {
+      const updateFormularioDto: UpdateFormularioDto = {
+        nomeFormulario: 'Nome Atualizado',
+        descricao: 'Nova descrição',
+      };
+
+      const updatedFormulario = { ...mockFormulario, ...updateFormularioDto };
+      mockRepository.findOne.mockResolvedValue(mockFormulario);
+      mockRepository.save.mockResolvedValue(updatedFormulario);
+
+      const result = await service.update(
+        'formulario-uuid-1',
+        updateFormularioDto,
+      );
+
+      expect(result).toEqual(updatedFormulario);
+      expect(mockRepository.save).toHaveBeenCalledWith(updatedFormulario);
+    });
+
+    it('should allow updating with same code', async () => {
+      const updateWithSameCode = {
+        codigoFormulario: mockFormulario.codigoFormulario,
+        nomeFormulario: 'Nome Atualizado',
+      };
+      const updatedFormulario = { ...mockFormulario, ...updateWithSameCode };
+
+      mockRepository.findOne.mockResolvedValue(mockFormulario);
+      mockRepository.save.mockResolvedValue(updatedFormulario);
+
+      const result = await service.update(
+        'formulario-uuid-1',
+        updateWithSameCode,
+      );
+
+      expect(result).toEqual(updatedFormulario);
+      expect(mockRepository.save).toHaveBeenCalledWith(updatedFormulario);
     });
   });
 });
