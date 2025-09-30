@@ -1,0 +1,106 @@
+### Criar novo método
+POST {{baseUrl}}/metodos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "ELISA - Enzyme-Linked Immunosorbent Assay",
+  "codigoInterno": "MET001",
+  "descricao": "Método imunoenzimático para detecção de anticorpos e antígenos",
+  "status": "em_validacao"
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "id": "uuid",
+#   "nome": "ELISA - Enzyme-Linked Immunosorbent Assay",
+#   "codigoInterno": "MET001",
+#   "descricao": "Método imunoenzimático...",
+#   "status": "em_validacao",
+#   "laboratorioMetodos": [],
+#   "createdAt": "2024-01-15T10:00:00.000Z",
+#   "updatedAt": "2024-01-15T10:00:00.000Z"
+# }
+
+###
+
+### Criar método - PCR
+POST {{baseUrl}}/metodos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "PCR - Reação em Cadeia da Polimerase",
+  "codigoInterno": "MET002",
+  "descricao": "Técnica de biologia molecular para amplificação de DNA",
+  "status": "ativo"
+}
+
+###
+
+### Criar método - Western Blot
+POST {{baseUrl}}/metodos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Western Blot",
+  "codigoInterno": "MET003",
+  "descricao": "Técnica para detecção de proteínas específicas em amostras",
+  "status": "ativo"
+}
+
+###
+
+### Criar método - Imunofluorescência
+POST {{baseUrl}}/metodos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Imunofluorescência",
+  "codigoInterno": "MET004",
+  "descricao": "Técnica que utiliza anticorpos marcados com fluoróforos",
+  "status": "em_validacao"
+}
+
+###
+
+### Criar método com código duplicado (deve falhar)
+POST {{baseUrl}}/metodos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Outro Método",
+  "codigoInterno": "MET001",
+  "descricao": "Tentativa de criar com código duplicado"
+}
+
+### Expected Response
+# Status: 409 Conflict
+# {
+#   "statusCode": 409,
+#   "message": "Método com código MET001 já existe",
+#   "error": "Conflict"
+# }
+
+###
+
+### Criar método sem campos obrigatórios (deve falhar)
+POST {{baseUrl}}/metodos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "descricao": "Método sem nome e código"
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": ["Nome é obrigatório", "Código interno é obrigatório"],
+#   "error": "Bad Request"
+# }

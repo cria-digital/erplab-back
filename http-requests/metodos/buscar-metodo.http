@@ -1,0 +1,93 @@
+### Buscar método por ID
+# Substitua {id} pelo UUID real do método
+GET {{baseUrl}}/metodos/{{metodoId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "nome": "ELISA - Enzyme-Linked Immunosorbent Assay",
+#   "codigoInterno": "MET001",
+#   "descricao": "Método imunoenzimático...",
+#   "status": "em_validacao",
+#   "laboratorioMetodos": [
+#     {
+#       "id": "uuid",
+#       "laboratorioId": "uuid",
+#       "metodoId": "uuid",
+#       "validado": true,
+#       "dataValidacao": "2024-01-15T10:00:00.000Z",
+#       "observacoes": "Laboratório certificado",
+#       "laboratorio": {
+#         "id": "uuid",
+#         "codigo_laboratorio": "LAB001",
+#         "empresa": {
+#           "razao_social": "Laboratório ABC"
+#         }
+#       }
+#     }
+#   ],
+#   "createdAt": "2024-01-15T10:00:00.000Z",
+#   "updatedAt": "2024-01-15T10:00:00.000Z"
+# }
+
+###
+
+### Buscar método por código interno
+GET {{baseUrl}}/metodos/codigo/MET001
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar método por código interno - PCR
+GET {{baseUrl}}/metodos/codigo/MET002
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar método por código interno - Western Blot
+GET {{baseUrl}}/metodos/codigo/MET003
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar método inexistente por ID (deve retornar 404)
+GET {{baseUrl}}/metodos/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Método com ID 00000000-0000-0000-0000-000000000000 não encontrado",
+#   "error": "Not Found"
+# }
+
+###
+
+### Buscar método inexistente por código (deve retornar 404)
+GET {{baseUrl}}/metodos/codigo/INEXISTENTE
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Método com código INEXISTENTE não encontrado",
+#   "error": "Not Found"
+# }
+
+###
+
+### Buscar com ID inválido (deve retornar 400)
+GET {{baseUrl}}/metodos/id-invalido
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Validation failed (uuid is expected)",
+#   "error": "Bad Request"
+# }

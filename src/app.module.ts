@@ -26,6 +26,7 @@ import { KitsModule } from './modules/kits/kits.module';
 import { FinanceiroModule } from './modules/financeiro/financeiro.module';
 import { IntegracoesModule } from './modules/integracoes/integracoes.module';
 import { FormulariosModule } from './modules/formularios/formularios.module';
+import { MetodosModule } from './modules/metodos/metodos.module';
 import { SeedModule } from './database/seeds/seed.module';
 
 @Module({
@@ -66,6 +67,7 @@ import { SeedModule } from './database/seeds/seed.module';
     FinanceiroModule,
     IntegracoesModule,
     FormulariosModule,
+    MetodosModule,
     SeedModule,
 
     // Próximos módulos a serem implementados:

@@ -1,0 +1,141 @@
+### Atualizar método
+# Substitua {id} pelo UUID real do método
+PATCH {{baseUrl}}/metodos/{{metodoId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "ELISA - Método Atualizado",
+  "descricao": "Descrição atualizada do método ELISA",
+  "status": "ativo"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "nome": "ELISA - Método Atualizado",
+#   "codigoInterno": "MET001",
+#   "descricao": "Descrição atualizada do método ELISA",
+#   "status": "ativo",
+#   "createdAt": "2024-01-15T10:00:00.000Z",
+#   "updatedAt": "2024-01-15T11:00:00.000Z"
+# }
+
+###
+
+### Atualizar apenas o nome
+PATCH {{baseUrl}}/metodos/{{metodoId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Novo Nome do Método"
+}
+
+###
+
+### Atualizar apenas a descrição
+PATCH {{baseUrl}}/metodos/{{metodoId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "descricao": "Nova descrição detalhada do método de análise"
+}
+
+###
+
+### Atualizar status para inativo
+PATCH {{baseUrl}}/metodos/{{metodoId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "status": "inativo"
+}
+
+###
+
+### Alternar status do método (ativo <-> inativo)
+PATCH {{baseUrl}}/metodos/{{metodoId}}/toggle-status
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "nome": "ELISA",
+#   "codigoInterno": "MET001",
+#   "status": "inativo", // ou "ativo" dependendo do estado anterior
+#   ...
+# }
+
+###
+
+### Validar método em validação
+PATCH {{baseUrl}}/metodos/{{metodoEmValidacaoId}}/validar
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "nome": "Método em Validação",
+#   "status": "ativo",
+#   ...
+# }
+
+###
+
+### Tentar alterar código interno (deve ser ignorado)
+PATCH {{baseUrl}}/metodos/{{metodoId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoInterno": "NOVO_CODIGO",
+  "nome": "Nome Atualizado"
+}
+
+### Expected Response
+# Status: 200 OK
+# Código interno NÃO deve ser alterado
+# {
+#   "codigoInterno": "MET001", // Mantém o código original
+#   "nome": "Nome Atualizado",
+#   ...
+# }
+
+###
+
+### Atualizar método inexistente (deve retornar 404)
+PATCH {{baseUrl}}/metodos/00000000-0000-0000-0000-000000000000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Método Inexistente"
+}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Método com ID 00000000-0000-0000-0000-000000000000 não encontrado",
+#   "error": "Not Found"
+# }
+
+###
+
+### Validar método que não está em validação (deve falhar)
+PATCH {{baseUrl}}/metodos/{{metodoAtivoId}}/validar
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Apenas métodos em validação podem ser validados",
+#   "error": "Bad Request"
+# }

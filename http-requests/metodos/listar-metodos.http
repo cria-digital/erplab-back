@@ -1,0 +1,101 @@
+### Listar todos os métodos
+GET {{baseUrl}}/metodos
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [
+#     {
+#       "id": "uuid",
+#       "nome": "ELISA - Enzyme-Linked Immunosorbent Assay",
+#       "codigoInterno": "MET001",
+#       "descricao": "...",
+#       "status": "em_validacao",
+#       "createdAt": "2024-01-15T10:00:00.000Z",
+#       "updatedAt": "2024-01-15T10:00:00.000Z"
+#     }
+#   ],
+#   "total": 1,
+#   "page": 1,
+#   "totalPages": 1
+# }
+
+###
+
+### Listar métodos com paginação
+GET {{baseUrl}}/metodos?page=1&limit=5
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar métodos por termo
+GET {{baseUrl}}/metodos?search=ELISA
+Authorization: Bearer {{token}}
+
+###
+
+### Filtrar métodos por status
+GET {{baseUrl}}/metodos?status=ativo
+Authorization: Bearer {{token}}
+
+###
+
+### Filtrar métodos em validação
+GET {{baseUrl}}/metodos?status=em_validacao
+Authorization: Bearer {{token}}
+
+###
+
+### Listar métodos inativos
+GET {{baseUrl}}/metodos?status=inativo
+Authorization: Bearer {{token}}
+
+###
+
+### Combinar filtros
+GET {{baseUrl}}/metodos?search=PCR&status=ativo&page=1&limit=10
+Authorization: Bearer {{token}}
+
+###
+
+### Obter estatísticas dos métodos
+GET {{baseUrl}}/metodos/statistics
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "total": 4,
+#   "ativos": 2,
+#   "inativos": 0,
+#   "emValidacao": 2
+# }
+
+###
+
+### Buscar métodos por status específico
+GET {{baseUrl}}/metodos/status/ativo
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar métodos em validação
+GET {{baseUrl}}/metodos/status/em_validacao
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar métodos por termo de pesquisa
+GET {{baseUrl}}/metodos/search?q=PCR
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar com termo vazio (retorna array vazio)
+GET {{baseUrl}}/metodos/search?q=
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# []
