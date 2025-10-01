@@ -16,7 +16,7 @@ export enum StatusMetodo {
 }
 
 @Entity('metodos')
-@Index(['codigo_interno'])
+@Index(['codigoInterno'])
 @Index(['nome'])
 export class Metodo {
   @PrimaryGeneratedColumn('uuid')

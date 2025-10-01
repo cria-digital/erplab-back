@@ -27,6 +27,7 @@ import { FinanceiroModule } from './modules/financeiro/financeiro.module';
 import { IntegracoesModule } from './modules/integracoes/integracoes.module';
 import { FormulariosModule } from './modules/formularios/formularios.module';
 import { MetodosModule } from './modules/metodos/metodos.module';
+import { ContasPagarModule } from './modules/contas-pagar/contas-pagar.module';
 import { SeedModule } from './database/seeds/seed.module';
 
 @Module({
@@ -68,6 +69,7 @@ import { SeedModule } from './database/seeds/seed.module';
     IntegracoesModule,
     FormulariosModule,
     MetodosModule,
+    ContasPagarModule,
     SeedModule,
 
     // Próximos módulos a serem implementados:

@@ -21,12 +21,14 @@ Sistema ERP modular para laboratórios de análises clínicas e imagens, desenvo
 ## 🛠️ Configuração e Instalação
 
 ### 1. Clone o repositório e instale dependências
+
 ```bash
 cd erplab-back
 npm install
 ```
 
 ### 2. Configure as variáveis de ambiente
+
 ```bash
 cp .env.example .env
 # O arquivo .env já está configurado com as credenciais corretas
@@ -40,6 +42,7 @@ cp .env.example .env
 O projeto utiliza Docker Compose para gerenciar o banco de dados PostgreSQL de forma simples e isolada.
 
 **Arquivo `docker-compose.yml` configurado:**
+
 ```yaml
 version: '3.8'
 services:
@@ -47,7 +50,7 @@ services:
     container_name: erplab-postgres
     image: postgres:15-alpine
     ports:
-      - "5432:5432"
+      - '5432:5432'
     environment:
       POSTGRES_USER: erplab_user
       POSTGRES_PASSWORD: erplab_pass_2024
@@ -104,6 +107,7 @@ sudo docker-compose up -d
 ```
 
 **Credenciais do banco:**
+
 - **Host:** localhost
 - **Porta:** 5432
 - **Banco:** erplab_db
@@ -111,6 +115,7 @@ sudo docker-compose up -d
 - **Senha:** erplab_pass_2024
 
 ### 4. Execute as migrations
+
 ```bash
 # Build do projeto (necessário antes das migrations)
 npm run build
@@ -129,6 +134,7 @@ npm run migration:revert
 ```
 
 ### 5. Execute o projeto
+
 ```bash
 # Desenvolvimento (com hot reload)
 npm run start:dev
@@ -139,6 +145,7 @@ npm run start:prod
 ```
 
 ### 6. Crie o usuário inicial (PRIMEIRO ACESSO)
+
 ```bash
 # Endpoint especial para criar o usuário administrador inicial
 # Email fixo: diegosoek@gmail.com
@@ -153,6 +160,7 @@ curl -X POST http://localhost:10016/api/v1/auth/setup \
 ```
 
 **Verificando se tudo está funcionando:**
+
 ```bash
 # Teste a API
 curl http://localhost:10016/api/v1/health
@@ -255,6 +263,7 @@ npm run migration:revert    # Reverter última migration
 ## 🏗️ Módulos do Sistema
 
 ### Módulos Implementados ✅
+
 1. **Autenticação** - JWT, refresh token, setup inicial
 2. **Usuários** - Gestão completa de usuários, permissões
 3. **Auditoria** - Logs de todas operações, histórico de alterações
@@ -267,11 +276,13 @@ npm run migration:revert    # Reverter última migration
    - Ordens de serviço e resultados
 
 ### Core Modules (Em Desenvolvimento)
+
 1. **Atendimento** - Sistema multi-canal, OCR, filas, OS
 2. **Financeiro** - Contas a pagar/receber, conciliação
 3. **CRM** - WhatsApp Bot, jornada do cliente
 
 ### Secondary Modules
+
 6. **Estoque** - Controle de insumos e compras
 7. **TISS** - Gestão de convênios
 8. **Tarefas** - Gestão interna de atividades
@@ -300,12 +311,69 @@ DB_API_TOKEN=...
 HERMES_PARDINI_API_TOKEN=...
 ```
 
+## 🧪 Testes
+
+### Testes Unitários
+
+```bash
+# Executar todos os testes
+npm test
+
+# Executar com watch mode
+npm run test:watch
+
+# Executar com cobertura
+npm run test:cov
+```
+
+### Testes E2E (End-to-End)
+
+⚠️ **IMPORTANTE:** Os testes E2E usam um banco de dados separado e **apagam todos os dados** a cada execução!
+
+**Setup inicial (apenas uma vez):**
+
+```bash
+# 1. Criar banco de dados de teste
+# Via psql:
+psql -U nestuser -h localhost -c "CREATE DATABASE erplab_db_test;"
+
+# Ou via Docker:
+docker exec -it erplab-postgres psql -U nestuser -c "CREATE DATABASE erplab_db_test;"
+
+# 2. Executar migrations no banco de teste
+NODE_ENV=test npm run migration:run
+```
+
+**Executar testes:**
+
+```bash
+# Todos os testes E2E
+npm run test:e2e
+
+# Teste de um módulo específico
+npm run test:e2e test/usuarios/usuarios.e2e-spec.ts
+```
+
+📚 **Documentação completa:** [docs/TESTES-E2E.md](docs/TESTES-E2E.md)
+🚀 **Setup rápido:** [docs/SETUP-TESTE-E2E.md](docs/SETUP-TESTE-E2E.md)
+
+### Status dos Testes E2E
+
+| Módulo                       | Status   | Cobertura    |
+| ---------------------------- | -------- | ------------ |
+| ✅ auth                      | Completo | 100%         |
+| ✅ usuarios                  | Completo | 100%         |
+| ✅ contas-pagar/centro-custo | Completo | 100% (14/14) |
+| ⚠️ contas-pagar/conta-pagar  | Parcial  | 38% (5/13)   |
+| ⏳ contas-pagar/repasse      | Pendente | 0%           |
+| ❌ Demais módulos            | Pendente | 0%           |
+
 ## 🎯 Próximos Passos
 
 1. **Implementar módulo de atendimento** (prioridade 1)
 2. **Implementar módulo financeiro** (prioridade 2)
 3. **Implementar integração WhatsApp** (prioridade 3)
-4. **Adicionar testes unitários e e2e**
+4. **Completar testes E2E dos módulos restantes**
 5. **Configurar CI/CD pipeline**
 
 ## 📝 Convenções
@@ -324,4 +392,5 @@ HERMES_PARDINI_API_TOKEN=...
 5. Execute lint antes de commit
 
 ---
+
 **Desenvolvido para ERPLab** - Sistema ERP para Laboratórios de Análises Clínicas

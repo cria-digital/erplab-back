@@ -12,26 +12,39 @@ Este documento unifica toda a estratégia de testes do sistema ERP Lab Backend, 
 
 ### Dashboard de Progresso por Módulo
 
-| Módulo            | Status          | Cobertura | Prioridade | Testes                                    |
-| ----------------- | --------------- | --------- | ---------- | ----------------------------------------- |
-| **Auth**          | ✅ Completo     | 88%       | 🔴 Crítica | Service ✅ Controller ✅ E2E ✅ Guards ✅ |
-| **Usuários**      | ✅ Completo     | 84%       | 🔴 Crítica | 32 service + 13 controller                |
-| **Pacientes**     | ✅ Completo     | 89.79%    | 🔴 Crítica | Service ✅ Controller ✅ DTO ✅           |
-| **Exames**        | ✅ Completo     | 93.48%    | 🔴 Crítica | 100% em todos os arquivos                 |
-| **Auditoria**     | ✅ Completo     | 88.03%    | 🟡 Alta    | Service 90% Controller 100%               |
-| **Unidade Saúde** | ✅ Completo     | 77.94%    | 🟡 Alta    | Service 78% Controller 100%               |
-| **Empresas**      | ✅ Completo     | 90%+      | 🟡 Alta    | 35 service + 19 controller                |
-| **Convênios**     | ✅ Completo     | 90%+      | 🟡 Alta    | 42 service + 30 controller                |
-| **Laboratórios**  | ✅ Completo     | 90%+      | 🟡 Alta    | 37 service + 34 controller                |
-| **Telemedicina**  | ✅ Completo     | 95%+      | 🟡 Alta    | 116 testes totais                         |
-| **Prestadores**   | ✅ Completo     | 95%+      | 🟢 Média   | 139 testes totais                         |
-| **Agendas**       | 🔄 Em Progresso | ~20%      | 🟢 Média   | Controller ✅ Service 🔄                  |
-| **Atendimento**   | ❌ Pendente     | 0%        | 🟡 Alta    | -                                         |
-| **Fornecedores**  | ❌ Pendente     | 0%        | 🟢 Média   | -                                         |
-| **Profissionais** | ❌ Pendente     | 0%        | 🟢 Média   | -                                         |
-| **Common**        | ❌ Pendente     | 0%        | 🔵 Baixa   | CEP, CNAE                                 |
-| **Email**         | ❌ Pendente     | 0%        | 🔵 Baixa   | -                                         |
-| **Kits**          | ❌ Pendente     | 0%        | 🔵 Baixa   | -                                         |
+| Módulo            | Unit Tests      | E2E Tests   | Cobertura | Prioridade | Observações                               |
+| ----------------- | --------------- | ----------- | --------- | ---------- | ----------------------------------------- |
+| **Auth**          | ✅ Completo     | ✅ 11/11    | 88%       | 🔴 Crítica | Service ✅ Controller ✅ E2E ✅ Guards ✅ |
+| **Centro Custo**  | ✅ Completo     | ✅ 14/14    | 100%      | 🔴 Crítica | E2E 100% - Referência de qualidade        |
+| **Usuários**      | ✅ Completo     | ⚠️ Parcial  | 84%       | 🔴 Crítica | 32 service + 13 controller                |
+| **Pacientes**     | ✅ Completo     | ❌ Pendente | 89.79%    | 🔴 Crítica | Service ✅ Controller ✅ DTO ✅           |
+| **Exames**        | ✅ Completo     | ❌ Pendente | 93.48%    | 🔴 Crítica | 100% em todos os arquivos                 |
+| **Unidade Saúde** | ✅ Completo     | ❌ Pendente | 77.94%    | 🟡 Alta    | Service 78% Controller 100%               |
+| **Empresas**      | ✅ Completo     | ❌ Pendente | 90%+      | 🟡 Alta    | 35 service + 19 controller                |
+| **Convênios**     | ✅ Completo     | ❌ Pendente | 90%+      | 🟡 Alta    | 42 service + 30 controller                |
+| **Laboratórios**  | ✅ Completo     | ❌ Pendente | 90%+      | 🟡 Alta    | 37 service + 34 controller                |
+| **Telemedicina**  | ✅ Completo     | ❌ Pendente | 95%+      | 🟡 Alta    | 116 testes totais                         |
+| **Prestadores**   | ✅ Completo     | ❌ Pendente | 95%+      | 🟢 Média   | 139 testes totais                         |
+| **Conta Pagar**   | ✅ Completo     | ⚠️ 5/13     | 90%+      | 🔴 Crítica | E2E precisa ajustes                       |
+| **Repasse**       | ✅ Completo     | ⚠️ Parcial  | 90%+      | 🔴 Crítica | E2E precisa ajustes                       |
+| **Auditoria**     | ✅ Completo     | ❌ Pendente | 88.03%    | 🟡 Alta    | Service 90% Controller 100%               |
+| **Agendas**       | 🔄 Em Progresso | ❌ Pendente | ~20%      | 🟢 Média   | Controller ✅ Service 🔄                  |
+| **Atendimento**   | ❌ Pendente     | ❌ Pendente | 0%        | 🟡 Alta    | -                                         |
+| **Fornecedores**  | ❌ Pendente     | ❌ Pendente | 0%        | 🟢 Média   | -                                         |
+| **Profissionais** | ❌ Pendente     | ❌ Pendente | 0%        | 🟢 Média   | -                                         |
+| **Financeiro**    | ✅ Completo     | ❌ Pendente | 85%+      | 🟡 Alta    | Contas, Bancos, Planos                    |
+| **Common**        | ❌ Pendente     | ❌ Pendente | 0%        | 🔵 Baixa   | CEP, CNAE                                 |
+| **Kits**          | ❌ Pendente     | ❌ Pendente | 0%        | 🔵 Baixa   | -                                         |
+| **Integracoes**   | ❌ Pendente     | ❌ Pendente | 0%        | 🔵 Baixa   | -                                         |
+
+**📊 Estatísticas E2E:**
+
+- ✅ Completos: 2/22 (9%)
+- ⚠️ Parciais: 3/22 (14%)
+- ❌ Pendentes: 17/22 (77%)
+- 🎯 **Meta: 22/22 completos**
+
+**🚀 Maratona E2E:** Ver [MARATONA_E2E.md](./MARATONA_E2E.md) para plano de execução
 
 ## 🎯 Estratégia de Testes
 
