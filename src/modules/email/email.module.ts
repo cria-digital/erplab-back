@@ -16,15 +16,15 @@ import { join } from 'path';
           port: configService.get('MAIL_PORT', 587),
           secure: false,
           auth: {
-            user: configService.get('MAIL_USER'),
+            user: configService.get('MAIL_USERNAME'),
             pass: configService.get('MAIL_PASSWORD'),
           },
         },
         defaults: {
-          from: `"${configService.get('MAIL_FROM_NAME', 'ERP Lab')}" <${configService.get('MAIL_FROM_EMAIL', 'noreply@erplab.com')}>`,
+          from: `"${configService.get('MAIL_FROM_NAME', 'ERP Lab')}" <${configService.get('MAIL_FROM', 'noreply@erplab.com')}>`,
         },
         template: {
-          dir: join(__dirname, 'templates'),
+          dir: join(process.cwd(), 'dist', 'modules', 'email', 'templates'),
           adapter: new HandlebarsAdapter(),
           options: {
             strict: true,
