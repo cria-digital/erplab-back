@@ -42,13 +42,10 @@ describe('EmailService', () => {
     it('should send password reset email successfully', async () => {
       const email = 'user@example.com';
       const nome = 'João Silva';
-      const resetToken = 'token123';
-      const frontendUrl = 'http://localhost:3000';
+      const resetToken = '123456';
       const supportEmail = 'suporte@erplab.com';
 
-      mockConfigService.get
-        .mockReturnValueOnce(frontendUrl)
-        .mockReturnValueOnce(supportEmail);
+      mockConfigService.get.mockReturnValue(supportEmail);
       mockMailerService.sendMail.mockResolvedValue(undefined);
 
       await service.sendPasswordResetEmail(email, nome, resetToken);
@@ -59,8 +56,8 @@ describe('EmailService', () => {
         template: './reset-password',
         context: {
           nome,
-          resetUrl: `${frontendUrl}/reset-password?token=${resetToken}`,
-          validadeHoras: 2,
+          resetToken,
+          validadeMinutos: 30,
           supportEmail,
         },
       });
@@ -69,7 +66,7 @@ describe('EmailService', () => {
     it('should use default values when config values are not set', async () => {
       const email = 'user@example.com';
       const nome = 'João Silva';
-      const resetToken = 'token123';
+      const resetToken = '123456';
 
       mockConfigService.get.mockImplementation(
         (key, defaultValue) => defaultValue,
@@ -84,8 +81,8 @@ describe('EmailService', () => {
         template: './reset-password',
         context: {
           nome,
-          resetUrl: `http://localhost:3000/reset-password?token=${resetToken}`,
-          validadeHoras: 2,
+          resetToken,
+          validadeMinutos: 30,
           supportEmail: 'suporte@erplab.com',
         },
       });
