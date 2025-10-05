@@ -234,7 +234,7 @@ describe('AuthController', () => {
 
       expect(result).toEqual({
         message:
-          'Se o email estiver cadastrado, você receberá um link para recuperação de senha.',
+          'Se o email estiver cadastrado, você receberá um código de 6 dígitos para recuperação de senha.',
       });
       expect(mockAuthService.forgotPassword).toHaveBeenCalledWith(forgotDto);
     });
@@ -250,7 +250,7 @@ describe('AuthController', () => {
 
       expect(result).toEqual({
         message:
-          'Se o email estiver cadastrado, você receberá um link para recuperação de senha.',
+          'Se o email estiver cadastrado, você receberá um código de 6 dígitos para recuperação de senha.',
       });
     });
   });

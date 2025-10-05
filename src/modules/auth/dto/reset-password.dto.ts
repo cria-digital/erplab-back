@@ -4,16 +4,18 @@ import {
   IsString,
   MinLength,
   Matches,
-  IsUUID,
+  Length,
 } from 'class-validator';
 
 export class ResetPasswordDto {
   @ApiProperty({
-    description: 'Token de recuperação de senha',
-    example: '123e4567-e89b-12d3-a456-426614174000',
+    description: 'Token numérico de recuperação de senha (6 dígitos)',
+    example: '123456',
   })
-  @IsUUID('4', { message: 'Token inválido' })
+  @IsString({ message: 'Token deve ser uma string' })
   @IsNotEmpty({ message: 'Token é obrigatório' })
+  @Length(6, 6, { message: 'Token deve ter exatamente 6 dígitos' })
+  @Matches(/^\d{6}$/, { message: 'Token deve conter apenas números' })
   token: string;
 
   @ApiProperty({

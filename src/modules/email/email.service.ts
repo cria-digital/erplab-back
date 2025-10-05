@@ -14,16 +14,14 @@ export class EmailService {
     nome: string,
     resetToken: string,
   ): Promise<void> {
-    const resetUrl = `${this.configService.get('FRONTEND_URL', 'http://localhost:3000')}/reset-password?token=${resetToken}`;
-
     await this.mailerService.sendMail({
       to: email,
       subject: 'Recuperação de Senha - ERP Lab',
       template: './reset-password',
       context: {
         nome,
-        resetUrl,
-        validadeHoras: 2,
+        resetToken,
+        validadeMinutos: 30,
         supportEmail: this.configService.get(
           'SUPPORT_EMAIL',
           'suporte@erplab.com',

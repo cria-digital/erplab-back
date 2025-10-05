@@ -398,6 +398,54 @@ describe('AuthService', () => {
       );
     });
 
+    it('deve gerar token numérico de 6 dígitos', async () => {
+      const mockUser = {
+        id: '1',
+        email: 'test@example.com',
+        nomeCompleto: 'Test User',
+        resetPasswordToken: null,
+        resetPasswordExpires: null,
+      };
+
+      mockUsuariosService.findByEmail.mockResolvedValue(mockUser);
+      mockUsuarioRepository.save.mockImplementation((user) => {
+        // Valida que o token tem 6 dígitos
+        expect(user.resetPasswordToken).toMatch(/^\d{6}$/);
+        return Promise.resolve(user);
+      });
+      mockEmailService.sendPasswordResetEmail.mockResolvedValue(undefined);
+
+      await service.forgotPassword({ email: 'test@example.com' });
+
+      expect(mockUsuarioRepository.save).toHaveBeenCalled();
+    });
+
+    it('deve definir expiração do token para 30 minutos', async () => {
+      const mockUser = {
+        id: '1',
+        email: 'test@example.com',
+        nomeCompleto: 'Test User',
+        resetPasswordToken: null,
+        resetPasswordExpires: null,
+      };
+
+      const now = Date.now();
+      mockUsuariosService.findByEmail.mockResolvedValue(mockUser);
+      mockUsuarioRepository.save.mockImplementation((user) => {
+        const expiresAt = user.resetPasswordExpires.getTime();
+        const diffInMinutes = (expiresAt - now) / 1000 / 60;
+        // Valida que expira em aproximadamente 30 minutos (com margem de 1 minuto)
+        expect(diffInMinutes).toBeGreaterThanOrEqual(29);
+        expect(diffInMinutes).toBeLessThanOrEqual(31);
+        return Promise.resolve(user);
+      });
+      mockEmailService.sendPasswordResetEmail.mockResolvedValue(undefined);
+
+      await service.forgotPassword({ email: 'test@example.com' });
+
+      expect(mockUsuarioRepository.save).toHaveBeenCalled();
+    });
+
     it('não deve retornar erro se email não existe', async () => {
       mockUsuariosService.findByEmail.mockResolvedValue(null);
 
@@ -442,7 +490,7 @@ describe('AuthService', () => {
         id: '1',
         email: 'test@example.com',
         nomeCompleto: 'Test User',
-        resetPasswordToken: 'valid-token',
+        resetPasswordToken: '123456',
         resetPasswordExpires: new Date(Date.now() + 3600000), // 1 hora no futuro
         senhaHash: 'old-hash',
         resetarSenha: true,
@@ -457,7 +505,7 @@ describe('AuthService', () => {
       );
 
       await service.resetPasswordWithToken({
-        token: 'valid-token',
+        token: '123456',
         newPassword: 'NewPassword123!',
       });
 
@@ -481,7 +529,7 @@ describe('AuthService', () => {
 
       await expect(
         service.resetPasswordWithToken({
-          token: 'invalid-token',
+          token: '999999',
           newPassword: 'NewPassword123!',
         }),
       ).rejects.toThrow(BadRequestException);
@@ -490,7 +538,7 @@ describe('AuthService', () => {
     it('deve lançar erro para token expirado', async () => {
       const mockUser = {
         id: '1',
-        resetPasswordToken: 'expired-token',
+        resetPasswordToken: '123456',
         resetPasswordExpires: new Date(Date.now() - 3600000), // 1 hora no passado
       };
 
@@ -498,7 +546,7 @@ describe('AuthService', () => {
 
       await expect(
         service.resetPasswordWithToken({
-          token: 'expired-token',
+          token: '123456',
           newPassword: 'NewPassword123!',
         }),
       ).rejects.toThrow(BadRequestException);
@@ -509,13 +557,13 @@ describe('AuthService', () => {
     it('deve retornar true para token válido', async () => {
       const mockUser = {
         id: '1',
-        resetPasswordToken: 'valid-token',
+        resetPasswordToken: '123456',
         resetPasswordExpires: new Date(Date.now() + 3600000), // 1 hora no futuro
       };
 
       mockUsuarioRepository.findOne.mockResolvedValue(mockUser);
 
-      const result = await service.validateResetToken('valid-token');
+      const result = await service.validateResetToken('123456');
 
       expect(result).toBe(true);
     });
@@ -523,7 +571,7 @@ describe('AuthService', () => {
     it('deve retornar false para token não encontrado', async () => {
       mockUsuarioRepository.findOne.mockResolvedValue(null);
 
-      const result = await service.validateResetToken('invalid-token');
+      const result = await service.validateResetToken('999999');
 
       expect(result).toBe(false);
     });
@@ -531,13 +579,13 @@ describe('AuthService', () => {
     it('deve retornar false para token expirado', async () => {
       const mockUser = {
         id: '1',
-        resetPasswordToken: 'expired-token',
+        resetPasswordToken: '123456',
         resetPasswordExpires: new Date(Date.now() - 3600000), // 1 hora no passado
       };
 
       mockUsuarioRepository.findOne.mockResolvedValue(mockUser);
 
-      const result = await service.validateResetToken('expired-token');
+      const result = await service.validateResetToken('123456');
 
       expect(result).toBe(false);
     });

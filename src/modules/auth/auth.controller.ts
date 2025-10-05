@@ -157,7 +157,8 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Solicitar recuperação de senha',
-    description: 'Envia um email com link para recuperação de senha',
+    description:
+      'Envia um email com token numérico de 6 dígitos para recuperação de senha',
   })
   @ApiBody({ type: ForgotPasswordDto })
   @ApiResponse({
@@ -173,7 +174,7 @@ export class AuthController {
     await this.authService.forgotPassword(forgotPasswordDto);
     return {
       message:
-        'Se o email estiver cadastrado, você receberá um link para recuperação de senha.',
+        'Se o email estiver cadastrado, você receberá um código de 6 dígitos para recuperação de senha.',
     };
   }
 
@@ -182,7 +183,8 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Resetar senha com token de recuperação',
-    description: 'Define uma nova senha usando o token recebido por email',
+    description:
+      'Define uma nova senha usando o código de 6 dígitos recebido por email',
   })
   @ApiBody({ type: ResetPasswordDto })
   @ApiResponse({
@@ -206,12 +208,13 @@ export class AuthController {
   @Get('validate-reset-token/:token')
   @ApiOperation({
     summary: 'Validar token de recuperação de senha',
-    description: 'Verifica se um token de recuperação é válido e não expirou',
+    description:
+      'Verifica se um token numérico de 6 dígitos é válido e não expirou',
   })
   @ApiParam({
     name: 'token',
-    description: 'Token UUID de recuperação de senha',
-    example: '123e4567-e89b-12d3-a456-426614174000',
+    description: 'Token numérico de recuperação de senha (6 dígitos)',
+    example: '123456',
   })
   @ApiResponse({
     status: 200,

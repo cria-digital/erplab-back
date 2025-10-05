@@ -9,7 +9,6 @@ import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { v4 as uuidv4 } from 'uuid';
 import { UsuariosService } from '../usuarios/usuarios.service';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
@@ -188,17 +187,17 @@ export class AuthService {
       return;
     }
 
-    // Gera token de recuperação
-    const resetToken = uuidv4();
+    // Gera token numérico de 6 dígitos
+    const resetToken = Math.floor(100000 + Math.random() * 900000).toString();
     const resetExpires = new Date();
-    resetExpires.setHours(resetExpires.getHours() + 2); // Token válido por 2 horas
+    resetExpires.setMinutes(resetExpires.getMinutes() + 30); // Token válido por 30 minutos
 
     // Salva token no usuário
     usuario.resetPasswordToken = resetToken;
     usuario.resetPasswordExpires = resetExpires;
     await this.usuariosRepository.save(usuario);
 
-    // Envia email com link de recuperação
+    // Envia email com token de recuperação
     try {
       await this.emailService.sendPasswordResetEmail(
         usuario.email,

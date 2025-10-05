@@ -9,12 +9,12 @@ Content-Type: {{contentType}}
 ### Expected Response
 # Status: 200 OK
 # {
-#   "message": "Se o email estiver cadastrado, você receberá um link para recuperação de senha."
+#   "message": "Se o email estiver cadastrado, você receberá um código de 6 dígitos para recuperação de senha."
 # }
 
 ### 2. Validar Token de Recuperação
-# Substitua o TOKEN_UUID pelo token recebido no email
-GET {{baseUrl}}/auth/validate-reset-token/5d3f1be8-9d0d-41a5-97a0-7ec092ac7d1a
+# Substitua 123456 pelo código de 6 dígitos recebido no email
+GET {{baseUrl}}/auth/validate-reset-token/123456
 
 ### Expected Response
 # Status: 200 OK
@@ -23,12 +23,12 @@ GET {{baseUrl}}/auth/validate-reset-token/5d3f1be8-9d0d-41a5-97a0-7ec092ac7d1a
 # }
 
 ### 3. Resetar Senha com Token
-# Substitua o TOKEN_UUID pelo token recebido no email
+# Substitua 123456 pelo código de 6 dígitos recebido no email
 POST {{baseUrl}}/auth/reset-password
 Content-Type: {{contentType}}
 
 {
-  "token": "5d3f1be8-9d0d-41a5-97a0-7ec092ac7d1a",
+  "token": "123456",
   "newPassword": "NovaSenha123!"
 }
 
