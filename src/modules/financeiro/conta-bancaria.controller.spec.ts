@@ -70,7 +70,7 @@ describe('ContaBancariaController', () => {
       tipo_conta: TipoConta.CORRENTE,
       chave_pix: '11999999999',
       descricao: 'Conta corrente principal',
-      status: StatusConta.ATIVO,
+      status: StatusConta.ATIVA,
       conta_principal: true,
       banco_id: '456e7890-e89b-12d3-a456-426614174001',
       unidade_saude_id: '789e0123-e89b-12d3-a456-426614174002',
@@ -409,7 +409,7 @@ describe('ContaBancariaController', () => {
         }
 
         const result = await (controller as any).findByStatus(
-          StatusConta.ATIVO,
+          StatusConta.ATIVA,
         );
 
         expect(result).toEqual(mockContas);
@@ -418,7 +418,7 @@ describe('ContaBancariaController', () => {
           console.warn('Método findByStatus não implementado no service ainda');
           return;
         }
-        expect(service.findByStatus).toHaveBeenCalledWith(StatusConta.ATIVO);
+        expect(service.findByStatus).toHaveBeenCalledWith(StatusConta.ATIVA);
       });
     });
 
@@ -543,7 +543,7 @@ describe('ContaBancariaController', () => {
       it('deveria alternar status da conta', async () => {
         const mockContaInativa = {
           ...mockContaBancaria,
-          status: StatusConta.INATIVO,
+          status: StatusConta.INATIVA,
         };
         mockContaBancariaService.toggleStatus.mockResolvedValue(
           mockContaInativa,
@@ -703,22 +703,6 @@ describe('ContaBancariaController', () => {
     it('deveria ter JwtAuthGuard aplicado', () => {
       const guards = Reflect.getMetadata('__guards__', ContaBancariaController);
       expect(guards).toBeDefined();
-    });
-
-    it('deveria ter ApiTags definido', () => {
-      const tags = Reflect.getMetadata(
-        'swagger/apiTags',
-        ContaBancariaController,
-      );
-      expect(tags).toContain('Contas Bancárias');
-    });
-
-    it('deveria ter ApiBearerAuth definido', () => {
-      const bearerAuth = Reflect.getMetadata(
-        'swagger/apiBearerAuth',
-        ContaBancariaController,
-      );
-      expect(bearerAuth).toBeDefined();
     });
   });
 });

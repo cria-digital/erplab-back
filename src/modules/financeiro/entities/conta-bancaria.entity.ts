@@ -15,13 +15,16 @@ import { UnidadeSaude } from '../../unidade-saude/entities/unidade-saude.entity'
 export enum TipoConta {
   CORRENTE = 'corrente',
   POUPANCA = 'poupanca',
+  PAGAMENTO = 'pagamento',
+  SALARIO = 'salario',
   INVESTIMENTO = 'investimento',
 }
 
 export enum StatusConta {
-  ATIVO = 'ativo',
-  INATIVO = 'inativo',
-  BLOQUEADO = 'bloqueado',
+  ATIVA = 'ativa',
+  INATIVA = 'inativa',
+  BLOQUEADA = 'bloqueada',
+  ENCERRADA = 'encerrada',
 }
 
 @Entity('contas_bancarias')
@@ -29,17 +32,11 @@ export class ContaBancaria {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'varchar', length: 50, unique: true })
+  @Column({ type: 'varchar', length: 20, unique: true })
   codigo_interno: string;
 
-  @Column({ type: 'varchar', length: 20 })
-  agencia: string;
-
-  @Column({ type: 'varchar', length: 20 })
-  numero_conta: string;
-
-  @Column({ type: 'varchar', length: 5, nullable: true })
-  digito_verificador: string;
+  @Column({ type: 'varchar', length: 255 })
+  nome_conta: string;
 
   @Column({
     type: 'enum',
@@ -48,21 +45,42 @@ export class ContaBancaria {
   })
   tipo_conta: TipoConta;
 
-  @Column({ type: 'varchar', length: 50, nullable: true })
-  chave_pix: string;
+  @Column({ type: 'varchar', length: 10 })
+  agencia: string;
 
-  @Column({ type: 'text', nullable: true })
-  descricao: string;
+  @Column({ type: 'varchar', length: 2, nullable: true })
+  digito_agencia: string;
+
+  @Column({ type: 'varchar', length: 20 })
+  numero_conta: string;
+
+  @Column({ type: 'varchar', length: 2 })
+  digito_conta: string;
+
+  @Column({ type: 'varchar', length: 255 })
+  titular: string;
+
+  @Column({ type: 'varchar', length: 20 })
+  cpf_cnpj_titular: string;
+
+  @Column({ type: 'varchar', length: 20, nullable: true })
+  pix_tipo: string;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  pix_chave: string;
 
   @Column({
     type: 'enum',
     enum: StatusConta,
-    default: StatusConta.ATIVO,
+    default: StatusConta.ATIVA,
   })
   status: StatusConta;
 
-  @Column({ type: 'boolean', default: false })
-  conta_principal: boolean;
+  @Column({ type: 'decimal', precision: 15, scale: 2, default: 0 })
+  saldo_inicial: number;
+
+  @Column({ type: 'text', nullable: true })
+  observacoes: string;
 
   @Column({ type: 'uuid' })
   banco_id: string;

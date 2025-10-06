@@ -128,6 +128,20 @@ export class BancoService {
     return banco;
   }
 
+  async findByCodigoInterno(codigoInterno: string): Promise<Banco> {
+    const banco = await this.bancoRepository.findOne({
+      where: { codigo_interno: codigoInterno },
+    });
+
+    if (!banco) {
+      throw new NotFoundException(
+        `Banco com código interno ${codigoInterno} não encontrado`,
+      );
+    }
+
+    return banco;
+  }
+
   async update(
     id: string,
     updateBancoDto: UpdateBancoDto,
@@ -252,5 +266,16 @@ export class BancoService {
     return this.bancoRepository.count({
       where: { status: StatusBanco.ATIVO },
     });
+  }
+
+  async search(termo: string): Promise<Banco[]> {
+    return await this.bancoRepository
+      .createQueryBuilder('banco')
+      .where(
+        'banco.nome ILIKE :termo OR banco.codigo ILIKE :termo OR banco.codigo_interno ILIKE :termo',
+        { termo: `%${termo}%` },
+      )
+      .orderBy('banco.nome', 'ASC')
+      .getMany();
   }
 }

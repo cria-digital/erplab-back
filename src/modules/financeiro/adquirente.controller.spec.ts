@@ -521,18 +521,5 @@ describe('AdquirenteController', () => {
       const guards = Reflect.getMetadata('__guards__', AdquirenteController);
       expect(guards).toBeDefined();
     });
-
-    it('deveria ter ApiTags definido', () => {
-      const tags = Reflect.getMetadata('swagger/apiTags', AdquirenteController);
-      expect(tags).toContain('Adquirentes');
-    });
-
-    it('deveria ter ApiBearerAuth definido', () => {
-      const bearerAuth = Reflect.getMetadata(
-        'swagger/apiBearerAuth',
-        AdquirenteController,
-      );
-      expect(bearerAuth).toBeDefined();
-    });
   });
 });

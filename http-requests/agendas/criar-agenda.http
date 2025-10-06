@@ -1,5 +1,5 @@
 ### Criar Nova Agenda
-POST {{baseUrl}}/api/v1/agendas
+POST {{baseUrl}}/agendas
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 

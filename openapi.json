@@ -10010,6 +10010,34 @@
         "tags": ["Bancos"]
       }
     },
+    "/api/v1/bancos/search": {
+      "get": {
+        "operationId": "BancoController_search",
+        "parameters": [
+          {
+            "name": "q",
+            "required": true,
+            "in": "query",
+            "description": "Termo de busca (nome, código ou código interno)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de bancos encontrados"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar bancos por termo",
+        "tags": ["Bancos"]
+      }
+    },
     "/api/v1/bancos/estatisticas": {
       "get": {
         "operationId": "BancoController_getEstatisticas",
@@ -10055,6 +10083,36 @@
           }
         ],
         "summary": "Buscar banco por código FEBRABAN",
+        "tags": ["Bancos"]
+      }
+    },
+    "/api/v1/bancos/codigo-interno/{codigo}": {
+      "get": {
+        "operationId": "BancoController_findByCodigoInterno",
+        "parameters": [
+          {
+            "name": "codigo",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Banco encontrado"
+          },
+          "404": {
+            "description": "Banco não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar banco por código interno",
         "tags": ["Bancos"]
       }
     },
@@ -10188,6 +10246,1100 @@
         ],
         "summary": "Alternar status do banco (ativo/inativo)",
         "tags": ["Bancos"]
+      }
+    },
+    "/api/v1/contas-bancarias": {
+      "post": {
+        "operationId": "ContaBancariaController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateContaBancariaDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Conta bancária criada com sucesso"
+          },
+          "409": {
+            "description": "Já existe conta com o mesmo código interno"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Criar nova conta bancária",
+        "tags": ["Contas Bancárias"]
+      },
+      "get": {
+        "operationId": "ContaBancariaController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de contas bancárias retornada com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar todas as contas bancárias",
+        "tags": ["Contas Bancárias"]
+      }
+    },
+    "/api/v1/contas-bancarias/ativas": {
+      "get": {
+        "operationId": "ContaBancariaController_findAtivas",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de contas ativas retornada com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar contas bancárias ativas",
+        "tags": ["Contas Bancárias"]
+      }
+    },
+    "/api/v1/contas-bancarias/unidade/{unidadeId}": {
+      "get": {
+        "operationId": "ContaBancariaController_findByUnidade",
+        "parameters": [
+          {
+            "name": "unidadeId",
+            "required": true,
+            "in": "path",
+            "description": "ID da unidade de saúde",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de contas da unidade retornada com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar contas por unidade de saúde",
+        "tags": ["Contas Bancárias"]
+      }
+    },
+    "/api/v1/contas-bancarias/banco/{bancoId}": {
+      "get": {
+        "operationId": "ContaBancariaController_findByBanco",
+        "parameters": [
+          {
+            "name": "bancoId",
+            "required": true,
+            "in": "path",
+            "description": "ID do banco",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de contas do banco retornada com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar contas por banco",
+        "tags": ["Contas Bancárias"]
+      }
+    },
+    "/api/v1/contas-bancarias/tipo/{tipo}": {
+      "get": {
+        "operationId": "ContaBancariaController_findByTipo",
+        "parameters": [
+          {
+            "name": "tipo",
+            "required": true,
+            "in": "path",
+            "description": "Tipo de conta",
+            "schema": {
+              "enum": [
+                "corrente",
+                "poupanca",
+                "pagamento",
+                "salario",
+                "investimento"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de contas do tipo especificado retornada com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar contas por tipo",
+        "tags": ["Contas Bancárias"]
+      }
+    },
+    "/api/v1/contas-bancarias/codigo/{codigo}": {
+      "get": {
+        "operationId": "ContaBancariaController_findByCodigo",
+        "parameters": [
+          {
+            "name": "codigo",
+            "required": true,
+            "in": "path",
+            "description": "Código interno da conta",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Conta encontrada com sucesso"
+          },
+          "404": {
+            "description": "Conta não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar conta por código interno",
+        "tags": ["Contas Bancárias"]
+      }
+    },
+    "/api/v1/contas-bancarias/{id}": {
+      "get": {
+        "operationId": "ContaBancariaController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da conta bancária",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Conta encontrada com sucesso"
+          },
+          "404": {
+            "description": "Conta não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar conta bancária por ID",
+        "tags": ["Contas Bancárias"]
+      },
+      "patch": {
+        "operationId": "ContaBancariaController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da conta bancária",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateContaBancariaDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Conta atualizada com sucesso"
+          },
+          "404": {
+            "description": "Conta não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Atualizar conta bancária",
+        "tags": ["Contas Bancárias"]
+      },
+      "delete": {
+        "operationId": "ContaBancariaController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da conta bancária",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Conta deletada com sucesso"
+          },
+          "404": {
+            "description": "Conta não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Deletar conta bancária",
+        "tags": ["Contas Bancárias"]
+      }
+    },
+    "/api/v1/contas-bancarias/{id}/toggle-status": {
+      "patch": {
+        "operationId": "ContaBancariaController_toggleStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da conta bancária",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status alterado com sucesso"
+          },
+          "404": {
+            "description": "Conta não encontrada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Alternar status da conta (ativo/inativo)",
+        "tags": ["Contas Bancárias"]
+      }
+    },
+    "/api/v1/gateways-pagamento": {
+      "post": {
+        "operationId": "GatewayPagamentoController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateGatewayPagamentoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Gateway criado com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Criar novo gateway de pagamento",
+        "tags": ["Gateways de Pagamento"]
+      },
+      "get": {
+        "operationId": "GatewayPagamentoController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de gateways retornada com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar todos os gateways de pagamento",
+        "tags": ["Gateways de Pagamento"]
+      }
+    },
+    "/api/v1/gateways-pagamento/tipo/{tipo}": {
+      "get": {
+        "operationId": "GatewayPagamentoController_findByTipo",
+        "parameters": [
+          {
+            "name": "tipo",
+            "required": true,
+            "in": "path",
+            "description": "Tipo do gateway",
+            "schema": {
+              "enum": [
+                "cielo",
+                "rede",
+                "getnet",
+                "stone",
+                "pagseguro",
+                "mercadopago",
+                "pagarme",
+                "ifood",
+                "rappi",
+                "outro"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Gateways encontrados com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar gateways por tipo",
+        "tags": ["Gateways de Pagamento"]
+      }
+    },
+    "/api/v1/gateways-pagamento/status/{status}": {
+      "get": {
+        "operationId": "GatewayPagamentoController_findByStatus",
+        "parameters": [
+          {
+            "name": "status",
+            "required": true,
+            "in": "path",
+            "description": "Status do gateway",
+            "schema": {
+              "enum": ["ativo", "inativo", "suspenso", "em_configuracao"],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Gateways encontrados com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar gateways por status",
+        "tags": ["Gateways de Pagamento"]
+      }
+    },
+    "/api/v1/gateways-pagamento/conta-bancaria/{contaId}": {
+      "get": {
+        "operationId": "GatewayPagamentoController_findByContaBancaria",
+        "parameters": [
+          {
+            "name": "contaId",
+            "required": true,
+            "in": "path",
+            "description": "ID da conta bancária",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Gateways encontrados com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar gateways por conta bancária",
+        "tags": ["Gateways de Pagamento"]
+      }
+    },
+    "/api/v1/gateways-pagamento/{id}": {
+      "get": {
+        "operationId": "GatewayPagamentoController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do gateway",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Gateway encontrado com sucesso"
+          },
+          "404": {
+            "description": "Gateway não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar gateway por ID",
+        "tags": ["Gateways de Pagamento"]
+      },
+      "patch": {
+        "operationId": "GatewayPagamentoController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do gateway",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateGatewayPagamentoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Gateway atualizado com sucesso"
+          },
+          "404": {
+            "description": "Gateway não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Atualizar gateway",
+        "tags": ["Gateways de Pagamento"]
+      },
+      "delete": {
+        "operationId": "GatewayPagamentoController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do gateway",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Gateway deletado com sucesso"
+          },
+          "404": {
+            "description": "Gateway não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Deletar gateway",
+        "tags": ["Gateways de Pagamento"]
+      }
+    },
+    "/api/v1/gateways-pagamento/{id}/test-connection": {
+      "post": {
+        "operationId": "GatewayPagamentoController_testConnection",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do gateway",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Teste de conexão realizado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Testar conexão com o gateway",
+        "tags": ["Gateways de Pagamento"]
+      }
+    },
+    "/api/v1/gateways-pagamento/{id}/status": {
+      "patch": {
+        "operationId": "GatewayPagamentoController_updateStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do gateway",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status atualizado com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Atualizar status do gateway",
+        "tags": ["Gateways de Pagamento"]
+      }
+    },
+    "/api/v1/gateways-pagamento/{id}/refresh-api-key": {
+      "post": {
+        "operationId": "GatewayPagamentoController_refreshApiKey",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do gateway",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Chave API renovada com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Renovar chave API do gateway",
+        "tags": ["Gateways de Pagamento"]
+      }
+    },
+    "/api/v1/gateways-pagamento/{id}/validate-configuration": {
+      "get": {
+        "operationId": "GatewayPagamentoController_validateConfiguration",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do gateway",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Validação realizada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Validar configuração do gateway",
+        "tags": ["Gateways de Pagamento"]
+      }
+    },
+    "/api/v1/gateways-pagamento/{id}/process-payment": {
+      "post": {
+        "operationId": "GatewayPagamentoController_processPayment",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do gateway",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pagamento processado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Processar pagamento através do gateway",
+        "tags": ["Gateways de Pagamento"]
+      }
+    },
+    "/api/v1/gateways-pagamento/{id}/transaction-history": {
+      "get": {
+        "operationId": "GatewayPagamentoController_getTransactionHistory",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do gateway",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Histórico retornado com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Obter histórico de transações",
+        "tags": ["Gateways de Pagamento"]
+      }
+    },
+    "/api/v1/gateways-pagamento/{id}/report": {
+      "get": {
+        "operationId": "GatewayPagamentoController_generateReport",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do gateway",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Relatório gerado com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Gerar relatório do gateway",
+        "tags": ["Gateways de Pagamento"]
+      }
+    },
+    "/api/v1/adquirentes": {
+      "post": {
+        "operationId": "AdquirenteController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAdquirenteDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Adquirente criado com sucesso"
+          },
+          "409": {
+            "description": "Já existe adquirente com o mesmo código interno"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Criar novo adquirente",
+        "tags": ["Adquirentes"]
+      },
+      "get": {
+        "operationId": "AdquirenteController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lista de adquirentes retornada com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Listar todos os adquirentes",
+        "tags": ["Adquirentes"]
+      }
+    },
+    "/api/v1/adquirentes/status/{status}": {
+      "get": {
+        "operationId": "AdquirenteController_findByStatus",
+        "parameters": [
+          {
+            "name": "status",
+            "required": true,
+            "in": "path",
+            "description": "Status do adquirente",
+            "schema": {
+              "enum": ["ativo", "inativo", "bloqueado", "em_analise"],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Adquirentes encontrados com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar adquirentes por status",
+        "tags": ["Adquirentes"]
+      }
+    },
+    "/api/v1/adquirentes/tipo-cartao/{tipo}": {
+      "get": {
+        "operationId": "AdquirenteController_findByTipoCartao",
+        "parameters": [
+          {
+            "name": "tipo",
+            "required": true,
+            "in": "path",
+            "description": "Tipo de cartão",
+            "schema": {
+              "enum": [
+                "mastercard",
+                "visa",
+                "elo",
+                "american_express",
+                "hipercard",
+                "diners",
+                "outro"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Adquirentes encontrados com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar adquirentes por tipo de cartão suportado",
+        "tags": ["Adquirentes"]
+      }
+    },
+    "/api/v1/adquirentes/{id}": {
+      "get": {
+        "operationId": "AdquirenteController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do adquirente",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Adquirente encontrado com sucesso"
+          },
+          "404": {
+            "description": "Adquirente não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar adquirente por ID",
+        "tags": ["Adquirentes"]
+      },
+      "patch": {
+        "operationId": "AdquirenteController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do adquirente",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAdquirenteDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Adquirente atualizado com sucesso"
+          },
+          "404": {
+            "description": "Adquirente não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Atualizar adquirente",
+        "tags": ["Adquirentes"]
+      },
+      "delete": {
+        "operationId": "AdquirenteController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do adquirente",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Adquirente deletado com sucesso"
+          },
+          "404": {
+            "description": "Adquirente não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Deletar adquirente",
+        "tags": ["Adquirentes"]
+      }
+    },
+    "/api/v1/adquirentes/{id}/toggle-status": {
+      "patch": {
+        "operationId": "AdquirenteController_toggleStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do adquirente",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status alterado com sucesso"
+          },
+          "404": {
+            "description": "Adquirente não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Alternar status do adquirente (ativo/inativo)",
+        "tags": ["Adquirentes"]
+      }
+    },
+    "/api/v1/adquirentes/tipo/{tipo}": {
+      "get": {
+        "operationId": "AdquirenteController_findByTipo",
+        "parameters": [
+          {
+            "name": "tipo",
+            "required": true,
+            "in": "path",
+            "description": "Tipo do adquirente",
+            "schema": {
+              "enum": [
+                "cielo",
+                "rede",
+                "getnet",
+                "stone",
+                "pagseguro",
+                "mercadopago",
+                "safrapay",
+                "vero",
+                "outro"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Adquirentes encontrados com sucesso"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Buscar adquirentes por tipo",
+        "tags": ["Adquirentes"]
+      }
+    },
+    "/api/v1/adquirentes/{id}/taxas": {
+      "patch": {
+        "operationId": "AdquirenteController_updateTaxas",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do adquirente",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Taxas atualizadas com sucesso"
+          },
+          "404": {
+            "description": "Adquirente não encontrado"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Atualizar taxas do adquirente",
+        "tags": ["Adquirentes"]
+      }
+    },
+    "/api/v1/adquirentes/{id}/validate-configuration": {
+      "get": {
+        "operationId": "AdquirenteController_validateConfiguration",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do adquirente",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Validação realizada"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Validar configuração de integração do adquirente",
+        "tags": ["Adquirentes"]
       }
     },
     "/api/v1/api/v1/integracoes": {
@@ -21847,6 +22999,820 @@
             "description": "Status do banco",
             "enum": ["ativo", "inativo"],
             "default": "ativo"
+          }
+        }
+      },
+      "CreateContaBancariaDto": {
+        "type": "object",
+        "properties": {
+          "codigo_interno": {
+            "type": "string",
+            "description": "Código interno único da conta bancária",
+            "example": "CC001",
+            "maxLength": 20
+          },
+          "nome_conta": {
+            "type": "string",
+            "description": "Nome/Apelido da conta",
+            "example": "Conta Corrente Principal",
+            "maxLength": 255
+          },
+          "tipo_conta": {
+            "type": "string",
+            "description": "Tipo de conta bancária",
+            "enum": [
+              "corrente",
+              "poupanca",
+              "pagamento",
+              "salario",
+              "investimento"
+            ],
+            "example": "corrente",
+            "default": "corrente"
+          },
+          "agencia": {
+            "type": "string",
+            "description": "Número da agência",
+            "example": "1234",
+            "maxLength": 10
+          },
+          "digito_agencia": {
+            "type": "string",
+            "description": "Dígito da agência",
+            "example": "5",
+            "maxLength": 2
+          },
+          "numero_conta": {
+            "type": "string",
+            "description": "Número da conta",
+            "example": "12345678",
+            "maxLength": 20
+          },
+          "digito_conta": {
+            "type": "string",
+            "description": "Dígito verificador da conta",
+            "example": "9",
+            "maxLength": 2
+          },
+          "titular": {
+            "type": "string",
+            "description": "Nome do titular da conta",
+            "example": "Clínica Saúde Total Ltda",
+            "maxLength": 255
+          },
+          "cpf_cnpj_titular": {
+            "type": "string",
+            "description": "CPF ou CNPJ do titular",
+            "example": "12.345.678/0001-90",
+            "maxLength": 20
+          },
+          "pix_tipo": {
+            "type": "string",
+            "description": "Tipo de chave PIX",
+            "example": "cnpj",
+            "maxLength": 20
+          },
+          "pix_chave": {
+            "type": "string",
+            "description": "Chave PIX da conta",
+            "example": "12.345.678/0001-90",
+            "maxLength": 255
+          },
+          "status": {
+            "type": "string",
+            "description": "Status da conta",
+            "enum": ["ativa", "inativa", "bloqueada", "encerrada"],
+            "example": "ativa",
+            "default": "ativa"
+          },
+          "saldo_inicial": {
+            "type": "number",
+            "description": "Saldo inicial da conta",
+            "example": 1000,
+            "default": 0
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações sobre a conta",
+            "example": "Conta principal para recebimentos"
+          },
+          "banco_id": {
+            "type": "string",
+            "description": "ID do banco",
+            "example": "uuid"
+          },
+          "unidade_saude_id": {
+            "type": "string",
+            "description": "ID da unidade de saúde",
+            "example": "uuid"
+          }
+        },
+        "required": [
+          "codigo_interno",
+          "nome_conta",
+          "tipo_conta",
+          "agencia",
+          "numero_conta",
+          "digito_conta",
+          "titular",
+          "cpf_cnpj_titular",
+          "status",
+          "saldo_inicial",
+          "banco_id",
+          "unidade_saude_id"
+        ]
+      },
+      "UpdateContaBancariaDto": {
+        "type": "object",
+        "properties": {
+          "codigo_interno": {
+            "type": "string",
+            "description": "Código interno único da conta bancária",
+            "example": "CC001",
+            "maxLength": 20
+          },
+          "nome_conta": {
+            "type": "string",
+            "description": "Nome/Apelido da conta",
+            "example": "Conta Corrente Principal",
+            "maxLength": 255
+          },
+          "tipo_conta": {
+            "type": "string",
+            "description": "Tipo de conta bancária",
+            "enum": [
+              "corrente",
+              "poupanca",
+              "pagamento",
+              "salario",
+              "investimento"
+            ],
+            "example": "corrente",
+            "default": "corrente"
+          },
+          "agencia": {
+            "type": "string",
+            "description": "Número da agência",
+            "example": "1234",
+            "maxLength": 10
+          },
+          "digito_agencia": {
+            "type": "string",
+            "description": "Dígito da agência",
+            "example": "5",
+            "maxLength": 2
+          },
+          "numero_conta": {
+            "type": "string",
+            "description": "Número da conta",
+            "example": "12345678",
+            "maxLength": 20
+          },
+          "digito_conta": {
+            "type": "string",
+            "description": "Dígito verificador da conta",
+            "example": "9",
+            "maxLength": 2
+          },
+          "titular": {
+            "type": "string",
+            "description": "Nome do titular da conta",
+            "example": "Clínica Saúde Total Ltda",
+            "maxLength": 255
+          },
+          "cpf_cnpj_titular": {
+            "type": "string",
+            "description": "CPF ou CNPJ do titular",
+            "example": "12.345.678/0001-90",
+            "maxLength": 20
+          },
+          "pix_tipo": {
+            "type": "string",
+            "description": "Tipo de chave PIX",
+            "example": "cnpj",
+            "maxLength": 20
+          },
+          "pix_chave": {
+            "type": "string",
+            "description": "Chave PIX da conta",
+            "example": "12.345.678/0001-90",
+            "maxLength": 255
+          },
+          "status": {
+            "type": "string",
+            "description": "Status da conta",
+            "enum": ["ativa", "inativa", "bloqueada", "encerrada"],
+            "example": "ativa",
+            "default": "ativa"
+          },
+          "saldo_inicial": {
+            "type": "number",
+            "description": "Saldo inicial da conta",
+            "example": 1000,
+            "default": 0
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações sobre a conta",
+            "example": "Conta principal para recebimentos"
+          },
+          "banco_id": {
+            "type": "string",
+            "description": "ID do banco",
+            "example": "uuid"
+          },
+          "unidade_saude_id": {
+            "type": "string",
+            "description": "ID da unidade de saúde",
+            "example": "uuid"
+          }
+        }
+      },
+      "CreateGatewayPagamentoDto": {
+        "type": "object",
+        "properties": {
+          "conta_bancaria_id": {
+            "type": "string",
+            "description": "ID da conta bancária associada",
+            "example": "uuid"
+          },
+          "codigo_interno": {
+            "type": "string",
+            "description": "Código interno único do gateway",
+            "example": "GWAY001",
+            "maxLength": 20
+          },
+          "nome_gateway": {
+            "type": "string",
+            "description": "Nome identificador do gateway",
+            "example": "Mercado Pago - Clínica São Paulo",
+            "maxLength": 255
+          },
+          "tipo_gateway": {
+            "type": "string",
+            "description": "Tipo do gateway de pagamento",
+            "enum": [
+              "cielo",
+              "rede",
+              "getnet",
+              "stone",
+              "pagseguro",
+              "mercadopago",
+              "pagarme",
+              "ifood",
+              "rappi",
+              "outro"
+            ],
+            "example": "mercadopago"
+          },
+          "modalidade": {
+            "type": "string",
+            "description": "Modalidade de pagamento",
+            "enum": ["credito", "debito", "pix", "boleto", "todos"],
+            "example": "todos",
+            "default": "todos"
+          },
+          "merchant_id": {
+            "type": "string",
+            "description": "ID do estabelecimento (Merchant ID)",
+            "example": "MERCHANT_123",
+            "maxLength": 100
+          },
+          "merchant_key": {
+            "type": "string",
+            "description": "Chave do estabelecimento (Merchant Key)",
+            "example": "KEY_SECRET_123",
+            "maxLength": 255
+          },
+          "api_key": {
+            "type": "string",
+            "description": "Chave de API",
+            "example": "TEST-123456789-abcdef",
+            "maxLength": 255
+          },
+          "api_secret": {
+            "type": "string",
+            "description": "Secret da API",
+            "example": "SECRET_123",
+            "maxLength": 255
+          },
+          "webhook_url": {
+            "type": "string",
+            "description": "URL do webhook para notificações",
+            "example": "https://api.clinica.com/webhook/mercadopago",
+            "maxLength": 500
+          },
+          "webhook_secret": {
+            "type": "string",
+            "description": "Secret do webhook",
+            "example": "WEBHOOK_SECRET_123",
+            "maxLength": 255
+          },
+          "ambiente": {
+            "type": "string",
+            "description": "Ambiente do gateway",
+            "enum": ["producao", "homologacao", "teste"],
+            "example": "teste",
+            "default": "teste"
+          },
+          "taxa_credito": {
+            "type": "number",
+            "description": "Taxa percentual para cartão de crédito",
+            "example": 2.5
+          },
+          "taxa_debito": {
+            "type": "number",
+            "description": "Taxa percentual para cartão de débito",
+            "example": 1.5
+          },
+          "taxa_pix": {
+            "type": "number",
+            "description": "Taxa percentual para PIX",
+            "example": 0.5
+          },
+          "taxa_boleto": {
+            "type": "number",
+            "description": "Taxa em reais para boleto",
+            "example": 3.5
+          },
+          "prazo_recebimento": {
+            "type": "number",
+            "description": "Prazo de recebimento em dias",
+            "example": 1,
+            "default": 1
+          },
+          "status": {
+            "type": "string",
+            "description": "Status do gateway",
+            "enum": ["ativo", "inativo", "suspenso", "em_configuracao"],
+            "example": "em_configuracao",
+            "default": "em_configuracao"
+          },
+          "configuracao_adicional": {
+            "type": "object",
+            "description": "Configurações adicionais do gateway (JSON)",
+            "example": {
+              "timeout": 30,
+              "retry": 3
+            }
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações sobre o gateway",
+            "example": "Gateway principal para pagamentos online"
+          }
+        },
+        "required": [
+          "conta_bancaria_id",
+          "codigo_interno",
+          "nome_gateway",
+          "tipo_gateway"
+        ]
+      },
+      "UpdateGatewayPagamentoDto": {
+        "type": "object",
+        "properties": {
+          "conta_bancaria_id": {
+            "type": "string",
+            "description": "ID da conta bancária associada",
+            "example": "uuid"
+          },
+          "codigo_interno": {
+            "type": "string",
+            "description": "Código interno único do gateway",
+            "example": "GWAY001",
+            "maxLength": 20
+          },
+          "nome_gateway": {
+            "type": "string",
+            "description": "Nome identificador do gateway",
+            "example": "Mercado Pago - Clínica São Paulo",
+            "maxLength": 255
+          },
+          "tipo_gateway": {
+            "type": "string",
+            "description": "Tipo do gateway de pagamento",
+            "enum": [
+              "cielo",
+              "rede",
+              "getnet",
+              "stone",
+              "pagseguro",
+              "mercadopago",
+              "pagarme",
+              "ifood",
+              "rappi",
+              "outro"
+            ],
+            "example": "mercadopago"
+          },
+          "modalidade": {
+            "type": "string",
+            "description": "Modalidade de pagamento",
+            "enum": ["credito", "debito", "pix", "boleto", "todos"],
+            "example": "todos",
+            "default": "todos"
+          },
+          "merchant_id": {
+            "type": "string",
+            "description": "ID do estabelecimento (Merchant ID)",
+            "example": "MERCHANT_123",
+            "maxLength": 100
+          },
+          "merchant_key": {
+            "type": "string",
+            "description": "Chave do estabelecimento (Merchant Key)",
+            "example": "KEY_SECRET_123",
+            "maxLength": 255
+          },
+          "api_key": {
+            "type": "string",
+            "description": "Chave de API",
+            "example": "TEST-123456789-abcdef",
+            "maxLength": 255
+          },
+          "api_secret": {
+            "type": "string",
+            "description": "Secret da API",
+            "example": "SECRET_123",
+            "maxLength": 255
+          },
+          "webhook_url": {
+            "type": "string",
+            "description": "URL do webhook para notificações",
+            "example": "https://api.clinica.com/webhook/mercadopago",
+            "maxLength": 500
+          },
+          "webhook_secret": {
+            "type": "string",
+            "description": "Secret do webhook",
+            "example": "WEBHOOK_SECRET_123",
+            "maxLength": 255
+          },
+          "ambiente": {
+            "type": "string",
+            "description": "Ambiente do gateway",
+            "enum": ["producao", "homologacao", "teste"],
+            "example": "teste",
+            "default": "teste"
+          },
+          "taxa_credito": {
+            "type": "number",
+            "description": "Taxa percentual para cartão de crédito",
+            "example": 2.5
+          },
+          "taxa_debito": {
+            "type": "number",
+            "description": "Taxa percentual para cartão de débito",
+            "example": 1.5
+          },
+          "taxa_pix": {
+            "type": "number",
+            "description": "Taxa percentual para PIX",
+            "example": 0.5
+          },
+          "taxa_boleto": {
+            "type": "number",
+            "description": "Taxa em reais para boleto",
+            "example": 3.5
+          },
+          "prazo_recebimento": {
+            "type": "number",
+            "description": "Prazo de recebimento em dias",
+            "example": 1,
+            "default": 1
+          },
+          "status": {
+            "type": "string",
+            "description": "Status do gateway",
+            "enum": ["ativo", "inativo", "suspenso", "em_configuracao"],
+            "example": "em_configuracao",
+            "default": "em_configuracao"
+          },
+          "configuracao_adicional": {
+            "type": "object",
+            "description": "Configurações adicionais do gateway (JSON)",
+            "example": {
+              "timeout": 30,
+              "retry": 3
+            }
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações sobre o gateway",
+            "example": "Gateway principal para pagamentos online"
+          }
+        }
+      },
+      "CreateAdquirenteDto": {
+        "type": "object",
+        "properties": {
+          "conta_bancaria_id": {
+            "type": "string",
+            "description": "ID da conta bancária associada",
+            "example": "uuid"
+          },
+          "codigo_interno": {
+            "type": "string",
+            "description": "Código interno único do adquirente",
+            "example": "ADQ001",
+            "maxLength": 20
+          },
+          "nome_adquirente": {
+            "type": "string",
+            "description": "Nome do adquirente",
+            "example": "Cielo",
+            "maxLength": 255
+          },
+          "descricao": {
+            "type": "string",
+            "description": "Descrição do adquirente",
+            "example": "Adquirente principal para cartões de crédito"
+          },
+          "tipo_adquirente": {
+            "type": "string",
+            "description": "Tipo do adquirente",
+            "enum": [
+              "cielo",
+              "rede",
+              "getnet",
+              "stone",
+              "pagseguro",
+              "mercadopago",
+              "safrapay",
+              "vero",
+              "outro"
+            ],
+            "example": "cielo"
+          },
+          "tipos_cartao_suportados": {
+            "type": "array",
+            "description": "Tipos de cartão suportados",
+            "example": ["mastercard", "visa"],
+            "items": {
+              "type": "string",
+              "enum": [
+                "mastercard",
+                "visa",
+                "elo",
+                "american_express",
+                "hipercard",
+                "diners",
+                "outro"
+              ]
+            }
+          },
+          "opcao_parcelamento": {
+            "type": "string",
+            "description": "Opção de parcelamento",
+            "enum": ["12x", "6x", "3x", "avista"],
+            "example": "12x",
+            "default": "12x"
+          },
+          "taxa_transacao": {
+            "type": "number",
+            "description": "Taxa de transação (%)",
+            "example": 1.5
+          },
+          "percentual_repasse": {
+            "type": "number",
+            "description": "Percentual de repasse (%)",
+            "example": 10
+          },
+          "codigo_estabelecimento": {
+            "type": "string",
+            "description": "Código do estabelecimento",
+            "example": "1234567890",
+            "maxLength": 50
+          },
+          "terminal_id": {
+            "type": "string",
+            "description": "ID do terminal",
+            "example": "TERM001",
+            "maxLength": 50
+          },
+          "taxa_antecipacao": {
+            "type": "number",
+            "description": "Taxa de antecipação (%)",
+            "example": 2.5
+          },
+          "prazo_recebimento": {
+            "type": "number",
+            "description": "Prazo de recebimento (dias)",
+            "example": 30,
+            "default": 30
+          },
+          "permite_parcelamento": {
+            "type": "boolean",
+            "description": "Permite parcelamento",
+            "example": true,
+            "default": true
+          },
+          "parcela_maxima": {
+            "type": "number",
+            "description": "Número máximo de parcelas",
+            "example": 12,
+            "default": 12
+          },
+          "taxa_parcelamento": {
+            "type": "number",
+            "description": "Taxa de parcelamento (%)",
+            "example": 3.2
+          },
+          "valor_minimo_parcela": {
+            "type": "number",
+            "description": "Valor mínimo por parcela",
+            "example": 50,
+            "default": 50
+          },
+          "status": {
+            "type": "string",
+            "description": "Status do adquirente",
+            "enum": ["ativo", "inativo", "bloqueado", "em_analise"],
+            "example": "ativo",
+            "default": "ativo"
+          },
+          "contato_comercial": {
+            "type": "string",
+            "description": "Nome do contato comercial",
+            "example": "João Silva",
+            "maxLength": 255
+          },
+          "telefone_suporte": {
+            "type": "string",
+            "description": "Telefone do suporte",
+            "example": "(11) 3000-0000",
+            "maxLength": 20
+          },
+          "email_suporte": {
+            "type": "string",
+            "description": "Email do suporte",
+            "example": "suporte@cielo.com.br",
+            "maxLength": 255
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações sobre o adquirente",
+            "example": "Adquirente principal para cartões"
+          }
+        },
+        "required": [
+          "conta_bancaria_id",
+          "codigo_interno",
+          "nome_adquirente",
+          "tipo_adquirente"
+        ]
+      },
+      "UpdateAdquirenteDto": {
+        "type": "object",
+        "properties": {
+          "conta_bancaria_id": {
+            "type": "string",
+            "description": "ID da conta bancária associada",
+            "example": "uuid"
+          },
+          "codigo_interno": {
+            "type": "string",
+            "description": "Código interno único do adquirente",
+            "example": "ADQ001",
+            "maxLength": 20
+          },
+          "nome_adquirente": {
+            "type": "string",
+            "description": "Nome do adquirente",
+            "example": "Cielo",
+            "maxLength": 255
+          },
+          "descricao": {
+            "type": "string",
+            "description": "Descrição do adquirente",
+            "example": "Adquirente principal para cartões de crédito"
+          },
+          "tipo_adquirente": {
+            "type": "string",
+            "description": "Tipo do adquirente",
+            "enum": [
+              "cielo",
+              "rede",
+              "getnet",
+              "stone",
+              "pagseguro",
+              "mercadopago",
+              "safrapay",
+              "vero",
+              "outro"
+            ],
+            "example": "cielo"
+          },
+          "tipos_cartao_suportados": {
+            "type": "array",
+            "description": "Tipos de cartão suportados",
+            "example": ["mastercard", "visa"],
+            "items": {
+              "type": "string",
+              "enum": [
+                "mastercard",
+                "visa",
+                "elo",
+                "american_express",
+                "hipercard",
+                "diners",
+                "outro"
+              ]
+            }
+          },
+          "opcao_parcelamento": {
+            "type": "string",
+            "description": "Opção de parcelamento",
+            "enum": ["12x", "6x", "3x", "avista"],
+            "example": "12x",
+            "default": "12x"
+          },
+          "taxa_transacao": {
+            "type": "number",
+            "description": "Taxa de transação (%)",
+            "example": 1.5
+          },
+          "percentual_repasse": {
+            "type": "number",
+            "description": "Percentual de repasse (%)",
+            "example": 10
+          },
+          "codigo_estabelecimento": {
+            "type": "string",
+            "description": "Código do estabelecimento",
+            "example": "1234567890",
+            "maxLength": 50
+          },
+          "terminal_id": {
+            "type": "string",
+            "description": "ID do terminal",
+            "example": "TERM001",
+            "maxLength": 50
+          },
+          "taxa_antecipacao": {
+            "type": "number",
+            "description": "Taxa de antecipação (%)",
+            "example": 2.5
+          },
+          "prazo_recebimento": {
+            "type": "number",
+            "description": "Prazo de recebimento (dias)",
+            "example": 30,
+            "default": 30
+          },
+          "permite_parcelamento": {
+            "type": "boolean",
+            "description": "Permite parcelamento",
+            "example": true,
+            "default": true
+          },
+          "parcela_maxima": {
+            "type": "number",
+            "description": "Número máximo de parcelas",
+            "example": 12,
+            "default": 12
+          },
+          "taxa_parcelamento": {
+            "type": "number",
+            "description": "Taxa de parcelamento (%)",
+            "example": 3.2
+          },
+          "valor_minimo_parcela": {
+            "type": "number",
+            "description": "Valor mínimo por parcela",
+            "example": 50,
+            "default": 50
+          },
+          "status": {
+            "type": "string",
+            "description": "Status do adquirente",
+            "enum": ["ativo", "inativo", "bloqueado", "em_analise"],
+            "example": "ativo",
+            "default": "ativo"
+          },
+          "contato_comercial": {
+            "type": "string",
+            "description": "Nome do contato comercial",
+            "example": "João Silva",
+            "maxLength": 255
+          },
+          "telefone_suporte": {
+            "type": "string",
+            "description": "Telefone do suporte",
+            "example": "(11) 3000-0000",
+            "maxLength": 20
+          },
+          "email_suporte": {
+            "type": "string",
+            "description": "Email do suporte",
+            "example": "suporte@cielo.com.br",
+            "maxLength": 255
+          },
+          "observacoes": {
+            "type": "string",
+            "description": "Observações sobre o adquirente",
+            "example": "Adquirente principal para cartões"
           }
         }
       },

@@ -1,5 +1,5 @@
 ### Listar Todas as Agendas
-GET {{baseUrl}}/api/v1/agendas
+GET {{baseUrl}}/agendas
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -16,7 +16,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Buscar Agenda por ID
-GET {{baseUrl}}/api/v1/agendas/{{agendaId}}
+GET {{baseUrl}}/agendas/{{agendaId}}
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -33,7 +33,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Atualizar Agenda
-PATCH {{baseUrl}}/api/v1/agendas/{{agendaId}}
+PATCH {{baseUrl}}/agendas/{{agendaId}}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -48,7 +48,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Adicionar Bloqueio de Horário
-POST {{baseUrl}}/api/v1/agendas/{{agendaId}}/bloqueios
+POST {{baseUrl}}/agendas/{{agendaId}}/bloqueios
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -73,7 +73,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Remover Bloqueio de Horário
-DELETE {{baseUrl}}/api/v1/agendas/bloqueios/{{bloqueioId}}
+DELETE {{baseUrl}}/agendas/bloqueios/{{bloqueioId}}
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -82,7 +82,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Remover Agenda
-DELETE {{baseUrl}}/api/v1/agendas/{{agendaId}}
+DELETE {{baseUrl}}/agendas/{{agendaId}}
 Authorization: Bearer {{token}}
 
 ### Expected Response

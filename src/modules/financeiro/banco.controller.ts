@@ -92,6 +92,19 @@ export class BancoController {
     return this.bancoService.findAtivos();
   }
 
+  @Get('search')
+  @ApiOperation({ summary: 'Buscar bancos por termo' })
+  @ApiQuery({
+    name: 'q',
+    required: true,
+    type: String,
+    description: 'Termo de busca (nome, código ou código interno)',
+  })
+  @ApiResponse({ status: 200, description: 'Lista de bancos encontrados' })
+  async search(@Query('q') termo: string) {
+    return this.bancoService.search(termo);
+  }
+
   @Get('estatisticas')
   @ApiOperation({ summary: 'Obter estatísticas dos bancos' })
   @ApiResponse({ status: 200, description: 'Estatísticas dos bancos' })
@@ -114,6 +127,14 @@ export class BancoController {
   @ApiResponse({ status: 404, description: 'Banco não encontrado' })
   async findByCodigo(@Param('codigo') codigo: string) {
     return this.bancoService.findByCodigo(codigo);
+  }
+
+  @Get('codigo-interno/:codigo')
+  @ApiOperation({ summary: 'Buscar banco por código interno' })
+  @ApiResponse({ status: 200, description: 'Banco encontrado' })
+  @ApiResponse({ status: 404, description: 'Banco não encontrado' })
+  async findByCodigoInterno(@Param('codigo') codigo: string) {
+    return this.bancoService.findByCodigoInterno(codigo);
   }
 
   @Get(':id')

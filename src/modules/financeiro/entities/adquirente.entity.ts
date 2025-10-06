@@ -11,17 +11,23 @@ import {
 import { ContaBancaria } from './conta-bancaria.entity';
 import { RestricaoAdquirente } from './restricao-adquirente.entity';
 
+export enum TipoAdquirente {
+  CIELO = 'cielo',
+  REDE = 'rede',
+  GETNET = 'getnet',
+  STONE = 'stone',
+  PAGSEGURO = 'pagseguro',
+  MERCADOPAGO = 'mercadopago',
+  SAFRAPAY = 'safrapay',
+  VERO = 'vero',
+  OUTRO = 'outro',
+}
+
 export enum StatusAdquirente {
   ATIVO = 'ativo',
   INATIVO = 'inativo',
-  SUSPENSO = 'suspenso',
-}
-
-export enum OpcaoParcelamento {
-  '12X' = '12x',
-  '6X' = '6x',
-  '3X' = '3x',
-  'AVISTA' = 'avista',
+  BLOQUEADO = 'bloqueado',
+  EM_ANALISE = 'em_analise',
 }
 
 export enum TipoCartao {
@@ -34,10 +40,20 @@ export enum TipoCartao {
   OUTRO = 'outro',
 }
 
+export enum OpcaoParcelamento {
+  '12X' = '12x',
+  '6X' = '6x',
+  '3X' = '3x',
+  AVISTA = 'avista',
+}
+
 @Entity('adquirentes')
 export class Adquirente {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column({ type: 'uuid' })
+  conta_bancaria_id: string;
 
   @Column({ type: 'varchar', length: 20, unique: true })
   codigo_interno: string;
@@ -50,15 +66,11 @@ export class Adquirente {
 
   @Column({
     type: 'enum',
-    enum: StatusAdquirente,
-    default: StatusAdquirente.ATIVO,
+    enum: TipoAdquirente,
   })
-  status: StatusAdquirente;
+  tipo_adquirente: TipoAdquirente;
 
-  @Column({
-    type: 'simple-array',
-    nullable: true,
-  })
+  @Column({ type: 'simple-array', nullable: true })
   tipos_cartao_suportados: TipoCartao[];
 
   @Column({
@@ -68,45 +80,61 @@ export class Adquirente {
   })
   opcao_parcelamento: OpcaoParcelamento;
 
-  @Column({
-    type: 'decimal',
-    precision: 5,
-    scale: 2,
-    default: 1,
-  })
+  @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
   taxa_transacao: number;
 
-  @Column({
-    type: 'decimal',
-    precision: 5,
-    scale: 2,
-    default: 3,
-  })
-  taxa_parcelamento: number;
-
-  @Column({
-    type: 'decimal',
-    precision: 5,
-    scale: 2,
-    default: 10,
-  })
+  @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
   percentual_repasse: number;
 
-  @Column({ type: 'integer', default: 5 })
-  prazo_repasse: number;
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  codigo_estabelecimento: string;
 
-  @Column({ type: 'uuid', nullable: true })
-  conta_associada_id: string;
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  terminal_id: string;
+
+  @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
+  taxa_antecipacao: number;
+
+  @Column({ type: 'int', default: 30 })
+  prazo_recebimento: number;
+
+  @Column({ type: 'boolean', default: true })
+  permite_parcelamento: boolean;
+
+  @Column({ type: 'int', default: 12 })
+  parcela_maxima: number;
+
+  @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
+  taxa_parcelamento: number;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 50 })
+  valor_minimo_parcela: number;
+
+  @Column({
+    type: 'enum',
+    enum: StatusAdquirente,
+    default: StatusAdquirente.ATIVO,
+  })
+  status: StatusAdquirente;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  contato_comercial: string;
+
+  @Column({ type: 'varchar', length: 20, nullable: true })
+  telefone_suporte: string;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  email_suporte: string;
+
+  @Column({ type: 'text', nullable: true })
+  observacoes: string;
 
   @ManyToOne(() => ContaBancaria)
-  @JoinColumn({ name: 'conta_associada_id' })
-  conta_associada: ContaBancaria;
+  @JoinColumn({ name: 'conta_bancaria_id' })
+  conta_bancaria: ContaBancaria;
 
   @OneToMany(() => RestricaoAdquirente, (restricao) => restricao.adquirente)
   restricoes: RestricaoAdquirente[];
-
-  @Column({ type: 'jsonb', nullable: true })
-  configuracao_integracao: any;
 
   @CreateDateColumn()
   created_at: Date;

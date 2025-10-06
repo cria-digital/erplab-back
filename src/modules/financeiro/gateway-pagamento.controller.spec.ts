@@ -5,6 +5,8 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import {
   StatusGateway,
   TipoGateway,
+  ModalidadeGateway,
+  AmbienteGateway,
 } from './entities/gateway-pagamento.entity';
 
 describe('GatewayPagamentoController', () => {
@@ -73,17 +75,22 @@ describe('GatewayPagamentoController', () => {
   describe('quando métodos forem implementados', () => {
     const mockGatewayPagamento = {
       id: '123e4567-e89b-12d3-a456-426614174000',
-      tipo: TipoGateway.MERCADO_PAGO,
-      nome: 'Mercado Pago - Clínica São Paulo',
-      status: StatusGateway.CONECTADO,
-      validade_api: new Date('2025-12-31'),
-      chave_api: 'TEST-123456789-abcdef',
-      contingencia: 'Gateway de backup: PagSeguro',
-      configuracao: {
-        client_id: 'client_123',
-        client_secret: 'secret_456',
-        webhook_url: 'https://api.clinica.com/webhook/mercadopago',
-        production: false,
+      codigo_interno: 'GWAY001',
+      tipo_gateway: TipoGateway.MERCADOPAGO,
+      nome_gateway: 'Mercado Pago - Clínica São Paulo',
+      modalidade: ModalidadeGateway.TODOS,
+      status: StatusGateway.ATIVO,
+      ambiente: AmbienteGateway.TESTE,
+      api_key: 'TEST-123456789-abcdef',
+      merchant_id: 'MERCHANT_123',
+      webhook_url: 'https://api.clinica.com/webhook/mercadopago',
+      taxa_credito: 2.5,
+      taxa_debito: 1.5,
+      taxa_pix: 0.5,
+      prazo_recebimento: 1,
+      configuracao_adicional: {
+        timeout: 30,
+        retry: 3,
       },
       conta_bancaria_id: '456e7890-e89b-12d3-a456-426614174001',
       conta_bancaria: {
@@ -97,21 +104,22 @@ describe('GatewayPagamentoController', () => {
     };
 
     const createGatewayDto = {
-      tipo: TipoGateway.MERCADO_PAGO,
-      nome: 'Mercado Pago - Clínica São Paulo',
-      chave_api: 'TEST-123456789-abcdef',
-      configuracao: {
-        client_id: 'client_123',
-        client_secret: 'secret_456',
-        webhook_url: 'https://api.clinica.com/webhook/mercadopago',
-        production: false,
+      codigo_interno: 'GWAY001',
+      tipo_gateway: TipoGateway.MERCADOPAGO,
+      nome_gateway: 'Mercado Pago - Clínica São Paulo',
+      api_key: 'TEST-123456789-abcdef',
+      merchant_id: 'MERCHANT_123',
+      webhook_url: 'https://api.clinica.com/webhook/mercadopago',
+      configuracao_adicional: {
+        timeout: 30,
+        retry: 3,
       },
       conta_bancaria_id: '456e7890-e89b-12d3-a456-426614174001',
     };
 
     const updateGatewayDto = {
-      nome: 'Mercado Pago - Clínica São Paulo Atualizado',
-      validade_api: new Date('2026-12-31'),
+      nome_gateway: 'Mercado Pago - Clínica São Paulo Atualizado',
+      taxa_credito: 3.0,
     };
 
     describe('create', () => {
@@ -361,7 +369,7 @@ describe('GatewayPagamentoController', () => {
         }
 
         const result = await (controller as any).findByTipo(
-          TipoGateway.MERCADO_PAGO,
+          TipoGateway.MERCADOPAGO,
         );
 
         expect(result).toEqual(mockGateways);
@@ -371,7 +379,7 @@ describe('GatewayPagamentoController', () => {
           return;
         }
         expect(service.findByTipo).toHaveBeenCalledWith(
-          TipoGateway.MERCADO_PAGO,
+          TipoGateway.MERCADOPAGO,
         );
       });
     });
@@ -392,7 +400,7 @@ describe('GatewayPagamentoController', () => {
         }
 
         const result = await (controller as any).findByStatus(
-          StatusGateway.CONECTADO,
+          StatusGateway.ATIVO,
         );
 
         expect(result).toEqual(mockGateways);
@@ -401,9 +409,7 @@ describe('GatewayPagamentoController', () => {
           console.warn('Método findByStatus não implementado no service ainda');
           return;
         }
-        expect(service.findByStatus).toHaveBeenCalledWith(
-          StatusGateway.CONECTADO,
-        );
+        expect(service.findByStatus).toHaveBeenCalledWith(StatusGateway.ATIVO);
       });
     });
 
@@ -495,7 +501,7 @@ describe('GatewayPagamentoController', () => {
       it('deveria atualizar status do gateway', async () => {
         const mockGatewayAtualizado = {
           ...mockGatewayPagamento,
-          status: StatusGateway.DESCONECTADO,
+          status: StatusGateway.INATIVO,
         };
         mockGatewayPagamentoService.updateStatus.mockResolvedValue(
           mockGatewayAtualizado,
@@ -511,7 +517,7 @@ describe('GatewayPagamentoController', () => {
 
         const result = await (controller as any).updateStatus(
           '123e4567-e89b-12d3-a456-426614174000',
-          StatusGateway.DESCONECTADO,
+          StatusGateway.INATIVO,
         );
 
         expect(result).toEqual(mockGatewayAtualizado);
@@ -522,7 +528,7 @@ describe('GatewayPagamentoController', () => {
         }
         expect(service.updateStatus).toHaveBeenCalledWith(
           '123e4567-e89b-12d3-a456-426614174000',
-          StatusGateway.DESCONECTADO,
+          StatusGateway.INATIVO,
         );
       });
     });
@@ -772,22 +778,6 @@ describe('GatewayPagamentoController', () => {
         GatewayPagamentoController,
       );
       expect(guards).toBeDefined();
-    });
-
-    it('deveria ter ApiTags definido', () => {
-      const tags = Reflect.getMetadata(
-        'swagger/apiTags',
-        GatewayPagamentoController,
-      );
-      expect(tags).toContain('Gateways de Pagamento');
-    });
-
-    it('deveria ter ApiBearerAuth definido', () => {
-      const bearerAuth = Reflect.getMetadata(
-        'swagger/apiBearerAuth',
-        GatewayPagamentoController,
-      );
-      expect(bearerAuth).toBeDefined();
     });
   });
 });

@@ -9,23 +9,38 @@ import {
 } from 'typeorm';
 import { ContaBancaria } from './conta-bancaria.entity';
 
-export enum StatusGateway {
-  CONECTADO = 'conectado',
-  DESCONECTADO = 'desconectado',
-  ERRO = 'erro',
-  PENDENTE = 'pendente',
-}
-
 export enum TipoGateway {
-  PAGSEGURO = 'pagseguro',
-  MERCADO_PAGO = 'mercado_pago',
-  STRIPE = 'stripe',
-  PAYPAL = 'paypal',
   CIELO = 'cielo',
   REDE = 'rede',
-  STONE = 'stone',
   GETNET = 'getnet',
+  STONE = 'stone',
+  PAGSEGURO = 'pagseguro',
+  MERCADOPAGO = 'mercadopago',
+  PAGARME = 'pagarme',
+  IFOOD = 'ifood',
+  RAPPI = 'rappi',
   OUTRO = 'outro',
+}
+
+export enum ModalidadeGateway {
+  CREDITO = 'credito',
+  DEBITO = 'debito',
+  PIX = 'pix',
+  BOLETO = 'boleto',
+  TODOS = 'todos',
+}
+
+export enum AmbienteGateway {
+  PRODUCAO = 'producao',
+  HOMOLOGACAO = 'homologacao',
+  TESTE = 'teste',
+}
+
+export enum StatusGateway {
+  ATIVO = 'ativo',
+  INATIVO = 'inativo',
+  SUSPENSO = 'suspenso',
+  EM_CONFIGURACAO = 'em_configuracao',
 }
 
 @Entity('gateways_pagamento')
@@ -33,36 +48,80 @@ export class GatewayPagamento {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column({ type: 'uuid' })
+  conta_bancaria_id: string;
+
+  @Column({ type: 'varchar', length: 20, unique: true })
+  codigo_interno: string;
+
+  @Column({ type: 'varchar', length: 255 })
+  nome_gateway: string;
+
   @Column({
     type: 'enum',
     enum: TipoGateway,
   })
-  tipo: TipoGateway;
+  tipo_gateway: TipoGateway;
 
-  @Column({ type: 'varchar', length: 255 })
-  nome: string;
+  @Column({
+    type: 'enum',
+    enum: ModalidadeGateway,
+    default: ModalidadeGateway.TODOS,
+  })
+  modalidade: ModalidadeGateway;
+
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  merchant_id: string;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  merchant_key: string;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  api_key: string;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  api_secret: string;
+
+  @Column({ type: 'varchar', length: 500, nullable: true })
+  webhook_url: string;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  webhook_secret: string;
+
+  @Column({
+    type: 'enum',
+    enum: AmbienteGateway,
+    default: AmbienteGateway.TESTE,
+  })
+  ambiente: AmbienteGateway;
+
+  @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
+  taxa_credito: number;
+
+  @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
+  taxa_debito: number;
+
+  @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
+  taxa_pix: number;
+
+  @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
+  taxa_boleto: number;
+
+  @Column({ type: 'int', default: 1 })
+  prazo_recebimento: number;
 
   @Column({
     type: 'enum',
     enum: StatusGateway,
-    default: StatusGateway.PENDENTE,
+    default: StatusGateway.EM_CONFIGURACAO,
   })
   status: StatusGateway;
 
-  @Column({ type: 'date', nullable: true })
-  validade_api: Date;
-
-  @Column({ type: 'text', nullable: true })
-  chave_api: string;
-
-  @Column({ type: 'text', nullable: true })
-  contingencia: string;
-
   @Column({ type: 'jsonb', nullable: true })
-  configuracao: any;
+  configuracao_adicional: any;
 
-  @Column({ type: 'uuid' })
-  conta_bancaria_id: string;
+  @Column({ type: 'text', nullable: true })
+  observacoes: string;
 
   @ManyToOne(
     () => ContaBancaria,
