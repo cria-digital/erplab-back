@@ -12,7 +12,7 @@ import {
   Max,
 } from 'class-validator';
 
-export class CreateConvenioDto {
+export class CreateConvenioExamesDto {
   @ApiProperty({
     description: 'Código interno único do convênio',
     example: 'CONV001',

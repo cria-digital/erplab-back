@@ -1,38 +1,35 @@
-# Dockerfile para o ERP Laboratório Backend
-
-# Usar Node.js LTS
-FROM node:20-alpine
-
-# Instalar dumb-init para gerenciamento de processos
-RUN apk add --no-cache dumb-init
-
-# Criar usuário não-root
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nestjs -u 1001
-
-# Definir diretório de trabalho
-WORKDIR /usr/src/app
-
-# Copiar package.json e package-lock.json
+# Build stage
+FROM node:20-alpine AS builder
+WORKDIR /app
 COPY package*.json ./
-
-# Instalar dependências
-RUN npm ci --only=production && npm cache clean --force
-
-# Copiar código fonte
-COPY --chown=nestjs:nodejs . .
-
-# Build da aplicação
+RUN npm ci && npm cache clean --force
+COPY . .
 RUN npm run build
 
-# Mudar para usuário não-root
+# Production stage
+FROM node:20-alpine AS production
+RUN apk add --no-cache dumb-init
+WORKDIR /app
+RUN addgroup -g 1001 -S nodejs && adduser -S nestjs -u 1001
+
+COPY --from=builder --chown=nestjs:nodejs /app/dist ./dist
+COPY --from=builder --chown=nestjs:nodejs /app/node_modules ./node_modules
+COPY --chown=nestjs:nodejs package*.json ./
+
+# Copy source para migrations
+COPY --from=builder --chown=nestjs:nodejs /app/src ./src
+COPY --from=builder --chown=nestjs:nodejs /app/tsconfig.json ./
+COPY --from=builder --chown=nestjs:nodejs /app/tsconfig.build.json ./
+
+# Copy entrypoint
+COPY --chown=nestjs:nodejs docker-entrypoint.sh ./
+RUN chmod +x ./docker-entrypoint.sh
+
 USER nestjs
+EXPOSE 10016
 
-# Expor porta
-EXPOSE 3000
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD node -e "require('http').get('http://127.0.0.1:10016/api/v1/health', (r) => r.statusCode === 200 ? process.exit(0) : process.exit(1))"
 
-# Usar dumb-init para inicializar
-ENTRYPOINT ["dumb-init", "--"]
-
-# Comando padrão
-CMD ["node", "dist/main"]
+ENTRYPOINT ["dumb-init", "--", "./docker-entrypoint.sh"]
+CMD ["node", "dist/main.js"]

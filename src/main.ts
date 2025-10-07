@@ -2,7 +2,6 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import * as fs from 'fs';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,10 +15,28 @@ async function bootstrap() {
     }),
   );
 
-  // CORS para desenvolvimento
+  // CORS
+  const corsOrigin = process.env.CORS_ORIGIN
+    ? process.env.CORS_ORIGIN.split(',').map((origin) => origin.trim())
+    : ['http://localhost:9016'];
+
+  console.log('🌐 CORS enabled for origins:', corsOrigin);
+
   app.enableCors({
-    origin: process.env.NODE_ENV === 'development' ? true : false,
+    origin: corsOrigin,
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'Accept',
+      'X-Requested-With',
+      'sentry-trace',
+      'baggage',
+    ],
+    exposedHeaders: ['Set-Cookie'],
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
   });
 
   // Prefixo global da API
@@ -58,15 +75,16 @@ async function bootstrap() {
   });
 
   // Gerar arquivo OpenAPI/Swagger JSON para importação no Postman e documentação
-  const outputPath = './openapi.json';
-  fs.writeFileSync(outputPath, JSON.stringify(document, null, 2));
+  // Desabilitado em produção (problema de permissão no Docker)
+  // const outputPath = './openapi.json';
+  // fs.writeFileSync(outputPath, JSON.stringify(document, null, 2));
 
-  const port = process.env.PORT || 10016;
-  await app.listen(port);
+  const port = process.env.PORT ?? 10016;
+  await app.listen(port, '0.0.0.0'); // IMPORTANTE: 0.0.0.0 para aceitar conexões externas
 
-  console.log(`🚀 Servidor ERP Laboratório rodando na porta ${port}`);
-  console.log(`📖 Documentação da API: http://localhost:${port}/api/docs`);
-  console.log(`💚 Health Check: http://localhost:${port}/api/v1/health`);
+  console.log(`🚀 Servidor ERP Laboratório rodando em http://0.0.0.0:${port}`);
+  console.log(`📖 Documentação da API: http://0.0.0.0:${port}/api/docs`);
+  console.log(`💚 Health Check: http://0.0.0.0:${port}/api/v1/health`);
   console.log(`📄 OpenAPI/Postman: ./openapi.json`);
 }
 

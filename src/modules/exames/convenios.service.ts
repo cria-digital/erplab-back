@@ -6,8 +6,8 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
 import { Convenio } from './entities/convenio.entity';
-import { CreateConvenioDto } from './dto/create-convenio.dto';
-import { UpdateConvenioDto } from './dto/update-convenio.dto';
+import { CreateConvenioExamesDto } from './dto/create-convenio-exames.dto';
+import { UpdateConvenioExamesDto } from './dto/update-convenio-exames.dto';
 
 @Injectable()
 export class ConveniosService {
@@ -16,7 +16,7 @@ export class ConveniosService {
     private readonly convenioRepository: Repository<Convenio>,
   ) {}
 
-  async create(createConvenioDto: CreateConvenioDto): Promise<Convenio> {
+  async create(createConvenioDto: CreateConvenioExamesDto): Promise<Convenio> {
     // Verifica se já existe um convênio com o mesmo código
     const existingConvenio = await this.convenioRepository.findOne({
       where: { codigo: createConvenioDto.codigo },
@@ -109,7 +109,7 @@ export class ConveniosService {
 
   async update(
     id: string,
-    updateConvenioDto: UpdateConvenioDto,
+    updateConvenioDto: UpdateConvenioExamesDto,
   ): Promise<Convenio> {
     const convenio = await this.findOne(id);
 

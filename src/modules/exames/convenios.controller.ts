@@ -19,8 +19,8 @@ import {
 } from '@nestjs/swagger';
 
 import { ConveniosService } from './convenios.service';
-import { CreateConvenioDto } from './dto/create-convenio.dto';
-import { UpdateConvenioDto } from './dto/update-convenio.dto';
+import { CreateConvenioExamesDto } from './dto/create-convenio-exames.dto';
+import { UpdateConvenioExamesDto } from './dto/update-convenio-exames.dto';
 import { Convenio } from './entities/convenio.entity';
 
 interface ApiResponseType<T = any> {
@@ -53,9 +53,9 @@ export class ConveniosController {
     status: 400,
     description: 'Dados inválidos',
   })
-  @ApiBody({ type: CreateConvenioDto })
+  @ApiBody({ type: CreateConvenioExamesDto })
   async create(
-    @Body() createConvenioDto: CreateConvenioDto,
+    @Body() createConvenioDto: CreateConvenioExamesDto,
   ): Promise<ApiResponseType<Convenio>> {
     const convenio = await this.conveniosService.create(createConvenioDto);
 
@@ -317,7 +317,7 @@ export class ConveniosController {
     type: String,
     description: 'ID do convênio',
   })
-  @ApiBody({ type: UpdateConvenioDto })
+  @ApiBody({ type: UpdateConvenioExamesDto })
   @ApiResponse({
     status: 200,
     description: 'Convênio atualizado com sucesso',
@@ -333,7 +333,7 @@ export class ConveniosController {
   })
   async update(
     @Param('id') id: string,
-    @Body() updateConvenioDto: UpdateConvenioDto,
+    @Body() updateConvenioDto: UpdateConvenioExamesDto,
   ): Promise<ApiResponseType<Convenio>> {
     const convenio = await this.conveniosService.update(id, updateConvenioDto);
     return {

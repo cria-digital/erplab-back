@@ -4,8 +4,8 @@ import { NotFoundException, ConflictException } from '@nestjs/common';
 
 import { ConveniosService } from './convenios.service';
 import { Convenio } from './entities/convenio.entity';
-import { CreateConvenioDto } from './dto/create-convenio.dto';
-import { UpdateConvenioDto } from './dto/update-convenio.dto';
+import { CreateConvenioExamesDto } from './dto/create-convenio-exames.dto';
+import { UpdateConvenioExamesDto } from './dto/update-convenio-exames.dto';
 
 describe('ConveniosService', () => {
   let service: ConveniosService;
@@ -70,7 +70,7 @@ describe('ConveniosService', () => {
   });
 
   describe('create', () => {
-    const createConvenioDto: CreateConvenioDto = {
+    const createConvenioDto: CreateConvenioExamesDto = {
       codigo: 'CONV001',
       nome: 'Unimed Brasília',
       razao_social: 'Unimed Brasília Cooperativa',
@@ -233,7 +233,7 @@ describe('ConveniosService', () => {
   });
 
   describe('update', () => {
-    const updateConvenioDto: UpdateConvenioDto = {
+    const updateConvenioDto: UpdateConvenioExamesDto = {
       nome: 'Unimed Brasília Atualizado',
       telefone: '61888888888',
     };
@@ -252,7 +252,7 @@ describe('ConveniosService', () => {
     });
 
     it('deve lançar ConflictException quando novo código já existir', async () => {
-      const updateDto: UpdateConvenioDto = {
+      const updateDto: UpdateConvenioExamesDto = {
         codigo: 'CONV002',
       };
 
@@ -265,7 +265,7 @@ describe('ConveniosService', () => {
     });
 
     it('deve lançar ConflictException quando novo CNPJ já existir', async () => {
-      const updateDto: UpdateConvenioDto = {
+      const updateDto: UpdateConvenioExamesDto = {
         cnpj: '98765432000188',
       };
 
@@ -278,7 +278,7 @@ describe('ConveniosService', () => {
     });
 
     it('deve permitir atualizar mantendo o mesmo código', async () => {
-      const updateDto: UpdateConvenioDto = {
+      const updateDto: UpdateConvenioExamesDto = {
         codigo: 'CONV001',
         nome: 'Novo Nome',
       };

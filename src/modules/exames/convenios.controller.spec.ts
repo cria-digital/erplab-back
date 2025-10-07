@@ -3,8 +3,8 @@ import { NotFoundException, ConflictException } from '@nestjs/common';
 
 import { ConveniosController } from './convenios.controller';
 import { ConveniosService } from './convenios.service';
-import { CreateConvenioDto } from './dto/create-convenio.dto';
-import { UpdateConvenioDto } from './dto/update-convenio.dto';
+import { CreateConvenioExamesDto } from './dto/create-convenio-exames.dto';
+import { UpdateConvenioExamesDto } from './dto/update-convenio-exames.dto';
 import { Convenio } from './entities/convenio.entity';
 
 describe('ConveniosController', () => {
@@ -78,7 +78,7 @@ describe('ConveniosController', () => {
   });
 
   describe('create', () => {
-    const createConvenioDto: CreateConvenioDto = {
+    const createConvenioDto: CreateConvenioExamesDto = {
       codigo: 'CONV001',
       nome: 'Unimed Brasília',
       razao_social: 'Unimed Brasília Cooperativa',
@@ -295,7 +295,7 @@ describe('ConveniosController', () => {
   });
 
   describe('update', () => {
-    const updateConvenioDto: UpdateConvenioDto = {
+    const updateConvenioDto: UpdateConvenioExamesDto = {
       nome: 'Unimed Brasília Atualizado',
       telefone: '61888888888',
     };

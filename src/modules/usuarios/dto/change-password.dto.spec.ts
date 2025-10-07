@@ -1,4 +1,4 @@
-import { ChangePasswordDto } from './change-password.dto';
+import { ChangePasswordUsuarioDto } from './change-password.dto';
 import { createCreateDtoSpec } from '../../../../test/dto-spec-helper';
 import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
@@ -9,14 +9,14 @@ const optionalFields: string[] = [];
 
 // Criar testes básicos usando o helper
 createCreateDtoSpec(
-  ChangePasswordDto,
-  'ChangePasswordDto',
+  ChangePasswordUsuarioDto,
+  'ChangePasswordUsuarioDto',
   requiredFields,
   optionalFields,
 );
 
-// Testes específicos para ChangePasswordDto
-describe('ChangePasswordDto - Validações Específicas', () => {
+// Testes específicos para ChangePasswordUsuarioDto
+describe('ChangePasswordUsuarioDto - Validações Específicas', () => {
   const validData = {
     senhaAtual: 'SenhaAtual123!',
     novaSenha: 'NovaSenhaSegura123!',
@@ -25,7 +25,7 @@ describe('ChangePasswordDto - Validações Específicas', () => {
 
   describe('senhaAtual', () => {
     it('deve aceitar senha atual válida', async () => {
-      const dto = plainToInstance(ChangePasswordDto, validData);
+      const dto = plainToInstance(ChangePasswordUsuarioDto, validData);
       const errors = await validate(dto);
 
       expect(errors).toHaveLength(0);
@@ -33,7 +33,7 @@ describe('ChangePasswordDto - Validações Específicas', () => {
 
     it('deve rejeitar quando senhaAtual está vazia', async () => {
       const data = { ...validData, senhaAtual: '' };
-      const dto = plainToInstance(ChangePasswordDto, data);
+      const dto = plainToInstance(ChangePasswordUsuarioDto, data);
       const errors = await validate(dto);
 
       const senhaAtualError = errors.find(
@@ -45,7 +45,7 @@ describe('ChangePasswordDto - Validações Específicas', () => {
 
     it('deve rejeitar quando senhaAtual não é string', async () => {
       const data = { ...validData, senhaAtual: 123456 };
-      const dto = plainToInstance(ChangePasswordDto, data);
+      const dto = plainToInstance(ChangePasswordUsuarioDto, data);
       const errors = await validate(dto);
 
       const senhaAtualError = errors.find(
@@ -63,7 +63,7 @@ describe('ChangePasswordDto - Validações Específicas', () => {
         novaSenha: 'Senha12!',
         confirmacaoSenha: 'Senha12!',
       };
-      const dto = plainToInstance(ChangePasswordDto, data);
+      const dto = plainToInstance(ChangePasswordUsuarioDto, data);
       const errors = await validate(dto);
 
       expect(errors).toHaveLength(0);
@@ -75,7 +75,7 @@ describe('ChangePasswordDto - Validações Específicas', () => {
         novaSenha: 'Sen12!',
         confirmacaoSenha: 'Sen12!',
       };
-      const dto = plainToInstance(ChangePasswordDto, data);
+      const dto = plainToInstance(ChangePasswordUsuarioDto, data);
       const errors = await validate(dto);
 
       const novaSenhaError = errors.find(
@@ -91,7 +91,7 @@ describe('ChangePasswordDto - Validações Específicas', () => {
         novaSenha: 'SENHA123!',
         confirmacaoSenha: 'SENHA123!',
       };
-      const dto = plainToInstance(ChangePasswordDto, data);
+      const dto = plainToInstance(ChangePasswordUsuarioDto, data);
       const errors = await validate(dto);
 
       const novaSenhaError = errors.find(
@@ -107,7 +107,7 @@ describe('ChangePasswordDto - Validações Específicas', () => {
         novaSenha: 'senha123!',
         confirmacaoSenha: 'senha123!',
       };
-      const dto = plainToInstance(ChangePasswordDto, data);
+      const dto = plainToInstance(ChangePasswordUsuarioDto, data);
       const errors = await validate(dto);
 
       const novaSenhaError = errors.find(
@@ -123,7 +123,7 @@ describe('ChangePasswordDto - Validações Específicas', () => {
         novaSenha: 'SenhaSemNumero!',
         confirmacaoSenha: 'SenhaSemNumero!',
       };
-      const dto = plainToInstance(ChangePasswordDto, data);
+      const dto = plainToInstance(ChangePasswordUsuarioDto, data);
       const errors = await validate(dto);
 
       const novaSenhaError = errors.find(
@@ -139,7 +139,7 @@ describe('ChangePasswordDto - Validações Específicas', () => {
         novaSenha: 'SenhaSemEspecial123',
         confirmacaoSenha: 'SenhaSemEspecial123',
       };
-      const dto = plainToInstance(ChangePasswordDto, data);
+      const dto = plainToInstance(ChangePasswordUsuarioDto, data);
       const errors = await validate(dto);
 
       const novaSenhaError = errors.find(
@@ -159,7 +159,7 @@ describe('ChangePasswordDto - Validações Específicas', () => {
 
       for (const novaSenha of senhasValidas) {
         const data = { ...validData, novaSenha, confirmacaoSenha: novaSenha };
-        const dto = plainToInstance(ChangePasswordDto, data);
+        const dto = plainToInstance(ChangePasswordUsuarioDto, data);
         const errors = await validate(dto);
 
         expect(errors).toHaveLength(0);
@@ -169,7 +169,7 @@ describe('ChangePasswordDto - Validações Específicas', () => {
 
   describe('confirmacaoSenha', () => {
     it('deve aceitar confirmação igual à nova senha', async () => {
-      const dto = plainToInstance(ChangePasswordDto, validData);
+      const dto = plainToInstance(ChangePasswordUsuarioDto, validData);
       const errors = await validate(dto);
 
       expect(errors).toHaveLength(0);
@@ -177,7 +177,7 @@ describe('ChangePasswordDto - Validações Específicas', () => {
 
     it('deve rejeitar quando confirmacaoSenha está vazia', async () => {
       const data = { ...validData, confirmacaoSenha: '' };
-      const dto = plainToInstance(ChangePasswordDto, data);
+      const dto = plainToInstance(ChangePasswordUsuarioDto, data);
       const errors = await validate(dto);
 
       const confirmacaoError = errors.find(
@@ -189,7 +189,7 @@ describe('ChangePasswordDto - Validações Específicas', () => {
 
     it('deve rejeitar quando confirmacaoSenha não é string', async () => {
       const data = { ...validData, confirmacaoSenha: 123456 };
-      const dto = plainToInstance(ChangePasswordDto, data);
+      const dto = plainToInstance(ChangePasswordUsuarioDto, data);
       const errors = await validate(dto);
 
       const confirmacaoError = errors.find(
@@ -206,7 +206,7 @@ describe('ChangePasswordDto - Validações Específicas', () => {
 
   describe('Instanciação', () => {
     it('deve criar instância com propriedades corretas', () => {
-      const dto = new ChangePasswordDto();
+      const dto = new ChangePasswordUsuarioDto();
 
       expect(dto).toHaveProperty('senhaAtual');
       expect(dto).toHaveProperty('novaSenha');
@@ -214,7 +214,7 @@ describe('ChangePasswordDto - Validações Específicas', () => {
     });
 
     it('deve atribuir valores corretamente', () => {
-      const dto = plainToInstance(ChangePasswordDto, validData);
+      const dto = plainToInstance(ChangePasswordUsuarioDto, validData);
 
       expect(dto.senhaAtual).toBe(validData.senhaAtual);
       expect(dto.novaSenha).toBe(validData.novaSenha);
@@ -229,7 +229,7 @@ describe('ChangePasswordDto - Validações Específicas', () => {
       for (const char of caracteresEspeciais) {
         const novaSenha = `MinhaSenh${char}123`;
         const data = { ...validData, novaSenha, confirmacaoSenha: novaSenha };
-        const dto = plainToInstance(ChangePasswordDto, data);
+        const dto = plainToInstance(ChangePasswordUsuarioDto, data);
         const errors = await validate(dto);
 
         expect(errors).toHaveLength(0);
@@ -241,7 +241,7 @@ describe('ChangePasswordDto - Validações Específicas', () => {
     it('deve aceitar senha exatamente com 8 caracteres e todos os requisitos', async () => {
       const novaSenha = 'Teste1@!';
       const data = { ...validData, novaSenha, confirmacaoSenha: novaSenha };
-      const dto = plainToInstance(ChangePasswordDto, data);
+      const dto = plainToInstance(ChangePasswordUsuarioDto, data);
       const errors = await validate(dto);
 
       expect(errors).toHaveLength(0);
@@ -251,7 +251,7 @@ describe('ChangePasswordDto - Validações Específicas', () => {
       const novaSenha =
         'MinhaSuper LongaSenhaSegura123!ComMuitosCaracteres@2024';
       const data = { ...validData, novaSenha, confirmacaoSenha: novaSenha };
-      const dto = plainToInstance(ChangePasswordDto, data);
+      const dto = plainToInstance(ChangePasswordUsuarioDto, data);
       const errors = await validate(dto);
 
       expect(errors).toHaveLength(0);

@@ -106,8 +106,20 @@ describe('main.ts', () => {
       await new Promise(process.nextTick);
 
       expect(mockApp.enableCors).toHaveBeenCalledWith({
-        origin: true,
+        origin: ['http://localhost:9016'],
         credentials: true,
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+        allowedHeaders: [
+          'Content-Type',
+          'Authorization',
+          'Accept',
+          'X-Requested-With',
+          'sentry-trace',
+          'baggage',
+        ],
+        exposedHeaders: ['Set-Cookie'],
+        preflightContinue: false,
+        optionsSuccessStatus: 204,
       });
     });
 
@@ -122,8 +134,20 @@ describe('main.ts', () => {
       await new Promise(process.nextTick);
 
       expect(mockApp.enableCors).toHaveBeenCalledWith({
-        origin: false,
+        origin: ['http://localhost:9016'],
         credentials: true,
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+        allowedHeaders: [
+          'Content-Type',
+          'Authorization',
+          'Accept',
+          'X-Requested-With',
+          'sentry-trace',
+          'baggage',
+        ],
+        exposedHeaders: ['Set-Cookie'],
+        preflightContinue: false,
+        optionsSuccessStatus: 204,
       });
     });
 
@@ -162,7 +186,7 @@ describe('main.ts', () => {
       );
     });
 
-    it('deve gerar arquivo OpenAPI JSON', async () => {
+    it('deve NÃO gerar arquivo OpenAPI JSON (desabilitado)', async () => {
       const mockDocument = { test: 'document' };
       (SwaggerModule.createDocument as jest.Mock).mockReturnValue(mockDocument);
 
@@ -173,10 +197,8 @@ describe('main.ts', () => {
 
       await new Promise(process.nextTick);
 
-      expect(fs.writeFileSync).toHaveBeenCalledWith(
-        './openapi.json',
-        JSON.stringify(mockDocument, null, 2),
-      );
+      // Arquivo openapi.json foi desabilitado por problemas de permissão no Docker
+      expect(fs.writeFileSync).not.toHaveBeenCalled();
     });
 
     it('deve usar porta do environment ou padrão', async () => {
@@ -189,7 +211,7 @@ describe('main.ts', () => {
 
       await new Promise(process.nextTick);
 
-      expect(mockApp.listen).toHaveBeenCalledWith('3000');
+      expect(mockApp.listen).toHaveBeenCalledWith('3000', '0.0.0.0');
     });
 
     it('deve usar porta padrão quando não definida', async () => {
@@ -202,7 +224,7 @@ describe('main.ts', () => {
 
       await new Promise(process.nextTick);
 
-      expect(mockApp.listen).toHaveBeenCalledWith(10016);
+      expect(mockApp.listen).toHaveBeenCalledWith(10016, '0.0.0.0');
     });
 
     it('deve exibir logs de inicialização', async () => {
@@ -214,7 +236,9 @@ describe('main.ts', () => {
       await new Promise(process.nextTick);
 
       expect(consoleLogSpy).toHaveBeenCalledWith(
-        expect.stringContaining('🚀 Servidor ERP Laboratório rodando na porta'),
+        expect.stringContaining(
+          '🚀 Servidor ERP Laboratório rodando em http://0.0.0.0:',
+        ),
       );
       expect(consoleLogSpy).toHaveBeenCalledWith(
         expect.stringContaining('📖 Documentação da API:'),
