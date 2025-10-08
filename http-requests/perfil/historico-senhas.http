@@ -1,0 +1,32 @@
+### Obter Histórico de Alterações de Senha
+GET {{baseUrl}}/perfil/historico-senhas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Histórico de senhas obtido com sucesso",
+#   "data": [
+#     {
+#       "id": "hist-uuid-1",
+#       "usuarioId": "f6749f41-187e-4a05-8fe7-285ef87e99f1",
+#       "motivoAlteracao": "usuario_solicitou",
+#       "ipOrigem": "192.168.1.100",
+#       "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)...",
+#       "alteradoPorUsuarioId": null,
+#       "dataAlteracao": "2025-10-07T14:30:00.000Z"
+#     },
+#     {
+#       "id": "hist-uuid-2",
+#       "usuarioId": "f6749f41-187e-4a05-8fe7-285ef87e99f1",
+#       "motivoAlteracao": "reset",
+#       "ipOrigem": "192.168.1.100",
+#       "userAgent": "Mozilla/5.0...",
+#       "alteradoPorUsuarioId": null,
+#       "dataAlteracao": "2025-09-15T10:20:00.000Z"
+#     }
+#   ]
+# }
+
+###

@@ -1,5 +1,59 @@
 # Padrões e Aprendizados do Projeto ERP Lab Backend
 
+## 🎯 METODOLOGIA DE TRABALHO (IMPORTANTE!)
+
+### Processo de Análise e Implementação de Telas
+
+**SEMPRE seguir este fluxo ao implementar novas funcionalidades:**
+
+1. **📋 Catalogação por Arquivo PDF**
+   - Processar o PDF "ERP Lab.pdf" chunk por chunk (26 arquivos em `/pdf_chunks/`)
+   - Catalogar cada tela identificada no `INVENTARIO_TELAS.md`
+   - Identificar módulo, status de desenvolvimento e componentes de cada tela
+
+2. **🤝 Trabalho em Conjunto (4 Mãos)**
+   - **SEMPRE perguntar ao Diego** antes de implementar
+   - **NÃO implementar sem aprovação prévia**
+   - Apresentar proposta de implementação e aguardar confirmação
+   - Especialmente importante para decisões de arquitetura
+
+3. **🗄️ Modelagem de Banco de Dados (CRÍTICO!)**
+   - **SEMPRE discutir modelagem de dados com Diego ANTES de criar migrations**
+   - Apresentar proposta de estrutura de tabelas
+   - Discutir relacionamentos (OneToOne, OneToMany, ManyToMany)
+   - Validar tipos de dados, constraints e índices
+   - Confirmar nomenclatura de colunas (snake_case)
+   - Só criar migration após aprovação explícita
+
+4. **✅ Checklist de Implementação**
+   - [ ] Tela catalogada no inventário
+   - [ ] Modelagem de dados discutida e aprovada
+   - [ ] Migration criada e revisada
+   - [ ] Entidades criadas
+   - [ ] DTOs criados
+   - [ ] Service implementado
+   - [ ] Controller implementado
+   - [ ] Testes criados
+   - [ ] Build, lint e testes executados
+   - [ ] Documentação atualizada
+
+5. **📝 Documentação Contínua**
+   - Atualizar `CLAUDE.md` com padrões identificados
+   - Atualizar `CONTROLE_IMPLEMENTACAO.md` com status
+   - Atualizar `INVENTARIO_TELAS.md` com telas processadas
+   - Manter histórico de decisões arquiteturais
+
+### Regras de Ouro
+
+- ❌ **NUNCA implementar sem consultar Diego**
+- ❌ **NUNCA criar migrations sem aprovação prévia da modelagem**
+- ❌ **NUNCA assumir estruturas de dados sem discussão**
+- ✅ **SEMPRE perguntar em caso de dúvida**
+- ✅ **SEMPRE validar antes de executar mudanças no banco**
+- ✅ **SEMPRE manter documentação atualizada**
+
+---
+
 ## Setup Inicial do Sistema
 
 ### Criação do Primeiro Usuário
@@ -288,6 +342,8 @@ curl -X GET http://localhost:10016/api/v1/usuarios \
 - ✅ **subgrupos_exame** - Subgrupos de exames
 - ✅ **setores_exame** - Setores responsáveis pelos exames
 - ✅ **cnaes** - Classificação Nacional de Atividades Econômicas
+- ✅ **preferencias_usuario** - Preferências e configurações do usuário (notificações, interface, privacidade)
+- ✅ **historico_senhas** - Histórico de alterações de senha para validação de segurança
 
 ### Migrations Executadas
 
@@ -298,6 +354,7 @@ curl -X GET http://localhost:10016/api/v1/usuarios \
 5. `CreateExamesTables1757809611114`
 6. `AddPasswordResetFields1757842882650`
 7. `CreateCnaeTable1757970200000`
+8. `CreatePerfilTables1759884401000` ⏳ (Pendente de execução)
 
 ## Estrutura de Entidades
 
@@ -316,6 +373,16 @@ curl -X GET http://localhost:10016/api/v1/usuarios \
 - Rastreamento de alterações com before/after
 - Filtros avançados para consulta
 - Estatísticas agregadas
+
+### Módulo de Perfil
+
+- **PreferenciaUsuario**: Configurações do usuário (notificações, interface, privacidade, sessão)
+- **HistoricoSenha**: Rastreamento de alterações de senha com metadados (IP, user agent, motivo)
+- Relacionamento OneToOne: Usuario → PreferenciaUsuario
+- Relacionamento ManyToOne: Usuario → HistoricoSenha
+- Validações rigorosas de senha (8+ caracteres, maiúscula, número, especial)
+- Política de não reutilização das últimas 5 senhas
+- Criação automática de preferências padrão
 
 ### Módulo de Exames
 
@@ -365,6 +432,7 @@ curl -X GET http://localhost:10016/api/v1/usuarios \
 **Problema Resolvido**: Foram corrigidos 221+ erros de TypeScript em arquivos de teste dos módulos Financeiro e Formulários.
 
 **Padrão de Correção Aplicado**:
+
 - **Erro**: `Property 'methodName' does not exist on type 'Controller'`
 - **Solução**: Verificação de existência do método antes de chamá-lo:
   ```typescript
@@ -377,6 +445,7 @@ curl -X GET http://localhost:10016/api/v1/usuarios \
   ```
 
 **Tipos de Erros Corrigidos**:
+
 1. Métodos não implementados em controllers
 2. Propriedades de mock com tipos incorretos
 3. Acessos a propriedades que requerem type casting
@@ -653,14 +722,169 @@ empresas (dados comuns)
     └── telemedicina ✅ (NOVO)
 ```
 
+## Módulo de Perfil do Usuário (Criado Outubro 2025)
+
+### Funcionalidades Implementadas
+
+Módulo completo para gerenciamento de perfil e configurações do usuário logado.
+
+#### Características Principais
+
+- **Gestão de Perfil**: Visualização e edição de dados pessoais do usuário
+- **Preferências**: Configurações de notificações, interface, privacidade e sessão
+- **Segurança de Senha**: Alteração com validações rigorosas e histórico
+- **Auditoria**: Rastreamento completo de todas as alterações
+
+### Estrutura das Tabelas
+
+#### Tabela `preferencias_usuario`
+
+```sql
+preferencias_usuario
+├── id (uuid, PK)
+├── usuario_id (uuid, FK → usuarios.id, UNIQUE)
+│
+├── NOTIFICAÇÕES
+│   ├── notificar_email (boolean, default: true)
+│   ├── notificar_whatsapp (boolean, default: false)
+│   ├── notificar_sms (boolean, default: false)
+│   └── notificar_sistema (boolean, default: true)
+│
+├── INTERFACE
+│   ├── tema (varchar 20, default: 'claro') -- 'claro', 'escuro', 'auto'
+│   ├── idioma (varchar 10, default: 'pt-BR')
+│   └── timezone (varchar 50, default: 'America/Sao_Paulo')
+│
+├── PRIVACIDADE
+│   ├── perfil_publico (boolean, default: false)
+│   ├── mostrar_email (boolean, default: false)
+│   └── mostrar_telefone (boolean, default: false)
+│
+├── SESSÃO
+│   ├── sessao_multipla (boolean, default: true)
+│   └── tempo_inatividade (int, default: 30) -- minutos
+│
+├── configuracoes_adicionais (jsonb, nullable)
+├── created_at (timestamp)
+└── updated_at (timestamp)
+```
+
+**Relacionamento**: OneToOne com `usuarios`
+
+#### Tabela `historico_senhas`
+
+```sql
+historico_senhas
+├── id (uuid, PK)
+├── usuario_id (uuid, FK → usuarios.id)
+├── senha_hash (varchar 255)
+├── motivo_alteracao (varchar 100) -- 'usuario_solicitou', 'admin_forcou', 'expiracao', 'reset'
+├── ip_origem (varchar 45)
+├── user_agent (text)
+├── alterado_por_usuario_id (uuid, FK → usuarios.id, nullable)
+└── data_alteracao (timestamp)
+```
+
+**Relacionamento**: ManyToOne com `usuarios`
+
+**Política**: Armazena últimas 5 senhas para evitar reutilização
+
+### Arquivos Criados
+
+- **Entidades**: `preferencia-usuario.entity.ts`, `historico-senha.entity.ts`
+- **DTOs**:
+  - `update-perfil.dto.ts` - Atualizar dados pessoais
+  - `update-preferencias.dto.ts` - Atualizar preferências
+  - `alterar-senha.dto.ts` - Alterar senha com validações
+  - `create-preferencias.dto.ts` - Criar preferências iniciais
+- **Service**: `perfil.service.ts`
+- **Controller**: `perfil.controller.ts`
+- **Módulo**: `perfil.module.ts`
+- **Migration**: `1759884401000-CreatePerfilTables.ts`
+- **Testes**: 13 testes unitários (service, controller, module)
+
+### Funcionalidades do Service
+
+#### PerfilService
+
+- **obterPerfil**: Retorna dados completos (usuário + preferências)
+- **atualizarPerfil**: Atualiza dados pessoais (nome, email, telefone, foto)
+- **obterPreferencias**: Retorna configurações do usuário
+- **atualizarPreferencias**: Atualiza notificações, tema, privacidade, sessão
+- **alterarSenha**: Altera senha com validações de segurança
+- **obterHistoricoSenhas**: Lista últimas 20 alterações de senha
+- **criarPreferenciasIniciais**: Helper para criar preferências padrão
+
+### API Endpoints
+
+#### Perfil (`/api/v1/perfil`)
+
+- `GET /` - Obter perfil completo (dados + preferências)
+- `PATCH /` - Atualizar dados pessoais
+- `GET /preferencias` - Obter preferências
+- `PATCH /preferencias` - Atualizar preferências
+- `POST /alterar-senha` - Alterar senha
+- `GET /historico-senhas` - Listar histórico de alterações
+
+### Validações de Segurança (Senha)
+
+Conforme requisitos do PDF (chunk_025, p500):
+
+- ✅ Mínimo de 8 caracteres
+- ✅ Pelo menos 1 letra maiúscula
+- ✅ Pelo menos 1 número
+- ✅ Pelo menos 1 caractere especial (\*\-.,@#$%&=+!)
+- ✅ Senha deve ser diferente da senha atual
+- ✅ Senha não pode ser igual às últimas 5 senhas utilizadas
+- ✅ Confirmação de senha obrigatória
+
+### Recursos Adicionais
+
+- **Auditoria**: Todas as alterações são registradas com IP e user agent
+- **Soft Create**: Preferências são criadas automaticamente se não existirem
+- **Limpeza Automática**: Mantém apenas últimas 5 senhas no histórico
+- **Dados Sensíveis**: Senhas nunca são retornadas nas respostas da API
+
+### Arquivos HTTP de Teste
+
+Criados em `/http-requests/perfil/`:
+
+- `obter-perfil.http` - Testes de visualização
+- `atualizar-perfil.http` - Testes de atualização de dados
+- `preferencias.http` - Testes de preferências
+- `alterar-senha.http` - Testes de alteração de senha (casos de sucesso e erro)
+- `historico-senhas.http` - Testes de histórico
+
+### Status de Implementação
+
+- ✅ Migration criada
+- ✅ Entidades implementadas
+- ✅ DTOs criados com validações
+- ✅ Service completo
+- ✅ Controller com 6 endpoints
+- ✅ Módulo registrado no AppModule
+- ✅ Testes unitários (13 testes passando)
+- ✅ Build 100% sem erros
+- ✅ Lint 100% sem erros
+- ✅ Documentação completa
+- ⏳ Migration pendente de execução
+
+### Integração com Módulos Existentes
+
+- **Usuários**: Relacionamento direto com tabela `usuarios`
+- **Auditoria**: Registra todas as operações em `auditoria_logs`
+- **Auth**: Usa decorador `@Request()` para obter usuário logado
+
 ## Próximos Passos Sugeridos
 
-1. Executar migrations dos módulos (laboratórios, convênios, telemedicina)
-2. Criar testes para o módulo de laboratórios
-3. Implementar sistema de permissões granulares
-4. Adicionar rate limiting nos endpoints
-5. Implementar cache com Redis
-6. Adicionar testes unitários e e2e
-7. Configurar CI/CD pipeline
-8. Implementar websockets para notificações real-time
-9. Adicionar sistema de filas para processamento assíncrono
+1. Executar migrations dos módulos (laboratórios, convênios, telemedicina, **perfil**)
+2. Testar endpoints do módulo de perfil com arquivos `.http`
+3. (Opcional) Criar seeder para popular preferências de usuários existentes
+4. Criar testes para o módulo de laboratórios
+5. Implementar sistema de permissões granulares
+6. Adicionar rate limiting nos endpoints
+7. Implementar cache com Redis
+8. Adicionar testes E2E
+9. Configurar CI/CD pipeline
+10. Implementar websockets para notificações real-time
+11. Adicionar sistema de filas para processamento assíncrono

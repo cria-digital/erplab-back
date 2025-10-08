@@ -29,6 +29,7 @@ import { FormulariosModule } from './modules/formularios/formularios.module';
 import { MetodosModule } from './modules/metodos/metodos.module';
 import { ContasPagarModule } from './modules/contas-pagar/contas-pagar.module';
 import { SeedModule } from './database/seeds/seed.module';
+import { PerfilModule } from './modules/perfil/perfil.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { SeedModule } from './database/seeds/seed.module';
     // Módulos de Autenticação e Autorização
     AuthModule,
     UsuariosModule,
+    PerfilModule,
     EmailModule,
 
     // Módulos Comuns

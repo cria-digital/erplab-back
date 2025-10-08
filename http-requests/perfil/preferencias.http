@@ -1,0 +1,104 @@
+### Obter Preferências do Usuário
+GET {{baseUrl}}/perfil/preferencias
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Preferências obtidas com sucesso",
+#   "data": {
+#     "id": "pref-uuid",
+#     "usuarioId": "f6749f41-187e-4a05-8fe7-285ef87e99f1",
+#     "notificarEmail": true,
+#     "notificarWhatsapp": false,
+#     "notificarSms": false,
+#     "notificarSistema": true,
+#     "tema": "claro",
+#     "idioma": "pt-BR",
+#     "timezone": "America/Sao_Paulo",
+#     "perfilPublico": false,
+#     "mostrarEmail": false,
+#     "mostrarTelefone": false,
+#     "sessaoMultipla": true,
+#     "tempoInatividade": 30
+#   }
+# }
+
+###
+
+### Atualizar Preferências de Notificação
+PATCH {{baseUrl}}/perfil/preferencias
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "notificarEmail": true,
+  "notificarWhatsapp": true,
+  "notificarSms": false,
+  "notificarSistema": true
+}
+
+###
+
+### Atualizar Tema da Interface
+PATCH {{baseUrl}}/perfil/preferencias
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tema": "escuro"
+}
+
+###
+
+### Atualizar Configurações de Privacidade
+PATCH {{baseUrl}}/perfil/preferencias
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "perfilPublico": true,
+  "mostrarEmail": true,
+  "mostrarTelefone": false
+}
+
+###
+
+### Atualizar Configurações de Sessão
+PATCH {{baseUrl}}/perfil/preferencias
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "sessaoMultipla": false,
+  "tempoInatividade": 15
+}
+
+###
+
+### Atualizar Todas as Preferências
+PATCH {{baseUrl}}/perfil/preferencias
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "notificarEmail": true,
+  "notificarWhatsapp": true,
+  "notificarSms": false,
+  "notificarSistema": true,
+  "tema": "auto",
+  "idioma": "en-US",
+  "timezone": "America/New_York",
+  "perfilPublico": false,
+  "mostrarEmail": false,
+  "mostrarTelefone": false,
+  "sessaoMultipla": true,
+  "tempoInatividade": 45,
+  "configuracoesAdicionais": {
+    "dashboardLayout": "compact",
+    "itemsPerPage": 50
+  }
+}
+
+###

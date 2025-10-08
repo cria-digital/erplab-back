@@ -1,0 +1,47 @@
+### Atualizar Dados Pessoais do Perfil
+PATCH {{baseUrl}}/perfil
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nomeCompleto": "Diego Soek da Silva",
+  "telefone": "51988887777",
+  "celularWhatsapp": "51999998888",
+  "cargoFuncao": "CEO"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Perfil atualizado com sucesso",
+#   "data": {
+#     "id": "f6749f41-187e-4a05-8fe7-285ef87e99f1",
+#     "nomeCompleto": "Diego Soek da Silva",
+#     "telefone": "51988887777",
+#     ...
+#   }
+# }
+
+###
+
+### Atualizar apenas Email
+PATCH {{baseUrl}}/perfil
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "email": "novoemail@gmail.com"
+}
+
+###
+
+### Atualizar Foto do Perfil
+PATCH {{baseUrl}}/perfil
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "fotoUrl": "https://example.com/perfil/foto.jpg"
+}
+
+###

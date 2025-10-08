@@ -1,0 +1,118 @@
+### Alterar Senha do Usuário
+POST {{baseUrl}}/perfil/alterar-senha
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "senhaAtual": "Admin123!",
+  "novaSenha": "NovaSenha456@",
+  "confirmarNovaSenha": "NovaSenha456@"
+}
+
+### Expected Response (Sucesso)
+# Status: 200 OK
+# {
+#   "message": "Senha alterada com sucesso"
+# }
+
+###
+
+### Alterar Senha - Senha Atual Incorreta
+POST {{baseUrl}}/perfil/alterar-senha
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "senhaAtual": "SenhaErrada123!",
+  "novaSenha": "NovaSenha456@",
+  "confirmarNovaSenha": "NovaSenha456@"
+}
+
+### Expected Response (Erro)
+# Status: 401 Unauthorized
+# {
+#   "statusCode": 401,
+#   "message": "Senha atual incorreta"
+# }
+
+###
+
+### Alterar Senha - Confirmação Não Confere
+POST {{baseUrl}}/perfil/alterar-senha
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "senhaAtual": "Admin123!",
+  "novaSenha": "NovaSenha456@",
+  "confirmarNovaSenha": "SenhaDiferente789#"
+}
+
+### Expected Response (Erro)
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Nova senha e confirmação não conferem"
+# }
+
+###
+
+### Alterar Senha - Senha Fraca (sem maiúscula)
+POST {{baseUrl}}/perfil/alterar-senha
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "senhaAtual": "Admin123!",
+  "novaSenha": "novasenha456@",
+  "confirmarNovaSenha": "novasenha456@"
+}
+
+### Expected Response (Erro)
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": ["Senha deve conter pelo menos 1 letra maiúscula"]
+# }
+
+###
+
+### Alterar Senha - Sem Caractere Especial
+POST {{baseUrl}}/perfil/alterar-senha
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "senhaAtual": "Admin123!",
+  "novaSenha": "NovaSenha456",
+  "confirmarNovaSenha": "NovaSenha456"
+}
+
+### Expected Response (Erro)
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": ["Senha deve conter pelo menos 1 caractere especial (*-.,@#$%&=+!)"]
+# }
+
+###
+
+### Alterar Senha - Igual à Senha Atual
+POST {{baseUrl}}/perfil/alterar-senha
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "senhaAtual": "Admin123!",
+  "novaSenha": "Admin123!",
+  "confirmarNovaSenha": "Admin123!"
+}
+
+### Expected Response (Erro)
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "A nova senha deve ser diferente da senha atual"
+# }
+
+###

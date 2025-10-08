@@ -1,0 +1,42 @@
+### Obter Perfil Completo do Usuário Logado
+GET {{baseUrl}}/perfil
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Perfil obtido com sucesso",
+#   "data": {
+#     "id": "f6749f41-187e-4a05-8fe7-285ef87e99f1",
+#     "codigoInterno": "USR1234",
+#     "nomeCompleto": "Diego Soek",
+#     "cpf": "12345678901",
+#     "email": "diegosoek@gmail.com",
+#     "telefone": "5199999999",
+#     "celularWhatsapp": "51999999999",
+#     "cargoFuncao": "Administrador do Sistema",
+#     "fotoUrl": null,
+#     "validacao2Etapas": false,
+#     "metodoValidacao": null,
+#     "ativo": true,
+#     "preferencias": {
+#       "id": "pref-uuid",
+#       "usuarioId": "f6749f41-187e-4a05-8fe7-285ef87e99f1",
+#       "notificarEmail": true,
+#       "notificarWhatsapp": false,
+#       "notificarSms": false,
+#       "notificarSistema": true,
+#       "tema": "claro",
+#       "idioma": "pt-BR",
+#       "timezone": "America/Sao_Paulo",
+#       "perfilPublico": false,
+#       "mostrarEmail": false,
+#       "mostrarTelefone": false,
+#       "sessaoMultipla": true,
+#       "tempoInatividade": 30
+#     }
+#   }
+# }
+
+###
