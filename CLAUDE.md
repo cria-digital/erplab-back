@@ -81,11 +81,68 @@
 
 ## Estrutura do Projeto
 
-### Padrões de Organização de Módulos
+### Organização Hierárquica de Módulos (Outubro 2025)
 
-- **Estrutura de módulos**: Seguir padrão flat - services e controllers ficam na raiz do módulo, NÃO em subpastas
-  - ✅ Correto: `/src/modules/usuarios/usuarios.service.ts`
-  - ❌ Errado: `/src/modules/usuarios/services/usuarios.service.ts`
+O projeto foi reorganizado de estrutura flat para hierárquica por áreas funcionais:
+
+```
+src/modules/
+├── autenticacao/          # Autenticação e usuários
+│   ├── auth/
+│   ├── usuarios/
+│   └── perfil/
+├── cadastros/             # Cadastros gerais
+│   ├── pacientes/
+│   ├── profissionais/
+│   ├── empresas/
+│   └── unidade-saude/
+├── exames/                # Gestão de exames
+│   ├── exames/
+│   ├── formularios/
+│   ├── kits/
+│   └── metodos/
+├── relacionamento/        # Integrações externas
+│   ├── convenios/
+│   ├── laboratorios/
+│   ├── telemedicina/
+│   ├── fornecedores/
+│   └── prestadores-servico/
+├── atendimento/           # Fluxo de atendimento
+│   ├── atendimento/
+│   ├── agendas/
+│   └── integracoes/
+├── financeiro/            # Gestão financeira
+│   └── core/
+└── infraestrutura/        # Serviços de infraestrutura
+    ├── auditoria/
+    ├── common/
+    └── email/
+```
+
+### Padrões de Imports Após Reorganização
+
+**Regras de profundidade de imports:**
+
+- **De módulo raiz para outra área**: `../../area/modulo/`
+  ```typescript
+  // De src/modules/cadastros/profissionais/profissionais.module.ts
+  import { Agenda } from '../../atendimento/agendas/entities/agenda.entity';
+  ```
+
+- **De subfolder/entities para outra área**: `../../../area/modulo/` ou `../../../../area/modulo/`
+  ```typescript
+  // De src/modules/cadastros/profissionais/entities/profissional.entity.ts
+  import { Agenda } from '../../../atendimento/agendas/entities/agenda.entity';
+
+  // De src/modules/financeiro/core/contas-pagar/entities/parcela.entity.ts
+  import { Profissional } from '../../../../cadastros/profissionais/entities/profissional.entity';
+  ```
+
+- **Test helpers**: `../../../../test/` ou `../../../../../test/` dependendo da profundidade
+  ```typescript
+  // De src/modules/exames/kits/kits.module.spec.ts
+  import { createModuleSpec } from '../../../../test/modules-spec-helper';
+  ```
 
 ### Convenções de Nomenclatura
 
@@ -223,6 +280,41 @@ Essa validação deve ser feita IMEDIATAMENTE após criar cada arquivo de teste,
 - Documentar com @ApiProperty do Swagger
 - Separar DTOs de Create e Update
 - Sempre validar UUIDs e formatos específicos (CPF, email, etc)
+
+### Padrões de Refatoração e Manutenção (Outubro 2025)
+
+**Lições aprendidas da reorganização de módulos:**
+
+1. **Imports em Testes são mais restritivos que Build**
+   - Jest valida imports mais rigorosamente que o compilador TypeScript
+   - Sempre verificar que testes passam após mudanças de estrutura
+   - Use `as any as Type` para mocks complexos quando necessário
+
+2. **Mocks em Testes após Refatoração de Entidades**
+   - Quando refatorar entidades (ex: adicionar relacionamentos), atualizar mocks imediatamente
+   - Exemplo: Após adicionar `planos: []` e `instrucoes: []` em `Convenio`, atualizar todos os specs
+   - Usar `as any` para objetos parciais que não precisam de todos os campos
+
+3. **Dependências de Módulos com Relacionamentos**
+   - Quando um Service usa múltiplos repositories, garantir que todas as entidades estejam no `TypeOrmModule.forFeature()`
+   - Exemplo: `ConveniosService` precisa de `Convenio` E `Empresa` no mesmo módulo
+   - Evitar importar providers/controllers diretamente - preferir importar o módulo completo
+
+4. **TypeORM Index Names**
+   - SEMPRE usar nomes de propriedades TypeScript (camelCase) em `@Index()`
+   - ✅ Correto: `@Index(['formularioId', 'ordem'])`
+   - ❌ Errado: `@Index(['formulario_id', 'ordem'])`
+   - TypeORM faz a conversão automática para snake_case no banco
+
+5. **Erros de Compilação vs Runtime**
+   - Build pode passar mas app falhar no runtime por falta de providers
+   - Sempre testar inicialização do app após mudanças estruturais
+   - Verificar logs de DependencyInjection do NestJS
+
+6. **Transações e Relacionamentos OneToOne**
+   - Ao criar entidades com OneToOne, usar transações para garantir atomicidade
+   - Criar a entidade relacionada primeiro, depois vincular o ID
+   - Exemplo: Criar `Empresa` → depois `Convenio` com `empresa_id`
 
 ## APIs Disponíveis
 
