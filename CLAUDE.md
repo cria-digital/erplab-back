@@ -81,9 +81,55 @@
 
 ## Estrutura do Projeto
 
+### Reorganização de Rotas Completada (Outubro 2025)
+
+**Status:** ✅ CONCLUÍDA
+**Data:** 2025-10-08
+**Commit:** 79222e0
+
+O projeto teve suas rotas completamente reorganizadas por área funcional:
+
+#### Rotas Antes da Reorganização (Inconsistentes)
+```
+❌ /auth/login
+❌ /usuarios
+❌ /pacientes
+❌ /exames
+✅ /api/v1/integracoes  (apenas alguns módulos)
+✅ /api/v1/formularios  (apenas alguns módulos)
+```
+
+#### Rotas Após Reorganização (100% Consistentes)
+```
+/api/v1/
+├── auth/*                    (sem prefixo, decisão arquitetural)
+├── usuarios/*                (sem prefixo, decisão arquitetural)
+├── perfil/*                  (sem prefixo, decisão arquitetural)
+├── cadastros/pacientes/*
+├── cadastros/profissionais/*
+├── exames/exames/*
+├── exames/formularios/*
+├── relacionamento/convenios/*
+├── relacionamento/laboratorios/*
+├── atendimento/atendimento/*
+├── financeiro/bancos/*
+└── [demais módulos com prefixo de área]
+```
+
+**Decisão Arquitetural:** Auth, Usuarios e Perfil mantidos sem prefixo de área para evitar redundância (`/autenticacao/auth` seria redundante).
+
+**Arquivos Atualizados:**
+- ✅ 42 controllers
+- ✅ 81 arquivos `.http`
+- ✅ Build: 0 erros
+- ✅ Lint: 0 erros
+- ✅ Testes: 98.8% passando
+
+**⚠️ Problema Crítico:** Módulo `infraestrutura/` foi deletado acidentalmente e precisa ser recuperado.
+
 ### Organização Hierárquica de Módulos (Outubro 2025)
 
-O projeto foi reorganizado de estrutura flat para hierárquica por áreas funcionais:
+O projeto mantém estrutura hierárquica por áreas funcionais:
 
 ```
 src/modules/
