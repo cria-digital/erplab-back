@@ -2,7 +2,7 @@ import { DataSource } from 'typeorm';
 import {
   Banco,
   StatusBanco,
-} from '../../modules/financeiro/entities/banco.entity';
+} from '../../modules/financeiro/core/entities/banco.entity';
 
 export async function seedBancos(dataSource: DataSource): Promise<void> {
   const bancoRepository = dataSource.getRepository(Banco);

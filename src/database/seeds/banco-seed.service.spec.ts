@@ -5,7 +5,7 @@ import { BancoSeedService } from './banco-seed.service';
 import {
   Banco,
   StatusBanco,
-} from '../../modules/financeiro/entities/banco.entity';
+} from '../../modules/financeiro/core/entities/banco.entity';
 
 describe('BancoSeedService', () => {
   let service: BancoSeedService;

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { CnaeSeedService } from './cnae-seed.service';
-import { Cnae } from '../../modules/common/entities/cnae.entity';
+import { Cnae } from '../../modules/infraestrutura/common/entities/cnae.entity';
 import * as fs from 'fs';
 import * as path from 'path';
 

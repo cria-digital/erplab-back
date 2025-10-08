@@ -1,0 +1,360 @@
+
+> erplab-backend@1.0.0 build
+> nest build -p tsconfig.build.json
+
+[96msrc/modules/atendimento/integracoes/integracoes.controller.ts[0m:[93m25[0m:[93m30[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../autenticacao/auth/guards/jwt-auth.guard' or its corresponding type declarations.
+
+[7m25[0m import { JwtAuthGuard } from '../../../autenticacao/auth/guards/jwt-auth.guard';
+[7m  [0m [91m                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/autenticacao/auth/auth.module.ts[0m:[93m11[0m:[93m29[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../infraestrutura/email/email.module' or its corresponding type declarations.
+
+[7m11[0m import { EmailModule } from '../../../infraestrutura/email/email.module';
+[7m  [0m [91m                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/autenticacao/auth/auth.service.ts[0m:[93m19[0m:[93m30[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../infraestrutura/email/email.service' or its corresponding type declarations.
+
+[7m19[0m import { EmailService } from '../../../infraestrutura/email/email.service';
+[7m  [0m [91m                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/autenticacao/perfil/perfil.module.ts[0m:[93m9[0m:[93m33[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../infraestrutura/auditoria/auditoria.module' or its corresponding type declarations.
+
+[7m9[0m import { AuditoriaModule } from '../../../infraestrutura/auditoria/auditoria.module';
+[7m [0m [91m                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/autenticacao/perfil/perfil.service.ts[0m:[93m21[0m:[93m34[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../infraestrutura/auditoria/auditoria.service' or its corresponding type declarations.
+
+[7m21[0m import { AuditoriaService } from '../../../infraestrutura/auditoria/auditoria.service';
+[7m  [0m [91m                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/autenticacao/usuarios/usuarios.module.ts[0m:[93m9[0m:[93m33[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../infraestrutura/auditoria/auditoria.module' or its corresponding type declarations.
+
+[7m9[0m import { AuditoriaModule } from '../../../infraestrutura/auditoria/auditoria.module';
+[7m [0m [91m                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/autenticacao/usuarios/usuarios.service.ts[0m:[93m16[0m:[93m34[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../infraestrutura/auditoria/auditoria.service' or its corresponding type declarations.
+
+[7m16[0m import { AuditoriaService } from '../../../infraestrutura/auditoria/auditoria.service';
+[7m  [0m [91m                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/autenticacao/usuarios/usuarios.service.ts[0m:[93m17[0m:[93m29[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../infraestrutura/auditoria/entities/auditoria-log.entity' or its corresponding type declarations.
+
+[7m17[0m import { OperacaoLog } from '../../../infraestrutura/auditoria/entities/auditoria-log.entity';
+[7m  [0m [91m                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/cadastros/empresas/empresas.controller.ts[0m:[93m22[0m:[93m30[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../autenticacao/auth/guards/jwt-auth.guard' or its corresponding type declarations.
+
+[7m22[0m import { JwtAuthGuard } from '../../../autenticacao/auth/guards/jwt-auth.guard';
+[7m  [0m [91m                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/cadastros/profissionais/dto/create-profissional.dto.ts[0m:[93m23[0m:[93m28[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../comum/entities/endereco.entity' or its corresponding type declarations.
+
+[7m23[0m import { EstadoEnum } from '../../../comum/entities/endereco.entity';
+[7m  [0m [91m                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/cadastros/profissionais/entities/profissional.entity.ts[0m:[93m21[0m:[93m26[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../comum/entities/endereco.entity' or its corresponding type declarations.
+
+[7m21[0m import { Endereco } from '../../../comum/entities/endereco.entity';
+[7m  [0m [91m                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/cadastros/profissionais/entities/profissional.entity.ts[0m:[93m22[0m:[93m24[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../agendas/entities/agenda.entity' or its corresponding type declarations.
+
+[7m22[0m import { Agenda } from '../../agendas/entities/agenda.entity';
+[7m  [0m [91m                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/cadastros/profissionais/profissionais.module.ts[0m:[93m7[0m:[93m26[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../infraestrutura/common/entities/endereco.entity' or its corresponding type declarations.
+
+[7m7[0m import { Endereco } from '../../../infraestrutura/common/entities/endereco.entity';
+[7m [0m [91m                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/cadastros/profissionais/profissionais.module.ts[0m:[93m8[0m:[93m24[0m - [91merror[0m[90m TS2307: [0mCannot find module '../agendas/entities/agenda.entity' or its corresponding type declarations.
+
+[7m8[0m import { Agenda } from '../agendas/entities/agenda.entity';
+[7m [0m [91m                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/cadastros/profissionais/services/profissionais.service.ts[0m:[93m10[0m:[93m26[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../comum/entities/endereco.entity' or its corresponding type declarations.
+
+[7m10[0m import { Endereco } from '../../../comum/entities/endereco.entity';
+[7m  [0m [91m                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/cadastros/profissionais/services/profissionais.service.ts[0m:[93m11[0m:[93m24[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../agendas/entities/agenda.entity' or its corresponding type declarations.
+
+[7m11[0m import { Agenda } from '../../agendas/entities/agenda.entity';
+[7m  [0m [91m                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/exames/exames/exames.module.ts[0m:[93m17[0m:[93m34[0m - [91merror[0m[90m TS2307: [0mCannot find module './convenios.service' or its corresponding type declarations.
+
+[7m17[0m import { ConveniosService } from './convenios.service';
+[7m  [0m [91m                                 ~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/exames/exames/exames.module.ts[0m:[93m22[0m:[93m37[0m - [91merror[0m[90m TS2307: [0mCannot find module './convenios.controller' or its corresponding type declarations.
+
+[7m22[0m import { ConveniosController } from './convenios.controller';
+[7m  [0m [91m                                    ~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/exames/formularios/alternativa-campo.controller.ts[0m:[93m25[0m:[93m30[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../autenticacao/auth/guards/jwt-auth.guard' or its corresponding type declarations.
+
+[7m25[0m import { JwtAuthGuard } from '../../../autenticacao/auth/guards/jwt-auth.guard';
+[7m  [0m [91m                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/exames/formularios/campo-formulario.controller.ts[0m:[93m25[0m:[93m30[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../autenticacao/auth/guards/jwt-auth.guard' or its corresponding type declarations.
+
+[7m25[0m import { JwtAuthGuard } from '../../../autenticacao/auth/guards/jwt-auth.guard';
+[7m  [0m [91m                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/exames/formularios/entities/resposta-formulario.entity.ts[0m:[93m14[0m:[93m25[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../usuarios/entities/usuario.entity' or its corresponding type declarations.
+
+[7m14[0m import { Usuario } from '../../usuarios/entities/usuario.entity';
+[7m  [0m [91m                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/exames/formularios/formularios.controller.ts[0m:[93m25[0m:[93m30[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../autenticacao/auth/guards/jwt-auth.guard' or its corresponding type declarations.
+
+[7m25[0m import { JwtAuthGuard } from '../../../autenticacao/auth/guards/jwt-auth.guard';
+[7m  [0m [91m                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/exames/formularios/resposta-formulario.controller.ts[0m:[93m25[0m:[93m30[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../autenticacao/auth/guards/jwt-auth.guard' or its corresponding type declarations.
+
+[7m25[0m import { JwtAuthGuard } from '../../../autenticacao/auth/guards/jwt-auth.guard';
+[7m  [0m [91m                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/exames/kits/entities/kit-convenio.entity.ts[0m:[93m13[0m:[93m26[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../convenios/entities/convenio.entity' or its corresponding type declarations.
+
+[7m13[0m import { Convenio } from '../../convenios/entities/convenio.entity';
+[7m  [0m [91m                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/exames/kits/kits.module.ts[0m:[93m10[0m:[93m30[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../cadastros/unidade-saude/entities/unidade-saude.entity' or its corresponding type declarations.
+
+[7m10[0m import { UnidadeSaude } from '../../../cadastros/unidade-saude/entities/unidade-saude.entity';
+[7m  [0m [91m                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/exames/kits/kits.module.ts[0m:[93m11[0m:[93m26[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../relacionamento/convenios/entities/convenio.entity' or its corresponding type declarations.
+
+[7m11[0m import { Convenio } from '../../../relacionamento/convenios/entities/convenio.entity';
+[7m  [0m [91m                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/exames/kits/kits.module.ts[0m:[93m12[0m:[93m25[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../cadastros/empresas/entities/empresa.entity' or its corresponding type declarations.
+
+[7m12[0m import { Empresa } from '../../../cadastros/empresas/entities/empresa.entity';
+[7m  [0m [91m                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/exames/kits/services/kits.service.ts[0m:[93m16[0m:[93m26[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../convenios/entities/convenio.entity' or its corresponding type declarations.
+
+[7m16[0m import { Convenio } from '../../convenios/entities/convenio.entity';
+[7m  [0m [91m                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/exames/metodos/entities/laboratorio-metodo.entity.ts[0m:[93m13[0m:[93m29[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../laboratorios/entities/laboratorio.entity' or its corresponding type declarations.
+
+[7m13[0m import { Laboratorio } from '../../laboratorios/entities/laboratorio.entity';
+[7m  [0m [91m                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/exames/metodos/laboratorio-metodo.service.ts[0m:[93m12[0m:[93m29[0m - [91merror[0m[90m TS2307: [0mCannot find module '../laboratorios/entities/laboratorio.entity' or its corresponding type declarations.
+
+[7m12[0m import { Laboratorio } from '../laboratorios/entities/laboratorio.entity';
+[7m  [0m [91m                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/exames/metodos/metodos.module.ts[0m:[93m9[0m:[93m29[0m - [91merror[0m[90m TS2307: [0mCannot find module '../laboratorios/entities/laboratorio.entity' or its corresponding type declarations.
+
+[7m9[0m import { Laboratorio } from '../laboratorios/entities/laboratorio.entity';
+[7m [0m [91m                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/financeiro/core/adquirente.controller.ts[0m:[93m20[0m:[93m30[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../autenticacao/auth/guards/jwt-auth.guard' or its corresponding type declarations.
+
+[7m20[0m import { JwtAuthGuard } from '../../../autenticacao/auth/guards/jwt-auth.guard';
+[7m  [0m [91m                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/financeiro/core/banco.controller.ts[0m:[93m25[0m:[93m30[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../autenticacao/auth/guards/jwt-auth.guard' or its corresponding type declarations.
+
+[7m25[0m import { JwtAuthGuard } from '../../../autenticacao/auth/guards/jwt-auth.guard';
+[7m  [0m [91m                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/financeiro/core/banco.controller.ts[0m:[93m26[0m:[93m29[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../autenticacao/auth/decorators/current-user.decorator' or its corresponding type declarations.
+
+[7m26[0m import { CurrentUser } from '../../../autenticacao/auth/decorators/current-user.decorator';
+[7m  [0m [91m                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/financeiro/core/banco.controller.ts[0m:[93m27[0m:[93m25[0m - [91merror[0m[90m TS2307: [0mCannot find module '../usuarios/entities/usuario.entity' or its corresponding type declarations.
+
+[7m27[0m import { Usuario } from '../usuarios/entities/usuario.entity';
+[7m  [0m [91m                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/financeiro/core/banco.service.ts[0m:[93m11[0m:[93m34[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../infraestrutura/auditoria/auditoria.service' or its corresponding type declarations.
+
+[7m11[0m import { AuditoriaService } from '../../../infraestrutura/auditoria/auditoria.service';
+[7m  [0m [91m                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/financeiro/core/banco.service.ts[0m:[93m15[0m:[93m8[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../infraestrutura/auditoria/entities/auditoria-log.entity' or its corresponding type declarations.
+
+[7m15[0m } from '../../../infraestrutura/auditoria/entities/auditoria-log.entity';
+[7m  [0m [91m       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/financeiro/core/conta-bancaria.controller.ts[0m:[93m20[0m:[93m30[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../autenticacao/auth/guards/jwt-auth.guard' or its corresponding type declarations.
+
+[7m20[0m import { JwtAuthGuard } from '../../../autenticacao/auth/guards/jwt-auth.guard';
+[7m  [0m [91m                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/financeiro/core/conta-contabil.controller.ts[0m:[93m3[0m:[93m30[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../autenticacao/auth/guards/jwt-auth.guard' or its corresponding type declarations.
+
+[7m3[0m import { JwtAuthGuard } from '../../../autenticacao/auth/guards/jwt-auth.guard';
+[7m [0m [91m                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/financeiro/core/contas-pagar/entities/centro-custo.entity.ts[0m:[93m11[0m:[93m30[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../cadastros/unidade-saude/entities/unidade-saude.entity' or its corresponding type declarations.
+
+[7m11[0m import { UnidadeSaude } from '../../../cadastros/unidade-saude/entities/unidade-saude.entity';
+[7m  [0m [91m                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/financeiro/core/contas-pagar/entities/composicao-financeira.entity.ts[0m:[93m11[0m:[93m31[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../financeiro/entities/conta-contabil.entity' or its corresponding type declarations.
+
+[7m11[0m import { ContaContabil } from '../../financeiro/entities/conta-contabil.entity';
+[7m  [0m [91m                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/financeiro/core/contas-pagar/entities/composicao-financeira.entity.ts[0m:[93m13[0m:[93m30[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../cadastros/profissionais/entities/profissional.entity' or its corresponding type declarations.
+
+[7m13[0m import { Profissional } from '../../../cadastros/profissionais/entities/profissional.entity';
+[7m  [0m [91m                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/financeiro/core/contas-pagar/entities/conta-pagar.entity.ts[0m:[93m13[0m:[93m30[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../cadastros/unidade-saude/entities/unidade-saude.entity' or its corresponding type declarations.
+
+[7m13[0m import { UnidadeSaude } from '../../../cadastros/unidade-saude/entities/unidade-saude.entity';
+[7m  [0m [91m                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/financeiro/core/contas-pagar/entities/pagamento-parcela.entity.ts[0m:[93m12[0m:[93m31[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../financeiro/entities/conta-bancaria.entity' or its corresponding type declarations.
+
+[7m12[0m import { ContaBancaria } from '../../financeiro/entities/conta-bancaria.entity';
+[7m  [0m [91m                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/financeiro/core/contas-pagar/entities/repasse.entity.ts[0m:[93m11[0m:[93m30[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../cadastros/unidade-saude/entities/unidade-saude.entity' or its corresponding type declarations.
+
+[7m11[0m import { UnidadeSaude } from '../../../cadastros/unidade-saude/entities/unidade-saude.entity';
+[7m  [0m [91m                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/financeiro/core/financeiro.module.ts[0m:[93m30[0m:[93m36[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../cadastros/unidade-saude/unidade-saude.module' or its corresponding type declarations.
+
+[7m30[0m import { UnidadeSaudeModule } from '../../../cadastros/unidade-saude/unidade-saude.module';
+[7m  [0m [91m                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/financeiro/core/financeiro.module.ts[0m:[93m31[0m:[93m33[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../infraestrutura/auditoria/auditoria.module' or its corresponding type declarations.
+
+[7m31[0m import { AuditoriaModule } from '../../../infraestrutura/auditoria/auditoria.module';
+[7m  [0m [91m                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/financeiro/core/gateway-pagamento.controller.ts[0m:[93m20[0m:[93m30[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../autenticacao/auth/guards/jwt-auth.guard' or its corresponding type declarations.
+
+[7m20[0m import { JwtAuthGuard } from '../../../autenticacao/auth/guards/jwt-auth.guard';
+[7m  [0m [91m                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/financeiro/core/plano-contas.controller.ts[0m:[93m3[0m:[93m30[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../autenticacao/auth/guards/jwt-auth.guard' or its corresponding type declarations.
+
+[7m3[0m import { JwtAuthGuard } from '../../../autenticacao/auth/guards/jwt-auth.guard';
+[7m [0m [91m                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/infraestrutura/auditoria/entities/auditoria-log.entity.ts[0m:[93m10[0m:[93m25[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../usuarios/entities/usuario.entity' or its corresponding type declarations.
+
+[7m10[0m import { Usuario } from '../../usuarios/entities/usuario.entity';
+[7m  [0m [91m                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/infraestrutura/auditoria/entities/historico-alteracao.entity.ts[0m:[93m10[0m:[93m25[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../usuarios/entities/usuario.entity' or its corresponding type declarations.
+
+[7m10[0m import { Usuario } from '../../usuarios/entities/usuario.entity';
+[7m  [0m [91m                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/infraestrutura/auditoria/entities/log-auditoria.entity.ts[0m:[93m10[0m:[93m25[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../usuarios/entities/usuario.entity' or its corresponding type declarations.
+
+[7m10[0m import { Usuario } from '../../usuarios/entities/usuario.entity';
+[7m  [0m [91m                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/infraestrutura/common/common.module.ts[0m:[93m9[0m:[93m33[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../database/seeds/cnae-seed.service' or its corresponding type declarations.
+
+[7m9[0m import { CnaeSeedService } from '../../database/seeds/cnae-seed.service';
+[7m [0m [91m                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/infraestrutura/common/controllers/cnae.controller.ts[0m:[93m26[0m:[93m36[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../common/dto/pagination.dto' or its corresponding type declarations.
+
+[7m26[0m import { PaginatedResultDto } from '../../../common/dto/pagination.dto';
+[7m  [0m [91m                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/infraestrutura/common/dto/search-cnae.dto.ts[0m:[93m4[0m:[93m31[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../common/dto/pagination.dto' or its corresponding type declarations.
+
+[7m4[0m import { PaginationDto } from '../../../common/dto/pagination.dto';
+[7m [0m [91m                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/infraestrutura/common/services/cnae.service.ts[0m:[93m8[0m:[93m36[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../common/dto/pagination.dto' or its corresponding type declarations.
+
+[7m8[0m import { PaginatedResultDto } from '../../../common/dto/pagination.dto';
+[7m [0m [91m                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/infraestrutura/common/services/cnae.service.ts[0m:[93m52[0m:[93m29[0m - [91merror[0m[90m TS2339: [0mProperty 'page' does not exist on type 'SearchCnaeDto'.
+
+[7m52[0m     const page = searchDto?.page || 1;
+[7m  [0m [91m                            ~~~~[0m
+[96msrc/modules/infraestrutura/common/services/cnae.service.ts[0m:[93m53[0m:[93m30[0m - [91merror[0m[90m TS2339: [0mProperty 'limit' does not exist on type 'SearchCnaeDto'.
+
+[7m53[0m     const limit = searchDto?.limit || 10;
+[7m  [0m [91m                             ~~~~~[0m
+[96msrc/modules/relacionamento/convenios/convenios.controller.ts[0m:[93m22[0m:[93m41[0m - [91merror[0m[90m TS2307: [0mCannot find module './dto/create-convenio-exames.dto' or its corresponding type declarations.
+
+[7m22[0m import { CreateConvenioExamesDto } from './dto/create-convenio-exames.dto';
+[7m  [0m [91m                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/relacionamento/convenios/convenios.controller.ts[0m:[93m23[0m:[93m41[0m - [91merror[0m[90m TS2307: [0mCannot find module './dto/update-convenio-exames.dto' or its corresponding type declarations.
+
+[7m23[0m import { UpdateConvenioExamesDto } from './dto/update-convenio-exames.dto';
+[7m  [0m [91m                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/relacionamento/convenios/convenios.module.ts[0m:[93m13[0m:[93m25[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../cadastros/empresas/entities/empresa.entity' or its corresponding type declarations.
+
+[7m13[0m import { Empresa } from '../../../cadastros/empresas/entities/empresa.entity';
+[7m  [0m [91m                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/relacionamento/convenios/convenios.service.ts[0m:[93m9[0m:[93m41[0m - [91merror[0m[90m TS2307: [0mCannot find module './dto/create-convenio-exames.dto' or its corresponding type declarations.
+
+[7m9[0m import { CreateConvenioExamesDto } from './dto/create-convenio-exames.dto';
+[7m [0m [91m                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/relacionamento/convenios/convenios.service.ts[0m:[93m10[0m:[93m41[0m - [91merror[0m[90m TS2307: [0mCannot find module './dto/update-convenio-exames.dto' or its corresponding type declarations.
+
+[7m10[0m import { UpdateConvenioExamesDto } from './dto/update-convenio-exames.dto';
+[7m  [0m [91m                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/relacionamento/convenios/convenios.service.ts[0m:[93m22[0m:[93m16[0m - [91merror[0m[90m TS2353: [0mObject literal may only specify known properties, and 'codigo' does not exist in type 'FindOptionsWhere<Convenio> | FindOptionsWhere<Convenio>[]'.
+
+[7m22[0m       where: { codigo: createConvenioDto.codigo },
+[7m  [0m [91m               ~~~~~~[0m
+
+  [96mnode_modules/typeorm/find-options/FindOneOptions.d.ts[0m:[93m23[0m:[93m5[0m
+    [7m23[0m     where?: FindOptionsWhere<Entity>[] | FindOptionsWhere<Entity>;
+    [7m  [0m [96m    ~~~~~[0m
+    The expected type comes from property 'where' which is declared here on type 'FindOneOptions<Convenio>'
+[96msrc/modules/relacionamento/convenios/convenios.service.ts[0m:[93m34[0m:[93m18[0m - [91merror[0m[90m TS2353: [0mObject literal may only specify known properties, and 'cnpj' does not exist in type 'FindOptionsWhere<Convenio> | FindOptionsWhere<Convenio>[]'.
+
+[7m34[0m         where: { cnpj: createConvenioDto.cnpj },
+[7m  [0m [91m                 ~~~~[0m
+
+  [96mnode_modules/typeorm/find-options/FindOneOptions.d.ts[0m:[93m23[0m:[93m5[0m
+    [7m23[0m     where?: FindOptionsWhere<Entity>[] | FindOptionsWhere<Entity>;
+    [7m  [0m [96m    ~~~~~[0m
+    The expected type comes from property 'where' which is declared here on type 'FindOneOptions<Convenio>'
+[96msrc/modules/relacionamento/convenios/convenios.service.ts[0m:[93m45[0m:[93m5[0m - [91merror[0m[90m TS2740: [0mType 'Convenio[]' is missing the following properties from type 'Convenio': id, empresa_id, empresa, codigo_convenio, and 27 more.
+
+[7m45[0m     return await this.convenioRepository.save(convenio);
+[7m  [0m [91m    ~~~~~~[0m
+[96msrc/modules/relacionamento/convenios/convenios.service.ts[0m:[93m98[0m:[93m16[0m - [91merror[0m[90m TS2353: [0mObject literal may only specify known properties, and 'codigo' does not exist in type 'FindOptionsWhere<Convenio> | FindOptionsWhere<Convenio>[]'.
+
+[7m98[0m       where: { codigo },
+[7m  [0m [91m               ~~~~~~[0m
+
+  [96mnode_modules/typeorm/find-options/FindOneOptions.d.ts[0m:[93m23[0m:[93m5[0m
+    [7m23[0m     where?: FindOptionsWhere<Entity>[] | FindOptionsWhere<Entity>;
+    [7m  [0m [96m    ~~~~~[0m
+    The expected type comes from property 'where' which is declared here on type 'FindOneOptions<Convenio>'
+[96msrc/modules/relacionamento/convenios/convenios.service.ts[0m:[93m119[0m:[93m45[0m - [91merror[0m[90m TS2339: [0mProperty 'codigo' does not exist on type 'Convenio'.
+
+[7m119[0m       updateConvenioDto.codigo !== convenio.codigo
+[7m   [0m [91m                                            ~~~~~~[0m
+[96msrc/modules/relacionamento/convenios/convenios.service.ts[0m:[93m122[0m:[93m18[0m - [91merror[0m[90m TS2353: [0mObject literal may only specify known properties, and 'codigo' does not exist in type 'FindOptionsWhere<Convenio> | FindOptionsWhere<Convenio>[]'.
+
+[7m122[0m         where: { codigo: updateConvenioDto.codigo },
+[7m   [0m [91m                 ~~~~~~[0m
+
+  [96mnode_modules/typeorm/find-options/FindOneOptions.d.ts[0m:[93m23[0m:[93m5[0m
+    [7m23[0m     where?: FindOptionsWhere<Entity>[] | FindOptionsWhere<Entity>;
+    [7m  [0m [96m    ~~~~~[0m
+    The expected type comes from property 'where' which is declared here on type 'FindOneOptions<Convenio>'
+[96msrc/modules/relacionamento/convenios/convenios.service.ts[0m:[93m133[0m:[93m71[0m - [91merror[0m[90m TS2339: [0mProperty 'cnpj' does not exist on type 'Convenio'.
+
+[7m133[0m     if (updateConvenioDto.cnpj && updateConvenioDto.cnpj !== convenio.cnpj) {
+[7m   [0m [91m                                                                      ~~~~[0m
+[96msrc/modules/relacionamento/convenios/convenios.service.ts[0m:[93m135[0m:[93m18[0m - [91merror[0m[90m TS2353: [0mObject literal may only specify known properties, and 'cnpj' does not exist in type 'FindOptionsWhere<Convenio> | FindOptionsWhere<Convenio>[]'.
+
+[7m135[0m         where: { cnpj: updateConvenioDto.cnpj },
+[7m   [0m [91m                 ~~~~[0m
+
+  [96mnode_modules/typeorm/find-options/FindOneOptions.d.ts[0m:[93m23[0m:[93m5[0m
+    [7m23[0m     where?: FindOptionsWhere<Entity>[] | FindOptionsWhere<Entity>;
+    [7m  [0m [96m    ~~~~~[0m
+    The expected type comes from property 'where' which is declared here on type 'FindOneOptions<Convenio>'
+[96msrc/modules/relacionamento/convenios/convenios.service.ts[0m:[93m156[0m:[93m5[0m - [91merror[0m[90m TS2820: [0mType '"inativo"' is not assignable to type 'StatusConvenio'. Did you mean 'StatusConvenio.ATIVO'?
+
+[7m156[0m     convenio.status = 'inativo';
+[7m   [0m [91m    ~~~~~~~~~~~~~~~[0m
+[96msrc/modules/relacionamento/convenios/convenios.service.ts[0m:[93m162[0m:[93m16[0m - [91merror[0m[90m TS2820: [0mType '"ativo"' is not assignable to type 'StatusConvenio | FindOperator<StatusConvenio>'. Did you mean 'StatusConvenio.INATIVO'?
+
+[7m162[0m       where: { status: 'ativo' },
+[7m   [0m [91m               ~~~~~~[0m
+[96msrc/modules/relacionamento/convenios/convenios.service.ts[0m:[93m169[0m:[93m42[0m - [91merror[0m[90m TS2820: [0mType '"ativo"' is not assignable to type 'StatusConvenio | FindOperator<StatusConvenio>'. Did you mean 'StatusConvenio.INATIVO'?
+
+[7m169[0m       where: { tem_integracao_api: true, status: 'ativo' },
+[7m   [0m [91m                                         ~~~~~~[0m
+[96msrc/modules/relacionamento/convenios/convenios.service.ts[0m:[93m176[0m:[93m47[0m - [91merror[0m[90m TS2820: [0mType '"ativo"' is not assignable to type 'StatusConvenio | FindOperator<StatusConvenio>'. Did you mean 'StatusConvenio.INATIVO'?
+
+[7m176[0m       where: { tipo_faturamento: tipo as any, status: 'ativo' },
+[7m   [0m [91m                                              ~~~~~~[0m
+[96msrc/modules/relacionamento/fornecedores/fornecedores.module.ts[0m:[93m6[0m:[93m25[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../cadastros/empresas/entities/empresa.entity' or its corresponding type declarations.
+
+[7m6[0m import { Empresa } from '../../../cadastros/empresas/entities/empresa.entity';
+[7m [0m [91m                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/relacionamento/prestadores-servico/prestador-servico.service.ts[0m:[93m13[0m:[93m25[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../cadastros/empresas/entities/empresa.entity' or its corresponding type declarations.
+
+[7m13[0m import { Empresa } from '../../../cadastros/empresas/entities/empresa.entity';
+[7m  [0m [91m                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/relacionamento/prestadores-servico/prestador-servico.service.ts[0m:[93m14[0m:[93m33[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../cadastros/empresas/enums/empresas.enum' or its corresponding type declarations.
+
+[7m14[0m import { TipoEmpresaEnum } from '../../../cadastros/empresas/enums/empresas.enum';
+[7m  [0m [91m                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/relacionamento/prestadores-servico/prestadores-servico.module.ts[0m:[93m9[0m:[93m25[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../cadastros/empresas/entities/empresa.entity' or its corresponding type declarations.
+
+[7m9[0m import { Empresa } from '../../../cadastros/empresas/entities/empresa.entity';
+[7m [0m [91m                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/relacionamento/telemedicina/entities/telemedicina-exame.entity.ts[0m:[93m12[0m:[93m23[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../exames/entities/exame.entity' or its corresponding type declarations.
+
+[7m12[0m import { Exame } from '../../exames/entities/exame.entity';
+[7m  [0m [91m                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/relacionamento/telemedicina/telemedicina.module.ts[0m:[93m6[0m:[93m25[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../cadastros/empresas/entities/empresa.entity' or its corresponding type declarations.
+
+[7m6[0m import { Empresa } from '../../../cadastros/empresas/entities/empresa.entity';
+[7m [0m [91m                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/relacionamento/telemedicina/telemedicina.module.ts[0m:[93m7[0m:[93m23[0m - [91merror[0m[90m TS2307: [0mCannot find module '../exames/entities/exame.entity' or its corresponding type declarations.
+
+[7m7[0m import { Exame } from '../exames/entities/exame.entity';
+[7m [0m [91m                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+Found 82 error(s).
+

@@ -1,0 +1,161 @@
+
+> erplab-backend@1.0.0 build
+> nest build -p tsconfig.build.json
+
+[96msrc/modules/exames/metodos/entities/laboratorio-metodo.entity.ts[0m:[93m13[0m:[93m29[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../relacionamento/laboratorios/entities/laboratorio.entity' or its corresponding type declarations.
+
+[7m13[0m import { Laboratorio } from '../../relacionamento/laboratorios/entities/laboratorio.entity';
+[7m  [0m [91m                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/financeiro/core/contas-pagar/entities/centro-custo.entity.ts[0m:[93m11[0m:[93m30[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../cadastros/unidade-saude/entities/unidade-saude.entity' or its corresponding type declarations.
+
+[7m11[0m import { UnidadeSaude } from '../../../cadastros/unidade-saude/entities/unidade-saude.entity';
+[7m  [0m [91m                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/financeiro/core/contas-pagar/entities/composicao-financeira.entity.ts[0m:[93m11[0m:[93m31[0m - [91merror[0m[90m TS2307: [0mCannot find module '../entities/conta-contabil.entity' or its corresponding type declarations.
+
+[7m11[0m import { ContaContabil } from '../entities/conta-contabil.entity';
+[7m  [0m [91m                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/financeiro/core/contas-pagar/entities/composicao-financeira.entity.ts[0m:[93m13[0m:[93m30[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../cadastros/profissionais/entities/profissional.entity' or its corresponding type declarations.
+
+[7m13[0m import { Profissional } from '../../../cadastros/profissionais/entities/profissional.entity';
+[7m  [0m [91m                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/financeiro/core/contas-pagar/entities/conta-pagar.entity.ts[0m:[93m13[0m:[93m30[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../cadastros/unidade-saude/entities/unidade-saude.entity' or its corresponding type declarations.
+
+[7m13[0m import { UnidadeSaude } from '../../../cadastros/unidade-saude/entities/unidade-saude.entity';
+[7m  [0m [91m                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/financeiro/core/contas-pagar/entities/pagamento-parcela.entity.ts[0m:[93m12[0m:[93m31[0m - [91merror[0m[90m TS2307: [0mCannot find module '../entities/conta-bancaria.entity' or its corresponding type declarations.
+
+[7m12[0m import { ContaBancaria } from '../entities/conta-bancaria.entity';
+[7m  [0m [91m                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/financeiro/core/contas-pagar/entities/repasse.entity.ts[0m:[93m11[0m:[93m30[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../cadastros/unidade-saude/entities/unidade-saude.entity' or its corresponding type declarations.
+
+[7m11[0m import { UnidadeSaude } from '../../../cadastros/unidade-saude/entities/unidade-saude.entity';
+[7m  [0m [91m                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/financeiro/core/financeiro.module.ts[0m:[93m30[0m:[93m36[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../../cadastros/unidade-saude/unidade-saude.module' or its corresponding type declarations.
+
+[7m30[0m import { UnidadeSaudeModule } from '../../../cadastros/unidade-saude/unidade-saude.module';
+[7m  [0m [91m                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/infraestrutura/auditoria/entities/auditoria-log.entity.ts[0m:[93m10[0m:[93m25[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../autenticacao/usuarios/entities/usuario.entity' or its corresponding type declarations.
+
+[7m10[0m import { Usuario } from '../../autenticacao/usuarios/entities/usuario.entity';
+[7m  [0m [91m                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/infraestrutura/auditoria/entities/auditoria-log.entity.ts[0m:[93m11[0m:[93m30[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../cadastros/unidade-saude/entities/unidade-saude.entity' or its corresponding type declarations.
+
+[7m11[0m import { UnidadeSaude } from '../../cadastros/unidade-saude/entities/unidade-saude.entity';
+[7m  [0m [91m                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/infraestrutura/auditoria/entities/historico-alteracao.entity.ts[0m:[93m10[0m:[93m25[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../autenticacao/usuarios/entities/usuario.entity' or its corresponding type declarations.
+
+[7m10[0m import { Usuario } from '../../autenticacao/usuarios/entities/usuario.entity';
+[7m  [0m [91m                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/infraestrutura/auditoria/entities/log-auditoria.entity.ts[0m:[93m10[0m:[93m25[0m - [91merror[0m[90m TS2307: [0mCannot find module '../../autenticacao/usuarios/entities/usuario.entity' or its corresponding type declarations.
+
+[7m10[0m import { Usuario } from '../../autenticacao/usuarios/entities/usuario.entity';
+[7m  [0m [91m                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/infraestrutura/common/controllers/cnae.controller.ts[0m:[93m26[0m:[93m36[0m - [91merror[0m[90m TS2307: [0mCannot find module '../dto/pagination.dto' or its corresponding type declarations.
+
+[7m26[0m import { PaginatedResultDto } from '../dto/pagination.dto';
+[7m  [0m [91m                                   ~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/infraestrutura/common/dto/search-cnae.dto.ts[0m:[93m4[0m:[93m31[0m - [91merror[0m[90m TS2307: [0mCannot find module '../dto/pagination.dto' or its corresponding type declarations.
+
+[7m4[0m import { PaginationDto } from '../dto/pagination.dto';
+[7m [0m [91m                              ~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/infraestrutura/common/services/cnae.service.ts[0m:[93m8[0m:[93m36[0m - [91merror[0m[90m TS2307: [0mCannot find module '../dto/pagination.dto' or its corresponding type declarations.
+
+[7m8[0m import { PaginatedResultDto } from '../dto/pagination.dto';
+[7m [0m [91m                                   ~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/modules/infraestrutura/common/services/cnae.service.ts[0m:[93m52[0m:[93m29[0m - [91merror[0m[90m TS2339: [0mProperty 'page' does not exist on type 'SearchCnaeDto'.
+
+[7m52[0m     const page = searchDto?.page || 1;
+[7m  [0m [91m                            ~~~~[0m
+[96msrc/modules/infraestrutura/common/services/cnae.service.ts[0m:[93m53[0m:[93m30[0m - [91merror[0m[90m TS2339: [0mProperty 'limit' does not exist on type 'SearchCnaeDto'.
+
+[7m53[0m     const limit = searchDto?.limit || 10;
+[7m  [0m [91m                             ~~~~~[0m
+[96msrc/modules/relacionamento/convenios/convenios.service.ts[0m:[93m22[0m:[93m16[0m - [91merror[0m[90m TS2353: [0mObject literal may only specify known properties, and 'codigo' does not exist in type 'FindOptionsWhere<Convenio> | FindOptionsWhere<Convenio>[]'.
+
+[7m22[0m       where: { codigo: createConvenioDto.codigo },
+[7m  [0m [91m               ~~~~~~[0m
+
+  [96mnode_modules/typeorm/find-options/FindOneOptions.d.ts[0m:[93m23[0m:[93m5[0m
+    [7m23[0m     where?: FindOptionsWhere<Entity>[] | FindOptionsWhere<Entity>;
+    [7m  [0m [96m    ~~~~~[0m
+    The expected type comes from property 'where' which is declared here on type 'FindOneOptions<Convenio>'
+[96msrc/modules/relacionamento/convenios/convenios.service.ts[0m:[93m34[0m:[93m18[0m - [91merror[0m[90m TS2353: [0mObject literal may only specify known properties, and 'cnpj' does not exist in type 'FindOptionsWhere<Convenio> | FindOptionsWhere<Convenio>[]'.
+
+[7m34[0m         where: { cnpj: createConvenioDto.cnpj },
+[7m  [0m [91m                 ~~~~[0m
+
+  [96mnode_modules/typeorm/find-options/FindOneOptions.d.ts[0m:[93m23[0m:[93m5[0m
+    [7m23[0m     where?: FindOptionsWhere<Entity>[] | FindOptionsWhere<Entity>;
+    [7m  [0m [96m    ~~~~~[0m
+    The expected type comes from property 'where' which is declared here on type 'FindOneOptions<Convenio>'
+[96msrc/modules/relacionamento/convenios/convenios.service.ts[0m:[93m44[0m:[93m53[0m - [91merror[0m[90m TS2769: [0mNo overload matches this call.
+  Overload 1 of 3, '(entityLikeArray: DeepPartial<Convenio>[]): Convenio[]', gave the following error.
+    Argument of type 'CreateConvenioExamesDto' is not assignable to parameter of type 'DeepPartial<Convenio>[]'.
+      Type 'CreateConvenioExamesDto' is missing the following properties from type 'DeepPartial<Convenio>[]': length, pop, push, concat, and 29 more.
+  Overload 2 of 3, '(entityLike: DeepPartial<Convenio>): Convenio', gave the following error.
+    Argument of type 'CreateConvenioExamesDto' is not assignable to parameter of type 'DeepPartial<Convenio>'.
+      Type 'CreateConvenioExamesDto' is not assignable to type '{ id?: string; empresa_id?: string; empresa?: DeepPartial<Empresa>; codigo_convenio?: string; nome?: string; registro_ans?: string; tem_integracao_api?: DeepPartial<boolean>; ... 23 more ...; instrucoes?: DeepPartial<...>; }'.
+        Types of property 'tipo_faturamento' are incompatible.
+          Type 'string' is not assignable to type 'DeepPartial<TipoFaturamento>'.
+
+[7m44[0m     const convenio = this.convenioRepository.create(createConvenioDto);
+[7m  [0m [91m                                                    ~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/modules/relacionamento/convenios/convenios.service.ts[0m:[93m45[0m:[93m5[0m - [91merror[0m[90m TS2740: [0mType 'Convenio[]' is missing the following properties from type 'Convenio': id, empresa_id, empresa, codigo_convenio, and 27 more.
+
+[7m45[0m     return await this.convenioRepository.save(convenio);
+[7m  [0m [91m    ~~~~~~[0m
+[96msrc/modules/relacionamento/convenios/convenios.service.ts[0m:[93m98[0m:[93m16[0m - [91merror[0m[90m TS2353: [0mObject literal may only specify known properties, and 'codigo' does not exist in type 'FindOptionsWhere<Convenio> | FindOptionsWhere<Convenio>[]'.
+
+[7m98[0m       where: { codigo },
+[7m  [0m [91m               ~~~~~~[0m
+
+  [96mnode_modules/typeorm/find-options/FindOneOptions.d.ts[0m:[93m23[0m:[93m5[0m
+    [7m23[0m     where?: FindOptionsWhere<Entity>[] | FindOptionsWhere<Entity>;
+    [7m  [0m [96m    ~~~~~[0m
+    The expected type comes from property 'where' which is declared here on type 'FindOneOptions<Convenio>'
+[96msrc/modules/relacionamento/convenios/convenios.service.ts[0m:[93m119[0m:[93m45[0m - [91merror[0m[90m TS2339: [0mProperty 'codigo' does not exist on type 'Convenio'.
+
+[7m119[0m       updateConvenioDto.codigo !== convenio.codigo
+[7m   [0m [91m                                            ~~~~~~[0m
+[96msrc/modules/relacionamento/convenios/convenios.service.ts[0m:[93m122[0m:[93m18[0m - [91merror[0m[90m TS2353: [0mObject literal may only specify known properties, and 'codigo' does not exist in type 'FindOptionsWhere<Convenio> | FindOptionsWhere<Convenio>[]'.
+
+[7m122[0m         where: { codigo: updateConvenioDto.codigo },
+[7m   [0m [91m                 ~~~~~~[0m
+
+  [96mnode_modules/typeorm/find-options/FindOneOptions.d.ts[0m:[93m23[0m:[93m5[0m
+    [7m23[0m     where?: FindOptionsWhere<Entity>[] | FindOptionsWhere<Entity>;
+    [7m  [0m [96m    ~~~~~[0m
+    The expected type comes from property 'where' which is declared here on type 'FindOneOptions<Convenio>'
+[96msrc/modules/relacionamento/convenios/convenios.service.ts[0m:[93m133[0m:[93m71[0m - [91merror[0m[90m TS2339: [0mProperty 'cnpj' does not exist on type 'Convenio'.
+
+[7m133[0m     if (updateConvenioDto.cnpj && updateConvenioDto.cnpj !== convenio.cnpj) {
+[7m   [0m [91m                                                                      ~~~~[0m
+[96msrc/modules/relacionamento/convenios/convenios.service.ts[0m:[93m135[0m:[93m18[0m - [91merror[0m[90m TS2353: [0mObject literal may only specify known properties, and 'cnpj' does not exist in type 'FindOptionsWhere<Convenio> | FindOptionsWhere<Convenio>[]'.
+
+[7m135[0m         where: { cnpj: updateConvenioDto.cnpj },
+[7m   [0m [91m                 ~~~~[0m
+
+  [96mnode_modules/typeorm/find-options/FindOneOptions.d.ts[0m:[93m23[0m:[93m5[0m
+    [7m23[0m     where?: FindOptionsWhere<Entity>[] | FindOptionsWhere<Entity>;
+    [7m  [0m [96m    ~~~~~[0m
+    The expected type comes from property 'where' which is declared here on type 'FindOneOptions<Convenio>'
+[96msrc/modules/relacionamento/convenios/convenios.service.ts[0m:[93m156[0m:[93m5[0m - [91merror[0m[90m TS2820: [0mType '"inativo"' is not assignable to type 'StatusConvenio'. Did you mean 'StatusConvenio.ATIVO'?
+
+[7m156[0m     convenio.status = 'inativo';
+[7m   [0m [91m    ~~~~~~~~~~~~~~~[0m
+[96msrc/modules/relacionamento/convenios/convenios.service.ts[0m:[93m162[0m:[93m16[0m - [91merror[0m[90m TS2820: [0mType '"ativo"' is not assignable to type 'StatusConvenio | FindOperator<StatusConvenio>'. Did you mean 'StatusConvenio.INATIVO'?
+
+[7m162[0m       where: { status: 'ativo' },
+[7m   [0m [91m               ~~~~~~[0m
+[96msrc/modules/relacionamento/convenios/convenios.service.ts[0m:[93m169[0m:[93m42[0m - [91merror[0m[90m TS2820: [0mType '"ativo"' is not assignable to type 'StatusConvenio | FindOperator<StatusConvenio>'. Did you mean 'StatusConvenio.INATIVO'?
+
+[7m169[0m       where: { tem_integracao_api: true, status: 'ativo' },
+[7m   [0m [91m                                         ~~~~~~[0m
+[96msrc/modules/relacionamento/convenios/convenios.service.ts[0m:[93m176[0m:[93m47[0m - [91merror[0m[90m TS2820: [0mType '"ativo"' is not assignable to type 'StatusConvenio | FindOperator<StatusConvenio>'. Did you mean 'StatusConvenio.INATIVO'?
+
+[7m176[0m       where: { tipo_faturamento: tipo as any, status: 'ativo' },
+[7m   [0m [91m                                              ~~~~~~[0m
+
+Found 30 error(s).
+

@@ -4,35 +4,52 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { APP_GUARD } from '@nestjs/core';
 import { databaseConfig } from './config/database.config';
 import { HealthController } from './health.controller';
-import { AtendimentoModule } from './modules/atendimento/atendimento.module';
-import { AuditoriaModule } from './modules/auditoria/auditoria.module';
-import { PacientesModule } from './modules/pacientes/pacientes.module';
-import { UnidadeSaudeModule } from './modules/unidade-saude/unidade-saude.module';
-import { UsuariosModule } from './modules/usuarios/usuarios.module';
-import { AuthModule } from './modules/auth/auth.module';
-import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
-import { ExamesModule } from './modules/exames/exames.module';
-import { EmailModule } from './modules/email/email.module';
-import { AgendasModule } from './modules/agendas/agendas.module';
-import { ProfissionaisModule } from './modules/profissionais/profissionais.module';
-import { EmpresasModule } from './modules/empresas/empresas.module';
-import { CommonModule } from './modules/common/common.module';
-import { ConveniosModule } from './modules/convenios/convenios.module';
-import { LaboratoriosModule } from './modules/laboratorios/laboratorios.module';
-import { TelemedicinaModule } from './modules/telemedicina/telemedicina.module';
-import { FornecedoresModule } from './modules/fornecedores/fornecedores.module';
-import { PrestadoresServicoModule } from './modules/prestadores-servico/prestadores-servico.module';
-import { KitsModule } from './modules/kits/kits.module';
-import { FinanceiroModule } from './modules/financeiro/financeiro.module';
-import { IntegracoesModule } from './modules/integracoes/integracoes.module';
-import { FormulariosModule } from './modules/formularios/formularios.module';
-import { MetodosModule } from './modules/metodos/metodos.module';
-import { ContasPagarModule } from './modules/contas-pagar/contas-pagar.module';
+
+// Autenticação
+import { AuthModule } from './modules/autenticacao/auth/auth.module';
+import { UsuariosModule } from './modules/autenticacao/usuarios/usuarios.module';
+import { PerfilModule } from './modules/autenticacao/perfil/perfil.module';
+import { JwtAuthGuard } from './modules/autenticacao/auth/guards/jwt-auth.guard';
+
+// Cadastros
+import { PacientesModule } from './modules/cadastros/pacientes/pacientes.module';
+import { ProfissionaisModule } from './modules/cadastros/profissionais/profissionais.module';
+import { UnidadeSaudeModule } from './modules/cadastros/unidade-saude/unidade-saude.module';
+import { EmpresasModule } from './modules/cadastros/empresas/empresas.module';
+
+// Exames
+import { ExamesModule } from './modules/exames/exames/exames.module';
+import { FormulariosModule } from './modules/exames/formularios/formularios.module';
+import { KitsModule } from './modules/exames/kits/kits.module';
+import { MetodosModule } from './modules/exames/metodos/metodos.module';
+
+// Relacionamento
+import { ConveniosModule } from './modules/relacionamento/convenios/convenios.module';
+import { LaboratoriosModule } from './modules/relacionamento/laboratorios/laboratorios.module';
+import { TelemedicinaModule } from './modules/relacionamento/telemedicina/telemedicina.module';
+import { FornecedoresModule } from './modules/relacionamento/fornecedores/fornecedores.module';
+import { PrestadoresServicoModule } from './modules/relacionamento/prestadores-servico/prestadores-servico.module';
+
+// Atendimento
+import { AtendimentoModule } from './modules/atendimento/atendimento/atendimento.module';
+import { AgendasModule } from './modules/atendimento/agendas/agendas.module';
+import { IntegracoesModule } from './modules/atendimento/integracoes/integracoes.module';
+
+// Financeiro
+import { FinanceiroModule } from './modules/financeiro/core/financeiro.module';
+import { ContasPagarModule } from './modules/financeiro/core/contas-pagar/contas-pagar.module';
+
+// Infraestrutura
+import { AuditoriaModule } from './modules/infraestrutura/auditoria/auditoria.module';
+import { CommonModule } from './modules/infraestrutura/common/common.module';
+import { EmailModule } from './modules/infraestrutura/email/email.module';
+
+// Seeds
 import { SeedModule } from './database/seeds/seed.module';
-import { PerfilModule } from './modules/perfil/perfil.module';
 
 @Module({
   imports: [
+    // Configuração Global
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
@@ -43,42 +60,61 @@ import { PerfilModule } from './modules/perfil/perfil.module';
       inject: [ConfigService],
     }),
 
-    // Módulos de Autenticação e Autorização
+    // 1. Autenticação e Segurança
     AuthModule,
     UsuariosModule,
     PerfilModule,
-    EmailModule,
 
-    // Módulos Comuns
-    CommonModule,
-
-    // Módulos do Sistema ERP
-    AtendimentoModule,
-    AuditoriaModule,
+    // 2. Cadastros Base
     PacientesModule,
-    UnidadeSaudeModule,
-    ExamesModule,
-    AgendasModule,
     ProfissionaisModule,
+    UnidadeSaudeModule,
     EmpresasModule,
+
+    // 3. Gestão de Exames
+    ExamesModule,
+    FormulariosModule,
+    KitsModule,
+    MetodosModule,
+
+    // 4. Relacionamento com Empresas
     ConveniosModule,
     LaboratoriosModule,
     TelemedicinaModule,
     FornecedoresModule,
     PrestadoresServicoModule,
-    KitsModule,
-    FinanceiroModule,
+
+    // 5. Atendimento e Agendamento
+    AtendimentoModule,
+    AgendasModule,
     IntegracoesModule,
-    FormulariosModule,
-    MetodosModule,
+
+    // 6. Financeiro
+    FinanceiroModule,
     ContasPagarModule,
+
+    // 7. Infraestrutura
+    AuditoriaModule,
+    CommonModule,
+    EmailModule,
+
+    // Seeds
     SeedModule,
 
     // Próximos módulos a serem implementados:
-    // CrmModule,
+    // ContasReceberModule,
     // EstoqueModule,
+    // ComprasModule,
     // TissModule,
-    // TarefasModule,
+    // PopsModule,
+    // ChecklistsModule,
+    // AuditoriasInternasModule,
+    // RastreabilidadeModule,
+    // NotificacoesModule,
+    // WhatsappModule,
+    // EstruturaModule,
+    // DocumentacaoModule,
+    // TabelasPrecosModule,
     // BiModule,
     // PortalClienteModule,
     // PortalMedicoModule,

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Cnae } from '../../modules/common/entities/cnae.entity';
+import { Cnae } from '../../modules/infraestrutura/common/entities/cnae.entity';
 import * as fs from 'fs';
 import * as path from 'path';
 

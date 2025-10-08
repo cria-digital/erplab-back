@@ -6,7 +6,7 @@ import { DataSource } from 'typeorm';
 import {
   EntidadeTipoFiltro,
   StatusRepasse,
-} from '../../src/modules/contas-pagar/enums/contas-pagar.enum';
+} from '../../src/modules/financeiro/core/contas-pagar/enums/contas-pagar.enum';
 
 describe('RepasseController (e2e)', () => {
   let app: INestApplication;

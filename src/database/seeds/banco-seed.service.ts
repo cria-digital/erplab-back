@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import {
   Banco,
   StatusBanco,
-} from '../../modules/financeiro/entities/banco.entity';
+} from '../../modules/financeiro/core/entities/banco.entity';
 
 @Injectable()
 export class BancoSeedService {
