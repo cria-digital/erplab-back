@@ -1,5 +1,5 @@
 ### Criar plano de contas - Conta Raiz de Receitas
-POST {{baseUrl}}/planos-contas
+POST {{baseUrl}}/financeiro/planos-contas
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -29,7 +29,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Criar subconta de receitas operacionais
-POST {{baseUrl}}/planos-contas
+POST {{baseUrl}}/financeiro/planos-contas
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -47,7 +47,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Criar conta de receitas com consultas
-POST {{baseUrl}}/planos-contas
+POST {{baseUrl}}/financeiro/planos-contas
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -66,7 +66,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Criar plano de contas - Conta Raiz de Despesas
-POST {{baseUrl}}/planos-contas
+POST {{baseUrl}}/financeiro/planos-contas
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -83,7 +83,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Criar subconta de despesas administrativas
-POST {{baseUrl}}/planos-contas
+POST {{baseUrl}}/financeiro/planos-contas
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -101,7 +101,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Criar conta de despesas com pessoal
-POST {{baseUrl}}/planos-contas
+POST {{baseUrl}}/financeiro/planos-contas
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -119,55 +119,55 @@ Authorization: Bearer {{token}}
 ###
 
 ### Listar todo o plano de contas
-GET {{baseUrl}}/planos-contas
+GET {{baseUrl}}/financeiro/planos-contas
 Authorization: Bearer {{token}}
 
 ###
 
 ### Listar contas ativas
-GET {{baseUrl}}/planos-contas/ativas
+GET {{baseUrl}}/financeiro/planos-contas/ativas
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar contas por tipo
-GET {{baseUrl}}/planos-contas/tipo/receita
+GET {{baseUrl}}/financeiro/planos-contas/tipo/receita
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar contas por nível
-GET {{baseUrl}}/planos-contas/nivel/1
+GET {{baseUrl}}/financeiro/planos-contas/nivel/1
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar contas que aceitam lançamento
-GET {{baseUrl}}/planos-contas/analiticas
+GET {{baseUrl}}/financeiro/planos-contas/analiticas
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar conta por código
-GET {{baseUrl}}/planos-contas/codigo/3.1.01
+GET {{baseUrl}}/financeiro/planos-contas/codigo/3.1.01
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar subcontas de uma conta pai
-GET {{baseUrl}}/planos-contas/{{contaPaiId}}/subcontas
+GET {{baseUrl}}/financeiro/planos-contas/{{contaPaiId}}/subcontas
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar conta por ID
-GET {{baseUrl}}/planos-contas/{{planoContaId}}
+GET {{baseUrl}}/financeiro/planos-contas/{{planoContaId}}
 Authorization: Bearer {{token}}
 
 ###
 
 ### Atualizar plano de contas
-PATCH {{baseUrl}}/planos-contas/{{planoContaId}}
+PATCH {{baseUrl}}/financeiro/planos-contas/{{planoContaId}}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -179,17 +179,17 @@ Authorization: Bearer {{token}}
 ###
 
 ### Alternar status da conta
-PATCH {{baseUrl}}/planos-contas/{{planoContaId}}/toggle-status
+PATCH {{baseUrl}}/financeiro/planos-contas/{{planoContaId}}/toggle-status
 Authorization: Bearer {{token}}
 
 ###
 
 ### Obter estrutura hierárquica do plano de contas
-GET {{baseUrl}}/planos-contas/arvore
+GET {{baseUrl}}/financeiro/planos-contas/arvore
 Authorization: Bearer {{token}}
 
 ###
 
 ### Deletar conta do plano
-DELETE {{baseUrl}}/planos-contas/{{planoContaId}}
+DELETE {{baseUrl}}/financeiro/planos-contas/{{planoContaId}}
 Authorization: Bearer {{token}}

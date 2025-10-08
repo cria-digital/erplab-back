@@ -18,7 +18,7 @@ import { ContaPagar } from '../entities/conta-pagar.entity';
 import { StatusContaPagar } from '../enums/contas-pagar.enum';
 
 @ApiTags('Contas a Pagar')
-@Controller('contas-pagar')
+@Controller('financeiro/contas-pagar')
 export class ContaPagarController {
   constructor(private readonly contaPagarService: ContaPagarService) {}
 

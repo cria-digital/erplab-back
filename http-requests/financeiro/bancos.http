@@ -1,5 +1,5 @@
 ### Listar todos os bancos
-GET {{baseUrl}}/bancos
+GET {{baseUrl}}/financeiro/bancos
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -12,31 +12,31 @@ Authorization: Bearer {{token}}
 ###
 
 ### Listar bancos ativos
-GET {{baseUrl}}/bancos/ativos
+GET {{baseUrl}}/financeiro/bancos/ativos
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar bancos por termo
-GET {{baseUrl}}/bancos/search?q=brasil
+GET {{baseUrl}}/financeiro/bancos/search?q=brasil
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar banco por código FEBRABAN
-GET {{baseUrl}}/bancos/codigo/001
+GET {{baseUrl}}/financeiro/bancos/codigo/001
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar banco por código interno
-GET {{baseUrl}}/bancos/codigo-interno/BB
+GET {{baseUrl}}/financeiro/bancos/codigo-interno/BB
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar banco por ID
-GET {{baseUrl}}/bancos/{{bancoId}}
+GET {{baseUrl}}/financeiro/bancos/{{bancoId}}
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -55,7 +55,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Criar novo banco
-POST {{baseUrl}}/bancos
+POST {{baseUrl}}/financeiro/bancos
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -85,7 +85,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Atualizar banco
-PATCH {{baseUrl}}/bancos/{{bancoId}}
+PATCH {{baseUrl}}/financeiro/bancos/{{bancoId}}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -97,11 +97,11 @@ Authorization: Bearer {{token}}
 ###
 
 ### Alternar status do banco
-PATCH {{baseUrl}}/bancos/{{bancoId}}/toggle-status
+PATCH {{baseUrl}}/financeiro/bancos/{{bancoId}}/toggle-status
 Authorization: Bearer {{token}}
 
 ###
 
 ### Deletar banco
-DELETE {{baseUrl}}/bancos/{{bancoId}}
+DELETE {{baseUrl}}/financeiro/bancos/{{bancoId}}
 Authorization: Bearer {{token}}

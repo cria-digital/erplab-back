@@ -22,7 +22,7 @@ import { UpdateTelemedicinaExameDto } from '../dto/update-telemedicina-exame.dto
 import { TelemedicinaExame } from '../entities/telemedicina-exame.entity';
 
 @ApiTags('Telemedicina - Exames')
-@Controller('telemedicina-exames')
+@Controller('relacionamento/telemedicina-exames')
 export class TelemedicinaExameController {
   constructor(
     private readonly telemedicinaExameService: TelemedicinaExameService,

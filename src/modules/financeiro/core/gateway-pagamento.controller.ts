@@ -29,7 +29,7 @@ import {
 @ApiTags('Gateways de Pagamento')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('gateways-pagamento')
+@Controller('financeiro/gateways-pagamento')
 export class GatewayPagamentoController {
   constructor(private readonly service: GatewayPagamentoService) {}
 

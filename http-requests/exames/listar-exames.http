@@ -1,5 +1,5 @@
 ### Listar todos os exames com paginação
-GET {{baseUrl}}/exames?page=1&limit=10
+GET {{baseUrl}}/exames/exames?page=1&limit=10
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -14,67 +14,67 @@ Authorization: Bearer {{token}}
 ###
 
 ### Buscar exames com filtro por nome
-GET {{baseUrl}}/exames?search=hemograma&page=1&limit=10
+GET {{baseUrl}}/exames/exames?search=hemograma&page=1&limit=10
 Authorization: Bearer {{token}}
 
 ###
 
 ### Filtrar exames por categoria
-GET {{baseUrl}}/exames?categoria=laboratorio&status=ativo
+GET {{baseUrl}}/exames/exames?categoria=laboratorio&status=ativo
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar exames por categoria específica
-GET {{baseUrl}}/exames/categoria/laboratorio
+GET {{baseUrl}}/exames/exames/categoria/laboratorio
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar exames por tipo
-GET {{baseUrl}}/exames/tipo/1
+GET {{baseUrl}}/exames/exames/tipo/1
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar exames por laboratório de apoio
-GET {{baseUrl}}/exames/laboratorio/1
+GET {{baseUrl}}/exames/exames/laboratorio/1
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar exames por nome (pesquisa)
-GET {{baseUrl}}/exames/buscar/hemograma
+GET {{baseUrl}}/exames/exames/buscar/hemograma
 Authorization: Bearer {{token}}
 
 ###
 
 ### Listar exames que necessitam preparo
-GET {{baseUrl}}/exames/com-preparo
+GET {{baseUrl}}/exames/exames/com-preparo
 Authorization: Bearer {{token}}
 
 ###
 
 ### Listar exames urgentes (ordenados por prioridade)
-GET {{baseUrl}}/exames/urgentes
+GET {{baseUrl}}/exames/exames/urgentes
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar exames por códigos padronizados
-GET {{baseUrl}}/exames/codigos?tuss=40304361
+GET {{baseUrl}}/exames/exames/codigos?tuss=40304361
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar exame por código interno
-GET {{baseUrl}}/exames/codigo/HEMOG001
+GET {{baseUrl}}/exames/exames/codigo/HEMOG001
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar exame por ID
-GET {{baseUrl}}/exames/1
+GET {{baseUrl}}/exames/exames/1
 Authorization: Bearer {{token}}
 
 ### Expected Response

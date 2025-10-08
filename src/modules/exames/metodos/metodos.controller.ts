@@ -26,7 +26,7 @@ import { StatusMetodo } from './entities/metodo.entity';
 
 @ApiTags('Métodos')
 @ApiBearerAuth()
-@Controller('metodos')
+@Controller('exames/metodos')
 export class MetodosController {
   constructor(private readonly metodosService: MetodosService) {}
 

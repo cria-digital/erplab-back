@@ -24,7 +24,7 @@ import { UpdateLaboratorioDto } from '../dto/update-laboratorio.dto';
 import { Laboratorio } from '../entities/laboratorio.entity';
 
 @ApiTags('Laboratórios')
-@Controller('laboratorios')
+@Controller('relacionamento/laboratorios')
 export class LaboratorioController {
   constructor(private readonly laboratorioService: LaboratorioService) {}
 

@@ -22,7 +22,7 @@ import { UpdateFornecedorInsumoDto } from '../dto/update-fornecedor-insumo.dto';
 import { FornecedorInsumo } from '../entities/fornecedor-insumo.entity';
 
 @ApiTags('Fornecedores - Insumos')
-@Controller('fornecedor-insumos')
+@Controller('relacionamento/fornecedor-insumos')
 export class FornecedorInsumoController {
   constructor(
     private readonly fornecedorInsumoService: FornecedorInsumoService,

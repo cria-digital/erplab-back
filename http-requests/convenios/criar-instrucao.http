@@ -1,5 +1,5 @@
 ### Criar Instrução de Convênio
-POST {{baseUrl}}/instrucoes
+POST {{baseUrl}}/relacionamento/instrucoes
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 

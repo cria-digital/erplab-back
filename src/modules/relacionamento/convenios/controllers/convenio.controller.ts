@@ -24,7 +24,7 @@ import { UpdateConvenioDto } from '../dto/update-convenio.dto';
 import { Convenio } from '../entities/convenio.entity';
 
 @ApiTags('Convênios')
-@Controller('convenios')
+@Controller('relacionamento/convenios')
 export class ConvenioController {
   constructor(private readonly convenioService: ConvenioService) {}
 

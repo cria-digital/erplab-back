@@ -1,6 +1,6 @@
 ### Atualizar método
 # Substitua {id} pelo UUID real do método
-PATCH {{baseUrl}}/metodos/{{metodoId}}
+PATCH {{baseUrl}}/exames/metodos/{{metodoId}}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -25,7 +25,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Atualizar apenas o nome
-PATCH {{baseUrl}}/metodos/{{metodoId}}
+PATCH {{baseUrl}}/exames/metodos/{{metodoId}}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -36,7 +36,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Atualizar apenas a descrição
-PATCH {{baseUrl}}/metodos/{{metodoId}}
+PATCH {{baseUrl}}/exames/metodos/{{metodoId}}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -47,7 +47,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Atualizar status para inativo
-PATCH {{baseUrl}}/metodos/{{metodoId}}
+PATCH {{baseUrl}}/exames/metodos/{{metodoId}}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -58,7 +58,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Alternar status do método (ativo <-> inativo)
-PATCH {{baseUrl}}/metodos/{{metodoId}}/toggle-status
+PATCH {{baseUrl}}/exames/metodos/{{metodoId}}/toggle-status
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -74,7 +74,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Validar método em validação
-PATCH {{baseUrl}}/metodos/{{metodoEmValidacaoId}}/validar
+PATCH {{baseUrl}}/exames/metodos/{{metodoEmValidacaoId}}/validar
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -89,7 +89,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Tentar alterar código interno (deve ser ignorado)
-PATCH {{baseUrl}}/metodos/{{metodoId}}
+PATCH {{baseUrl}}/exames/metodos/{{metodoId}}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -110,7 +110,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Atualizar método inexistente (deve retornar 404)
-PATCH {{baseUrl}}/metodos/00000000-0000-0000-0000-000000000000
+PATCH {{baseUrl}}/exames/metodos/00000000-0000-0000-0000-000000000000
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -129,7 +129,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Validar método que não está em validação (deve falhar)
-PATCH {{baseUrl}}/metodos/{{metodoAtivoId}}/validar
+PATCH {{baseUrl}}/exames/metodos/{{metodoAtivoId}}/validar
 Authorization: Bearer {{token}}
 
 ### Expected Response

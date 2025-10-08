@@ -38,7 +38,7 @@ interface RequestWithUser {
 
 @ApiTags('Pacientes')
 @ApiBearerAuth()
-@Controller('pacientes')
+@Controller('cadastros/pacientes')
 export class PacientesController {
   constructor(private readonly pacientesService: PacientesService) {}
 

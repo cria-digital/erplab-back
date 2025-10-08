@@ -3,7 +3,7 @@
 ### ====================================
 
 ### Primeira página com 10 itens (padrão)
-GET {{baseUrl}}/cnae
+GET {{baseUrl}}/infraestrutura/cnae
 Content-Type: {{contentType}}
 
 ### Expected Response
@@ -22,19 +22,19 @@ Content-Type: {{contentType}}
 ###
 
 ### Segunda página com 10 itens
-GET {{baseUrl}}/cnae?page=2&limit=10
+GET {{baseUrl}}/infraestrutura/cnae?page=2&limit=10
 Content-Type: {{contentType}}
 
 ###
 
 ### Primeira página com 20 itens por página
-GET {{baseUrl}}/cnae?page=1&limit=20
+GET {{baseUrl}}/infraestrutura/cnae?page=1&limit=20
 Content-Type: {{contentType}}
 
 ###
 
 ### Página 5 com 50 itens por página
-GET {{baseUrl}}/cnae?page=5&limit=50
+GET {{baseUrl}}/infraestrutura/cnae?page=5&limit=50
 Content-Type: {{contentType}}
 
 ###
@@ -44,25 +44,25 @@ Content-Type: {{contentType}}
 ### ====================================
 
 ### CNAEs da área de saúde (seção Q) - página 1
-GET {{baseUrl}}/cnae?secao=Q&page=1&limit=10
+GET {{baseUrl}}/infraestrutura/cnae?secao=Q&page=1&limit=10
 Content-Type: {{contentType}}
 
 ###
 
 ### CNAEs da área de saúde (seção Q) - página 2
-GET {{baseUrl}}/cnae?secao=Q&page=2&limit=10
+GET {{baseUrl}}/infraestrutura/cnae?secao=Q&page=2&limit=10
 Content-Type: {{contentType}}
 
 ###
 
 ### Buscar por descrição "hospital" com paginação
-GET {{baseUrl}}/cnae?descricao=hospital&page=1&limit=5
+GET {{baseUrl}}/infraestrutura/cnae?descricao=hospital&page=1&limit=5
 Content-Type: {{contentType}}
 
 ###
 
 ### Filtrar por divisão 86 (Atividades de atenção à saúde humana) com paginação
-GET {{baseUrl}}/cnae?divisao=86&page=1&limit=15
+GET {{baseUrl}}/infraestrutura/cnae?divisao=86&page=1&limit=15
 Content-Type: {{contentType}}
 
 ###
@@ -72,7 +72,7 @@ Content-Type: {{contentType}}
 ### ====================================
 
 ### Última página (assumindo 1358 registros, limit 10)
-GET {{baseUrl}}/cnae?page=136&limit=10
+GET {{baseUrl}}/infraestrutura/cnae?page=136&limit=10
 Content-Type: {{contentType}}
 
 ### Expected Response
@@ -91,7 +91,7 @@ Content-Type: {{contentType}}
 ###
 
 ### Página além do limite (retorna array vazio)
-GET {{baseUrl}}/cnae?page=200&limit=10
+GET {{baseUrl}}/infraestrutura/cnae?page=200&limit=10
 Content-Type: {{contentType}}
 
 ### Expected Response
@@ -110,11 +110,11 @@ Content-Type: {{contentType}}
 ###
 
 ### Todos os CNAEs ativos com paginação
-GET {{baseUrl}}/cnae?ativo=true&page=1&limit=25
+GET {{baseUrl}}/infraestrutura/cnae?ativo=true&page=1&limit=25
 Content-Type: {{contentType}}
 
 ###
 
 ### Combinação de filtros: seção Q, divisão 86, página 1
-GET {{baseUrl}}/cnae?secao=Q&divisao=86&page=1&limit=10
+GET {{baseUrl}}/infraestrutura/cnae?secao=Q&divisao=86&page=1&limit=10
 Content-Type: {{contentType}}

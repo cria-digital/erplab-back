@@ -1,5 +1,5 @@
 ### Criar gateway de pagamento - Cielo
-POST {{baseUrl}}/gateways-pagamento
+POST {{baseUrl}}/financeiro/gateways-pagamento
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -36,7 +36,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Criar gateway de pagamento - Stone
-POST {{baseUrl}}/gateways-pagamento
+POST {{baseUrl}}/financeiro/gateways-pagamento
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -59,7 +59,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Criar gateway - MercadoPago
-POST {{baseUrl}}/gateways-pagamento
+POST {{baseUrl}}/financeiro/gateways-pagamento
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -84,43 +84,43 @@ Authorization: Bearer {{token}}
 ###
 
 ### Listar todos os gateways
-GET {{baseUrl}}/gateways-pagamento
+GET {{baseUrl}}/financeiro/gateways-pagamento
 Authorization: Bearer {{token}}
 
 ###
 
 ### Listar gateways ativos
-GET {{baseUrl}}/gateways-pagamento/ativos
+GET {{baseUrl}}/financeiro/gateways-pagamento/ativos
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar gateways por tipo
-GET {{baseUrl}}/gateways-pagamento/tipo/cielo
+GET {{baseUrl}}/financeiro/gateways-pagamento/tipo/cielo
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar gateways por conta bancária
-GET {{baseUrl}}/gateways-pagamento/conta/{{contaId}}
+GET {{baseUrl}}/financeiro/gateways-pagamento/conta/{{contaId}}
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar gateway por código interno
-GET {{baseUrl}}/gateways-pagamento/codigo/CIELO001
+GET {{baseUrl}}/financeiro/gateways-pagamento/codigo/CIELO001
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar gateway por ID
-GET {{baseUrl}}/gateways-pagamento/{{gatewayId}}
+GET {{baseUrl}}/financeiro/gateways-pagamento/{{gatewayId}}
 Authorization: Bearer {{token}}
 
 ###
 
 ### Atualizar gateway
-PATCH {{baseUrl}}/gateways-pagamento/{{gatewayId}}
+PATCH {{baseUrl}}/financeiro/gateways-pagamento/{{gatewayId}}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -134,23 +134,23 @@ Authorization: Bearer {{token}}
 ###
 
 ### Alternar status do gateway
-PATCH {{baseUrl}}/gateways-pagamento/{{gatewayId}}/toggle-status
+PATCH {{baseUrl}}/financeiro/gateways-pagamento/{{gatewayId}}/toggle-status
 Authorization: Bearer {{token}}
 
 ###
 
 ### Testar conexão do gateway
-POST {{baseUrl}}/gateways-pagamento/{{gatewayId}}/test-connection
+POST {{baseUrl}}/financeiro/gateways-pagamento/{{gatewayId}}/test-connection
 Authorization: Bearer {{token}}
 
 ###
 
 ### Obter estatísticas do gateway
-GET {{baseUrl}}/gateways-pagamento/{{gatewayId}}/stats
+GET {{baseUrl}}/financeiro/gateways-pagamento/{{gatewayId}}/stats
 Authorization: Bearer {{token}}
 
 ###
 
 ### Deletar gateway
-DELETE {{baseUrl}}/gateways-pagamento/{{gatewayId}}
+DELETE {{baseUrl}}/financeiro/gateways-pagamento/{{gatewayId}}
 Authorization: Bearer {{token}}

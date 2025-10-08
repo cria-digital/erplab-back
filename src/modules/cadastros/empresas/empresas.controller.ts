@@ -25,7 +25,7 @@ import { TipoEmpresaEnum } from './enums/empresas.enum';
 
 @ApiTags('Empresas')
 @ApiBearerAuth()
-@Controller('empresas')
+@Controller('cadastros/empresas')
 @UseGuards(JwtAuthGuard)
 export class EmpresasController {
   constructor(private readonly empresasService: EmpresasService) {}

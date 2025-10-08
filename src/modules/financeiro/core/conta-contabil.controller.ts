@@ -6,7 +6,7 @@ import { ContaContabilService } from './conta-contabil.service';
 @ApiTags('Contas Contábeis')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('contas-contabeis')
+@Controller('financeiro/contas-contabeis')
 export class ContaContabilController {
   constructor(private readonly service: ContaContabilService) {}
 }

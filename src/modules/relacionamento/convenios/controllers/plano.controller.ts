@@ -24,7 +24,7 @@ import { UpdatePlanoDto } from '../dto/update-plano.dto';
 import { Plano } from '../entities/plano.entity';
 
 @ApiTags('Planos')
-@Controller('planos')
+@Controller('relacionamento/planos')
 export class PlanoController {
   constructor(private readonly planoService: PlanoService) {}
 

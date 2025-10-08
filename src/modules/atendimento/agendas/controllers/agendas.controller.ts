@@ -27,7 +27,7 @@ import { BloqueioHorario } from '../entities/bloqueio-horario.entity';
 
 @ApiTags('Agendas')
 @ApiBearerAuth()
-@Controller('agendas')
+@Controller('atendimento/agendas')
 @UseGuards(JwtAuthGuard)
 export class AgendasController {
   constructor(private readonly agendasService: AgendasService) {}

@@ -4,7 +4,7 @@
 @token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkNWI5MmEzMC1hMDNlLTRmOGUtYmJjNS0wZDEzY2FiYWQ3MjMiLCJlbWFpbCI6ImRpZWdvc29la0BnbWFpbC5jb20iLCJub21lIjoiRGllZ28gU29layIsImlhdCI6MTc1NzgxMDU5MiwiZXhwIjoxNzU3ODk2OTkyfQ.Nl106ykTeiqD3c37ElQhSPMOlxkoINhu_PKZNEHM6D4
 
 ### Criar tipo de exame
-POST {{baseUrl}}/tipos-exame
+POST {{baseUrl}}/exames/tipos-exame
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -39,7 +39,7 @@ Authorization: Bearer {{token}}
 # }
 
 ### Criar tipo de exame - Imagem
-POST {{baseUrl}}/tipos-exame
+POST {{baseUrl}}/exames/tipos-exame
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -57,7 +57,7 @@ Authorization: Bearer {{token}}
 }
 
 ### Criar tipo de exame - Procedimentos
-POST {{baseUrl}}/tipos-exame
+POST {{baseUrl}}/exames/tipos-exame
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -75,7 +75,7 @@ Authorization: Bearer {{token}}
 }
 
 ### Listar todos os tipos de exame
-GET {{baseUrl}}/tipos-exame?page=1&limit=10
+GET {{baseUrl}}/exames/tipos-exame?page=1&limit=10
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -92,31 +92,31 @@ Authorization: Bearer {{token}}
 # }
 
 ### Listar tipos ativos
-GET {{baseUrl}}/tipos-exame/ativos
+GET {{baseUrl}}/exames/tipos-exame/ativos
 Authorization: Bearer {{token}}
 
 ### Listar tipos que requerem agendamento
-GET {{baseUrl}}/tipos-exame/com-agendamento
+GET {{baseUrl}}/exames/tipos-exame/com-agendamento
 Authorization: Bearer {{token}}
 
 ### Listar tipos que requerem autorização
-GET {{baseUrl}}/tipos-exame/com-autorizacao
+GET {{baseUrl}}/exames/tipos-exame/com-autorizacao
 Authorization: Bearer {{token}}
 
 ### Listar tipos que permitem coleta domiciliar
-GET {{baseUrl}}/tipos-exame/domiciliares
+GET {{baseUrl}}/exames/tipos-exame/domiciliares
 Authorization: Bearer {{token}}
 
 ### Buscar tipo por ID
-GET {{baseUrl}}/tipos-exame/1
+GET {{baseUrl}}/exames/tipos-exame/1
 Authorization: Bearer {{token}}
 
 ### Buscar tipo por código
-GET {{baseUrl}}/tipos-exame/codigo/LAB001
+GET {{baseUrl}}/exames/tipos-exame/codigo/LAB001
 Authorization: Bearer {{token}}
 
 ### Atualizar tipo de exame
-PATCH {{baseUrl}}/tipos-exame/1
+PATCH {{baseUrl}}/exames/tipos-exame/1
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -143,7 +143,7 @@ Authorization: Bearer {{token}}
 # }
 
 ### Desativar tipo de exame
-DELETE {{baseUrl}}/tipos-exame/1
+DELETE {{baseUrl}}/exames/tipos-exame/1
 Authorization: Bearer {{token}}
 
 ### Expected Response

@@ -1,5 +1,5 @@
 ### Vincular laboratório a método
-POST {{baseUrl}}/laboratorios-metodos
+POST {{baseUrl}}/exames/laboratorios-metodos
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -26,67 +26,67 @@ Authorization: Bearer {{token}}
 ###
 
 ### Listar todos os vínculos laboratório-método
-GET {{baseUrl}}/laboratorios-metodos
+GET {{baseUrl}}/exames/laboratorios-metodos
 Authorization: Bearer {{token}}
 
 ###
 
 ### Listar vínculos com paginação
-GET {{baseUrl}}/laboratorios-metodos?page=1&limit=10
+GET {{baseUrl}}/exames/laboratorios-metodos?page=1&limit=10
 Authorization: Bearer {{token}}
 
 ###
 
 ### Filtrar vínculos por laboratório
-GET {{baseUrl}}/laboratorios-metodos?laboratorioId={{laboratorioId}}
+GET {{baseUrl}}/exames/laboratorios-metodos?laboratorioId={{laboratorioId}}
 Authorization: Bearer {{token}}
 
 ###
 
 ### Filtrar vínculos por método
-GET {{baseUrl}}/laboratorios-metodos?metodoId={{metodoId}}
+GET {{baseUrl}}/exames/laboratorios-metodos?metodoId={{metodoId}}
 Authorization: Bearer {{token}}
 
 ###
 
 ### Filtrar vínculos validados
-GET {{baseUrl}}/laboratorios-metodos?validado=true
+GET {{baseUrl}}/exames/laboratorios-metodos?validado=true
 Authorization: Bearer {{token}}
 
 ###
 
 ### Filtrar vínculos não validados
-GET {{baseUrl}}/laboratorios-metodos?validado=false
+GET {{baseUrl}}/exames/laboratorios-metodos?validado=false
 Authorization: Bearer {{token}}
 
 ###
 
 ### Listar apenas vínculos validados
-GET {{baseUrl}}/laboratorios-metodos/validados
+GET {{baseUrl}}/exames/laboratorios-metodos/validados
 Authorization: Bearer {{token}}
 
 ###
 
 ### Listar vínculos validados de um laboratório específico
-GET {{baseUrl}}/laboratorios-metodos/validados?laboratorioId={{laboratorioId}}
+GET {{baseUrl}}/exames/laboratorios-metodos/validados?laboratorioId={{laboratorioId}}
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar métodos de um laboratório
-GET {{baseUrl}}/laboratorios-metodos/laboratorio/{{laboratorioId}}
+GET {{baseUrl}}/exames/laboratorios-metodos/laboratorio/{{laboratorioId}}
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar laboratórios que utilizam um método
-GET {{baseUrl}}/laboratorios-metodos/metodo/{{metodoId}}
+GET {{baseUrl}}/exames/laboratorios-metodos/metodo/{{metodoId}}
 Authorization: Bearer {{token}}
 
 ###
 
 ### Obter estatísticas gerais
-GET {{baseUrl}}/laboratorios-metodos/statistics
+GET {{baseUrl}}/exames/laboratorios-metodos/statistics
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -101,19 +101,19 @@ Authorization: Bearer {{token}}
 ###
 
 ### Obter estatísticas de um laboratório
-GET {{baseUrl}}/laboratorios-metodos/statistics?laboratorioId={{laboratorioId}}
+GET {{baseUrl}}/exames/laboratorios-metodos/statistics?laboratorioId={{laboratorioId}}
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar vínculo por ID
-GET {{baseUrl}}/laboratorios-metodos/{{vinculoId}}
+GET {{baseUrl}}/exames/laboratorios-metodos/{{vinculoId}}
 Authorization: Bearer {{token}}
 
 ###
 
 ### Atualizar vínculo
-PATCH {{baseUrl}}/laboratorios-metodos/{{vinculoId}}
+PATCH {{baseUrl}}/exames/laboratorios-metodos/{{vinculoId}}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -126,7 +126,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Validar vínculo laboratório-método
-PATCH {{baseUrl}}/laboratorios-metodos/{{vinculoId}}/validar
+PATCH {{baseUrl}}/exames/laboratorios-metodos/{{vinculoId}}/validar
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -141,7 +141,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Invalidar vínculo laboratório-método
-PATCH {{baseUrl}}/laboratorios-metodos/{{vinculoId}}/invalidar
+PATCH {{baseUrl}}/exames/laboratorios-metodos/{{vinculoId}}/invalidar
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -156,7 +156,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Remover vínculo
-DELETE {{baseUrl}}/laboratorios-metodos/{{vinculoId}}
+DELETE {{baseUrl}}/exames/laboratorios-metodos/{{vinculoId}}
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -165,7 +165,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Tentar criar vínculo duplicado (deve falhar)
-POST {{baseUrl}}/laboratorios-metodos
+POST {{baseUrl}}/exames/laboratorios-metodos
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 

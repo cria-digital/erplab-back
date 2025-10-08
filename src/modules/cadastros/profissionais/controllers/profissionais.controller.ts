@@ -27,7 +27,7 @@ import { DocumentoProfissional } from '../entities/documento-profissional.entity
 
 @ApiTags('Profissionais')
 @ApiBearerAuth()
-@Controller('profissionais')
+@Controller('cadastros/profissionais')
 @UseGuards(JwtAuthGuard)
 export class ProfissionaisController {
   constructor(private readonly profissionaisService: ProfissionaisService) {}

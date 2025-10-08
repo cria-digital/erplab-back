@@ -1,5 +1,5 @@
 ### Atualizar dados da empresa
-PATCH {{baseUrl}}/empresas/550e8400-e29b-41d4-a716-446655440000
+PATCH {{baseUrl}}/cadastros/empresas/550e8400-e29b-41d4-a716-446655440000
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -27,7 +27,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Atualizar endereço da empresa
-PATCH {{baseUrl}}/empresas/550e8400-e29b-41d4-a716-446655440000
+PATCH {{baseUrl}}/cadastros/empresas/550e8400-e29b-41d4-a716-446655440000
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -44,7 +44,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Atualizar dados fiscais
-PATCH {{baseUrl}}/empresas/550e8400-e29b-41d4-a716-446655440000
+PATCH {{baseUrl}}/cadastros/empresas/550e8400-e29b-41d4-a716-446655440000
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -65,7 +65,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Atualizar dados bancários
-PATCH {{baseUrl}}/empresas/550e8400-e29b-41d4-a716-446655440000
+PATCH {{baseUrl}}/cadastros/empresas/550e8400-e29b-41d4-a716-446655440000
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -79,7 +79,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Atualizar responsável
-PATCH {{baseUrl}}/empresas/550e8400-e29b-41d4-a716-446655440000
+PATCH {{baseUrl}}/cadastros/empresas/550e8400-e29b-41d4-a716-446655440000
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -93,7 +93,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Atualizar CNPJ (verificação de duplicidade)
-PATCH {{baseUrl}}/empresas/550e8400-e29b-41d4-a716-446655440000
+PATCH {{baseUrl}}/cadastros/empresas/550e8400-e29b-41d4-a716-446655440000
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -112,7 +112,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Error Response - Empresa não encontrada
-PATCH {{baseUrl}}/empresas/999e8400-e29b-41d4-a716-446655440999
+PATCH {{baseUrl}}/cadastros/empresas/999e8400-e29b-41d4-a716-446655440999
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 

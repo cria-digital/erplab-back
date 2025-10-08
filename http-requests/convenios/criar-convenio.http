@@ -1,5 +1,5 @@
 ### Criar um novo convênio - Unimed
-POST {{baseUrl}}/convenios
+POST {{baseUrl}}/relacionamento/convenios
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -48,7 +48,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Criar convênio SulAmérica
-POST {{baseUrl}}/convenios
+POST {{baseUrl}}/relacionamento/convenios
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -78,7 +78,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Criar convênio Bradesco Saúde
-POST {{baseUrl}}/convenios
+POST {{baseUrl}}/relacionamento/convenios
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 

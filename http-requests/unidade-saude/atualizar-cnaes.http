@@ -16,7 +16,7 @@
 
 ### Atualizar apenas CNAE Principal
 # Substitua {id} pelo UUID real da unidade
-PATCH {{baseUrl}}/unidades-saude/c31fc71a-ce64-4c4e-98ee-a7bd094705d5
+PATCH {{baseUrl}}/cadastros/unidades-saude/c31fc71a-ce64-4c4e-98ee-a7bd094705d5
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -41,7 +41,7 @@ Authorization: Bearer {{token}}
 
 ### Atualizar CNAEs Secundários (Substituir todos)
 # Este endpoint substitui TODOS os CNAEs secundários existentes
-PATCH {{baseUrl}}/unidades-saude/c31fc71a-ce64-4c4e-98ee-a7bd094705d5
+PATCH {{baseUrl}}/cadastros/unidades-saude/c31fc71a-ce64-4c4e-98ee-a7bd094705d5
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -87,7 +87,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Atualizar CNAE Principal e Secundários ao mesmo tempo
-PATCH {{baseUrl}}/unidades-saude/c31fc71a-ce64-4c4e-98ee-a7bd094705d5
+PATCH {{baseUrl}}/cadastros/unidades-saude/c31fc71a-ce64-4c4e-98ee-a7bd094705d5
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -106,7 +106,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Remover todos os CNAEs Secundários (enviar array vazio)
-PATCH {{baseUrl}}/unidades-saude/c31fc71a-ce64-4c4e-98ee-a7bd094705d5
+PATCH {{baseUrl}}/cadastros/unidades-saude/c31fc71a-ce64-4c4e-98ee-a7bd094705d5
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -125,7 +125,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Remover CNAE Principal (enviar null)
-PATCH {{baseUrl}}/unidades-saude/c31fc71a-ce64-4c4e-98ee-a7bd094705d5
+PATCH {{baseUrl}}/cadastros/unidades-saude/c31fc71a-ce64-4c4e-98ee-a7bd094705d5
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -145,7 +145,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### EXEMPLO COMPLETO: Configurar CNAEs para um Laboratório de Análises Clínicas
-PATCH {{baseUrl}}/unidades-saude/c31fc71a-ce64-4c4e-98ee-a7bd094705d5
+PATCH {{baseUrl}}/cadastros/unidades-saude/c31fc71a-ce64-4c4e-98ee-a7bd094705d5
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -172,7 +172,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### ERRO: Tentar usar CNAE inexistente
-PATCH {{baseUrl}}/unidades-saude/c31fc71a-ce64-4c4e-98ee-a7bd094705d5
+PATCH {{baseUrl}}/cadastros/unidades-saude/c31fc71a-ce64-4c4e-98ee-a7bd094705d5
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 

@@ -20,7 +20,7 @@ import {
 } from './entities/prestador-servico-categoria.entity';
 
 @ApiTags('Prestadores de Serviço - Categorias')
-@Controller('prestador-servico-categorias')
+@Controller('relacionamento/prestador-servico-categorias')
 export class PrestadorServicoCategoriaController {
   constructor(
     private readonly categoriaService: PrestadorServicoCategoriaService,

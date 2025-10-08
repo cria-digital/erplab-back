@@ -27,7 +27,7 @@ import { JwtAuthGuard } from '../../autenticacao/auth/guards/jwt-auth.guard';
 @ApiTags('Campos de Formulário')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('api/v1/campos-formulario')
+@Controller('exames/campos-formulario')
 export class CampoFormularioController {
   constructor(
     private readonly campoFormularioService: CampoFormularioService,

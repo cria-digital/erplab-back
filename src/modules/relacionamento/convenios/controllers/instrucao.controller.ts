@@ -24,7 +24,7 @@ import { UpdateInstrucaoDto } from '../dto/update-instrucao.dto';
 import { Instrucao, CategoriaInstrucao } from '../entities/instrucao.entity';
 
 @ApiTags('Instruções')
-@Controller('instrucoes')
+@Controller('relacionamento/instrucoes')
 export class InstrucaoController {
   constructor(private readonly instrucaoService: InstrucaoService) {}
 

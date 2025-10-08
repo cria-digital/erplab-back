@@ -6,7 +6,7 @@ import { PlanoContasService } from './plano-contas.service';
 @ApiTags('Plano de Contas')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('planos-contas')
+@Controller('financeiro/planos-contas')
 export class PlanoContasController {
   constructor(private readonly service: PlanoContasService) {}
 }

@@ -27,7 +27,7 @@ import { JwtAuthGuard } from '../../autenticacao/auth/guards/jwt-auth.guard';
 @ApiTags('Respostas de Formulário')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('api/v1/respostas-formulario')
+@Controller('exames/respostas-formulario')
 export class RespostaFormularioController {
   constructor(
     private readonly respostaFormularioService: RespostaFormularioService,

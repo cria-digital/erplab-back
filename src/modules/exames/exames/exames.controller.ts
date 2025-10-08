@@ -30,7 +30,7 @@ interface ApiResponseType<T = any> {
 
 @ApiTags('Exames')
 @ApiBearerAuth()
-@Controller('exames')
+@Controller('exames/exames')
 export class ExamesController {
   constructor(private readonly examesService: ExamesService) {}
 

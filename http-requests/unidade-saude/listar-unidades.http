@@ -1,5 +1,5 @@
 ### Listar Todas as Unidades de Saúde
-GET {{baseUrl}}/unidades-saude
+GET {{baseUrl}}/cadastros/unidades-saude
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -15,37 +15,37 @@ Authorization: Bearer {{token}}
 ###
 
 ### Listar com Paginação
-GET {{baseUrl}}/unidades-saude?page=1&limit=5
+GET {{baseUrl}}/cadastros/unidades-saude?page=1&limit=5
 Authorization: Bearer {{token}}
 
 ###
 
 ### Listar com Filtro de Busca
-GET {{baseUrl}}/unidades-saude?search=São Roque
+GET {{baseUrl}}/cadastros/unidades-saude?search=São Roque
 Authorization: Bearer {{token}}
 
 ###
 
 ### Listar Apenas Ativas
-GET {{baseUrl}}/unidades-saude?ativo=true
+GET {{baseUrl}}/cadastros/unidades-saude?ativo=true
 Authorization: Bearer {{token}}
 
 ###
 
 ### Filtrar por Cidade
-GET {{baseUrl}}/unidades-saude?cidade=São Roque
+GET {{baseUrl}}/cadastros/unidades-saude?cidade=São Roque
 Authorization: Bearer {{token}}
 
 ###
 
 ### Filtrar por Estado
-GET {{baseUrl}}/unidades-saude?estado=SP
+GET {{baseUrl}}/cadastros/unidades-saude?estado=SP
 Authorization: Bearer {{token}}
 
 ###
 
 ### Combinação de Filtros
-GET {{baseUrl}}/unidades-saude?page=1&limit=10&ativo=true&cidade=São Roque&estado=SP
+GET {{baseUrl}}/cadastros/unidades-saude?page=1&limit=10&ativo=true&cidade=São Roque&estado=SP
 Authorization: Bearer {{token}}
 
 ### Expected Response com Filtros

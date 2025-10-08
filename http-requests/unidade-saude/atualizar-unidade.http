@@ -1,6 +1,6 @@
 ### Atualizar Unidade de Saúde (Parcial)
 # Substitua {id} pelo UUID real da unidade
-PATCH {{baseUrl}}/unidades-saude/123e4567-e89b-12d3-a456-426614174000
+PATCH {{baseUrl}}/cadastros/unidades-saude/123e4567-e89b-12d3-a456-426614174000
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -22,7 +22,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Atualizar Horários de Atendimento
-PATCH {{baseUrl}}/unidades-saude/123e4567-e89b-12d3-a456-426614174000
+PATCH {{baseUrl}}/cadastros/unidades-saude/123e4567-e89b-12d3-a456-426614174000
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -50,7 +50,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Atualizar Dados Bancários
-PATCH {{baseUrl}}/unidades-saude/123e4567-e89b-12d3-a456-426614174000
+PATCH {{baseUrl}}/cadastros/unidades-saude/123e4567-e89b-12d3-a456-426614174000
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -73,7 +73,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Atualizar Impostos
-PATCH {{baseUrl}}/unidades-saude/123e4567-e89b-12d3-a456-426614174000
+PATCH {{baseUrl}}/cadastros/unidades-saude/123e4567-e89b-12d3-a456-426614174000
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -88,7 +88,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Atualizar Endereço Completo
-PATCH {{baseUrl}}/unidades-saude/123e4567-e89b-12d3-a456-426614174000
+PATCH {{baseUrl}}/cadastros/unidades-saude/123e4567-e89b-12d3-a456-426614174000
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 

@@ -1,6 +1,6 @@
 ### Buscar método por ID
 # Substitua {id} pelo UUID real do método
-GET {{baseUrl}}/metodos/{{metodoId}}
+GET {{baseUrl}}/exames/metodos/{{metodoId}}
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -35,25 +35,25 @@ Authorization: Bearer {{token}}
 ###
 
 ### Buscar método por código interno
-GET {{baseUrl}}/metodos/codigo/MET001
+GET {{baseUrl}}/exames/metodos/codigo/MET001
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar método por código interno - PCR
-GET {{baseUrl}}/metodos/codigo/MET002
+GET {{baseUrl}}/exames/metodos/codigo/MET002
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar método por código interno - Western Blot
-GET {{baseUrl}}/metodos/codigo/MET003
+GET {{baseUrl}}/exames/metodos/codigo/MET003
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar método inexistente por ID (deve retornar 404)
-GET {{baseUrl}}/metodos/00000000-0000-0000-0000-000000000000
+GET {{baseUrl}}/exames/metodos/00000000-0000-0000-0000-000000000000
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -67,7 +67,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Buscar método inexistente por código (deve retornar 404)
-GET {{baseUrl}}/metodos/codigo/INEXISTENTE
+GET {{baseUrl}}/exames/metodos/codigo/INEXISTENTE
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -81,7 +81,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Buscar com ID inválido (deve retornar 400)
-GET {{baseUrl}}/metodos/id-invalido
+GET {{baseUrl}}/exames/metodos/id-invalido
 Authorization: Bearer {{token}}
 
 ### Expected Response

@@ -18,7 +18,7 @@ import { Repasse } from '../entities/repasse.entity';
 import { StatusRepasse } from '../enums/contas-pagar.enum';
 
 @ApiTags('Repasses')
-@Controller('repasses')
+@Controller('financeiro/repasses')
 export class RepasseController {
   constructor(private readonly repasseService: RepasseService) {}
 

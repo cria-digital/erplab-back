@@ -1,5 +1,5 @@
 ### Criar Plano de Convênio
-POST {{baseUrl}}/planos
+POST {{baseUrl}}/relacionamento/planos
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 

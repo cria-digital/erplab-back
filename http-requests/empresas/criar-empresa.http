@@ -1,5 +1,5 @@
 ### Criar Empresa - Convênio
-POST {{baseUrl}}/empresas
+POST {{baseUrl}}/cadastros/empresas
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -54,7 +54,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Criar Empresa - Laboratório de Apoio
-POST {{baseUrl}}/empresas
+POST {{baseUrl}}/cadastros/empresas
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -80,7 +80,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Criar Empresa - Telemedicina
-POST {{baseUrl}}/empresas
+POST {{baseUrl}}/cadastros/empresas
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -108,7 +108,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Criar Empresa - Fornecedores
-POST {{baseUrl}}/empresas
+POST {{baseUrl}}/cadastros/empresas
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -134,7 +134,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Criar Empresa - Prestadores de Serviços
-POST {{baseUrl}}/empresas
+POST {{baseUrl}}/cadastros/empresas
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 

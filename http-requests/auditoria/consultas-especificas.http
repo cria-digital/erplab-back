@@ -1,5 +1,5 @@
 ### Buscar Logs de um Usuário Específico
-GET {{baseUrl}}/auditoria/usuario/123e4567-e89b-12d3-a456-426614174000
+GET {{baseUrl}}/infraestrutura/auditoria/usuario/123e4567-e89b-12d3-a456-426614174000
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -19,13 +19,13 @@ Authorization: Bearer {{token}}
 ###
 
 ### Buscar Logs de um Usuário com Limite
-GET {{baseUrl}}/auditoria/usuario/123e4567-e89b-12d3-a456-426614174000?limit=100
+GET {{baseUrl}}/infraestrutura/auditoria/usuario/123e4567-e89b-12d3-a456-426614174000?limit=100
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar Logs de uma Entidade Específica
-GET {{baseUrl}}/auditoria/entidade/usuarios/123e4567-e89b-12d3-a456-426614174000
+GET {{baseUrl}}/infraestrutura/auditoria/entidade/usuarios/123e4567-e89b-12d3-a456-426614174000
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -46,13 +46,13 @@ Authorization: Bearer {{token}}
 ###
 
 ### Buscar Histórico de Alterações de um Paciente
-GET {{baseUrl}}/auditoria/entidade/pacientes/987e6543-e89b-12d3-a456-426614174000
+GET {{baseUrl}}/infraestrutura/auditoria/entidade/pacientes/987e6543-e89b-12d3-a456-426614174000
 Authorization: Bearer {{token}}
 
 ###
 
 ### Obter Estatísticas Gerais
-GET {{baseUrl}}/auditoria/estatisticas
+GET {{baseUrl}}/infraestrutura/auditoria/estatisticas
 Authorization: Bearer {{token}}
 
 ### Expected Response

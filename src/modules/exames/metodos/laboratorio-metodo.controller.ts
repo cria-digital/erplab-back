@@ -25,7 +25,7 @@ import { UpdateLaboratorioMetodoDto } from './dto/update-laboratorio-metodo.dto'
 
 @ApiTags('Laboratórios-Métodos')
 @ApiBearerAuth()
-@Controller('laboratorios-metodos')
+@Controller('exames/laboratorios-metodos')
 export class LaboratorioMetodoController {
   constructor(
     private readonly laboratorioMetodoService: LaboratorioMetodoService,

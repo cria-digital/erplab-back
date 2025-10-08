@@ -29,7 +29,7 @@ import { Usuario } from '../../autenticacao/usuarios/entities/usuario.entity';
 @ApiTags('Bancos')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('bancos')
+@Controller('financeiro/bancos')
 export class BancoController {
   constructor(private readonly bancoService: BancoService) {}
 

@@ -30,7 +30,7 @@ import {
 @ApiTags('Adquirentes')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('adquirentes')
+@Controller('financeiro/adquirentes')
 export class AdquirenteController {
   constructor(private readonly service: AdquirenteService) {}
 

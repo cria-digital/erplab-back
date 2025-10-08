@@ -1,5 +1,5 @@
 ### Buscar Todos os Logs
-GET {{baseUrl}}/auditoria
+GET {{baseUrl}}/infraestrutura/auditoria
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -15,107 +15,107 @@ Authorization: Bearer {{token}}
 ###
 
 ### Buscar com Paginação
-GET {{baseUrl}}/auditoria?page=2&limit=20
+GET {{baseUrl}}/infraestrutura/auditoria?page=2&limit=20
 Authorization: Bearer {{token}}
 
 ###
 
 ### Filtrar por Tipo de Log
-GET {{baseUrl}}/auditoria?tipoLog=ACESSO
+GET {{baseUrl}}/infraestrutura/auditoria?tipoLog=ACESSO
 Authorization: Bearer {{token}}
 
 ###
 
 ### Filtrar por Nível
-GET {{baseUrl}}/auditoria?nivel=ERROR
+GET {{baseUrl}}/infraestrutura/auditoria?nivel=ERROR
 Authorization: Bearer {{token}}
 
 ###
 
 ### Filtrar por Operação
-GET {{baseUrl}}/auditoria?operacao=UPDATE
+GET {{baseUrl}}/infraestrutura/auditoria?operacao=UPDATE
 Authorization: Bearer {{token}}
 
 ###
 
 ### Filtrar por Usuário
-GET {{baseUrl}}/auditoria?usuarioId=123e4567-e89b-12d3-a456-426614174000
+GET {{baseUrl}}/infraestrutura/auditoria?usuarioId=123e4567-e89b-12d3-a456-426614174000
 Authorization: Bearer {{token}}
 
 ###
 
 ### Filtrar por Unidade de Saúde
-GET {{baseUrl}}/auditoria?unidadeSaudeId=456e7890-e89b-12d3-a456-426614174000
+GET {{baseUrl}}/infraestrutura/auditoria?unidadeSaudeId=456e7890-e89b-12d3-a456-426614174000
 Authorization: Bearer {{token}}
 
 ###
 
 ### Filtrar por Módulo
-GET {{baseUrl}}/auditoria?modulo=Pacientes
+GET {{baseUrl}}/infraestrutura/auditoria?modulo=Pacientes
 Authorization: Bearer {{token}}
 
 ###
 
 ### Filtrar por Entidade
-GET {{baseUrl}}/auditoria?entidade=usuarios
+GET {{baseUrl}}/infraestrutura/auditoria?entidade=usuarios
 Authorization: Bearer {{token}}
 
 ###
 
 ### Filtrar por ID da Entidade
-GET {{baseUrl}}/auditoria?entidadeId=987e6543-e89b-12d3-a456-426614174000
+GET {{baseUrl}}/infraestrutura/auditoria?entidadeId=987e6543-e89b-12d3-a456-426614174000
 Authorization: Bearer {{token}}
 
 ###
 
 ### Filtrar por IP
-GET {{baseUrl}}/auditoria?ipAddress=192.168.1.100
+GET {{baseUrl}}/infraestrutura/auditoria?ipAddress=192.168.1.100
 Authorization: Bearer {{token}}
 
 ###
 
 ### Filtrar por Período
-GET {{baseUrl}}/auditoria?dataInicio=2024-01-01&dataFim=2024-01-31
+GET {{baseUrl}}/infraestrutura/auditoria?dataInicio=2024-01-01&dataFim=2024-01-31
 Authorization: Bearer {{token}}
 
 ###
 
 ### Filtrar a Partir de uma Data
-GET {{baseUrl}}/auditoria?dataInicio=2024-01-01
+GET {{baseUrl}}/infraestrutura/auditoria?dataInicio=2024-01-01
 Authorization: Bearer {{token}}
 
 ###
 
 ### Filtrar Até uma Data
-GET {{baseUrl}}/auditoria?dataFim=2024-01-31
+GET {{baseUrl}}/infraestrutura/auditoria?dataFim=2024-01-31
 Authorization: Bearer {{token}}
 
 ###
 
 ### Ordenação Personalizada - Por Nível (Decrescente)
-GET {{baseUrl}}/auditoria?orderBy=nivel&orderDirection=DESC
+GET {{baseUrl}}/infraestrutura/auditoria?orderBy=nivel&orderDirection=DESC
 Authorization: Bearer {{token}}
 
 ###
 
 ### Ordenação Personalizada - Por Data (Crescente)
-GET {{baseUrl}}/auditoria?orderBy=dataHora&orderDirection=ASC
+GET {{baseUrl}}/infraestrutura/auditoria?orderBy=dataHora&orderDirection=ASC
 Authorization: Bearer {{token}}
 
 ###
 
 ### Filtros Combinados - Erros Críticos do Último Mês
-GET {{baseUrl}}/auditoria?tipoLog=ERRO&nivel=CRITICAL&dataInicio=2024-01-01&dataFim=2024-01-31&page=1&limit=50
+GET {{baseUrl}}/infraestrutura/auditoria?tipoLog=ERRO&nivel=CRITICAL&dataInicio=2024-01-01&dataFim=2024-01-31&page=1&limit=50
 Authorization: Bearer {{token}}
 
 ###
 
 ### Filtros Combinados - Alterações em Usuários
-GET {{baseUrl}}/auditoria?tipoLog=ALTERACAO&entidade=usuarios&operacao=UPDATE&page=1&limit=20
+GET {{baseUrl}}/infraestrutura/auditoria?tipoLog=ALTERACAO&entidade=usuarios&operacao=UPDATE&page=1&limit=20
 Authorization: Bearer {{token}}
 
 ###
 
 ### Filtros Combinados - Acessos de Hoje
-GET {{baseUrl}}/auditoria?tipoLog=ACESSO&dataInicio=2024-01-15&dataFim=2024-01-15&orderBy=dataHora&orderDirection=DESC
+GET {{baseUrl}}/infraestrutura/auditoria?tipoLog=ACESSO&dataInicio=2024-01-15&dataFim=2024-01-15&orderBy=dataHora&orderDirection=DESC
 Authorization: Bearer {{token}}

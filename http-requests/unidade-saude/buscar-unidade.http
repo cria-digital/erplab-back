@@ -1,6 +1,6 @@
 ### Buscar Unidade por ID
 # Substitua {id} pelo UUID real da unidade
-GET {{baseUrl}}/unidades-saude/123e4567-e89b-12d3-a456-426614174000
+GET {{baseUrl}}/cadastros/unidades-saude/123e4567-e89b-12d3-a456-426614174000
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -18,7 +18,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Buscar Unidade por CNPJ
-GET {{baseUrl}}/unidades-saude/cnpj/12345678000190
+GET {{baseUrl}}/cadastros/unidades-saude/cnpj/12345678000190
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -33,7 +33,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Buscar Unidades por Cidade
-GET {{baseUrl}}/unidades-saude/cidade/São Roque
+GET {{baseUrl}}/cadastros/unidades-saude/cidade/São Roque
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -51,7 +51,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Listar Apenas Unidades Ativas (para dropdowns)
-GET {{baseUrl}}/unidades-saude/ativas
+GET {{baseUrl}}/cadastros/unidades-saude/ativas
 Authorization: Bearer {{token}}
 
 ### Expected Response

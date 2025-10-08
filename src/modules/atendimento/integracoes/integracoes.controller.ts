@@ -27,7 +27,7 @@ import { JwtAuthGuard } from '../../autenticacao/auth/guards/jwt-auth.guard';
 @ApiTags('Integrações')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('api/v1/integracoes')
+@Controller('atendimento/integracoes')
 export class IntegracoesController {
   constructor(private readonly integracoesService: IntegracoesService) {}
 

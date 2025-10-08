@@ -1,5 +1,5 @@
 ### Buscar CNAE por código - Atividades de atendimento hospitalar
-GET {{baseUrl}}/cnae/codigo?codigo=86101
+GET {{baseUrl}}/infraestrutura/cnae/codigo?codigo=86101
 Content-Type: {{contentType}}
 
 ### Expected Response
@@ -26,43 +26,43 @@ Content-Type: {{contentType}}
 ###
 
 ### Buscar CNAE por código - Comércio de equipamentos hospitalares
-GET {{baseUrl}}/cnae/codigo?codigo=46648
+GET {{baseUrl}}/infraestrutura/cnae/codigo?codigo=46648
 Content-Type: {{contentType}}
 
 ###
 
 ### Buscar CNAEs por termo - Laboratório
-GET {{baseUrl}}/cnae/search?q=laboratorio
+GET {{baseUrl}}/infraestrutura/cnae/search?q=laboratorio
 Content-Type: {{contentType}}
 
 ###
 
 ### Buscar CNAEs por termo - Hospital
-GET {{baseUrl}}/cnae/search?q=hospital
+GET {{baseUrl}}/infraestrutura/cnae/search?q=hospital
 Content-Type: {{contentType}}
 
 ###
 
 ### Buscar CNAEs por termo - Clínica
-GET {{baseUrl}}/cnae/search?q=clinica
+GET {{baseUrl}}/infraestrutura/cnae/search?q=clinica
 Content-Type: {{contentType}}
 
 ###
 
 ### Listar CNAEs da área de Saúde (seção Q)
-GET {{baseUrl}}/cnae/secao/Q
+GET {{baseUrl}}/infraestrutura/cnae/secao/Q
 Content-Type: {{contentType}}
 
 ###
 
 ### Listar CNAEs de Atividades de atenção à saúde humana (divisão 86)
-GET {{baseUrl}}/cnae/divisao/86
+GET {{baseUrl}}/infraestrutura/cnae/divisao/86
 Content-Type: {{contentType}}
 
 ###
 
 ### Filtrar CNAEs - Saúde com paginação (página 1, 10 itens)
-GET {{baseUrl}}/cnae?secao=Q&divisao=86&ativo=true&page=1&limit=10
+GET {{baseUrl}}/infraestrutura/cnae?secao=Q&divisao=86&ativo=true&page=1&limit=10
 Content-Type: {{contentType}}
 
 ### Expected Response
@@ -81,7 +81,7 @@ Content-Type: {{contentType}}
 ###
 
 ### Filtrar CNAEs por descrição - Hospital com paginação
-GET {{baseUrl}}/cnae?descricao=hospital&page=1&limit=5
+GET {{baseUrl}}/infraestrutura/cnae?descricao=hospital&page=1&limit=5
 Content-Type: {{contentType}}
 
 ### Expected Response
@@ -100,7 +100,7 @@ Content-Type: {{contentType}}
 ###
 
 ### Listar todos os CNAEs com paginação padrão (página 1, 10 itens)
-GET {{baseUrl}}/cnae
+GET {{baseUrl}}/infraestrutura/cnae
 Content-Type: {{contentType}}
 
 ### Expected Response
@@ -126,11 +126,11 @@ Content-Type: {{contentType}}
 ###
 
 ### Segunda página de CNAEs
-GET {{baseUrl}}/cnae?page=2&limit=10
+GET {{baseUrl}}/infraestrutura/cnae?page=2&limit=10
 Content-Type: {{contentType}}
 
 ###
 
 ### CNAEs com 20 itens por página
-GET {{baseUrl}}/cnae?page=1&limit=20
+GET {{baseUrl}}/infraestrutura/cnae?page=1&limit=20
 Content-Type: {{contentType}}

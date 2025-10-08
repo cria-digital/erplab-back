@@ -30,7 +30,7 @@ import { PaginationParams, UnidadeSaudeService } from './unidade-saude.service';
 
 @ApiTags('Unidades de Saúde')
 @ApiBearerAuth()
-@Controller('unidades-saude')
+@Controller('cadastros/unidades-saude')
 @UseInterceptors(ClassSerializerInterceptor)
 export class UnidadeSaudeController {
   constructor(private readonly unidadeSaudeService: UnidadeSaudeService) {}

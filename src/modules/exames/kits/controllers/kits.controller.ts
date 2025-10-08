@@ -29,7 +29,7 @@ import { JwtAuthGuard } from '../../../autenticacao/auth/guards/jwt-auth.guard';
 @ApiTags('Kits')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('kits')
+@Controller('exames/kits')
 export class KitsController {
   constructor(private readonly kitsService: KitsService) {}
 

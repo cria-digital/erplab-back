@@ -3,7 +3,7 @@
 ### ============================================
 
 ### 1. Criar novo paciente
-POST {{baseUrl}}/pacientes
+POST {{baseUrl}}/cadastros/pacientes
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -63,37 +63,37 @@ Authorization: Bearer {{token}}
 ### ============================================
 
 ### 2. Listar pacientes (com paginação)
-GET {{baseUrl}}/pacientes?page=1&limit=10
+GET {{baseUrl}}/cadastros/pacientes?page=1&limit=10
 Authorization: Bearer {{token}}
 
 ### ============================================
 
 ### 3. Listar pacientes com filtros
-GET {{baseUrl}}/pacientes?page=1&limit=5&nome=João&status=ativo
+GET {{baseUrl}}/cadastros/pacientes?page=1&limit=5&nome=João&status=ativo
 Authorization: Bearer {{token}}
 
 ### ============================================
 
 ### 4. Buscar paciente por ID
-GET {{baseUrl}}/pacientes/1
+GET {{baseUrl}}/cadastros/pacientes/1
 Authorization: Bearer {{token}}
 
 ### ============================================
 
 ### 5. Buscar paciente por CPF
-GET {{baseUrl}}/pacientes/cpf/12345678901
+GET {{baseUrl}}/cadastros/pacientes/cpf/12345678901
 Authorization: Bearer {{token}}
 
 ### ============================================
 
 ### 6. Buscar pacientes por nome (autocomplete)
-GET {{baseUrl}}/pacientes/search?nome=João&limit=5
+GET {{baseUrl}}/cadastros/pacientes/search?nome=João&limit=5
 Authorization: Bearer {{token}}
 
 ### ============================================
 
 ### 7. Obter estatísticas dos pacientes
-GET {{baseUrl}}/pacientes/stats
+GET {{baseUrl}}/cadastros/pacientes/stats
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -113,7 +113,7 @@ Authorization: Bearer {{token}}
 ### ============================================
 
 ### 8. Atualizar paciente
-PATCH {{baseUrl}}/pacientes/1
+PATCH {{baseUrl}}/cadastros/pacientes/1
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -138,7 +138,7 @@ Authorization: Bearer {{token}}
 ### ============================================
 
 ### 9. Ativar paciente
-PATCH {{baseUrl}}/pacientes/1/activate
+PATCH {{baseUrl}}/cadastros/pacientes/1/activate
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -154,7 +154,7 @@ Authorization: Bearer {{token}}
 ### ============================================
 
 ### 10. Bloquear paciente
-PATCH {{baseUrl}}/pacientes/1/block
+PATCH {{baseUrl}}/cadastros/pacientes/1/block
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -170,7 +170,7 @@ Authorization: Bearer {{token}}
 ### ============================================
 
 ### 11. Remover paciente (soft delete)
-DELETE {{baseUrl}}/pacientes/1
+DELETE {{baseUrl}}/cadastros/pacientes/1
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -183,7 +183,7 @@ Authorization: Bearer {{token}}
 ### ============================================
 
 ### 12. Erro - CPF já cadastrado
-POST {{baseUrl}}/pacientes
+POST {{baseUrl}}/cadastros/pacientes
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -215,7 +215,7 @@ Authorization: Bearer {{token}}
 ### ============================================
 
 ### 13. Erro - Paciente não encontrado
-GET {{baseUrl}}/pacientes/999
+GET {{baseUrl}}/cadastros/pacientes/999
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -227,7 +227,7 @@ Authorization: Bearer {{token}}
 ### ============================================
 
 ### 14. Erro - Dados inválidos
-POST {{baseUrl}}/pacientes
+POST {{baseUrl}}/cadastros/pacientes
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 

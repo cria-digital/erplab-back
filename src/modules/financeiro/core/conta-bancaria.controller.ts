@@ -26,7 +26,7 @@ import { TipoConta } from './entities/conta-bancaria.entity';
 @ApiTags('Contas Bancárias')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('contas-bancarias')
+@Controller('financeiro/contas-bancarias')
 export class ContaBancariaController {
   constructor(private readonly service: ContaBancariaService) {}
 

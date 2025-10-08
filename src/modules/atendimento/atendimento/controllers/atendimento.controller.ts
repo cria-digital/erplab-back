@@ -9,7 +9,7 @@ import { AtendimentoService } from '../services/atendimento.service';
 
 @ApiTags('atendimento')
 @ApiBearerAuth()
-@Controller('atendimento')
+@Controller('atendimento/atendimento')
 export class AtendimentoController {
   constructor(private readonly atendimentoService: AtendimentoService) {}
 

@@ -1,5 +1,5 @@
 ### Ativar empresa
-PATCH {{baseUrl}}/empresas/550e8400-e29b-41d4-a716-446655440000/ativar
+PATCH {{baseUrl}}/cadastros/empresas/550e8400-e29b-41d4-a716-446655440000/ativar
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -17,7 +17,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Desativar empresa
-PATCH {{baseUrl}}/empresas/550e8400-e29b-41d4-a716-446655440000/desativar
+PATCH {{baseUrl}}/cadastros/empresas/550e8400-e29b-41d4-a716-446655440000/desativar
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -35,7 +35,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Remover empresa (Soft Delete)
-DELETE {{baseUrl}}/empresas/550e8400-e29b-41d4-a716-446655440000
+DELETE {{baseUrl}}/cadastros/empresas/550e8400-e29b-41d4-a716-446655440000
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -45,7 +45,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Error Response - Empresa não encontrada ao ativar
-PATCH {{baseUrl}}/empresas/999e8400-e29b-41d4-a716-446655440999/ativar
+PATCH {{baseUrl}}/cadastros/empresas/999e8400-e29b-41d4-a716-446655440999/ativar
 Authorization: Bearer {{token}}
 
 # Status: 404 Not Found
@@ -58,7 +58,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Error Response - Empresa não encontrada ao desativar
-PATCH {{baseUrl}}/empresas/999e8400-e29b-41d4-a716-446655440999/desativar
+PATCH {{baseUrl}}/cadastros/empresas/999e8400-e29b-41d4-a716-446655440999/desativar
 Authorization: Bearer {{token}}
 
 # Status: 404 Not Found
@@ -71,7 +71,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Error Response - Empresa não encontrada ao remover
-DELETE {{baseUrl}}/empresas/999e8400-e29b-41d4-a716-446655440999
+DELETE {{baseUrl}}/cadastros/empresas/999e8400-e29b-41d4-a716-446655440999
 Authorization: Bearer {{token}}
 
 # Status: 404 Not Found

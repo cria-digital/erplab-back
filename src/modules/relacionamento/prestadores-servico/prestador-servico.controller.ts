@@ -27,7 +27,7 @@ import {
 } from './entities/prestador-servico.entity';
 
 @ApiTags('Prestadores de Serviço')
-@Controller('prestadores-servico')
+@Controller('relacionamento/prestadores-servico')
 export class PrestadorServicoController {
   constructor(
     private readonly prestadorServicoService: PrestadorServicoService,

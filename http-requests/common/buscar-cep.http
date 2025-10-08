@@ -1,5 +1,5 @@
 ### Buscar CEP - Formato com hífen
-GET {{baseUrl}}/cep/01310-100
+GET {{baseUrl}}/infraestrutura/cep/01310-100
 Content-Type: {{contentType}}
 
 ### Expected Response
@@ -20,13 +20,13 @@ Content-Type: {{contentType}}
 ###
 
 ### Buscar CEP - Formato sem hífen
-GET {{baseUrl}}/cep/01310100
+GET {{baseUrl}}/infraestrutura/cep/01310100
 Content-Type: {{contentType}}
 
 ###
 
 ### Buscar CEP - CEP inválido (menos de 8 dígitos)
-GET {{baseUrl}}/cep/0131010
+GET {{baseUrl}}/infraestrutura/cep/0131010
 Content-Type: {{contentType}}
 
 ### Expected Response
@@ -38,7 +38,7 @@ Content-Type: {{contentType}}
 ###
 
 ### Buscar CEP - CEP não encontrado
-GET {{baseUrl}}/cep/99999999
+GET {{baseUrl}}/infraestrutura/cep/99999999
 Content-Type: {{contentType}}
 
 ### Expected Response
@@ -50,7 +50,7 @@ Content-Type: {{contentType}}
 ###
 
 ### Buscar CEP - Exemplo de outro CEP válido (Rio de Janeiro)
-GET {{baseUrl}}/cep/20040020
+GET {{baseUrl}}/infraestrutura/cep/20040020
 Content-Type: {{contentType}}
 
 ### Expected Response

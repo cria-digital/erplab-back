@@ -17,7 +17,7 @@ import { UpdateCentroCustoDto } from '../dto/update-centro-custo.dto';
 import { CentroCusto } from '../entities/centro-custo.entity';
 
 @ApiTags('Centros de Custo')
-@Controller('centros-custo')
+@Controller('financeiro/centros-custo')
 export class CentroCustoController {
   constructor(private readonly centroCustoService: CentroCustoService) {}
 

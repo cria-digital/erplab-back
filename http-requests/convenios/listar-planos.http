@@ -1,25 +1,25 @@
 ### Listar Todos os Planos
-GET {{baseUrl}}/planos
+GET {{baseUrl}}/relacionamento/planos
 Authorization: Bearer {{token}}
 
 ### Listar Planos Ativos
-GET {{baseUrl}}/planos/ativos
+GET {{baseUrl}}/relacionamento/planos/ativos
 Authorization: Bearer {{token}}
 
 ### Listar Planos por Convênio
-GET {{baseUrl}}/planos/convenio/{{convenio_id}}
+GET {{baseUrl}}/relacionamento/planos/convenio/{{convenio_id}}
 Authorization: Bearer {{token}}
 
 ### Buscar Plano por Código
-GET {{baseUrl}}/planos/convenio/{{convenio_id}}/codigo/UNIMED-BASIC
+GET {{baseUrl}}/relacionamento/planos/convenio/{{convenio_id}}/codigo/UNIMED-BASIC
 Authorization: Bearer {{token}}
 
 ### Verificar Carência de Plano
-GET {{baseUrl}}/planos/{{plano_id}}/verificar-carencia?dataAdesao=2024-01-01
+GET {{baseUrl}}/relacionamento/planos/{{plano_id}}/verificar-carencia?dataAdesao=2024-01-01
 Authorization: Bearer {{token}}
 
 ### Calcular Coparticipação
-GET {{baseUrl}}/planos/{{plano_id}}/calcular-coparticipacao?valor=100.00
+GET {{baseUrl}}/relacionamento/planos/{{plano_id}}/calcular-coparticipacao?valor=100.00
 Authorization: Bearer {{token}}
 
 ### Expected Responses

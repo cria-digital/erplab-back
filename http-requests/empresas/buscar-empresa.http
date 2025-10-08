@@ -1,5 +1,5 @@
 ### Buscar empresa por ID
-GET {{baseUrl}}/empresas/293a1d23-9892-402d-bef7-b7b9eab7925a
+GET {{baseUrl}}/cadastros/empresas/293a1d23-9892-402d-bef7-b7b9eab7925a
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -57,7 +57,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Buscar empresa por CNPJ
-GET {{baseUrl}}/empresas/cnpj/12.345.678%2F0001-90
+GET {{baseUrl}}/cadastros/empresas/cnpj/12.345.678%2F0001-90
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -82,29 +82,29 @@ Authorization: Bearer {{token}}
 ###
 
 ### Buscar empresa por CNPJ - Formato alternativo sem formatação
-GET {{baseUrl}}/empresas/cnpj/12345678000190
+GET {{baseUrl}}/cadastros/empresas/cnpj/12345678000190
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar empresa por CNPJ - Laboratório
-GET {{baseUrl}}/empresas/cnpj/98.765.432%2F0001-10
+GET {{baseUrl}}/cadastros/empresas/cnpj/98.765.432%2F0001-10
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar empresa por CNPJ - Telemedicina
-GET {{baseUrl}}/empresas/cnpj/45.678.901%2F0001-23
+GET {{baseUrl}}/cadastros/empresas/cnpj/45.678.901%2F0001-23
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar empresa por CNPJ - Fornecedor
-GET {{baseUrl}}/empresas/cnpj/67.890.123%2F0001-45
+GET {{baseUrl}}/cadastros/empresas/cnpj/67.890.123%2F0001-45
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar empresa por CNPJ - Prestador de Serviços
-GET {{baseUrl}}/empresas/cnpj/34.567.890%2F0001-67
+GET {{baseUrl}}/cadastros/empresas/cnpj/34.567.890%2F0001-67
 Authorization: Bearer {{token}}

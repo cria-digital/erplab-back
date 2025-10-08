@@ -1,5 +1,5 @@
 ### Registrar Log de Auditoria Genérico
-POST {{baseUrl}}/auditoria/log
+POST {{baseUrl}}/infraestrutura/auditoria/log
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -28,7 +28,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Registrar Log de Alteração
-POST {{baseUrl}}/auditoria/log
+POST {{baseUrl}}/infraestrutura/auditoria/log
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -57,7 +57,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Registrar Log de Erro
-POST {{baseUrl}}/auditoria/log
+POST {{baseUrl}}/infraestrutura/auditoria/log
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -72,7 +72,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Registrar Log de Ação
-POST {{baseUrl}}/auditoria/log
+POST {{baseUrl}}/infraestrutura/auditoria/log
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -88,7 +88,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Registrar Acesso (Endpoint Específico)
-POST {{baseUrl}}/auditoria/acesso
+POST {{baseUrl}}/infraestrutura/auditoria/acesso
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -108,7 +108,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Registrar Erro (Endpoint Específico)
-POST {{baseUrl}}/auditoria/erro
+POST {{baseUrl}}/infraestrutura/auditoria/erro
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -128,7 +128,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Registrar Login Bem-sucedido
-POST {{baseUrl}}/auditoria/log
+POST {{baseUrl}}/infraestrutura/auditoria/log
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -145,7 +145,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Registrar Tentativa de Login Falha
-POST {{baseUrl}}/auditoria/log
+POST {{baseUrl}}/infraestrutura/auditoria/log
 Content-Type: {{contentType}}
 
 {
@@ -161,7 +161,7 @@ Content-Type: {{contentType}}
 ###
 
 ### Registrar Criação de Registro
-POST {{baseUrl}}/auditoria/log
+POST {{baseUrl}}/infraestrutura/auditoria/log
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -185,7 +185,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Registrar Exclusão de Registro
-POST {{baseUrl}}/auditoria/log
+POST {{baseUrl}}/infraestrutura/auditoria/log
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 

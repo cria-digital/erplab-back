@@ -4,7 +4,7 @@
 
 ### 1. Rastreamento Completo de uma Operação
 ### 1.1 - Registrar início de operação crítica
-POST {{baseUrl}}/auditoria/log
+POST {{baseUrl}}/infraestrutura/auditoria/log
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -20,7 +20,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### 1.2 - Registrar progresso
-POST {{baseUrl}}/auditoria/log
+POST {{baseUrl}}/infraestrutura/auditoria/log
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -36,7 +36,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### 1.3 - Registrar conclusão
-POST {{baseUrl}}/auditoria/log
+POST {{baseUrl}}/infraestrutura/auditoria/log
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -53,7 +53,7 @@ Authorization: Bearer {{token}}
 
 ### 2. Auditoria de Segurança
 ### 2.1 - Múltiplas tentativas de login falhas
-POST {{baseUrl}}/auditoria/log
+POST {{baseUrl}}/infraestrutura/auditoria/log
 Content-Type: {{contentType}}
 
 {
@@ -69,7 +69,7 @@ Content-Type: {{contentType}}
 ###
 
 ### 2.2 - Acesso não autorizado tentado
-POST {{baseUrl}}/auditoria/log
+POST {{baseUrl}}/infraestrutura/auditoria/log
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -85,7 +85,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### 2.3 - Alteração de permissões
-POST {{baseUrl}}/auditoria/log
+POST {{baseUrl}}/infraestrutura/auditoria/log
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -112,7 +112,7 @@ Authorization: Bearer {{token}}
 
 ### 3. Rastreamento de Alterações Sensíveis
 ### 3.1 - Alteração de dados financeiros
-POST {{baseUrl}}/auditoria/log
+POST {{baseUrl}}/infraestrutura/auditoria/log
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -142,7 +142,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### 3.2 - Exclusão de registros
-POST {{baseUrl}}/auditoria/log
+POST {{baseUrl}}/infraestrutura/auditoria/log
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -169,32 +169,32 @@ Authorization: Bearer {{token}}
 
 ### 4. Consultas para Análise e Relatórios
 ### 4.1 - Buscar todos os erros críticos do último mês
-GET {{baseUrl}}/auditoria?tipoLog=ERRO&nivel=CRITICAL&dataInicio=2024-01-01&dataFim=2024-01-31&page=1&limit=100
+GET {{baseUrl}}/infraestrutura/auditoria?tipoLog=ERRO&nivel=CRITICAL&dataInicio=2024-01-01&dataFim=2024-01-31&page=1&limit=100
 Authorization: Bearer {{token}}
 
 ###
 
 ### 4.2 - Rastrear todas as ações de um usuário específico hoje
-GET {{baseUrl}}/auditoria?usuarioId=user-uuid&dataInicio=2024-01-15&dataFim=2024-01-15&orderBy=dataHora&orderDirection=ASC
+GET {{baseUrl}}/infraestrutura/auditoria?usuarioId=user-uuid&dataInicio=2024-01-15&dataFim=2024-01-15&orderBy=dataHora&orderDirection=ASC
 Authorization: Bearer {{token}}
 
 ###
 
 ### 4.3 - Verificar todas as alterações em dados de pacientes
-GET {{baseUrl}}/auditoria?tipoLog=ALTERACAO&entidade=pacientes&page=1&limit=50
+GET {{baseUrl}}/infraestrutura/auditoria?tipoLog=ALTERACAO&entidade=pacientes&page=1&limit=50
 Authorization: Bearer {{token}}
 
 ###
 
 ### 4.4 - Monitorar tentativas de login falhas
-GET {{baseUrl}}/auditoria?operacao=LOGIN_FALHA&nivel=WARNING&dataInicio=2024-01-01&page=1&limit=100
+GET {{baseUrl}}/infraestrutura/auditoria?operacao=LOGIN_FALHA&nivel=WARNING&dataInicio=2024-01-01&page=1&limit=100
 Authorization: Bearer {{token}}
 
 ###
 
 ### 5. Cenários de Erro e Validação
 ### 5.1 - Tentar registrar log sem tipo
-POST {{baseUrl}}/auditoria/log
+POST {{baseUrl}}/infraestrutura/auditoria/log
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -214,7 +214,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### 5.2 - Tentar registrar com UUID inválido
-POST {{baseUrl}}/auditoria/log
+POST {{baseUrl}}/infraestrutura/auditoria/log
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 

@@ -1,5 +1,5 @@
 ### Criar novo método
-POST {{baseUrl}}/metodos
+POST {{baseUrl}}/exames/metodos
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -26,7 +26,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Criar método - PCR
-POST {{baseUrl}}/metodos
+POST {{baseUrl}}/exames/metodos
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -40,7 +40,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Criar método - Western Blot
-POST {{baseUrl}}/metodos
+POST {{baseUrl}}/exames/metodos
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -54,7 +54,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Criar método - Imunofluorescência
-POST {{baseUrl}}/metodos
+POST {{baseUrl}}/exames/metodos
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -68,7 +68,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Criar método com código duplicado (deve falhar)
-POST {{baseUrl}}/metodos
+POST {{baseUrl}}/exames/metodos
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -89,7 +89,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Criar método sem campos obrigatórios (deve falhar)
-POST {{baseUrl}}/metodos
+POST {{baseUrl}}/exames/metodos
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 

@@ -1,5 +1,5 @@
 ### Criar conta bancária - Conta Corrente Principal
-POST {{baseUrl}}/contas-bancarias
+POST {{baseUrl}}/financeiro/contas-bancarias
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -42,7 +42,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Criar conta bancária - Conta Poupança
-POST {{baseUrl}}/contas-bancarias
+POST {{baseUrl}}/financeiro/contas-bancarias
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -64,49 +64,49 @@ Authorization: Bearer {{token}}
 ###
 
 ### Listar todas as contas bancárias
-GET {{baseUrl}}/contas-bancarias
+GET {{baseUrl}}/financeiro/contas-bancarias
 Authorization: Bearer {{token}}
 
 ###
 
 ### Listar contas ativas
-GET {{baseUrl}}/contas-bancarias/ativas
+GET {{baseUrl}}/financeiro/contas-bancarias/ativas
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar contas por unidade
-GET {{baseUrl}}/contas-bancarias/unidade/{{unidadeId}}
+GET {{baseUrl}}/financeiro/contas-bancarias/unidade/{{unidadeId}}
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar contas por banco
-GET {{baseUrl}}/contas-bancarias/banco/{{bancoId}}
+GET {{baseUrl}}/financeiro/contas-bancarias/banco/{{bancoId}}
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar contas por tipo
-GET {{baseUrl}}/contas-bancarias/tipo/corrente
+GET {{baseUrl}}/financeiro/contas-bancarias/tipo/corrente
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar conta por código interno
-GET {{baseUrl}}/contas-bancarias/codigo/CC001
+GET {{baseUrl}}/financeiro/contas-bancarias/codigo/CC001
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar conta por ID
-GET {{baseUrl}}/contas-bancarias/{{contaId}}
+GET {{baseUrl}}/financeiro/contas-bancarias/{{contaId}}
 Authorization: Bearer {{token}}
 
 ###
 
 ### Atualizar conta bancária
-PATCH {{baseUrl}}/contas-bancarias/{{contaId}}
+PATCH {{baseUrl}}/financeiro/contas-bancarias/{{contaId}}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -119,11 +119,11 @@ Authorization: Bearer {{token}}
 ###
 
 ### Alternar status da conta
-PATCH {{baseUrl}}/contas-bancarias/{{contaId}}/toggle-status
+PATCH {{baseUrl}}/financeiro/contas-bancarias/{{contaId}}/toggle-status
 Authorization: Bearer {{token}}
 
 ###
 
 ### Deletar conta bancária
-DELETE {{baseUrl}}/contas-bancarias/{{contaId}}
+DELETE {{baseUrl}}/financeiro/contas-bancarias/{{contaId}}
 Authorization: Bearer {{token}}

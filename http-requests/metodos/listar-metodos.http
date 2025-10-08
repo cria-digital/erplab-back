@@ -1,5 +1,5 @@
 ### Listar todos os métodos
-GET {{baseUrl}}/metodos
+GET {{baseUrl}}/exames/metodos
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -24,43 +24,43 @@ Authorization: Bearer {{token}}
 ###
 
 ### Listar métodos com paginação
-GET {{baseUrl}}/metodos?page=1&limit=5
+GET {{baseUrl}}/exames/metodos?page=1&limit=5
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar métodos por termo
-GET {{baseUrl}}/metodos?search=ELISA
+GET {{baseUrl}}/exames/metodos?search=ELISA
 Authorization: Bearer {{token}}
 
 ###
 
 ### Filtrar métodos por status
-GET {{baseUrl}}/metodos?status=ativo
+GET {{baseUrl}}/exames/metodos?status=ativo
 Authorization: Bearer {{token}}
 
 ###
 
 ### Filtrar métodos em validação
-GET {{baseUrl}}/metodos?status=em_validacao
+GET {{baseUrl}}/exames/metodos?status=em_validacao
 Authorization: Bearer {{token}}
 
 ###
 
 ### Listar métodos inativos
-GET {{baseUrl}}/metodos?status=inativo
+GET {{baseUrl}}/exames/metodos?status=inativo
 Authorization: Bearer {{token}}
 
 ###
 
 ### Combinar filtros
-GET {{baseUrl}}/metodos?search=PCR&status=ativo&page=1&limit=10
+GET {{baseUrl}}/exames/metodos?search=PCR&status=ativo&page=1&limit=10
 Authorization: Bearer {{token}}
 
 ###
 
 ### Obter estatísticas dos métodos
-GET {{baseUrl}}/metodos/statistics
+GET {{baseUrl}}/exames/metodos/statistics
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -75,25 +75,25 @@ Authorization: Bearer {{token}}
 ###
 
 ### Buscar métodos por status específico
-GET {{baseUrl}}/metodos/status/ativo
+GET {{baseUrl}}/exames/metodos/status/ativo
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar métodos em validação
-GET {{baseUrl}}/metodos/status/em_validacao
+GET {{baseUrl}}/exames/metodos/status/em_validacao
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar métodos por termo de pesquisa
-GET {{baseUrl}}/metodos/search?q=PCR
+GET {{baseUrl}}/exames/metodos/search?q=PCR
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar com termo vazio (retorna array vazio)
-GET {{baseUrl}}/metodos/search?q=
+GET {{baseUrl}}/exames/metodos/search?q=
 Authorization: Bearer {{token}}
 
 ### Expected Response

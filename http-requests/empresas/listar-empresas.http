@@ -1,5 +1,5 @@
 ### Listar todas as empresas
-GET {{baseUrl}}/empresas
+GET {{baseUrl}}/cadastros/empresas
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -21,7 +21,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Listar empresas por tipo - Convênios
-GET {{baseUrl}}/empresas/tipo/CONVENIOS
+GET {{baseUrl}}/cadastros/empresas/tipo/CONVENIOS
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -40,25 +40,25 @@ Authorization: Bearer {{token}}
 ###
 
 ### Listar empresas por tipo - Laboratórios de Apoio
-GET {{baseUrl}}/empresas/tipo/LABORATORIO_APOIO
+GET {{baseUrl}}/cadastros/empresas/tipo/LABORATORIO_APOIO
 Authorization: Bearer {{token}}
 
 ###
 
 ### Listar empresas por tipo - Telemedicina
-GET {{baseUrl}}/empresas/tipo/TELEMEDICINA
+GET {{baseUrl}}/cadastros/empresas/tipo/TELEMEDICINA
 Authorization: Bearer {{token}}
 
 ###
 
 ### Listar empresas por tipo - Fornecedores
-GET {{baseUrl}}/empresas/tipo/FORNECEDORES
+GET {{baseUrl}}/cadastros/empresas/tipo/FORNECEDORES
 Authorization: Bearer {{token}}
 
 ###
 
 ### Listar empresas por tipo - Prestadores de Serviços
-GET {{baseUrl}}/empresas/tipo/PRESTADORES_SERVICOS
+GET {{baseUrl}}/cadastros/empresas/tipo/PRESTADORES_SERVICOS
 Authorization: Bearer {{token}}
 
 ### Expected Response

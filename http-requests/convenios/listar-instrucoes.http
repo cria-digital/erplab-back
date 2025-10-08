@@ -1,33 +1,33 @@
 ### Listar Todas as Instruções
-GET {{baseUrl}}/instrucoes
+GET {{baseUrl}}/relacionamento/instrucoes
 Authorization: Bearer {{token}}
 
 ### Listar Instruções por Convênio
-GET {{baseUrl}}/instrucoes/convenio/{{convenio_id}}
+GET {{baseUrl}}/relacionamento/instrucoes/convenio/{{convenio_id}}
 Authorization: Bearer {{token}}
 
 ### Listar Instruções Vigentes
-GET {{baseUrl}}/instrucoes/convenio/{{convenio_id}}/vigentes
+GET {{baseUrl}}/relacionamento/instrucoes/convenio/{{convenio_id}}/vigentes
 Authorization: Bearer {{token}}
 
 ### Listar Instruções por Categoria
-GET {{baseUrl}}/instrucoes/convenio/{{convenio_id}}/categoria/autorizacao_previa
+GET {{baseUrl}}/relacionamento/instrucoes/convenio/{{convenio_id}}/categoria/autorizacao_previa
 Authorization: Bearer {{token}}
 
 ### Listar Instruções Próximas do Vencimento
-GET {{baseUrl}}/instrucoes/convenio/{{convenio_id}}/proximas-vencer?dias=30
+GET {{baseUrl}}/relacionamento/instrucoes/convenio/{{convenio_id}}/proximas-vencer?dias=30
 Authorization: Bearer {{token}}
 
 ### Buscar Instruções
-GET {{baseUrl}}/instrucoes/convenio/{{convenio_id}}/search?q=cirurgia
+GET {{baseUrl}}/relacionamento/instrucoes/convenio/{{convenio_id}}/search?q=cirurgia
 Authorization: Bearer {{token}}
 
 ### Obter Histórico da Instrução
-GET {{baseUrl}}/instrucoes/{{instrucao_id}}/historico
+GET {{baseUrl}}/relacionamento/instrucoes/{{instrucao_id}}/historico
 Authorization: Bearer {{token}}
 
 ### Alternar Status da Instrução
-PATCH {{baseUrl}}/instrucoes/{{instrucao_id}}/toggle-status
+PATCH {{baseUrl}}/relacionamento/instrucoes/{{instrucao_id}}/toggle-status
 Authorization: Bearer {{token}}
 
 ### Expected Responses

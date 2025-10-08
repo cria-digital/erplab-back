@@ -27,7 +27,7 @@ import { JwtAuthGuard } from '../../autenticacao/auth/guards/jwt-auth.guard';
 @ApiTags('Alternativas de Campo')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('api/v1/alternativas-campo')
+@Controller('exames/alternativas-campo')
 export class AlternativaCampoController {
   constructor(
     private readonly alternativaCampoService: AlternativaCampoService,

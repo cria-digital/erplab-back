@@ -6,7 +6,7 @@
 ### =============================================
 
 ### Passo 1: Verificar se CNPJ já existe
-GET {{baseUrl}}/empresas/cnpj/11.222.333%2F0001-44
+GET {{baseUrl}}/cadastros/empresas/cnpj/11.222.333%2F0001-44
 Authorization: Bearer {{token}}
 
 # Se retornar 404, pode prosseguir com o cadastro
@@ -14,7 +14,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Passo 2: Cadastrar novo convênio
-POST {{baseUrl}}/empresas
+POST {{baseUrl}}/cadastros/empresas
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -60,7 +60,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Passo 3: Verificar cadastro
-GET {{baseUrl}}/empresas/cnpj/11.222.333%2F0001-44
+GET {{baseUrl}}/cadastros/empresas/cnpj/11.222.333%2F0001-44
 Authorization: Bearer {{token}}
 
 ###
@@ -69,7 +69,7 @@ Authorization: Bearer {{token}}
 ### =============================================
 
 ### Passo 1: Cadastrar laboratório de apoio
-POST {{baseUrl}}/empresas
+POST {{baseUrl}}/cadastros/empresas
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -103,7 +103,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Passo 2: Listar todos os laboratórios de apoio
-GET {{baseUrl}}/empresas/tipo/LABORATORIO_APOIO
+GET {{baseUrl}}/cadastros/empresas/tipo/LABORATORIO_APOIO
 Authorization: Bearer {{token}}
 
 ###
@@ -112,7 +112,7 @@ Authorization: Bearer {{token}}
 ### =============================================
 
 ### Passo 1: Criar empresa prestadora de serviços
-POST {{baseUrl}}/empresas
+POST {{baseUrl}}/cadastros/empresas
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -140,17 +140,17 @@ Authorization: Bearer {{token}}
 
 ### Passo 2: Desativar empresa temporariamente
 # Buscar ID primeiro
-GET {{baseUrl}}/empresas/cnpj/99.888.777%2F0001-66
+GET {{baseUrl}}/cadastros/empresas/cnpj/99.888.777%2F0001-66
 Authorization: Bearer {{token}}
 
 # Usar o ID retornado no passo anterior
-PATCH {{baseUrl}}/empresas/{id-retornado}/desativar
+PATCH {{baseUrl}}/cadastros/empresas/{id-retornado}/desativar
 Authorization: Bearer {{token}}
 
 ###
 
 ### Passo 3: Reativar empresa
-PATCH {{baseUrl}}/empresas/{id-retornado}/ativar
+PATCH {{baseUrl}}/cadastros/empresas/{id-retornado}/ativar
 Authorization: Bearer {{token}}
 
 ###
@@ -159,13 +159,13 @@ Authorization: Bearer {{token}}
 ### =============================================
 
 ### Passo 1: Buscar empresa para atualização
-GET {{baseUrl}}/empresas/cnpj/11.222.333%2F0001-44
+GET {{baseUrl}}/cadastros/empresas/cnpj/11.222.333%2F0001-44
 Authorization: Bearer {{token}}
 
 ###
 
 ### Passo 2: Atualizar dados fiscais e de retenção
-PATCH {{baseUrl}}/empresas/{id-retornado}
+PATCH {{baseUrl}}/cadastros/empresas/{id-retornado}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -191,37 +191,37 @@ Authorization: Bearer {{token}}
 ### =============================================
 
 ### Listar todos os convênios
-GET {{baseUrl}}/empresas/tipo/CONVENIOS
+GET {{baseUrl}}/cadastros/empresas/tipo/CONVENIOS
 Authorization: Bearer {{token}}
 
 ###
 
 ### Listar todos os laboratórios de apoio
-GET {{baseUrl}}/empresas/tipo/LABORATORIO_APOIO
+GET {{baseUrl}}/cadastros/empresas/tipo/LABORATORIO_APOIO
 Authorization: Bearer {{token}}
 
 ###
 
 ### Listar todas as empresas de telemedicina
-GET {{baseUrl}}/empresas/tipo/TELEMEDICINA
+GET {{baseUrl}}/cadastros/empresas/tipo/TELEMEDICINA
 Authorization: Bearer {{token}}
 
 ###
 
 ### Listar todos os fornecedores
-GET {{baseUrl}}/empresas/tipo/FORNECEDORES
+GET {{baseUrl}}/cadastros/empresas/tipo/FORNECEDORES
 Authorization: Bearer {{token}}
 
 ###
 
 ### Listar todos os prestadores de serviços
-GET {{baseUrl}}/empresas/tipo/PRESTADORES_SERVICOS
+GET {{baseUrl}}/cadastros/empresas/tipo/PRESTADORES_SERVICOS
 Authorization: Bearer {{token}}
 
 ###
 
 ### Listar TODAS as empresas (sem filtro de tipo)
-GET {{baseUrl}}/empresas
+GET {{baseUrl}}/cadastros/empresas
 Authorization: Bearer {{token}}
 
 ###
@@ -230,7 +230,7 @@ Authorization: Bearer {{token}}
 ### =============================================
 
 ### Tentar cadastrar com CNPJ duplicado
-POST {{baseUrl}}/empresas
+POST {{baseUrl}}/cadastros/empresas
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -247,7 +247,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Tentar buscar empresa inexistente
-GET {{baseUrl}}/empresas/00000000-0000-0000-0000-000000000000
+GET {{baseUrl}}/cadastros/empresas/00000000-0000-0000-0000-000000000000
 Authorization: Bearer {{token}}
 
 # Retorna erro 404 Not Found
@@ -255,7 +255,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Tentar atualizar sem autenticação
-PATCH {{baseUrl}}/empresas/550e8400-e29b-41d4-a716-446655440000
+PATCH {{baseUrl}}/cadastros/empresas/550e8400-e29b-41d4-a716-446655440000
 Content-Type: {{contentType}}
 
 {
