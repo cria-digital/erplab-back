@@ -1,0 +1,354 @@
+### ============================================
+### EMAIL API - Exemplos de Requisições
+### ============================================
+
+### 1. Fluxo Completo: Boas-Vindas ao Novo Paciente
+### 1.1 - Criar template de boas-vindas
+POST {{baseUrl}}/infraestrutura/email/templates
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "boas-vindas-paciente",
+  "assunto": "Bem-vindo ao {{nomeLaboratorio}}",
+  "corpo": "<h1>Olá {{nome}}!</h1><p>É um prazer tê-lo(a) conosco.</p><p>Seu cadastro foi realizado com sucesso em {{data}}.</p><p>Através do nosso portal você poderá:</p><ul><li>Agendar consultas</li><li>Visualizar resultados de exames</li><li>Acessar seu histórico médico</li></ul><p>Acesse: <a href='{{linkPortal}}'>Portal do Paciente</a></p><p>Seus dados de acesso:</p><ul><li>Email: {{email}}</li><li>Senha temporária: {{senhaTemporaria}}</li></ul><p>Atenciosamente,<br>Equipe {{nomeLaboratorio}}</p>",
+  "categoria": "cadastro",
+  "variaveis": ["nome", "nomeLaboratorio", "data", "linkPortal", "email", "senhaTemporaria"],
+  "ativo": true
+}
+
+###
+
+### 1.2 - Enviar email de boas-vindas usando template
+POST {{baseUrl}}/infraestrutura/email/enviar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "destinatario": "novo.paciente@example.com",
+  "template": "boas-vindas-paciente",
+  "variaveis": {
+    "nome": "Carlos Alberto Silva",
+    "nomeLaboratorio": "Laboratório São Paulo",
+    "data": "09/10/2024",
+    "linkPortal": "https://portal.laboratorio.com",
+    "email": "novo.paciente@example.com",
+    "senhaTemporaria": "Temp123!"
+  }
+}
+
+###
+
+### 2. Fluxo Completo: Agendamento de Consulta
+### 2.1 - Criar template de confirmação
+POST {{baseUrl}}/infraestrutura/email/templates
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "confirmacao-agendamento",
+  "assunto": "Consulta Agendada - {{especialidade}}",
+  "corpo": "<h1>Consulta Confirmada</h1><p>Olá {{nome}},</p><p>Sua consulta foi agendada com sucesso!</p><h2>Detalhes da Consulta:</h2><ul><li><strong>Especialidade:</strong> {{especialidade}}</li><li><strong>Profissional:</strong> {{profissional}}</li><li><strong>Data:</strong> {{data}}</li><li><strong>Horário:</strong> {{hora}}</li><li><strong>Local:</strong> {{endereco}}</li><li><strong>Sala:</strong> {{sala}}</li></ul><h3>Instruções:</h3><ul><li>Chegar com 15 minutos de antecedência</li><li>Trazer documento de identidade</li><li>Trazer carteirinha do convênio (se aplicável)</li><li>Trazer exames anteriores relacionados</li></ul><p>Em caso de cancelamento, avisar com pelo menos 24h de antecedência.</p><p>Atenciosamente,<br>Equipe</p>",
+  "categoria": "agendamento",
+  "variaveis": ["nome", "especialidade", "profissional", "data", "hora", "endereco", "sala"],
+  "ativo": true
+}
+
+###
+
+### 2.2 - Enviar confirmação de agendamento
+POST {{baseUrl}}/infraestrutura/email/enviar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "destinatario": "paciente@example.com",
+  "template": "confirmacao-agendamento",
+  "variaveis": {
+    "nome": "Maria Santos",
+    "especialidade": "Cardiologia",
+    "profissional": "Dr. João Carvalho",
+    "data": "15/10/2024",
+    "hora": "14:00",
+    "endereco": "Av. Paulista, 1000 - São Paulo/SP",
+    "sala": "205"
+  }
+}
+
+###
+
+### 2.3 - Agendar email de lembrete para 1 dia antes
+POST {{baseUrl}}/infraestrutura/email/enviar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "destinatario": "paciente@example.com",
+  "assunto": "Lembrete: Consulta amanhã às 14:00",
+  "corpo": "<h1>Lembrete de Consulta</h1><p>Olá Maria Santos,</p><p>Lembramos que sua consulta de Cardiologia com Dr. João Carvalho está agendada para <strong>amanhã, 15/10/2024 às 14:00</strong>.</p><p>Local: Av. Paulista, 1000 - Sala 205</p><p>Não esqueça de trazer seus documentos!</p>",
+  "agendarPara": "2024-10-14T09:00:00Z"
+}
+
+###
+
+### 3. Fluxo Completo: Resultado de Exame
+### 3.1 - Criar template de resultado
+POST {{baseUrl}}/infraestrutura/email/templates
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "resultado-disponivel",
+  "assunto": "Resultado Disponível: {{tipoExame}}",
+  "corpo": "<h1>Resultado de Exame</h1><p>Olá {{nome}},</p><p>O resultado do seu exame já está disponível!</p><h2>Informações do Exame:</h2><ul><li><strong>Tipo:</strong> {{tipoExame}}</li><li><strong>Código:</strong> {{codigoExame}}</li><li><strong>Data da Coleta:</strong> {{dataColeta}}</li><li><strong>Data do Resultado:</strong> {{dataResultado}}</li></ul><p>Você pode acessar o resultado completo através do link abaixo:</p><p style='text-align: center; margin: 20px;'><a href='{{linkResultado}}' style='background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>Visualizar Resultado</a></p><p><strong>Observação:</strong> {{observacao}}</p><p>Em caso de dúvidas, entre em contato com nosso laboratório.</p><p>Atenciosamente,<br>Equipe Laboratorial</p>",
+  "categoria": "resultado",
+  "variaveis": ["nome", "tipoExame", "codigoExame", "dataColeta", "dataResultado", "linkResultado", "observacao"],
+  "ativo": true
+}
+
+###
+
+### 3.2 - Enviar resultado com anexo
+POST {{baseUrl}}/infraestrutura/email/enviar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "destinatario": "paciente@example.com",
+  "template": "resultado-disponivel",
+  "variaveis": {
+    "nome": "João Silva",
+    "tipoExame": "Hemograma Completo",
+    "codigoExame": "HMG-2024-1234",
+    "dataColeta": "05/10/2024",
+    "dataResultado": "09/10/2024",
+    "linkResultado": "https://portal.laboratorio.com/resultado/1234",
+    "observacao": "Resultado dentro dos parâmetros normais."
+  },
+  "anexos": [
+    {
+      "nome": "resultado_hemograma.pdf",
+      "tipo": "application/pdf",
+      "url": "https://storage.laboratorio.com/resultados/1234.pdf"
+    }
+  ]
+}
+
+###
+
+### 4. Fluxo Completo: Resultado Urgente
+### 4.1 - Criar template de resultado urgente
+POST {{baseUrl}}/infraestrutura/email/templates
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "resultado-urgente",
+  "assunto": "URGENTE: Resultado de Exame - {{tipoExame}}",
+  "corpo": "<div style='border: 3px solid red; padding: 20px; background-color: #fff3cd;'><h1 style='color: red;'>RESULTADO URGENTE</h1><p>Olá {{nome}},</p><p>O resultado do seu exame <strong>{{tipoExame}}</strong> requer atenção médica imediata.</p><p><strong>Por favor, entre em contato com nosso laboratório o mais rápido possível:</strong></p><ul><li><strong>Telefone:</strong> {{telefone}}</li><li><strong>WhatsApp:</strong> {{whatsapp}}</li><li><strong>Email:</strong> {{emailContato}}</li></ul><p>Horário de atendimento: {{horarioAtendimento}}</p><p><strong>Código do Exame:</strong> {{codigoExame}}</p></div>",
+  "categoria": "notificacao",
+  "variaveis": ["nome", "tipoExame", "telefone", "whatsapp", "emailContato", "horarioAtendimento", "codigoExame"],
+  "ativo": true
+}
+
+###
+
+### 4.2 - Enviar resultado urgente com prioridade alta
+POST {{baseUrl}}/infraestrutura/email/enviar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "destinatario": "paciente.urgente@example.com",
+  "template": "resultado-urgente",
+  "variaveis": {
+    "nome": "Pedro Alves",
+    "tipoExame": "Exame de Glicemia",
+    "telefone": "(11) 3333-4444",
+    "whatsapp": "(11) 99999-8888",
+    "emailContato": "contato@laboratorio.com",
+    "horarioAtendimento": "Segunda a Sexta, 7h às 19h",
+    "codigoExame": "GLI-2024-5678"
+  },
+  "prioridade": "alta",
+  "confirmarLeitura": true
+}
+
+###
+
+### 5. Envio em Massa: Campanha de Check-up
+### 5.1 - Criar template de campanha
+POST {{baseUrl}}/infraestrutura/email/templates
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "campanha-checkup",
+  "assunto": "Cuide da sua saúde - Check-up com 20% de desconto",
+  "corpo": "<h1>Check-up Anual</h1><p>Olá {{nome}},</p><p>Está na hora de cuidar da sua saúde!</p><p>Durante o mês de outubro, estamos oferecendo <strong>20% de desconto</strong> em pacotes de check-up completo.</p><h2>O que está incluso:</h2><ul><li>Hemograma completo</li><li>Glicemia</li><li>Colesterol total e frações</li><li>Função renal e hepática</li><li>Exame de urina</li><li>Eletrocardiograma</li></ul><p>Valor: De R$ 500,00 por <strong>R$ 400,00</strong></p><p>Agende já: {{telefone}}</p><p>Promoção válida até {{dataFim}}</p>",
+  "categoria": "marketing",
+  "variaveis": ["nome", "telefone", "dataFim"],
+  "ativo": true
+}
+
+###
+
+### 5.2 - Enviar para múltiplos destinatários
+POST {{baseUrl}}/infraestrutura/email/enviar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "destinatario": [
+    "paciente1@example.com",
+    "paciente2@example.com",
+    "paciente3@example.com",
+    "paciente4@example.com",
+    "paciente5@example.com"
+  ],
+  "template": "campanha-checkup",
+  "variaveis": {
+    "nome": "Cliente",
+    "telefone": "(11) 3333-4444",
+    "dataFim": "31/10/2024"
+  }
+}
+
+###
+
+### 6. Notificações Automáticas
+### 6.1 - Email de senha temporária após reset
+POST {{baseUrl}}/infraestrutura/email/enviar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "destinatario": "usuario@example.com",
+  "assunto": "Sua senha foi redefinida",
+  "corpo": "<h1>Redefinição de Senha</h1><p>Olá {{nome}},</p><p>Sua senha foi redefinida conforme solicitado.</p><p><strong>Senha temporária:</strong> {{senhaTemporaria}}</p><p>Por favor, altere sua senha após o primeiro acesso.</p><p>Se você não solicitou esta alteração, entre em contato imediatamente.</p>",
+  "variaveis": {
+    "nome": "Carlos",
+    "senhaTemporaria": "Temp2024!"
+  }
+}
+
+###
+
+### 6.2 - Notificação de agendamento cancelado
+POST {{baseUrl}}/infraestrutura/email/enviar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "destinatario": "paciente@example.com",
+  "assunto": "Consulta Cancelada - {{data}}",
+  "corpo": "<h1>Cancelamento de Consulta</h1><p>Olá {{nome}},</p><p>Informamos que sua consulta agendada para <strong>{{data}}</strong> às <strong>{{hora}}</strong> foi cancelada.</p><p><strong>Motivo:</strong> {{motivo}}</p><p>Para reagendar, entre em contato: {{telefone}}</p><p>Pedimos desculpas pelo transtorno.</p>",
+  "variaveis": {
+    "nome": "Ana Paula",
+    "data": "20/10/2024",
+    "hora": "10:00",
+    "motivo": "Indisponibilidade do profissional",
+    "telefone": "(11) 3333-4444"
+  }
+}
+
+###
+
+### 7. Testes de Validação e Erros
+### 7.1 - Tentar enviar sem destinatário
+POST {{baseUrl}}/infraestrutura/email/enviar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "assunto": "Teste",
+  "corpo": "<p>Sem destinatário</p>"
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Destinatário é obrigatório"
+# }
+
+###
+
+### 7.2 - Tentar enviar com template inexistente
+POST {{baseUrl}}/infraestrutura/email/enviar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "destinatario": "teste@example.com",
+  "template": "template-inexistente",
+  "variaveis": {
+    "nome": "Teste"
+  }
+}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Template não encontrado"
+# }
+
+###
+
+### 7.3 - Tentar enviar sem corpo nem template
+POST {{baseUrl}}/infraestrutura/email/enviar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "destinatario": "teste@example.com",
+  "assunto": "Teste sem corpo"
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "É necessário fornecer o corpo do email ou um template"
+# }
+
+###
+
+### 8. Gestão de Templates
+### 8.1 - Buscar estatísticas de templates
+GET {{baseUrl}}/infraestrutura/email/templates/stats
+Authorization: Bearer {{token}}
+
+### Expected Response
+# {
+#   "total": 25,
+#   "ativos": 20,
+#   "inativos": 5,
+#   "porCategoria": {
+#     "cadastro": 3,
+#     "agendamento": 5,
+#     "resultado": 8,
+#     "lembrete": 4,
+#     "notificacao": 3,
+#     "marketing": 2
+#   }
+# }
+
+###
+
+### 8.2 - Duplicar template existente
+POST {{baseUrl}}/infraestrutura/email/templates
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "resultado-disponivel-v2",
+  "assunto": "Resultado Disponível: {{tipoExame}} [CÓPIA]",
+  "corpo": "<h1>Resultado de Exame</h1><p>Versão atualizada do template...</p>",
+  "categoria": "resultado",
+  "variaveis": ["nome", "tipoExame"],
+  "ativo": true
+}
+
+###

@@ -1,0 +1,234 @@
+### Listar todos os setores
+GET {{baseUrl}}/configuracoes/estrutura/setores
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid-1",
+#     "codigoSetor": "SET-AC-001",
+#     "nome": "Setor de Analises Clinicas",
+#     "tipo": "apoio_diagnostico",
+#     "responsavel": "Dra. Maria Santos",
+#     "ramal": "1001",
+#     "ativo": true,
+#     "createdAt": "2025-10-09T10:00:00.000Z"
+#   }
+# ]
+
+###
+
+### Listar apenas setores ativos
+GET {{baseUrl}}/configuracoes/estrutura/setores/ativos
+Authorization: Bearer {{token}}
+
+###
+
+### Listar setores inativos
+GET {{baseUrl}}/configuracoes/estrutura/setores/inativos
+Authorization: Bearer {{token}}
+
+###
+
+### Listar por tipo - Administrativo
+GET {{baseUrl}}/configuracoes/estrutura/setores/tipo/administrativo
+Authorization: Bearer {{token}}
+
+###
+
+### Listar por tipo - Assistencial
+GET {{baseUrl}}/configuracoes/estrutura/setores/tipo/assistencial
+Authorization: Bearer {{token}}
+
+###
+
+### Listar por tipo - Apoio Diagnostico
+GET {{baseUrl}}/configuracoes/estrutura/setores/tipo/apoio_diagnostico
+Authorization: Bearer {{token}}
+
+###
+
+### Listar por tipo - Apoio Terapeutico
+GET {{baseUrl}}/configuracoes/estrutura/setores/tipo/apoio_terapeutico
+Authorization: Bearer {{token}}
+
+###
+
+### Listar por tipo - Hotelaria
+GET {{baseUrl}}/configuracoes/estrutura/setores/tipo/hotelaria
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar setores por nome (search)
+GET {{baseUrl}}/configuracoes/estrutura/setores/search?q=analises
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar setores por responsavel
+GET {{baseUrl}}/configuracoes/estrutura/setores/search?q=maria
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar setores por codigo
+GET {{baseUrl}}/configuracoes/estrutura/setores/search?q=SET-AC
+Authorization: Bearer {{token}}
+
+###
+
+### Listar setores com salas vinculadas
+GET {{baseUrl}}/configuracoes/estrutura/setores/com-salas
+Authorization: Bearer {{token}}
+
+###
+
+### Listar setores sem salas vinculadas
+GET {{baseUrl}}/configuracoes/estrutura/setores/sem-salas
+Authorization: Bearer {{token}}
+
+###
+
+### Obter estatisticas de setores
+GET {{baseUrl}}/configuracoes/estrutura/setores/estatisticas
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "total": 10,
+#   "ativos": 9,
+#   "inativos": 1,
+#   "porTipo": {
+#     "administrativo": 1,
+#     "assistencial": 2,
+#     "apoio_diagnostico": 5,
+#     "apoio_terapeutico": 1,
+#     "hotelaria": 1
+#   },
+#   "totalSalas": 45,
+#   "totalEquipamentos": 120,
+#   "comSalas": 8,
+#   "semSalas": 2
+# }
+
+###
+
+### Listar com paginacao - Pagina 1
+GET {{baseUrl}}/configuracoes/estrutura/setores?page=1&limit=10
+Authorization: Bearer {{token}}
+
+###
+
+### Listar com paginacao - Pagina 2
+GET {{baseUrl}}/configuracoes/estrutura/setores?page=2&limit=10
+Authorization: Bearer {{token}}
+
+###
+
+### Listar ordenando por nome
+GET {{baseUrl}}/configuracoes/estrutura/setores?sort=nome&order=asc
+Authorization: Bearer {{token}}
+
+###
+
+### Listar ordenando por codigo
+GET {{baseUrl}}/configuracoes/estrutura/setores?sort=codigoSetor&order=asc
+Authorization: Bearer {{token}}
+
+###
+
+### Listar ordenando por tipo
+GET {{baseUrl}}/configuracoes/estrutura/setores?sort=tipo&order=asc
+Authorization: Bearer {{token}}
+
+###
+
+### Listar ordenando por data de criacao (mais recentes primeiro)
+GET {{baseUrl}}/configuracoes/estrutura/setores?sort=createdAt&order=desc
+Authorization: Bearer {{token}}
+
+###
+
+### Filtros combinados - Setores ativos de apoio diagnostico
+GET {{baseUrl}}/configuracoes/estrutura/setores?tipo=apoio_diagnostico&ativo=true
+Authorization: Bearer {{token}}
+
+###
+
+### Filtros combinados - Setores assistenciais ativos
+GET {{baseUrl}}/configuracoes/estrutura/setores?tipo=assistencial&ativo=true
+Authorization: Bearer {{token}}
+
+###
+
+### Listar setores por centro de custo
+GET {{baseUrl}}/configuracoes/estrutura/setores/centro-custo/CC-LAB-001
+Authorization: Bearer {{token}}
+
+###
+
+### Listar setores que funcionam em horario especifico
+GET {{baseUrl}}/configuracoes/estrutura/setores/horario?dia=segunda&hora=14:00
+Authorization: Bearer {{token}}
+
+###
+
+### Listar setores que funcionam aos sabados
+GET {{baseUrl}}/configuracoes/estrutura/setores/horario?dia=sabado
+Authorization: Bearer {{token}}
+
+###
+
+### Listar setores que funcionam aos domingos
+GET {{baseUrl}}/configuracoes/estrutura/setores/horario?dia=domingo
+Authorization: Bearer {{token}}
+
+###
+
+### Listar setores com funcionamento 24h
+GET {{baseUrl}}/configuracoes/estrutura/setores/funcionamento-24h
+Authorization: Bearer {{token}}
+
+###
+
+### Listar setores com ramal cadastrado
+GET {{baseUrl}}/configuracoes/estrutura/setores/com-ramal
+Authorization: Bearer {{token}}
+
+###
+
+### Listar setores com email cadastrado
+GET {{baseUrl}}/configuracoes/estrutura/setores/com-email
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar setores por ramal
+GET {{baseUrl}}/configuracoes/estrutura/setores/ramal/1001
+Authorization: Bearer {{token}}
+
+###
+
+### Listar setores abertos agora
+GET {{baseUrl}}/configuracoes/estrutura/setores/abertos-agora
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid",
+#     "codigoSetor": "SET-AC-001",
+#     "nome": "Setor de Analises Clinicas",
+#     "tipo": "apoio_diagnostico",
+#     "responsavel": "Dra. Maria Santos",
+#     "aberto": true,
+#     "horarioAtual": "14:30",
+#     "diaSemana": "segunda"
+#   }
+# ]
+
+###

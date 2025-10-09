@@ -1,0 +1,354 @@
+### Vincular Método ao Laboratório
+# Substitua {laboratorioId} pelo UUID do laboratório
+POST {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}/metodos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "metodoId": "uuid-do-metodo",
+  "codigoLaboratorio": "HEM-001",
+  "nomeLaboratorio": "Hemograma Completo",
+  "prazoEntrega": 3,
+  "valor": 25.50,
+  "aceitaUrgencia": true,
+  "prazoEntregaUrgente": 1,
+  "valorUrgencia": 40.00,
+  "observacoes": "Método disponível 24h"
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "id": "uuid",
+#   "laboratorioId": "uuid-do-laboratorio",
+#   "metodoId": "uuid-do-metodo",
+#   "codigoLaboratorio": "HEM-001",
+#   "nomeLaboratorio": "Hemograma Completo",
+#   "prazoEntrega": 3,
+#   "valor": 25.50,
+#   "ativo": true,
+#   ...
+# }
+
+
+### Listar Métodos do Laboratório
+GET {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}/metodos
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid",
+#     "metodoId": "uuid",
+#     "metodo": {
+#       "codigo": "HEM",
+#       "nome": "Hemograma Completo",
+#       "descricao": "Análise completa das células sanguíneas"
+#     },
+#     "codigoLaboratorio": "HEM-001",
+#     "prazoEntrega": 3,
+#     "valor": 25.50,
+#     "ativo": true
+#   },
+#   ...
+# ]
+
+
+### Listar Apenas Métodos Ativos do Laboratório
+GET {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}/metodos/ativos
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... array de métodos ativos ... ]
+
+
+### Buscar Método Específico no Laboratório
+GET {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}/metodos/{metodoId}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "laboratorioId": "uuid",
+#   "metodoId": "uuid",
+#   "metodo": { ... },
+#   "codigoLaboratorio": "HEM-001",
+#   "prazoEntrega": 3,
+#   "valor": 25.50,
+#   ...
+# }
+
+
+### Buscar Métodos por Código do Laboratório
+GET {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}/metodos/codigo/HEM-001
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# { ... dados do método no laboratório ... }
+
+
+### Atualizar Vínculo Método-Laboratório
+# Substitua {laboratorioId} e {vinculoId}
+PATCH {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}/metodos/{vinculoId}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "prazoEntrega": 2,
+  "valor": 28.00,
+  "aceitaUrgencia": true,
+  "valorUrgencia": 45.00
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... vínculo atualizado ... }
+
+
+### Atualizar Preço do Método
+PATCH {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}/metodos/{vinculoId}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "valor": 30.00,
+  "valorUrgencia": 48.00
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... vínculo com preços atualizados ... }
+
+
+### Atualizar Prazo de Entrega do Método
+PATCH {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}/metodos/{vinculoId}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "prazoEntrega": 4,
+  "prazoEntregaUrgente": 2
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... vínculo com prazos atualizados ... }
+
+
+### Habilitar Urgência para Método Específico
+PATCH {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}/metodos/{vinculoId}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "aceitaUrgencia": true,
+  "prazoEntregaUrgente": 1,
+  "valorUrgencia": 50.00
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... vínculo com urgência habilitada ... }
+
+
+### Desabilitar Urgência para Método Específico
+PATCH {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}/metodos/{vinculoId}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "aceitaUrgencia": false
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... vínculo com urgência desabilitada ... }
+
+
+### Alternar Status do Método no Laboratório
+PATCH {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}/metodos/{vinculoId}/toggle-status
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "ativo": false,
+#   "message": "Status do método alterado com sucesso"
+# }
+
+
+### Remover Vínculo Método-Laboratório (Soft Delete)
+DELETE {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}/metodos/{vinculoId}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Método removido do laboratório com sucesso"
+# }
+
+
+### Adicionar Múltiplos Métodos ao Laboratório
+POST {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}/metodos/bulk
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "metodos": [
+    {
+      "metodoId": "uuid-hemograma",
+      "codigoLaboratorio": "HEM-001",
+      "prazoEntrega": 3,
+      "valor": 25.50
+    },
+    {
+      "metodoId": "uuid-glicemia",
+      "codigoLaboratorio": "GLI-001",
+      "prazoEntrega": 2,
+      "valor": 15.00
+    },
+    {
+      "metodoId": "uuid-colesterol",
+      "codigoLaboratorio": "COL-001",
+      "prazoEntrega": 3,
+      "valor": 18.00
+    }
+  ]
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "message": "3 métodos adicionados ao laboratório com sucesso",
+#   "metodos": [ ... ]
+# }
+
+
+### Buscar Métodos Disponíveis para Vincular
+# Retorna métodos ainda não vinculados ao laboratório
+GET {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}/metodos/disponiveis
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid",
+#     "codigo": "URE",
+#     "nome": "Ureia",
+#     "descricao": "Dosagem de ureia sérica"
+#   },
+#   ...
+# ]
+
+
+### Buscar Métodos por Categoria
+GET {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}/metodos?categoria=hematologia
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... métodos de hematologia do laboratório ... ]
+
+
+### Buscar Métodos por Prazo de Entrega
+GET {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}/metodos?prazoMax=3
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... métodos com prazo de até 3 dias ... ]
+
+
+### Buscar Métodos por Faixa de Preço
+GET {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}/metodos?valorMin=20&valorMax=50
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... métodos com valor entre R$ 20 e R$ 50 ... ]
+
+
+### Obter Estatísticas de Métodos do Laboratório
+GET {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}/metodos/estatisticas
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "total": 150,
+#   "ativos": 140,
+#   "inativos": 10,
+#   "comUrgencia": 80,
+#   "valorMedio": 35.50,
+#   "prazoMedio": 3.5,
+#   "porCategoria": {
+#     "hematologia": 25,
+#     "bioquimica": 40,
+#     "imunologia": 30,
+#     "microbiologia": 20,
+#     "outros": 35
+#   }
+# }
+
+
+### Erro - Método Já Vinculado
+POST {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}/metodos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "metodoId": "uuid-metodo-ja-existente",
+  "codigoLaboratorio": "HEM-001"
+}
+
+### Expected Response
+# Status: 409 Conflict
+# {
+#   "statusCode": 409,
+#   "message": "Este método já está vinculado ao laboratório",
+#   "error": "Conflict"
+# }
+
+
+### Erro - Método Não Encontrado
+POST {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}/metodos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "metodoId": "00000000-0000-0000-0000-000000000000",
+  "codigoLaboratorio": "XXX-999"
+}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Método não encontrado",
+#   "error": "Not Found"
+# }
+
+
+### Erro - Código Laboratório Duplicado
+POST {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}/metodos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "metodoId": "uuid-novo-metodo",
+  "codigoLaboratorio": "HEM-001"
+}
+
+### Expected Response
+# Status: 409 Conflict
+# {
+#   "statusCode": 409,
+#   "message": "Já existe um método com este código no laboratório",
+#   "error": "Conflict"
+# }

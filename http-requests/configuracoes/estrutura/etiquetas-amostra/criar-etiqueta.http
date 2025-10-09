@@ -1,0 +1,199 @@
+### Criar Etiqueta - Sangue Tubo Pequeno
+POST {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoEtiqueta": "ETQ-SANG-001",
+  "nome": "Etiqueta Sangue - Tubo Pequeno",
+  "tipoAmostra": "sangue",
+  "largura": 40,
+  "altura": 20,
+  "orientacao": "paisagem",
+  "layout": {
+    "tipo": "grid",
+    "colunas": 2,
+    "linhas": 3,
+    "espacamento": 2
+  },
+  "campos": ["codigoBarras", "nomeParaciente", "dataColeta", "horaColeta"],
+  "corPrimaria": "#FF0000",
+  "corSecundaria": "#FFFFFF",
+  "templateZPL": "^XA^FO50,50^BCN,100,Y,N,N^FD{codigo}^FS^FO50,170^A0N,25,25^FD{paciente}^FS^XZ",
+  "padrao": true,
+  "ativo": true,
+  "observacoes": "Etiqueta padrão para tubos de sangue pequenos (3-5mL)"
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "id": "uuid",
+#   "codigoEtiqueta": "ETQ-SANG-001",
+#   "nome": "Etiqueta Sangue - Tubo Pequeno",
+#   "tipoAmostra": "sangue",
+#   "largura": 40,
+#   "altura": 20,
+#   ...
+# }
+
+
+### Criar Etiqueta - Urina Frasco Médio
+POST {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoEtiqueta": "ETQ-URINA-001",
+  "nome": "Etiqueta Urina - Frasco Médio",
+  "tipoAmostra": "urina",
+  "largura": 60,
+  "altura": 40,
+  "orientacao": "paisagem",
+  "layout": {
+    "tipo": "flex",
+    "direcao": "column",
+    "alinhamento": "center"
+  },
+  "campos": ["codigoBarras", "nomeParaciente", "dataNascimento", "dataColeta", "horaColeta", "tipoExame"],
+  "corPrimaria": "#FFFF00",
+  "corSecundaria": "#000000",
+  "templateZPL": "^XA^FO100,50^BCN,120,Y,N,N^FD{codigo}^FS^FO100,200^A0N,30,30^FD{paciente}^FS^FO100,240^A0N,25,25^FDNasc: {dataNasc}^FS^FO100,270^A0N,25,25^FDColeta: {dataColeta} {horaColeta}^FS^XZ",
+  "padrao": true,
+  "ativo": true,
+  "observacoes": "Etiqueta para frascos de urina tipo 1 e cultura"
+}
+
+
+### Criar Etiqueta - Fezes
+POST {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoEtiqueta": "ETQ-FEZES-001",
+  "nome": "Etiqueta Fezes - Coletor Universal",
+  "tipoAmostra": "fezes",
+  "largura": 60,
+  "altura": 40,
+  "orientacao": "retrato",
+  "layout": {
+    "tipo": "grid",
+    "colunas": 1,
+    "linhas": 5,
+    "espacamento": 3
+  },
+  "campos": ["codigoBarras", "nomeParaciente", "dataNascimento", "dataColeta", "tipoExame", "observacoes"],
+  "corPrimaria": "#8B4513",
+  "corSecundaria": "#FFFFFF",
+  "templateZPL": "^XA^FO50,30^BCN,100,Y,N,N^FD{codigo}^FS^FO50,150^A0N,28,28^FD{paciente}^FS^FO50,185^A0N,22,22^FDNasc: {dataNasc}^FS^FO50,210^A0N,22,22^FDColeta: {dataColeta}^FS^FO50,235^A0N,22,22^FD{tipoExame}^FS^XZ",
+  "padrao": false,
+  "ativo": true,
+  "observacoes": "Etiqueta para coletor de fezes parasitológico e coprocultura"
+}
+
+
+### Criar Etiqueta - Swab
+POST {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoEtiqueta": "ETQ-SWAB-001",
+  "nome": "Etiqueta Swab - Tubo com Meio de Transporte",
+  "tipoAmostra": "swab",
+  "largura": 30,
+  "altura": 15,
+  "orientacao": "paisagem",
+  "layout": {
+    "tipo": "simples",
+    "campos_visiveis": ["codigoBarras", "iniciais"]
+  },
+  "campos": ["codigoBarras", "nomeParaciente", "dataColeta"],
+  "corPrimaria": "#ADD8E6",
+  "corSecundaria": "#000000",
+  "templateZPL": "^XA^FO30,20^BCN,80,Y,N,N^FD{codigo}^FS^FO30,110^A0N,20,20^FD{iniciais}^FS^XZ",
+  "padrao": false,
+  "ativo": true,
+  "observacoes": "Etiqueta pequena para tubos de swab nasofaríngeo e orofaríngeo"
+}
+
+
+### Criar Etiqueta - Soro
+POST {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoEtiqueta": "ETQ-SORO-001",
+  "nome": "Etiqueta Soro - Tubo Seco",
+  "tipoAmostra": "soro",
+  "largura": 40,
+  "altura": 20,
+  "orientacao": "paisagem",
+  "layout": {
+    "tipo": "grid",
+    "colunas": 2,
+    "linhas": 2
+  },
+  "campos": ["codigoBarras", "nomeParaciente", "dataColeta", "horaColeta"],
+  "corPrimaria": "#FF6347",
+  "corSecundaria": "#FFFFFF",
+  "templateZPL": "^XA^FO50,40^BCN,90,Y,N,N^FD{codigo}^FS^FO50,150^A0N,24,24^FD{paciente}^FS^FO50,180^A0N,20,20^FD{dataColeta} {horaColeta}^FS^XZ",
+  "padrao": true,
+  "ativo": true,
+  "observacoes": "Etiqueta para tubos de soro (tampa vermelha)"
+}
+
+
+### Criar Etiqueta - Plasma
+POST {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoEtiqueta": "ETQ-PLASMA-001",
+  "nome": "Etiqueta Plasma - Tubo com Anticoagulante",
+  "tipoAmostra": "plasma",
+  "largura": 40,
+  "altura": 20,
+  "orientacao": "paisagem",
+  "layout": {
+    "tipo": "grid",
+    "colunas": 2,
+    "linhas": 2
+  },
+  "campos": ["codigoBarras", "nomeParaciente", "dataColeta", "horaColeta"],
+  "corPrimaria": "#00FF00",
+  "corSecundaria": "#FFFFFF",
+  "templateZPL": "^XA^FO50,40^BCN,90,Y,N,N^FD{codigo}^FS^FO50,150^A0N,24,24^FD{paciente}^FS^FO50,180^A0N,20,20^FD{dataColeta} {horaColeta}^FS^XZ",
+  "padrao": false,
+  "ativo": true,
+  "observacoes": "Etiqueta para tubos de plasma (tampa verde - heparina)"
+}
+
+
+### Criar Etiqueta - Líquor
+POST {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoEtiqueta": "ETQ-LIQUOR-001",
+  "nome": "Etiqueta Líquor - Tubo Estéril",
+  "tipoAmostra": "liquor",
+  "largura": 50,
+  "altura": 30,
+  "orientacao": "paisagem",
+  "layout": {
+    "tipo": "flex",
+    "direcao": "column"
+  },
+  "campos": ["codigoBarras", "nomeParaciente", "dataNascimento", "dataColeta", "horaColeta", "numeroTubo"],
+  "corPrimaria": "#FFD700",
+  "corSecundaria": "#000000",
+  "templateZPL": "^XA^FO70,40^BCN,100,Y,N,N^FD{codigo}^FS^FO70,160^A0N,26,26^FD{paciente}^FS^FO70,195^A0N,22,22^FDNasc: {dataNasc}^FS^FO70,220^A0N,22,22^FDColeta: {dataColeta} {horaColeta}^FS^FO70,245^A0N,22,22^FDTubo: {numeroTubo}^FS^XZ",
+  "padrao": false,
+  "ativo": true,
+  "observacoes": "Etiqueta para tubos de líquor - identificar numeração sequencial"
+}

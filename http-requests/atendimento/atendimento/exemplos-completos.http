@@ -1,0 +1,480 @@
+### ============================================
+### ATENDIMENTO API - Exemplos de Requisições
+### ============================================
+
+### 1. FLUXO COMPLETO - Consulta Particular
+
+### 1.1 - Criar Atendimento
+POST {{baseUrl}}/atendimento/atendimento
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "pacienteId": "uuid-paciente-001",
+  "profissionalId": "uuid-profissional-001",
+  "unidadeSaudeId": "uuid-unidade-001",
+  "tipoAtendimento": "consulta",
+  "dataAtendimento": "2025-10-10T10:00:00Z",
+  "statusAtendimento": "agendado",
+  "motivoAtendimento": "Consulta de rotina - check-up anual",
+  "valorConsulta": 250.00,
+  "valorTotal": 250.00
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "data": {
+#     "id": "{{atendimentoId}}",
+#     "numeroAtendimento": "ATD202510100001"
+#   }
+# }
+
+###
+
+### 1.2 - Iniciar Atendimento
+PATCH {{baseUrl}}/atendimento/atendimento/{{atendimentoId}}/iniciar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "observacoes": "Paciente chegou no horário"
+}
+
+###
+
+### 1.3 - Preencher Anamnese
+PATCH {{baseUrl}}/atendimento/atendimento/{{atendimentoId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "anamnese": "Queixa principal: Check-up anual.\nHPA: Paciente nega queixas. Hipertenso controlado.\nHPP: HAS há 5 anos.\nHábitos: Sedentário, etilista social.\nAlergias: Nega."
+}
+
+###
+
+### 1.4 - Preencher Exame Físico
+PATCH {{baseUrl}}/atendimento/atendimento/{{atendimentoId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "examesFisico": "PA: 120/80mmHg, FC: 72bpm, Tax: 36.5°C\nEGAC, corado, hidratado\nAC: RCR 2T BNF\nAP: MVF sem RA\nAbdome: Plano, flácido, indolor, RHA+\nExtremidades: Sem edemas"
+}
+
+###
+
+### 1.5 - Adicionar Hipótese Diagnóstica e Conduta
+PATCH {{baseUrl}}/atendimento/atendimento/{{atendimentoId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "hipoteseDiagnostica": "1. HAS controlada\n2. Sobrepeso\n3. Sedentarismo",
+  "conduta": "1. Manter losartana 50mg\n2. Dieta hipossódica\n3. Atividade física\n4. Exames: hemograma, glicemia, lipidograma\n5. Retorno em 30 dias"
+}
+
+###
+
+### 1.6 - Adicionar Prescrição
+PATCH {{baseUrl}}/atendimento/atendimento/{{atendimentoId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "prescricao": "LOSARTANA POTÁSSICA 50mg - 1 cp pela manhã\n\nOrientações:\n- Dieta hipossódica\n- Atividade física 150min/semana\n- Reduzir álcool"
+}
+
+###
+
+### 1.7 - Concluir Atendimento
+PATCH {{baseUrl}}/atendimento/atendimento/{{atendimentoId}}/concluir
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "observacoes": "Atendimento concluído. Paciente orientado."
+}
+
+###
+
+### 2. FLUXO COMPLETO - Atendimento de Urgência
+
+### 2.1 - Criar Atendimento de Urgência
+POST {{baseUrl}}/atendimento/atendimento
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "pacienteId": "uuid-paciente-002",
+  "profissionalId": "uuid-profissional-002",
+  "unidadeSaudeId": "uuid-unidade-001",
+  "tipoAtendimento": "urgencia",
+  "dataAtendimento": "2025-10-10T16:30:00Z",
+  "statusAtendimento": "em_atendimento",
+  "motivoAtendimento": "Dor abdominal aguda",
+  "valorConsulta": 350.00,
+  "valorTotal": 350.00
+}
+
+###
+
+### 2.2 - Preencher Dados Clínicos Rapidamente
+PATCH {{baseUrl}}/atendimento/atendimento/{{urgenciaId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "anamnese": "Dor abdominal em FID há 6h. Febre há 3h.",
+  "examesFisico": "PA: 130/85mmHg, FC: 98bpm, Tax: 39.5°C\nDor à palpação FID. Blumberg+",
+  "hipoteseDiagnostica": "Apendicite aguda?",
+  "conduta": "1. US abdome urgente\n2. Hemograma, PCR\n3. Dipirona + Escopolamina IV\n4. Avaliar cirurgia",
+  "prescricao": "DIPIRONA 1g IV 6/6h\nESCOPOLAMINA 20mg IV 8/8h\nOMEPRAZOL 40mg IV 12/12h"
+}
+
+###
+
+### 2.3 - Concluir com Encaminhamento
+PATCH {{baseUrl}}/atendimento/atendimento/{{urgenciaId}}/concluir
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "observacoes": "Paciente encaminhado para cirurgia - confirmada apendicite aguda pelo US"
+}
+
+###
+
+### 3. FLUXO COMPLETO - Consulta por Convênio
+
+### 3.1 - Criar Atendimento com Convênio
+POST {{baseUrl}}/atendimento/atendimento
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "pacienteId": "uuid-paciente-003",
+  "profissionalId": "uuid-profissional-001",
+  "unidadeSaudeId": "uuid-unidade-001",
+  "convenioId": "uuid-convenio-001",
+  "tipoAtendimento": "consulta",
+  "dataAtendimento": "2025-10-10T14:00:00Z",
+  "statusAtendimento": "agendado",
+  "motivoAtendimento": "Cefaleia persistente",
+  "valorConsulta": 180.00,
+  "valorTotal": 180.00,
+  "observacoes": "Autorização: AUT123456"
+}
+
+###
+
+### 3.2 - Iniciar e Preencher Atendimento
+PATCH {{baseUrl}}/atendimento/atendimento/{{convenioId}}/iniciar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{}
+
+###
+
+PATCH {{baseUrl}}/atendimento/atendimento/{{convenioId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "anamnese": "Cefaleia há 3 dias, tipo tensional, melhora com analgésicos",
+  "examesFisico": "PA: 120/80mmHg, Tax: 36.2°C. Exame neurológico sem alterações",
+  "hipoteseDiagnostica": "Cefaleia tensional",
+  "conduta": "Orientações posturais, reduzir stress. Analgésico se necessário.",
+  "prescricao": "PARACETAMOL 750mg - 1 cp até 4x/dia se dor"
+}
+
+###
+
+### 3.3 - Concluir Atendimento
+PATCH {{baseUrl}}/atendimento/atendimento/{{convenioId}}/concluir
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "observacoes": "Paciente orientado. Convênio autorizado."
+}
+
+###
+
+### 4. FLUXO COMPLETO - Atendimento com Exames
+
+### 4.1 - Criar Atendimento para Exames
+POST {{baseUrl}}/atendimento/atendimento
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "pacienteId": "uuid-paciente-004",
+  "profissionalId": "uuid-profissional-003",
+  "unidadeSaudeId": "uuid-unidade-001",
+  "tipoAtendimento": "exame",
+  "dataAtendimento": "2025-10-10T08:00:00Z",
+  "statusAtendimento": "agendado",
+  "motivoAtendimento": "Exames laboratoriais de rotina",
+  "valorExames": 320.00,
+  "valorTotal": 320.00
+}
+
+###
+
+### 4.2 - Iniciar Coleta
+PATCH {{baseUrl}}/atendimento/atendimento/{{exameId}}/iniciar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "observacoes": "Paciente em jejum de 12h confirmado"
+}
+
+###
+
+### 4.3 - Registrar Exames Solicitados
+PATCH {{baseUrl}}/atendimento/atendimento/{{exameId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "prescricao": "Exames solicitados:\n- Hemograma completo\n- Glicemia de jejum\n- Colesterol total e frações\n- Triglicerídeos\n- TGO, TGP\n- Ureia, Creatinina",
+  "observacoes": "Material coletado às 08:15. Enviado ao laboratório."
+}
+
+###
+
+### 4.4 - Concluir Atendimento
+PATCH {{baseUrl}}/atendimento/atendimento/{{exameId}}/concluir
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "observacoes": "Coleta realizada com sucesso. Resultados em 48h."
+}
+
+###
+
+### 5. CENÁRIOS ESPECIAIS
+
+### 5.1 - Cancelar Atendimento (Falta do Paciente)
+PATCH {{baseUrl}}/atendimento/atendimento/{{atendimentoId}}/cancelar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "motivoCancelamento": "Paciente não compareceu",
+  "observacoes": "Sem contato prévio. 3ª falta consecutiva."
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Atendimento cancelado com sucesso",
+#   "data": {
+#     "statusAtendimento": "cancelado",
+#     "motivoCancelamento": "Paciente não compareceu"
+#   }
+# }
+
+###
+
+### 5.2 - Reagendar Atendimento
+PATCH {{baseUrl}}/atendimento/atendimento/{{atendimentoId}}/reagendar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "novaDataAtendimento": "2025-10-15T14:00:00Z",
+  "motivoReagendamento": "Solicitação do paciente",
+  "observacoes": "Paciente com compromisso inadiável"
+}
+
+###
+
+### 5.3 - Atendimento sem Convênio que Vira Convênio
+POST {{baseUrl}}/atendimento/atendimento
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "pacienteId": "uuid-paciente-005",
+  "profissionalId": "uuid-profissional-001",
+  "unidadeSaudeId": "uuid-unidade-001",
+  "tipoAtendimento": "consulta",
+  "dataAtendimento": "2025-10-10T15:00:00Z",
+  "statusAtendimento": "agendado",
+  "motivoAtendimento": "Consulta dermatológica",
+  "valorConsulta": 280.00,
+  "valorTotal": 280.00
+}
+
+###
+
+### Após início, paciente traz autorização
+PATCH {{baseUrl}}/atendimento/atendimento/{{atendimentoId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "convenioId": "uuid-convenio-002",
+  "valorConsulta": 200.00,
+  "valorTotal": 200.00,
+  "observacoes": "Paciente trouxe autorização AUT789456 durante atendimento"
+}
+
+###
+
+### 5.4 - Buscar Agenda do Dia do Profissional
+GET {{baseUrl}}/atendimento/atendimento/profissional/uuid-profissional-001/agenda?data=2025-10-10
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [
+#     {
+#       "numeroAtendimento": "ATD202510100001",
+#       "dataAtendimento": "2025-10-10T10:00:00Z",
+#       "paciente": {
+#         "nome": "João da Silva",
+#         "telefone": "11999998888"
+#       },
+#       "tipoAtendimento": "consulta",
+#       "statusAtendimento": "agendado"
+#     },
+#     {
+#       "numeroAtendimento": "ATD202510100003",
+#       "dataAtendimento": "2025-10-10T14:00:00Z",
+#       "paciente": {
+#         "nome": "Maria Santos",
+#         "telefone": "11988887777"
+#       },
+#       "tipoAtendimento": "consulta",
+#       "statusAtendimento": "agendado",
+#       "convenio": {
+#         "nome": "Unimed"
+#       }
+#     }
+#   ],
+#   "total": 8
+# }
+
+###
+
+### 5.5 - Histórico Completo do Paciente
+GET {{baseUrl}}/atendimento/atendimento/paciente/uuid-paciente-001/historico
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [
+#     {
+#       "numeroAtendimento": "ATD202510100001",
+#       "dataAtendimento": "2025-10-10T10:00:00Z",
+#       "profissional": {
+#         "nome": "Dr. Carlos Alberto Souza"
+#       },
+#       "tipoAtendimento": "consulta",
+#       "statusAtendimento": "concluido",
+#       "hipoteseDiagnostica": "HAS controlada",
+#       "prescricao": "Losartana 50mg"
+#     },
+#     {
+#       "numeroAtendimento": "ATD202509100001",
+#       "dataAtendimento": "2025-09-10T10:00:00Z",
+#       "profissional": {
+#         "nome": "Dr. Carlos Alberto Souza"
+#       },
+#       "tipoAtendimento": "consulta",
+#       "statusAtendimento": "concluido"
+#     }
+#   ],
+#   "total": 15
+# }
+
+###
+
+### 5.6 - Estatísticas Gerais
+GET {{baseUrl}}/atendimento/atendimento/stats
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "total": 1543,
+#   "porTipo": {
+#     "consulta": 850,
+#     "exame": 420,
+#     "retorno": 180,
+#     "urgencia": 70,
+#     "emergencia": 23
+#   },
+#   "porStatus": {
+#     "agendado": 120,
+#     "em_atendimento": 15,
+#     "concluido": 1350,
+#     "cancelado": 58
+#   },
+#   "valorTotal": 387500.00,
+#   "valorMedio": 251.13
+# }
+
+###
+
+### 6. VALIDAÇÕES E ERROS
+
+### 6.1 - Tentar criar atendimento sem paciente
+POST {{baseUrl}}/atendimento/atendimento
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "profissionalId": "uuid-profissional-001",
+  "unidadeSaudeId": "uuid-unidade-001",
+  "tipoAtendimento": "consulta",
+  "dataAtendimento": "2025-10-10T10:00:00Z"
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": ["pacienteId deve ser informado"]
+# }
+
+###
+
+### 6.2 - Tentar concluir atendimento já concluído
+PATCH {{baseUrl}}/atendimento/atendimento/{{atendimentoId}}/concluir
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Atendimento já está concluído"
+# }
+
+###
+
+### 6.3 - Verificar disponibilidade de horário ocupado
+GET {{baseUrl}}/atendimento/atendimento/disponibilidade?profissionalId=uuid-profissional-001&dataHora=2025-10-10T10:00:00Z
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "disponivel": false,
+#   "motivo": "Profissional já possui atendimento agendado",
+#   "atendimentoConflitante": {
+#     "numeroAtendimento": "ATD202510100001"
+#   }
+# }

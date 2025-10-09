@@ -1,0 +1,411 @@
+### ========================================
+### EXEMPLO COMPLETO 1: Laboratório Grande Porte - Integração API
+### ========================================
+
+### 1.1 - Criar Laboratório com Integração API Completa
+POST {{baseUrl}}/relacionamento/laboratorios
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "laboratorio",
+    "cnpj": "12345678000190",
+    "razaoSocial": "Laboratório São Lucas Análises Clínicas LTDA",
+    "nomeFantasia": "Lab São Lucas",
+    "inscricaoEstadual": "123456789",
+    "inscricaoMunicipal": "987654321",
+    "email": "contato@labsaolucas.com.br",
+    "telefone": "(11) 3456-7890",
+    "celular": "(11) 98765-4321",
+    "website": "https://www.labsaolucas.com.br",
+    "cep": "01310-100",
+    "logradouro": "Av. Paulista",
+    "numero": "1000",
+    "complemento": "Sala 501",
+    "bairro": "Bela Vista",
+    "cidade": "São Paulo",
+    "estado": "SP",
+    "observacoes": "Laboratório parceiro desde 2020. Certificação PALC."
+  },
+  "codigoLaboratorio": "LAB-SL-001",
+  "responsavelTecnico": "Dr. João Silva",
+  "conselhoResponsavel": "CRF",
+  "numeroConselho": "12345-SP",
+  "tipoIntegracao": "api",
+  "urlIntegracao": "https://api.labsaolucas.com.br/v1",
+  "tokenIntegracao": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "configuracaoAdicional": "{\"timeout\": 30000, \"retries\": 3, \"version\": \"1.0\", \"format\": \"json\"}",
+  "metodosEnvioResultado": ["email", "portal", "sistema"],
+  "portalResultadosUrl": "https://portal.labsaolucas.com.br",
+  "prazoPadraoEntregaNormal": 3,
+  "prazoPadraoEntregaUrgente": 1,
+  "taxaUrgencia": 50.00,
+  "percentualRepasse": 65.00,
+  "aceitaUrgencia": true,
+  "enviaResultadoAutomatico": true,
+  "observacoes": "Laboratório com certificação PALC. Atende urgências 24h. Integração via API REST com autenticação JWT."
+}
+
+### 1.2 - Vincular Métodos de Hematologia
+POST {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}/metodos/bulk
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "metodos": [
+    {
+      "metodoId": "uuid-hemograma",
+      "codigoLaboratorio": "HEM-001",
+      "nomeLaboratorio": "Hemograma Completo",
+      "prazoEntrega": 3,
+      "valor": 25.50,
+      "aceitaUrgencia": true,
+      "prazoEntregaUrgente": 1,
+      "valorUrgencia": 40.00
+    },
+    {
+      "metodoId": "uuid-leucograma",
+      "codigoLaboratorio": "LEU-001",
+      "nomeLaboratorio": "Leucograma",
+      "prazoEntrega": 3,
+      "valor": 18.00,
+      "aceitaUrgencia": true,
+      "prazoEntregaUrgente": 1,
+      "valorUrgencia": 30.00
+    },
+    {
+      "metodoId": "uuid-plaquetas",
+      "codigoLaboratorio": "PLQ-001",
+      "nomeLaboratorio": "Contagem de Plaquetas",
+      "prazoEntrega": 2,
+      "valor": 15.00,
+      "aceitaUrgencia": true,
+      "prazoEntregaUrgente": 1,
+      "valorUrgencia": 25.00
+    }
+  ]
+}
+
+### 1.3 - Verificar Integração
+GET {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}/verificar-integracao
+Authorization: Bearer {{token}}
+
+### 1.4 - Listar Todos os Métodos Vinculados
+GET {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}/metodos
+Authorization: Bearer {{token}}
+
+
+### ========================================
+### EXEMPLO COMPLETO 2: Laboratório Médio Porte - WebService SOAP
+### ========================================
+
+### 2.1 - Criar Laboratório com WebService
+POST {{baseUrl}}/relacionamento/laboratorios
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "laboratorio",
+    "cnpj": "11223344000155",
+    "razaoSocial": "Laboratório BioTech Análises LTDA",
+    "nomeFantasia": "BioTech Lab",
+    "inscricaoEstadual": "234567890",
+    "inscricaoMunicipal": "876543210",
+    "email": "sistemas@biotechlab.com.br",
+    "telefone": "(11) 3333-4444",
+    "celular": "(11) 97777-8888",
+    "website": "https://www.biotechlab.com.br",
+    "cep": "05408-000",
+    "logradouro": "Av. Faria Lima",
+    "numero": "3000",
+    "complemento": "Conj. 1001",
+    "bairro": "Itaim Bibi",
+    "cidade": "São Paulo",
+    "estado": "SP"
+  },
+  "codigoLaboratorio": "LAB-BT-001",
+  "responsavelTecnico": "Dr. Carlos Oliveira",
+  "conselhoResponsavel": "CRBM",
+  "numeroConselho": "98765-SP",
+  "tipoIntegracao": "webservice",
+  "urlIntegracao": "https://ws.biotechlab.com.br/soap/v2",
+  "usuarioIntegracao": "erplab_user",
+  "senhaIntegracao": "senha-segura-123",
+  "configuracaoAdicional": "{\"wsdl\": \"https://ws.biotechlab.com.br/soap/v2?wsdl\", \"namespace\": \"http://biotech.com.br/ws\", \"soapVersion\": \"1.2\"}",
+  "metodosEnvioResultado": ["sistema", "portal"],
+  "portalResultadosUrl": "https://resultados.biotechlab.com.br",
+  "prazoPadraoEntregaNormal": 4,
+  "prazoPadraoEntregaUrgente": 1,
+  "taxaUrgencia": 45.00,
+  "percentualRepasse": 60.00,
+  "aceitaUrgencia": true,
+  "enviaResultadoAutomatico": true,
+  "observacoes": "Integração via SOAP/WebService. Certificado SSL obrigatório. Especializado em análises microbiológicas."
+}
+
+### 2.2 - Vincular Métodos de Bioquímica
+POST {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}/metodos/bulk
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "metodos": [
+    {
+      "metodoId": "uuid-glicemia",
+      "codigoLaboratorio": "GLI-001",
+      "nomeLaboratorio": "Glicemia de Jejum",
+      "prazoEntrega": 2,
+      "valor": 15.00,
+      "aceitaUrgencia": true,
+      "valorUrgencia": 25.00
+    },
+    {
+      "metodoId": "uuid-colesterol-total",
+      "codigoLaboratorio": "COL-001",
+      "nomeLaboratorio": "Colesterol Total",
+      "prazoEntrega": 3,
+      "valor": 18.00,
+      "aceitaUrgencia": false
+    },
+    {
+      "metodoId": "uuid-triglicerides",
+      "codigoLaboratorio": "TRI-001",
+      "nomeLaboratorio": "Triglicérides",
+      "prazoEntrega": 3,
+      "valor": 18.00,
+      "aceitaUrgencia": false
+    },
+    {
+      "metodoId": "uuid-creatinina",
+      "codigoLaboratorio": "CRE-001",
+      "nomeLaboratorio": "Creatinina",
+      "prazoEntrega": 2,
+      "valor": 12.00,
+      "aceitaUrgencia": true,
+      "valorUrgencia": 20.00
+    },
+    {
+      "metodoId": "uuid-ureia",
+      "codigoLaboratorio": "URE-001",
+      "nomeLaboratorio": "Ureia",
+      "prazoEntrega": 2,
+      "valor": 12.00,
+      "aceitaUrgencia": true,
+      "valorUrgencia": 20.00
+    }
+  ]
+}
+
+
+### ========================================
+### EXEMPLO COMPLETO 3: Laboratório Pequeno Porte - Manual
+### ========================================
+
+### 3.1 - Criar Laboratório com Integração Manual
+POST {{baseUrl}}/relacionamento/laboratorios
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "laboratorio",
+    "cnpj": "98765432000111",
+    "razaoSocial": "Centro de Diagnósticos Médicos LTDA",
+    "nomeFantasia": "CDM Diagnósticos",
+    "email": "contato@cdmdiagnosticos.com.br",
+    "telefone": "(11) 2345-6789",
+    "celular": "(11) 99876-5432",
+    "cep": "04543-011",
+    "logradouro": "Av. Brigadeiro Luís Antônio",
+    "numero": "2500",
+    "bairro": "Jardim Paulista",
+    "cidade": "São Paulo",
+    "estado": "SP"
+  },
+  "codigoLaboratorio": "LAB-CDM-001",
+  "responsavelTecnico": "Dra. Maria Santos",
+  "conselhoResponsavel": "CRB",
+  "numeroConselho": "54321-SP",
+  "tipoIntegracao": "manual",
+  "metodosEnvioResultado": ["email", "whatsapp"],
+  "prazoPadraoEntregaNormal": 5,
+  "prazoPadraoEntregaUrgente": 2,
+  "taxaUrgencia": 35.00,
+  "percentualRepasse": 70.00,
+  "aceitaUrgencia": false,
+  "enviaResultadoAutomatico": false,
+  "observacoes": "Resultados enviados por email. Contato via WhatsApp para urgências."
+}
+
+### 3.2 - Vincular Métodos Básicos
+POST {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}/metodos/bulk
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "metodos": [
+    {
+      "metodoId": "uuid-eas",
+      "codigoLaboratorio": "EAS-001",
+      "nomeLaboratorio": "EAS - Urina Tipo I",
+      "prazoEntrega": 2,
+      "valor": 10.00,
+      "aceitaUrgencia": false
+    },
+    {
+      "metodoId": "uuid-parasitologico",
+      "codigoLaboratorio": "PAR-001",
+      "nomeLaboratorio": "Parasitológico de Fezes",
+      "prazoEntrega": 3,
+      "valor": 12.00,
+      "aceitaUrgencia": false
+    }
+  ]
+}
+
+
+### ========================================
+### EXEMPLO COMPLETO 4: Gestão Completa de Laboratório
+### ========================================
+
+### 4.1 - Buscar Laboratório por Código
+GET {{baseUrl}}/relacionamento/laboratorios/codigo/LAB-SL-001
+Authorization: Bearer {{token}}
+
+### 4.2 - Atualizar Prazos e Valores
+PATCH {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "prazoPadraoEntregaNormal": 2,
+  "prazoPadraoEntregaUrgente": 1,
+  "taxaUrgencia": 55.00,
+  "percentualRepasse": 68.00
+}
+
+### 4.3 - Atualizar Método Específico
+PATCH {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}/metodos/{vinculoId}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "prazoEntrega": 2,
+  "valor": 28.00,
+  "valorUrgencia": 45.00
+}
+
+### 4.4 - Buscar Estatísticas do Laboratório
+GET {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}/metodos/estatisticas
+Authorization: Bearer {{token}}
+
+### 4.5 - Listar Métodos Ativos
+GET {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}/metodos/ativos
+Authorization: Bearer {{token}}
+
+### 4.6 - Buscar Métodos por Faixa de Preço
+GET {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}/metodos?valorMin=10&valorMax=30
+Authorization: Bearer {{token}}
+
+### 4.7 - Desativar Método Temporariamente
+PATCH {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}/metodos/{vinculoId}/toggle-status
+Authorization: Bearer {{token}}
+
+### 4.8 - Adicionar Novo Método
+POST {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}/metodos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "metodoId": "uuid-hemoglobina-glicada",
+  "codigoLaboratorio": "HBA1C-001",
+  "nomeLaboratorio": "Hemoglobina Glicada",
+  "prazoEntrega": 5,
+  "valor": 45.00,
+  "aceitaUrgencia": true,
+  "prazoEntregaUrgente": 2,
+  "valorUrgencia": 70.00,
+  "observacoes": "Método automatizado. Alta precisão."
+}
+
+
+### ========================================
+### EXEMPLO COMPLETO 5: Laboratório com FTP
+### ========================================
+
+### 5.1 - Criar Laboratório com Integração FTP
+POST {{baseUrl}}/relacionamento/laboratorios
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "laboratorio",
+    "cnpj": "55667788000199",
+    "razaoSocial": "Laboratório Exame Certo LTDA",
+    "nomeFantasia": "Exame Certo",
+    "email": "ti@examecerto.com.br",
+    "telefone": "(11) 4444-5555",
+    "celular": "(11) 96666-7777",
+    "cep": "01419-001",
+    "logradouro": "Rua Augusta",
+    "numero": "1500",
+    "bairro": "Consolação",
+    "cidade": "São Paulo",
+    "estado": "SP"
+  },
+  "codigoLaboratorio": "LAB-EC-001",
+  "responsavelTecnico": "Dra. Ana Paula Lima",
+  "conselhoResponsavel": "CRF",
+  "numeroConselho": "11111-SP",
+  "tipoIntegracao": "ftp",
+  "urlIntegracao": "ftp://ftp.examecerto.com.br",
+  "usuarioIntegracao": "erplab_ftp",
+  "senhaIntegracao": "ftp-pass-456",
+  "configuracaoAdicional": "{\"porta\": 21, \"modo\": \"passivo\", \"diretorio\": \"/resultados/\", \"formato\": \"csv\", \"delimitador\": \";\"}",
+  "metodosEnvioResultado": ["ftp", "email"],
+  "prazoPadraoEntregaNormal": 5,
+  "prazoPadraoEntregaUrgente": 2,
+  "taxaUrgencia": 30.00,
+  "percentualRepasse": 75.00,
+  "aceitaUrgencia": true,
+  "enviaResultadoAutomatico": true,
+  "observacoes": "Resultados disponibilizados via FTP diariamente às 20h. Arquivo CSV com layout personalizado."
+}
+
+### 5.2 - Buscar Todos os Laboratórios Ativos
+GET {{baseUrl}}/relacionamento/laboratorios/ativos
+Authorization: Bearer {{token}}
+
+### 5.3 - Obter Estatísticas Gerais
+GET {{baseUrl}}/relacionamento/laboratorios/estatisticas
+Authorization: Bearer {{token}}
+
+### 5.4 - Buscar Laboratórios que Aceitam Urgência
+GET {{baseUrl}}/relacionamento/laboratorios/aceita-urgencia
+Authorization: Bearer {{token}}
+
+### 5.5 - Buscar por Tipo de Integração
+GET {{baseUrl}}/relacionamento/laboratorios/integracao/api
+Authorization: Bearer {{token}}
+
+### 5.6 - Buscar por CNPJ
+GET {{baseUrl}}/relacionamento/laboratorios/cnpj/12345678000190
+Authorization: Bearer {{token}}
+
+### 5.7 - Alternar Status do Laboratório
+PATCH {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}/toggle-status
+Authorization: Bearer {{token}}
+
+### 5.8 - Atualizar Dados da Empresa
+PATCH {{baseUrl}}/relacionamento/laboratorios/{laboratorioId}/empresa
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nomeFantasia": "Exame Certo - Unidade Centro",
+  "telefone": "(11) 4444-5556",
+  "email": "contato.centro@examecerto.com.br"
+}

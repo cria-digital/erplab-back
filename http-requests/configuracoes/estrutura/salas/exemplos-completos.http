@@ -1,0 +1,385 @@
+### ==========================================================
+### FLUXO COMPLETO - SALA DE COLETA DE ALTO VOLUME
+### ==========================================================
+
+### 1. Criar sala de coleta de alto volume completa
+POST {{baseUrl}}/configuracoes/estrutura/salas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoSala": "SALA-COL-PREMIUM-001",
+  "nome": "Sala de Coleta Premium 1",
+  "tipo": "coleta",
+  "setorId": "{{setorColetaId}}",
+  "andar": "1",
+  "capacidade": 5,
+  "area": 18.0,
+  "status": "disponivel",
+  "temArCondicionado": true,
+  "temExaustor": true,
+  "temPia": true,
+  "temGeladeira": true,
+  "temFreezer": false,
+  "nivelBiosseguranca": "NB2",
+  "capacidadeAgendamento": 50,
+  "horarioFuncionamento": {
+    "segunda": { "abertura": "06:00", "fechamento": "20:00" },
+    "terca": { "abertura": "06:00", "fechamento": "20:00" },
+    "quarta": { "abertura": "06:00", "fechamento": "20:00" },
+    "quinta": { "abertura": "06:00", "fechamento": "20:00" },
+    "sexta": { "abertura": "06:00", "fechamento": "20:00" },
+    "sabado": { "abertura": "07:00", "fechamento": "15:00" },
+    "domingo": { "abertura": "08:00", "fechamento": "12:00" }
+  },
+  "observacoes": "Sala de coleta premium com capacidade ampliada. Equipada com 3 cadeiras de coleta ergonômicas, sistema de etiquetagem automatizado, refrigerador para amostras, sistema de ventilação forçada, bancada de preparo, pia com água aquecida, dispenser automático de álcool gel, lixeiras para descarte de perfurocortantes. Integração direta com LIS via código de barras. Responsável técnica: Enf. Ana Paula Costa (COREN 123456-SP)"
+}
+
+### 2. Verificar se foi criada
+GET {{baseUrl}}/configuracoes/estrutura/salas/codigo/SALA-COL-PREMIUM-001
+Authorization: Bearer {{token}}
+
+### 3. Atualizar com equipamentos adicionais
+PATCH {{baseUrl}}/configuracoes/estrutura/salas/{{$guid}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "observacoes": "Sala de coleta premium - Equipada com 3 cadeiras de coleta Ghanem ergonômicas, sistema de etiquetagem Zebra ZD420, refrigerador Consul 300L para amostras, sistema de ventilação com filtro HEPA, bancada de inox com 3 metros, pia com torneira de acionamento por sensor, 5 dispensers automáticos de álcool gel, 6 coletores para perfurocortantes 13L. Integração LIS via HL7. Responsável: Enf. Ana Paula Costa COREN 123456-SP"
+}
+
+### 4. Vincular equipamento à sala
+POST {{baseUrl}}/configuracoes/estrutura/equipamentos/{{equipamentoId}}/vincular-sala
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "salaId": "{{$guid}}"
+}
+
+### 5. Verificar disponibilidade
+GET {{baseUrl}}/configuracoes/estrutura/salas/{{$guid}}/disponibilidade
+Authorization: Bearer {{token}}
+
+### 6. Obter estatisticas de uso
+GET {{baseUrl}}/configuracoes/estrutura/salas/{{$guid}}/estatisticas-uso
+Authorization: Bearer {{token}}
+
+### 7. Marcar como ocupada
+PATCH {{baseUrl}}/configuracoes/estrutura/salas/{{$guid}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "status": "ocupada"
+}
+
+### 8. Retornar para disponivel
+PATCH {{baseUrl}}/configuracoes/estrutura/salas/{{$guid}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "status": "disponivel"
+}
+
+### ==========================================================
+### FLUXO COMPLETO - LABORATORIO DE ANALISES CLINICAS NB3
+### ==========================================================
+
+### 1. Criar laboratorio de biosseguranca NB3
+POST {{baseUrl}}/configuracoes/estrutura/salas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoSala": "LAB-NB3-001",
+  "nome": "Laboratório de Biologia Molecular NB3",
+  "tipo": "laboratorio",
+  "setorId": "{{setorBioMolecularId}}",
+  "andar": "3",
+  "capacidade": 6,
+  "area": 60.0,
+  "status": "disponivel",
+  "temArCondicionado": true,
+  "temExaustor": true,
+  "temPia": true,
+  "temGeladeira": true,
+  "temFreezer": true,
+  "nivelBiosseguranca": "NB3",
+  "observacoes": "Laboratório de biossegurança NB3 para análises de alto risco. Sistema de pressão negativa, dupla porta de acesso com antecâmara, janela de observação, cabine de segurança biológica classe II tipo A2, autoclave de barreira dupla porta, sistema de filtragem HEPA na entrada e saída de ar, sistema de descontaminação por formaldeído, ducha de emergência, lava-olhos, sistema de monitoramento de pressão diferencial 24/7, alarmes de segurança. Acesso restrito via biometria. Certificado ANVISA: NB3-2024-001. Responsável: Dr. Roberto Santos CRBM 54321"
+}
+
+### 2. Verificar criacao
+GET {{baseUrl}}/configuracoes/estrutura/salas/codigo/LAB-NB3-001
+Authorization: Bearer {{token}}
+
+### 3. Listar equipamentos do laboratorio
+GET {{baseUrl}}/configuracoes/estrutura/salas/{{$guid}}/equipamentos
+Authorization: Bearer {{token}}
+
+### 4. Simular manutencao preventiva
+PATCH {{baseUrl}}/configuracoes/estrutura/salas/{{$guid}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "status": "manutencao",
+  "observacoes": "Laboratório em manutenção preventiva anual. Procedimentos: teste de integridade dos filtros HEPA, calibração do sistema de pressão diferencial, validação da cabine de segurança biológica (NSF/ANSI 49), teste de alarmes de segurança, verificação da autoclave de barreira, teste de ducha e lava-olhos, descontaminação completa com formaldeído. Previsão: 7 dias úteis. Análises transferidas para LAB-NB3-002."
+}
+
+### 5. Retornar de manutencao
+PATCH {{baseUrl}}/configuracoes/estrutura/salas/{{$guid}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "status": "disponivel",
+  "observacoes": "Laboratório NB3 liberado após manutenção preventiva anual. Todos os sistemas validados e aprovados. Filtros HEPA: 99.997% eficiência. Pressão diferencial: -30Pa estável. Cabine classe II: aprovada certificação NSF/ANSI 49. Autoclave: validada com indicadores biológicos. Relatório técnico: MANUT-NB3-2025-001. Certificado válido até out/2026."
+}
+
+### ==========================================================
+### FLUXO COMPLETO - SALA DE ULTRASSOM COM AGENDAMENTO ONLINE
+### ==========================================================
+
+### 1. Criar sala de ultrassom
+POST {{baseUrl}}/configuracoes/estrutura/salas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoSala": "SALA-US-201",
+  "nome": "Sala de Ultrassonografia 201",
+  "tipo": "exame",
+  "setorId": "{{setorImagemId}}",
+  "andar": "2",
+  "capacidade": 4,
+  "area": 20.0,
+  "status": "disponivel",
+  "temArCondicionado": true,
+  "temExaustor": false,
+  "temPia": true,
+  "temGeladeira": false,
+  "temFreezer": false,
+  "nivelBiosseguranca": "NB1",
+  "capacidadeAgendamento": 32,
+  "horarioFuncionamento": {
+    "segunda": { "abertura": "07:00", "fechamento": "19:00" },
+    "terca": { "abertura": "07:00", "fechamento": "19:00" },
+    "quarta": { "abertura": "07:00", "fechamento": "19:00" },
+    "quinta": { "abertura": "07:00", "fechamento": "19:00" },
+    "sexta": { "abertura": "07:00", "fechamento": "19:00" },
+    "sabado": { "abertura": "08:00", "fechamento": "16:00" }
+  },
+  "observacoes": "Sala de ultrassonografia com aparelho Doppler colorido Mindray DC-70. Maca de exame elétrica, biombo para privacidade, armário para armazenamento de gel e lençóis, impressora Sony UP-D898MD para impressão de imagens, sistema de gestão de imagens PACS integrado. Capacidade: 32 exames/dia (30min cada). Agendamento online disponível. Médico responsável: Dr. Carlos Silva CRM 98765-SP"
+}
+
+### 2. Verificar horarios disponiveis
+GET {{baseUrl}}/configuracoes/estrutura/salas/{{$guid}}/horarios-disponiveis?data=2025-10-15
+Authorization: Bearer {{token}}
+
+### 3. Obter capacidade de agendamento
+GET {{baseUrl}}/configuracoes/estrutura/salas/{{$guid}}/capacidade-agendamento
+Authorization: Bearer {{token}}
+
+### 4. Atualizar capacidade apos otimizacao
+PATCH {{baseUrl}}/configuracoes/estrutura/salas/{{$guid}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "capacidadeAgendamento": 40,
+  "observacoes": "Capacidade ampliada para 40 exames/dia após otimização do fluxo de atendimento. Tempo médio reduzido de 30min para 25min por exame. Sala equipada com Doppler colorido Mindray DC-70, maca elétrica, PACS integrado. Agendamento online ativo. Responsável: Dr. Carlos Silva CRM 98765-SP"
+}
+
+### ==========================================================
+### FLUXO COMPLETO - CENTRAL DE ESTERILIZACAO
+### ==========================================================
+
+### 1. Criar central de esterilizacao
+POST {{baseUrl}}/configuracoes/estrutura/salas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoSala": "CME-001",
+  "nome": "Central de Material e Esterilização",
+  "tipo": "esterilizacao",
+  "setorId": "{{setorCMEId}}",
+  "andar": "Terreo",
+  "capacidade": 8,
+  "area": 80.0,
+  "status": "disponivel",
+  "temArCondicionado": true,
+  "temExaustor": true,
+  "temPia": true,
+  "temGeladeira": false,
+  "temFreezer": false,
+  "nivelBiosseguranca": "NB2",
+  "horarioFuncionamento": {
+    "segunda": { "abertura": "06:00", "fechamento": "22:00" },
+    "terca": { "abertura": "06:00", "fechamento": "22:00" },
+    "quarta": { "abertura": "06:00", "fechamento": "22:00" },
+    "quinta": { "abertura": "06:00", "fechamento": "22:00" },
+    "sexta": { "abertura": "06:00", "fechamento": "22:00" },
+    "sabado": { "abertura": "07:00", "fechamento": "18:00" }
+  },
+  "observacoes": "Central de Material e Esterilização com área dividida em: expurgo, preparo, esterilização, armazenamento e distribuição. Equipamentos: 2 autoclaves Phoenix AH-300 (horizontal 300L), 1 autoclave rápida Phoenix AV-75, termodesinfectadora Getinge, seladora térmica Prisma SD300, lavadora ultrassônica Schuster, bancadas de inox. Sistema de rastreabilidade com código de barras. Validação biológica semanal. Atende normas RDC 15/2012 ANVISA. Responsável: Enf. Patricia Lima COREN 789012-RJ"
+}
+
+### 2. Verificar status
+GET {{baseUrl}}/configuracoes/estrutura/salas/codigo/CME-001
+Authorization: Bearer {{token}}
+
+### 3. Listar equipamentos da CME
+GET {{baseUrl}}/configuracoes/estrutura/salas/{{$guid}}/equipamentos
+Authorization: Bearer {{token}}
+
+### 4. Registrar validacao biologica
+POST {{baseUrl}}/configuracoes/estrutura/salas/{{$guid}}/validacoes
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipo": "biologica",
+  "data": "2025-10-09",
+  "resultado": "Aprovado",
+  "indicador": "Geobacillus stearothermophilus",
+  "equipamento": "Autoclave Phoenix AH-300",
+  "realizadoPor": "Enf. Patricia Lima",
+  "observacoes": "Validação biológica semanal - Indicador biológico aprovado após 24h de incubação a 56°C. Esterilização eficaz confirmada."
+}
+
+### ==========================================================
+### FLUXO COMPLETO - SALA DE ESPERA INTELIGENTE
+### ==========================================================
+
+### 1. Criar sala de espera inteligente
+POST {{baseUrl}}/configuracoes/estrutura/salas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoSala": "ESP-SMART-001",
+  "nome": "Sala de Espera Smart",
+  "tipo": "espera",
+  "setorId": "{{setorRecepcaoId}}",
+  "andar": "Terreo",
+  "capacidade": 60,
+  "area": 100.0,
+  "status": "disponivel",
+  "temArCondicionado": true,
+  "temExaustor": true,
+  "temPia": false,
+  "temGeladeira": false,
+  "temFreezer": false,
+  "horarioFuncionamento": {
+    "segunda": { "abertura": "06:00", "fechamento": "20:00" },
+    "terca": { "abertura": "06:00", "fechamento": "20:00" },
+    "quarta": { "abertura": "06:00", "fechamento": "20:00" },
+    "quinta": { "abertura": "06:00", "fechamento": "20:00" },
+    "sexta": { "abertura": "06:00", "fechamento": "20:00" },
+    "sabado": { "abertura": "07:00", "fechamento": "16:00" },
+    "domingo": { "abertura": "08:00", "fechamento": "13:00" }
+  },
+  "observacoes": "Sala de espera inteligente com sistema de chamada eletrônica por painéis LED e SMS. Climatização automatizada, 60 cadeiras estofadas ergonômicas, TV 65' com programação educativa, Wi-Fi gratuito, carregadores USB em todas as poltronas, bebedouro com água gelada e natural, máquina de café, revisteiro digital (tablets), banheiros adaptados para PCD, fraldário, brinquedoteca infantil separada, medidor de satisfação digital. Monitoramento de ocupação em tempo real. Capacidade: 60 pessoas sentadas"
+}
+
+### 2. Verificar ocupacao em tempo real
+GET {{baseUrl}}/configuracoes/estrutura/salas/{{$guid}}/ocupacao
+Authorization: Bearer {{token}}
+
+### 3. Obter estatisticas de satisfacao
+GET {{baseUrl}}/configuracoes/estrutura/salas/{{$guid}}/satisfacao
+Authorization: Bearer {{token}}
+
+### ==========================================================
+### CENARIOS DE GESTAO DE SALAS
+### ==========================================================
+
+### Listar todas as salas criadas
+GET {{baseUrl}}/configuracoes/estrutura/salas
+Authorization: Bearer {{token}}
+
+### Obter estatisticas gerais
+GET {{baseUrl}}/configuracoes/estrutura/salas/estatisticas
+Authorization: Bearer {{token}}
+
+### Listar salas disponiveis
+GET {{baseUrl}}/configuracoes/estrutura/salas/status/disponivel
+Authorization: Bearer {{token}}
+
+### Listar salas por tipo
+GET {{baseUrl}}/configuracoes/estrutura/salas/tipo/coleta
+Authorization: Bearer {{token}}
+
+### Listar salas por andar
+GET {{baseUrl}}/configuracoes/estrutura/salas/andar/1
+Authorization: Bearer {{token}}
+
+### Listar salas com NB3
+GET {{baseUrl}}/configuracoes/estrutura/salas/biosseguranca/NB3
+Authorization: Bearer {{token}}
+
+### Buscar salas com capacidade alta
+GET {{baseUrl}}/configuracoes/estrutura/salas/filtros?capacidadeMin=30
+Authorization: Bearer {{token}}
+
+### Buscar salas grandes
+GET {{baseUrl}}/configuracoes/estrutura/salas/filtros?areaMin=50
+Authorization: Bearer {{token}}
+
+### ==========================================================
+### CENARIOS DE ERRO E VALIDACOES
+### ==========================================================
+
+### Tentar criar sala com codigo duplicado
+POST {{baseUrl}}/configuracoes/estrutura/salas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoSala": "SALA-COL-PREMIUM-001",
+  "nome": "Sala Duplicada",
+  "tipo": "coleta",
+  "setorId": "{{setorId}}",
+  "andar": "1"
+}
+
+### Expected Response: 400 Bad Request - Codigo ja existe
+
+###
+
+### Tentar criar sala sem campos obrigatorios
+POST {{baseUrl}}/configuracoes/estrutura/salas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Sala Incompleta"
+}
+
+### Expected Response: 400 Bad Request - Campos obrigatorios faltando
+
+###
+
+### Buscar sala inexistente
+GET {{baseUrl}}/configuracoes/estrutura/salas/codigo/SALA-INEXISTENTE
+Authorization: Bearer {{token}}
+
+### Expected Response: 404 Not Found
+
+###
+
+### Tentar atualizar sala para status invalido
+PATCH {{baseUrl}}/configuracoes/estrutura/salas/{{$guid}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "status": "status_invalido"
+}
+
+### Expected Response: 400 Bad Request - Status invalido
+
+###

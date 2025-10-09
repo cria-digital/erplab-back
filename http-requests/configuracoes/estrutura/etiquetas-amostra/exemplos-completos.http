@@ -1,0 +1,414 @@
+### ========================================
+### EXEMPLOS COMPLETOS - ETIQUETAS DE AMOSTRA
+### Casos de uso reais para popular banco
+### ========================================
+
+
+### 1. Etiqueta para Sangue - Tubo Pequeno 40x20mm
+POST {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoEtiqueta": "ETQ-SANG-PEQUENO",
+  "nome": "Etiqueta Sangue - Tubo Pequeno 40x20mm",
+  "tipoAmostra": "sangue",
+  "largura": 40,
+  "altura": 20,
+  "orientacao": "paisagem",
+  "layout": {
+    "tipo": "grid",
+    "colunas": 2,
+    "linhas": 2,
+    "espacamento": 2,
+    "padding": 3,
+    "alinhamento": "left"
+  },
+  "campos": [
+    "codigoBarras",
+    "nomeParaciente",
+    "dataColeta",
+    "horaColeta"
+  ],
+  "corPrimaria": "#FF0000",
+  "corSecundaria": "#FFFFFF",
+  "templateZPL": "^XA\n^FO50,40^BCN,90,Y,N,N^FD{codigoBarras}^FS\n^FO50,145^A0N,24,24^FD{nomeParaciente}^FS\n^FO50,175^A0N,18,18^FD{dataColeta} {horaColeta}^FS\n^XZ",
+  "padrao": true,
+  "ativo": true,
+  "observacoes": "Etiqueta padrão para tubos de sangue pequenos (3-5mL) - EDTA, citrato, heparina"
+}
+
+
+### 2. Etiqueta para Urina - Frasco Médio 60x40mm
+POST {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoEtiqueta": "ETQ-URINA-MEDIO",
+  "nome": "Etiqueta Urina - Frasco Médio 60x40mm",
+  "tipoAmostra": "urina",
+  "largura": 60,
+  "altura": 40,
+  "orientacao": "paisagem",
+  "layout": {
+    "tipo": "flex",
+    "direcao": "column",
+    "alinhamento": "center",
+    "espacamento": 4
+  },
+  "campos": [
+    "codigoBarras",
+    "nomeParaciente",
+    "dataNascimento",
+    "dataColeta",
+    "horaColeta",
+    "tipoExame"
+  ],
+  "corPrimaria": "#FFFF00",
+  "corSecundaria": "#000000",
+  "templateZPL": "^XA\n^FO100,50^BCN,120,Y,N,N^FD{codigoBarras}^FS\n^FO100,190^A0N,30,30^FD{nomeParaciente}^FS\n^FO100,230^A0N,22,22^FDNasc: {dataNascimento}^FS\n^FO100,260^A0N,22,22^FDColeta: {dataColeta} {horaColeta}^FS\n^FO100,290^A0N,20,20^FD{tipoExame}^FS\n^XZ",
+  "padrao": true,
+  "ativo": true,
+  "observacoes": "Etiqueta para frascos de urina tipo 1 (EAS), cultura e urina 24h"
+}
+
+
+### 3. Etiqueta para Biópsia - Grande 80x50mm
+POST {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoEtiqueta": "ETQ-BIOPSIA-GRANDE",
+  "nome": "Etiqueta Biópsia/Anatomopatológico - 80x50mm",
+  "tipoAmostra": "tecido",
+  "largura": 80,
+  "altura": 50,
+  "orientacao": "paisagem",
+  "layout": {
+    "tipo": "grid",
+    "colunas": 2,
+    "linhas": 5,
+    "espacamento": 3,
+    "padding": 5
+  },
+  "campos": [
+    "codigoBarras",
+    "nomeParaciente",
+    "dataNascimento",
+    "dataColeta",
+    "horaColeta",
+    "tipoExame",
+    "medicoSolicitante",
+    "localColeta",
+    "observacoes"
+  ],
+  "corPrimaria": "#FFB6C1",
+  "corSecundaria": "#000000",
+  "templateZPL": "^XA\n^FO120,50^BCN,130,Y,N,N^FD{codigoBarras}^FS\n^FO120,200^A0N,32,32^FD{nomeParaciente}^FS\n^FO120,240^A0N,24,24^FDNasc: {dataNascimento}^FS\n^FO120,270^A0N,24,24^FDColeta: {dataColeta} {horaColeta}^FS\n^FO120,300^A0N,24,24^FD{tipoExame}^FS\n^FO120,330^A0N,22,22^FDMedico: {medicoSolicitante}^FS\n^FO120,360^A0N,22,22^FDLocal: {localColeta}^FS\n^FO120,390^A0N,20,20^FDObs: {observacoes}^FS\n^XZ",
+  "padrao": true,
+  "ativo": true,
+  "observacoes": "Etiqueta grande para frascos de biópsia e material anatomopatológico com todas as informações"
+}
+
+
+### 4. Etiqueta Universal com Código de Barras - 50x30mm
+POST {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoEtiqueta": "ETQ-UNIVERSAL-BARCODE",
+  "nome": "Etiqueta Universal com Código de Barras 50x30mm",
+  "tipoAmostra": "sangue",
+  "largura": 50,
+  "altura": 30,
+  "orientacao": "paisagem",
+  "layout": {
+    "tipo": "simples",
+    "alinhamento": "center"
+  },
+  "campos": [
+    "codigoBarras",
+    "nomeParaciente",
+    "dataColeta",
+    "horaColeta",
+    "numeroAmostra"
+  ],
+  "corPrimaria": "#000000",
+  "corSecundaria": "#FFFFFF",
+  "templateZPL": "^XA\n^FO70,45^BCN,110,Y,N,N^FD{codigoBarras}^FS\n^FO70,170^A0N,26,26^FD{nomeParaciente}^FS\n^FO70,205^A0N,20,20^FD{dataColeta} {horaColeta}^FS\n^FO70,230^A0N,18,18^FDAmostra: {numeroAmostra}^FS\n^XZ",
+  "padrao": false,
+  "ativo": true,
+  "observacoes": "Etiqueta universal compatível com todos os tipos de amostras. Foco em leitura por código de barras."
+}
+
+
+### 5. Etiqueta Colorida por Tipo de Exame - Hematologia
+POST {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoEtiqueta": "ETQ-HEMATOLOGIA-ROXA",
+  "nome": "Etiqueta Hematologia - Fundo Roxo 40x20mm",
+  "tipoAmostra": "sangue",
+  "largura": 40,
+  "altura": 20,
+  "orientacao": "paisagem",
+  "layout": {
+    "tipo": "grid",
+    "colunas": 2,
+    "linhas": 3,
+    "espacamento": 2
+  },
+  "campos": [
+    "codigoBarras",
+    "nomeParaciente",
+    "dataColeta",
+    "horaColeta",
+    "setor"
+  ],
+  "corPrimaria": "#800080",
+  "corSecundaria": "#FFFFFF",
+  "templateZPL": "^XA\n^FO50,40^BCN,90,Y,N,N^FD{codigoBarras}^FS\n^FO50,145^A0N,24,24^FD{nomeParaciente}^FS\n^FO50,175^A0N,18,18^FD{dataColeta} {horaColeta}^FS\n^FO50,195^A0N,16,16^FDHEMATOLOGIA^FS\n^XZ",
+  "padrao": false,
+  "ativo": true,
+  "observacoes": "Etiqueta roxa para setor de Hematologia - tubos EDTA"
+}
+
+
+### 6. Etiqueta Colorida por Tipo de Exame - Bioquímica
+POST {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoEtiqueta": "ETQ-BIOQUIMICA-VERMELHA",
+  "nome": "Etiqueta Bioquímica - Fundo Vermelho 40x20mm",
+  "tipoAmostra": "soro",
+  "largura": 40,
+  "altura": 20,
+  "orientacao": "paisagem",
+  "layout": {
+    "tipo": "grid",
+    "colunas": 2,
+    "linhas": 3,
+    "espacamento": 2
+  },
+  "campos": [
+    "codigoBarras",
+    "nomeParaciente",
+    "dataColeta",
+    "horaColeta",
+    "setor"
+  ],
+  "corPrimaria": "#DC143C",
+  "corSecundaria": "#FFFFFF",
+  "templateZPL": "^XA\n^FO50,40^BCN,90,Y,N,N^FD{codigoBarras}^FS\n^FO50,145^A0N,24,24^FD{nomeParaciente}^FS\n^FO50,175^A0N,18,18^FD{dataColeta} {horaColeta}^FS\n^FO50,195^A0N,16,16^FDBIOQUIMICA^FS\n^XZ",
+  "padrao": false,
+  "ativo": true,
+  "observacoes": "Etiqueta vermelha para setor de Bioquímica - tubos soro/gel"
+}
+
+
+### 7. Etiqueta Colorida por Tipo de Exame - Microbiologia
+POST {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoEtiqueta": "ETQ-MICRO-VERDE",
+  "nome": "Etiqueta Microbiologia - Fundo Verde 50x30mm",
+  "tipoAmostra": "urina",
+  "largura": 50,
+  "altura": 30,
+  "orientacao": "paisagem",
+  "layout": {
+    "tipo": "flex",
+    "direcao": "column",
+    "alinhamento": "left",
+    "espacamento": 3
+  },
+  "campos": [
+    "codigoBarras",
+    "nomeParaciente",
+    "dataColeta",
+    "horaColeta",
+    "setor",
+    "tipoExame"
+  ],
+  "corPrimaria": "#228B22",
+  "corSecundaria": "#FFFFFF",
+  "templateZPL": "^XA\n^FO70,45^BCN,105,Y,N,N^FD{codigoBarras}^FS\n^FO70,165^A0N,26,26^FD{nomeParaciente}^FS\n^FO70,200^A0N,20,20^FD{dataColeta} {horaColeta}^FS\n^FO70,225^A0N,18,18^FD{tipoExame}^FS\n^FO70,245^A0N,16,16^FDMICROBIOLOGIA^FS\n^XZ",
+  "padrao": false,
+  "ativo": true,
+  "observacoes": "Etiqueta verde para setor de Microbiologia - culturas e antibiogramas"
+}
+
+
+### 8. Etiqueta Colorida por Tipo de Exame - Imunologia
+POST {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoEtiqueta": "ETQ-IMUNO-AZUL",
+  "nome": "Etiqueta Imunologia - Fundo Azul 40x20mm",
+  "tipoAmostra": "soro",
+  "largura": 40,
+  "altura": 20,
+  "orientacao": "paisagem",
+  "layout": {
+    "tipo": "grid",
+    "colunas": 2,
+    "linhas": 3,
+    "espacamento": 2
+  },
+  "campos": [
+    "codigoBarras",
+    "nomeParaciente",
+    "dataColeta",
+    "horaColeta",
+    "setor"
+  ],
+  "corPrimaria": "#0000CD",
+  "corSecundaria": "#FFFFFF",
+  "templateZPL": "^XA\n^FO50,40^BCN,90,Y,N,N^FD{codigoBarras}^FS\n^FO50,145^A0N,24,24^FD{nomeParaciente}^FS\n^FO50,175^A0N,18,18^FD{dataColeta} {horaColeta}^FS\n^FO50,195^A0N,16,16^FDIMUNOLOGIA^FS\n^XZ",
+  "padrao": false,
+  "ativo": true,
+  "observacoes": "Etiqueta azul para setor de Imunologia - sorologias e marcadores"
+}
+
+
+### 9. Etiqueta para Swab - Pequena 30x15mm
+POST {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoEtiqueta": "ETQ-SWAB-PEQUENA",
+  "nome": "Etiqueta Swab - Tubo Pequeno 30x15mm",
+  "tipoAmostra": "swab",
+  "largura": 30,
+  "altura": 15,
+  "orientacao": "paisagem",
+  "layout": {
+    "tipo": "simples",
+    "alinhamento": "center"
+  },
+  "campos": [
+    "codigoBarras",
+    "iniciais",
+    "dataColeta"
+  ],
+  "corPrimaria": "#ADD8E6",
+  "corSecundaria": "#000000",
+  "templateZPL": "^XA\n^FO30,20^BCN,75,Y,N,N^FD{codigoBarras}^FS\n^FO30,105^A0N,18,18^FD{iniciais}^FS\n^FO30,130^A0N,14,14^FD{dataColeta}^FS\n^XZ",
+  "padrao": true,
+  "ativo": true,
+  "observacoes": "Etiqueta compacta para tubos de swab nasofaríngeo, orofaríngeo e outros"
+}
+
+
+### 10. Etiqueta para Líquor - Com Numeração de Tubos
+POST {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoEtiqueta": "ETQ-LIQUOR-NUMERADA",
+  "nome": "Etiqueta Líquor - Com Número do Tubo 50x30mm",
+  "tipoAmostra": "liquor",
+  "largura": 50,
+  "altura": 30,
+  "orientacao": "paisagem",
+  "layout": {
+    "tipo": "flex",
+    "direcao": "column",
+    "alinhamento": "left"
+  },
+  "campos": [
+    "codigoBarras",
+    "nomeParaciente",
+    "dataNascimento",
+    "dataColeta",
+    "horaColeta",
+    "numeroTubo"
+  ],
+  "corPrimaria": "#FFD700",
+  "corSecundaria": "#000000",
+  "templateZPL": "^XA\n^FO70,40^BCN,100,Y,N,N^FD{codigoBarras}^FS\n^FO70,155^A0N,26,26^FD{nomeParaciente}^FS\n^FO70,190^A0N,20,20^FDNasc: {dataNascimento}^FS\n^FO70,215^A0N,20,20^FD{dataColeta} {horaColeta}^FS\n^FO70,240^A0B,24,24^FDTUBO {numeroTubo}^FS\n^XZ",
+  "padrao": true,
+  "ativo": true,
+  "observacoes": "Etiqueta para líquor com identificação do número do tubo (1, 2 ou 3)"
+}
+
+
+### 11. Buscar Todas as Etiquetas Criadas
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [
+#     { ... 10 etiquetas criadas ... }
+#   ],
+#   "meta": {
+#     "total": 10
+#   }
+# }
+
+
+### 12. Obter Estatísticas Completas
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/stats
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "total": 10,
+#   "ativas": 10,
+#   "inativas": 0,
+#   "padrao": 5,
+#   "porTipo": {
+#     "sangue": 3,
+#     "urina": 2,
+#     "soro": 2,
+#     "swab": 1,
+#     "liquor": 1,
+#     "tecido": 1
+#   },
+#   "porOrientacao": {
+#     "paisagem": 10,
+#     "retrato": 0
+#   },
+#   "porTamanho": {
+#     "pequenas": 2,
+#     "medias": 7,
+#     "grandes": 1
+#   }
+# }
+
+
+### 13. Filtrar Etiquetas por Setor - Hematologia
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra?search=HEMATOLOGIA
+Authorization: Bearer {{token}}
+
+
+### 14. Filtrar Etiquetas por Cor - Roxas
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra?corPrimaria=%23800080
+Authorization: Bearer {{token}}
+
+
+### 15. Buscar Etiquetas Padrão do Sistema
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/padrao
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   { ... etiquetas marcadas como padrão ... }
+# ]

@@ -1,0 +1,308 @@
+### Atualizar sala completa
+PATCH {{baseUrl}}/configuracoes/estrutura/salas/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Sala de Coleta 1 - Renovada",
+  "capacidade": 4,
+  "area": 13.0,
+  "status": "disponivel",
+  "temArCondicionado": true,
+  "temGeladeira": true,
+  "capacidadeAgendamento": 25,
+  "observacoes": "Sala renovada com novos equipamentos de coleta, sistema de climatização atualizado e mobiliário ergonômico"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "550e8400-e29b-41d4-a716-446655440000",
+#   "nome": "Sala de Coleta 1 - Renovada",
+#   "capacidade": 4,
+#   "status": "disponivel",
+#   "updatedAt": "2025-10-09T15:30:00.000Z"
+# }
+
+###
+
+### Atualizar apenas status - Marcar como ocupada
+PATCH {{baseUrl}}/configuracoes/estrutura/salas/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "status": "ocupada",
+  "observacoes": "Sala ocupada - Atendimento em andamento"
+}
+
+###
+
+### Atualizar status - Retornar para disponivel
+PATCH {{baseUrl}}/configuracoes/estrutura/salas/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "status": "disponivel",
+  "observacoes": "Sala disponivel para novo atendimento - Higienização realizada"
+}
+
+###
+
+### Atualizar status - Colocar em manutencao
+PATCH {{baseUrl}}/configuracoes/estrutura/salas/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "status": "manutencao",
+  "observacoes": "Sala em manutenção preventiva - Limpeza profunda, revisão de ar condicionado e troca de lâmpadas. Previsão de retorno: 15/10/2025"
+}
+
+###
+
+### Atualizar status - Marcar como inativa
+PATCH {{baseUrl}}/configuracoes/estrutura/salas/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "status": "inativa",
+  "observacoes": "Sala temporariamente desativada - Aguardando aprovação para reforma estrutural"
+}
+
+###
+
+### Atualizar capacidade e area
+PATCH {{baseUrl}}/configuracoes/estrutura/salas/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "capacidade": 5,
+  "area": 15.0,
+  "observacoes": "Capacidade aumentada após remodelação do espaço interno"
+}
+
+###
+
+### Atualizar equipamentos da sala
+PATCH {{baseUrl}}/configuracoes/estrutura/salas/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "temArCondicionado": true,
+  "temExaustor": true,
+  "temPia": true,
+  "temGeladeira": true,
+  "temFreezer": true,
+  "observacoes": "Sala totalmente equipada com ar condicionado novo, exaustor instalado, geladeira e freezer para armazenamento de amostras"
+}
+
+###
+
+### Atualizar nivel de biosseguranca
+PATCH {{baseUrl}}/configuracoes/estrutura/salas/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nivelBiosseguranca": "NB3",
+  "temExaustor": true,
+  "observacoes": "Sala atualizada para nível de biossegurança NB3 - Instalado sistema de exaustão com filtros HEPA e pressão negativa"
+}
+
+###
+
+### Atualizar setor
+PATCH {{baseUrl}}/configuracoes/estrutura/salas/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "setorId": "{{novoSetorId}}",
+  "observacoes": "Sala transferida para novo setor após reorganização administrativa"
+}
+
+###
+
+### Atualizar andar
+PATCH {{baseUrl}}/configuracoes/estrutura/salas/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "andar": "2",
+  "observacoes": "Sala realocada para o 2º andar"
+}
+
+###
+
+### Atualizar horario de funcionamento
+PATCH {{baseUrl}}/configuracoes/estrutura/salas/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "horarioFuncionamento": {
+    "segunda": { "abertura": "06:00", "fechamento": "18:00" },
+    "terca": { "abertura": "06:00", "fechamento": "18:00" },
+    "quarta": { "abertura": "06:00", "fechamento": "18:00" },
+    "quinta": { "abertura": "06:00", "fechamento": "18:00" },
+    "sexta": { "abertura": "06:00", "fechamento": "18:00" },
+    "sabado": { "abertura": "07:00", "fechamento": "13:00" }
+  },
+  "observacoes": "Horário de funcionamento ampliado para atender demanda crescente"
+}
+
+###
+
+### Atualizar capacidade de agendamento
+PATCH {{baseUrl}}/configuracoes/estrutura/salas/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "capacidadeAgendamento": 30,
+  "observacoes": "Capacidade de agendamento ampliada após otimização do fluxo de atendimento"
+}
+
+###
+
+### Atualizar apenas observacoes
+PATCH {{baseUrl}}/configuracoes/estrutura/salas/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "observacoes": "Observação atualizada: Sala de referência para coletas de alto volume. Equipada com cadeira de coleta bariatrica, sistema de etiquetagem automatizado e integração direta com LIS. Responsável: Enf. Maria Silva (COREN 123456)"
+}
+
+###
+
+### Remover horario de funcionamento (sala 24h)
+PATCH {{baseUrl}}/configuracoes/estrutura/salas/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "horarioFuncionamento": null,
+  "observacoes": "Sala operando 24 horas - Plantão disponível"
+}
+
+###
+
+### Remover nivel de biosseguranca
+PATCH {{baseUrl}}/configuracoes/estrutura/salas/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nivelBiosseguranca": null,
+  "observacoes": "Nível de biossegurança removido - Sala convertida para uso administrativo"
+}
+
+###
+
+### Remover capacidade de agendamento
+PATCH {{baseUrl}}/configuracoes/estrutura/salas/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "capacidadeAgendamento": null,
+  "observacoes": "Capacidade de agendamento removida - Sala não aceita mais agendamentos online"
+}
+
+###
+
+### Tentar atualizar codigo duplicado (deve dar erro)
+PATCH {{baseUrl}}/configuracoes/estrutura/salas/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoSala": "SALA-COL-002"
+}
+
+### Expected Response (se codigo ja existir)
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Ja existe uma sala com o codigo SALA-COL-002",
+#   "error": "Bad Request"
+# }
+
+###
+
+### Atualizar sala inexistente (deve retornar 404)
+PATCH {{baseUrl}}/configuracoes/estrutura/salas/00000000-0000-0000-0000-000000000000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Teste"
+}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Sala com ID 00000000-0000-0000-0000-000000000000 nao encontrada",
+#   "error": "Not Found"
+# }
+
+###
+
+### Atualizar tipo da sala (reclassificacao)
+PATCH {{baseUrl}}/configuracoes/estrutura/salas/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipo": "atendimento",
+  "nome": "Consultório Médico 1",
+  "observacoes": "Sala reclassificada de coleta para atendimento médico após reforma e adequação"
+}
+
+###
+
+### Atualizar infraestrutura completa
+PATCH {{baseUrl}}/configuracoes/estrutura/salas/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "temArCondicionado": true,
+  "temExaustor": true,
+  "temPia": true,
+  "temGeladeira": true,
+  "temFreezer": true,
+  "nivelBiosseguranca": "NB3",
+  "observacoes": "Sala totalmente remodelada com infraestrutura completa para análises de alto risco - Sistema de pressão negativa, filtros HEPA, cabine de segurança biológica classe II, autoclave de barreira"
+}
+
+###
+
+### Atualizar configuracoes de agendamento
+PATCH {{baseUrl}}/configuracoes/estrutura/salas/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "capacidadeAgendamento": 40,
+  "horarioFuncionamento": {
+    "segunda": { "abertura": "07:00", "fechamento": "19:00" },
+    "terca": { "abertura": "07:00", "fechamento": "19:00" },
+    "quarta": { "abertura": "07:00", "fechamento": "19:00" },
+    "quinta": { "abertura": "07:00", "fechamento": "19:00" },
+    "sexta": { "abertura": "07:00", "fechamento": "19:00" },
+    "sabado": { "abertura": "08:00", "fechamento": "14:00" },
+    "domingo": { "abertura": "08:00", "fechamento": "12:00" }
+  },
+  "observacoes": "Horário ampliado incluindo domingos - Capacidade de agendamento aumentada para 40 pacientes/dia"
+}
+
+###

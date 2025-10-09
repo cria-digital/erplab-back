@@ -1,0 +1,287 @@
+### Atualizar Dados Básicos do Atendimento
+PATCH {{baseUrl}}/atendimento/atendimento/123e4567-e89b-12d3-a456-426614174000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "motivoAtendimento": "Consulta de rotina - avaliação geral de saúde e renovação de receitas",
+  "observacoes": "Paciente solicitou consulta de check-up anual e renovação de prescrição de anti-hipertensivo"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Atendimento atualizado com sucesso",
+#   "data": {
+#     "id": "123e4567-e89b-12d3-a456-426614174000",
+#     "numeroAtendimento": "ATD202510100001",
+#     "motivoAtendimento": "Consulta de rotina - avaliação geral de saúde e renovação de receitas",
+#     "updatedAt": "2025-10-10T11:00:00Z"
+#   }
+# }
+
+###
+
+### Atualizar Status do Atendimento
+PATCH {{baseUrl}}/atendimento/atendimento/123e4567-e89b-12d3-a456-426614174000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "statusAtendimento": "em_atendimento"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Atendimento atualizado com sucesso",
+#   "data": {
+#     "statusAtendimento": "em_atendimento",
+#     "updatedAt": "2025-10-10T10:05:00Z"
+#   }
+# }
+
+###
+
+### Iniciar Atendimento
+PATCH {{baseUrl}}/atendimento/atendimento/123e4567-e89b-12d3-a456-426614174000/iniciar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "observacoes": "Paciente chegou às 10:00, atendimento iniciado às 10:05"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Atendimento iniciado com sucesso",
+#   "data": {
+#     "statusAtendimento": "em_atendimento",
+#     "horaInicio": "2025-10-10T10:05:00Z"
+#   }
+# }
+
+###
+
+### Adicionar Anamnese
+PATCH {{baseUrl}}/atendimento/atendimento/123e4567-e89b-12d3-a456-426614174000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "anamnese": "Queixa principal: Paciente refere boa saúde geral.\n\nHistória da doença atual: Sem queixas específicas. Procura consulta para check-up anual.\n\nHistória médica pregressa: Hipertensão arterial controlada com losartana 50mg.\n\nHistória familiar: Pai hipertenso, mãe diabética.\n\nHábitos de vida: Sedentário. Etilista social (finais de semana). Nega tabagismo.\n\nAlergias: Nega."
+}
+
+### Expected Response
+# Status: 200 OK
+
+###
+
+### Adicionar Exame Físico
+PATCH {{baseUrl}}/atendimento/atendimento/123e4567-e89b-12d3-a456-426614174000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "examesFisico": "Sinais vitais:\n- PA: 120/80mmHg\n- FC: 72bpm\n- FR: 16irpm\n- Tax: 36.5°C\n- Peso: 78kg\n- Altura: 1.75m\n- IMC: 25.5 (sobrepeso)\n\nExame físico geral: Bom estado geral, corado, hidratado, acianótico, anictérico.\n\nAusculta cardíaca: RCR 2T BNF sem sopros.\n\nAusculta pulmonar: MVF sem ruídos adventícios.\n\nAbdome: Plano, flácido, indolor à palpação, RHA+, sem visceromegalias.\n\nExtremidades: Sem edemas, pulsos periféricos palpáveis e simétricos."
+}
+
+### Expected Response
+# Status: 200 OK
+
+###
+
+### Adicionar Hipótese Diagnóstica
+PATCH {{baseUrl}}/atendimento/atendimento/123e4567-e89b-12d3-a456-426614174000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "hipoteseDiagnostica": "1. Hipertensão arterial sistêmica (controlada)\n2. Sobrepeso (IMC 25.5)\n3. Sedentarismo"
+}
+
+### Expected Response
+# Status: 200 OK
+
+###
+
+### Adicionar Conduta
+PATCH {{baseUrl}}/atendimento/atendimento/123e4567-e89b-12d3-a456-426614174000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "conduta": "1. Manter losartana 50mg 1x/dia\n2. Orientações sobre dieta hipossódica e balanceada\n3. Incentivar atividade física regular (150min/semana)\n4. Reduzir consumo de álcool\n5. Solicitados exames de rotina: hemograma, glicemia, perfil lipídico, função renal\n6. Retorno em 30 dias com resultados dos exames"
+}
+
+### Expected Response
+# Status: 200 OK
+
+###
+
+### Adicionar Prescrição
+PATCH {{baseUrl}}/atendimento/atendimento/123e4567-e89b-12d3-a456-426614174000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "prescricao": "PRESCRIÇÃO MÉDICA\n\nPaciente: João da Silva\nData: 10/10/2025\n\n1. LOSARTANA POTÁSSICA 50mg\n   - Tomar 1 comprimido pela manhã\n   - Uso contínuo\n\nOrientações:\n- Dieta hipossódica (reduzir sal)\n- Atividade física regular\n- Evitar alimentos gordurosos\n- Manter hidratação adequada\n\nRetorno em 30 dias.\n\n____________________\nDr. Carlos Alberto Souza\nCRM 123456/SP"
+}
+
+### Expected Response
+# Status: 200 OK
+
+###
+
+### Concluir Atendimento
+PATCH {{baseUrl}}/atendimento/atendimento/123e4567-e89b-12d3-a456-426614174000/concluir
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "observacoes": "Atendimento concluído. Paciente orientado e satisfeito."
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Atendimento concluído com sucesso",
+#   "data": {
+#     "statusAtendimento": "concluido",
+#     "horaFim": "2025-10-10T11:00:00Z",
+#     "duracaoMinutos": 55
+#   }
+# }
+
+###
+
+### Cancelar Atendimento
+PATCH {{baseUrl}}/atendimento/atendimento/123e4567-e89b-12d3-a456-426614174000/cancelar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "motivoCancelamento": "Paciente não compareceu ao atendimento",
+  "observacoes": "Paciente não atendeu ligações de confirmação"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Atendimento cancelado com sucesso",
+#   "data": {
+#     "statusAtendimento": "cancelado",
+#     "motivoCancelamento": "Paciente não compareceu ao atendimento",
+#     "dataCancelamento": "2025-10-10T10:30:00Z"
+#   }
+# }
+
+###
+
+### Reagendar Atendimento
+PATCH {{baseUrl}}/atendimento/atendimento/123e4567-e89b-12d3-a456-426614174000/reagendar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "novaDataAtendimento": "2025-10-15T14:00:00Z",
+  "motivoReagendamento": "Solicitação do paciente - compromisso inadiável",
+  "observacoes": "Paciente ligou às 09:00 solicitando reagendamento"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Atendimento reagendado com sucesso",
+#   "data": {
+#     "dataAtendimentoAnterior": "2025-10-10T10:00:00Z",
+#     "dataAtendimento": "2025-10-15T14:00:00Z",
+#     "motivoReagendamento": "Solicitação do paciente - compromisso inadiável"
+#   }
+# }
+
+###
+
+### Atualizar Valores do Atendimento
+PATCH {{baseUrl}}/atendimento/atendimento/123e4567-e89b-12d3-a456-426614174000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "valorConsulta": 280.00,
+  "valorExames": 150.00,
+  "valorTotal": 430.00,
+  "observacoes": "Valor atualizado - incluído exame de ECG"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Atendimento atualizado com sucesso",
+#   "data": {
+#     "valorConsulta": 280.00,
+#     "valorExames": 150.00,
+#     "valorTotal": 430.00
+#   }
+# }
+
+###
+
+### Atualizar Convênio do Atendimento
+PATCH {{baseUrl}}/atendimento/atendimento/123e4567-e89b-12d3-a456-426614174000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "convenioId": "uuid-convenio-001",
+  "numeroAutorizacao": "AUT987654",
+  "observacoes": "Paciente trouxe autorização do convênio posteriormente"
+}
+
+### Expected Response
+# Status: 200 OK
+
+###
+
+### Remover Convênio do Atendimento (Converter para Particular)
+PATCH {{baseUrl}}/atendimento/atendimento/123e4567-e89b-12d3-a456-426614174000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "convenioId": null,
+  "observacoes": "Convênio negou autorização - paciente optou por atendimento particular"
+}
+
+### Expected Response
+# Status: 200 OK
+
+###
+
+### Atualizar Atendimento Completo (Múltiplos Campos)
+PATCH {{baseUrl}}/atendimento/atendimento/123e4567-e89b-12d3-a456-426614174000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "statusAtendimento": "concluido",
+  "anamnese": "Anamnese completa...",
+  "examesFisico": "Exame físico completo...",
+  "hipoteseDiagnostica": "Hipóteses diagnósticas...",
+  "conduta": "Condutas terapêuticas...",
+  "prescricao": "Prescrição médica...",
+  "observacoes": "Atendimento concluído com sucesso"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Atendimento atualizado com sucesso",
+#   "data": {
+#     "id": "123e4567-e89b-12d3-a456-426614174000",
+#     "numeroAtendimento": "ATD202510100001",
+#     "statusAtendimento": "concluido",
+#     "updatedAt": "2025-10-10T11:00:00Z"
+#   }
+# }

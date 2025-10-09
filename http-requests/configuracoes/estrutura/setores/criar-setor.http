@@ -1,0 +1,267 @@
+### Criar Setor de Analises Clinicas
+POST {{baseUrl}}/configuracoes/estrutura/setores
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoSetor": "SET-AC-001",
+  "nome": "Setor de Analises Clinicas",
+  "tipo": "apoio_diagnostico",
+  "descricao": "Setor responsavel por analises clinicas gerais, hematologia, bioquimica e microbiologia",
+  "responsavel": "Dra. Maria Santos",
+  "ramal": "1001",
+  "email": "analises.clinicas@lab.com.br",
+  "centrosCusto": ["CC-LAB-001", "CC-LAB-002"],
+  "horarioFuncionamento": {
+    "segunda": { "abertura": "07:00", "fechamento": "19:00" },
+    "terca": { "abertura": "07:00", "fechamento": "19:00" },
+    "quarta": { "abertura": "07:00", "fechamento": "19:00" },
+    "quinta": { "abertura": "07:00", "fechamento": "19:00" },
+    "sexta": { "abertura": "07:00", "fechamento": "19:00" },
+    "sabado": { "abertura": "08:00", "fechamento": "14:00" }
+  },
+  "observacoes": "Setor central de analises clinicas com laboratorios de hematologia, bioquimica, microbiologia e imunologia. Equipado com analisadores automatizados, microscópios, centrifugas e sistemas integrados ao LIS."
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "id": "uuid-do-setor",
+#   "codigoSetor": "SET-AC-001",
+#   "nome": "Setor de Analises Clinicas",
+#   "tipo": "apoio_diagnostico",
+#   "ativo": true,
+#   "createdAt": "2025-10-09T10:00:00.000Z"
+# }
+
+###
+
+### Criar Setor de Hematologia
+POST {{baseUrl}}/configuracoes/estrutura/setores
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoSetor": "SET-HEM-001",
+  "nome": "Setor de Hematologia",
+  "tipo": "apoio_diagnostico",
+  "descricao": "Setor especializado em analises hematologicas, hemogramas, coagulograma e tipagem sanguinea",
+  "responsavel": "Dr. Carlos Silva",
+  "ramal": "1002",
+  "email": "hematologia@lab.com.br",
+  "centrosCusto": ["CC-LAB-003"],
+  "horarioFuncionamento": {
+    "segunda": { "abertura": "07:00", "fechamento": "18:00" },
+    "terca": { "abertura": "07:00", "fechamento": "18:00" },
+    "quarta": { "abertura": "07:00", "fechamento": "18:00" },
+    "quinta": { "abertura": "07:00", "fechamento": "18:00" },
+    "sexta": { "abertura": "07:00", "fechamento": "18:00" }
+  },
+  "observacoes": "Setor equipado com contador hematologico automatizado Sysmex XN-1000, microscópios binoculares, centrífugas, estufas e sistema de coagulação ACL Top 750"
+}
+
+###
+
+### Criar Setor de Bioquimica
+POST {{baseUrl}}/configuracoes/estrutura/setores
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoSetor": "SET-BIO-001",
+  "nome": "Setor de Bioquimica",
+  "tipo": "apoio_diagnostico",
+  "descricao": "Setor especializado em analises bioquimicas, dosagens hormonais, metabolicas e enzimaticas",
+  "responsavel": "Dra. Ana Paula Costa",
+  "ramal": "1003",
+  "email": "bioquimica@lab.com.br",
+  "centrosCusto": ["CC-LAB-004"],
+  "horarioFuncionamento": {
+    "segunda": { "abertura": "07:00", "fechamento": "18:00" },
+    "terca": { "abertura": "07:00", "fechamento": "18:00" },
+    "quarta": { "abertura": "07:00", "fechamento": "18:00" },
+    "quinta": { "abertura": "07:00", "fechamento": "18:00" },
+    "sexta": { "abertura": "07:00", "fechamento": "18:00" },
+    "sabado": { "abertura": "08:00", "fechamento": "13:00" }
+  },
+  "observacoes": "Setor com analisador bioquimico automatizado Roche Cobas c501, espectrofotômetro, sistema de eletroforese, banho-maria e sistema de automação integrado"
+}
+
+###
+
+### Criar Setor de Microbiologia
+POST {{baseUrl}}/configuracoes/estrutura/setores
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoSetor": "SET-MIC-001",
+  "nome": "Setor de Microbiologia",
+  "tipo": "apoio_diagnostico",
+  "descricao": "Setor especializado em culturas bacterianas, antibiogramas, identificação de microrganismos e testes de sensibilidade",
+  "responsavel": "Dr. Roberto Alves",
+  "ramal": "1004",
+  "email": "microbiologia@lab.com.br",
+  "centrosCusto": ["CC-LAB-005"],
+  "horarioFuncionamento": {
+    "segunda": { "abertura": "07:00", "fechamento": "17:00" },
+    "terca": { "abertura": "07:00", "fechamento": "17:00" },
+    "quarta": { "abertura": "07:00", "fechamento": "17:00" },
+    "quinta": { "abertura": "07:00", "fechamento": "17:00" },
+    "sexta": { "abertura": "07:00", "fechamento": "17:00" }
+  },
+  "observacoes": "Setor NB2 com cabine de segurança biológica classe II, estufas bacteriológicas, autoclave, microscópios, sistema automatizado de identificação Vitek 2 Compact e criogenia para conservação de cepas"
+}
+
+###
+
+### Criar Setor de Coleta
+POST {{baseUrl}}/configuracoes/estrutura/setores
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoSetor": "SET-COL-001",
+  "nome": "Setor de Coleta",
+  "tipo": "assistencial",
+  "descricao": "Setor de coleta de amostras biologicas, atendimento ao paciente e triagem",
+  "responsavel": "Enf. Patricia Lima",
+  "ramal": "1000",
+  "email": "coleta@lab.com.br",
+  "centrosCusto": ["CC-ATD-001"],
+  "horarioFuncionamento": {
+    "segunda": { "abertura": "06:00", "fechamento": "18:00" },
+    "terca": { "abertura": "06:00", "fechamento": "18:00" },
+    "quarta": { "abertura": "06:00", "fechamento": "18:00" },
+    "quinta": { "abertura": "06:00", "fechamento": "18:00" },
+    "sexta": { "abertura": "06:00", "fechamento": "18:00" },
+    "sabado": { "abertura": "07:00", "fechamento": "14:00" },
+    "domingo": { "abertura": "08:00", "fechamento": "12:00" }
+  },
+  "observacoes": "Setor de coleta com 5 salas equipadas, sistema de senha eletronica, etiquetagem automatizada, refrigeradores para amostras e integração completa com sistema LIS"
+}
+
+###
+
+### Criar Setor Administrativo
+POST {{baseUrl}}/configuracoes/estrutura/setores
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoSetor": "SET-ADM-001",
+  "nome": "Setor Administrativo",
+  "tipo": "administrativo",
+  "descricao": "Setor responsavel pela gestao administrativa, financeira, recursos humanos e compras",
+  "responsavel": "Joana Ferreira",
+  "ramal": "1100",
+  "email": "administrativo@lab.com.br",
+  "centrosCusto": ["CC-ADM-001", "CC-ADM-002"],
+  "horarioFuncionamento": {
+    "segunda": { "abertura": "08:00", "fechamento": "18:00" },
+    "terca": { "abertura": "08:00", "fechamento": "18:00" },
+    "quarta": { "abertura": "08:00", "fechamento": "18:00" },
+    "quinta": { "abertura": "08:00", "fechamento": "18:00" },
+    "sexta": { "abertura": "08:00", "fechamento": "18:00" }
+  },
+  "observacoes": "Setor administrativo com departamentos de RH, financeiro, compras, faturamento e gestão de convênios. Infraestrutura completa de TI e telefonia"
+}
+
+###
+
+### Criar Setor de Recepcao
+POST {{baseUrl}}/configuracoes/estrutura/setores
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoSetor": "SET-REC-001",
+  "nome": "Setor de Recepcao",
+  "tipo": "assistencial",
+  "descricao": "Setor de recepcao, cadastro de pacientes, agendamentos e atendimento ao público",
+  "responsavel": "Fernanda Costa",
+  "ramal": "1200",
+  "email": "recepcao@lab.com.br",
+  "centrosCusto": ["CC-ATD-002"],
+  "horarioFuncionamento": {
+    "segunda": { "abertura": "06:00", "fechamento": "20:00" },
+    "terca": { "abertura": "06:00", "fechamento": "20:00" },
+    "quarta": { "abertura": "06:00", "fechamento": "20:00" },
+    "quinta": { "abertura": "06:00", "fechamento": "20:00" },
+    "sexta": { "abertura": "06:00", "fechamento": "20:00" },
+    "sabado": { "abertura": "07:00", "fechamento": "16:00" },
+    "domingo": { "abertura": "08:00", "fechamento": "13:00" }
+  },
+  "observacoes": "Recepcao com 4 guiches de atendimento, sistema de senhas, terminais de autoatendimento, sala de espera com capacidade para 60 pessoas e Wi-Fi gratuito"
+}
+
+###
+
+### Criar setor inativo
+POST {{baseUrl}}/configuracoes/estrutura/setores
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoSetor": "SET-IMG-001",
+  "nome": "Setor de Imagem",
+  "tipo": "apoio_diagnostico",
+  "descricao": "Setor de diagnostico por imagem (desativado temporariamente)",
+  "responsavel": "Dr. Paulo Santos",
+  "email": "imagem@lab.com.br",
+  "ativo": false,
+  "observacoes": "Setor temporariamente desativado - Equipamentos em processo de aquisicao. Previsao de ativacao: Janeiro/2026"
+}
+
+###
+
+### Criar setor com horario reduzido
+POST {{baseUrl}}/configuracoes/estrutura/setores
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoSetor": "SET-TER-001",
+  "nome": "Setor de Apoio Terapeutico",
+  "tipo": "apoio_terapeutico",
+  "descricao": "Setor de apoio terapeutico e reabilitacao",
+  "responsavel": "Fisioterapeuta Marcelo Souza",
+  "ramal": "1500",
+  "email": "terapeutico@lab.com.br",
+  "centrosCusto": ["CC-TER-001"],
+  "horarioFuncionamento": {
+    "segunda": { "abertura": "08:00", "fechamento": "17:00" },
+    "quarta": { "abertura": "08:00", "fechamento": "17:00" },
+    "sexta": { "abertura": "08:00", "fechamento": "17:00" }
+  },
+  "observacoes": "Setor de apoio terapeutico com atendimento 3x por semana - Segunda, Quarta e Sexta"
+}
+
+###
+
+### Criar setor de hotelaria
+POST {{baseUrl}}/configuracoes/estrutura/setores
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoSetor": "SET-HOT-001",
+  "nome": "Setor de Hotelaria",
+  "tipo": "hotelaria",
+  "descricao": "Setor de hotelaria, limpeza, higienizacao, copa e manutencao predial",
+  "responsavel": "Supervisor Jose Oliveira",
+  "ramal": "1600",
+  "email": "hotelaria@lab.com.br",
+  "centrosCusto": ["CC-HOT-001"],
+  "horarioFuncionamento": {
+    "segunda": { "abertura": "06:00", "fechamento": "22:00" },
+    "terca": { "abertura": "06:00", "fechamento": "22:00" },
+    "quarta": { "abertura": "06:00", "fechamento": "22:00" },
+    "quinta": { "abertura": "06:00", "fechamento": "22:00" },
+    "sexta": { "abertura": "06:00", "fechamento": "22:00" },
+    "sabado": { "abertura": "07:00", "fechamento": "18:00" }
+  },
+  "observacoes": "Setor de hotelaria responsavel pela limpeza de todos os ambientes, higienizacao de salas, copa/cozinha e pequenas manutencoes prediais. Equipe de 12 colaboradores"
+}
+
+###

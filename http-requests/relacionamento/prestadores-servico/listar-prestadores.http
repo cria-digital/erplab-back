@@ -1,0 +1,240 @@
+### Listar Todos os Prestadores
+GET {{baseUrl}}/relacionamento/prestadores-servico
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [
+#     {
+#       "id": "uuid",
+#       "codigoPrestador": "PREST-MED-001",
+#       "tipoPrestador": "medico",
+#       "especialidade": "Cardiologia",
+#       "empresa": {
+#         "cnpj": "12345678000190",
+#         "razaoSocial": "Dr. João Silva Cardiologia LTDA",
+#         "nomeFantasia": "Dr. João Silva"
+#       },
+#       "ativo": true,
+#       ...
+#     }
+#   ],
+#   "meta": {
+#     "total": 10,
+#     "page": 1,
+#     "limit": 10
+#   }
+# }
+
+
+### Listar Apenas Prestadores Ativos
+GET {{baseUrl}}/relacionamento/prestadores-servico/ativos
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... array de prestadores ativos ... ]
+
+
+### Listar com Paginação
+GET {{baseUrl}}/relacionamento/prestadores-servico?page=1&limit=5
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [ ... ],
+#   "meta": {
+#     "total": 50,
+#     "page": 1,
+#     "limit": 5,
+#     "totalPages": 10
+#   }
+# }
+
+
+### Filtrar por Tipo de Prestador - Médico
+GET {{baseUrl}}/relacionamento/prestadores-servico/tipo/medico
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... prestadores médicos ... ]
+
+
+### Filtrar por Tipo de Prestador - Enfermeiro
+GET {{baseUrl}}/relacionamento/prestadores-servico/tipo/enfermeiro
+Authorization: Bearer {{token}}
+
+
+### Filtrar por Tipo de Prestador - Fisioterapeuta
+GET {{baseUrl}}/relacionamento/prestadores-servico/tipo/fisioterapeuta
+Authorization: Bearer {{token}}
+
+
+### Filtrar por Tipo de Prestador - Psicólogo
+GET {{baseUrl}}/relacionamento/prestadores-servico/tipo/psicologo
+Authorization: Bearer {{token}}
+
+
+### Filtrar por Tipo de Prestador - Nutricionista
+GET {{baseUrl}}/relacionamento/prestadores-servico/tipo/nutricionista
+Authorization: Bearer {{token}}
+
+
+### Filtrar por Especialidade
+GET {{baseUrl}}/relacionamento/prestadores-servico/especialidade/Cardiologia
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... prestadores de cardiologia ... ]
+
+
+### Filtrar por Tipo de Conselho - CRM
+GET {{baseUrl}}/relacionamento/prestadores-servico/conselho/CRM
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... prestadores com registro no CRM ... ]
+
+
+### Filtrar por Tipo de Conselho - COREN
+GET {{baseUrl}}/relacionamento/prestadores-servico/conselho/COREN
+Authorization: Bearer {{token}}
+
+
+### Filtrar por Tipo de Conselho - CREFITO
+GET {{baseUrl}}/relacionamento/prestadores-servico/conselho/CREFITO
+Authorization: Bearer {{token}}
+
+
+### Filtrar por Tipo de Conselho - CRP
+GET {{baseUrl}}/relacionamento/prestadores-servico/conselho/CRP
+Authorization: Bearer {{token}}
+
+
+### Filtrar por Tipo de Conselho - CRN
+GET {{baseUrl}}/relacionamento/prestadores-servico/conselho/CRN
+Authorization: Bearer {{token}}
+
+
+### Filtrar por UF do Conselho
+GET {{baseUrl}}/relacionamento/prestadores-servico?ufConselho=SP
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... prestadores com registro em SP ... ]
+
+
+### Filtrar por Dia de Atendimento
+GET {{baseUrl}}/relacionamento/prestadores-servico/dia-atendimento/segunda
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... prestadores que atendem às segundas ... ]
+
+
+### Buscar por Termo (razão social, nome fantasia ou código)
+GET {{baseUrl}}/relacionamento/prestadores-servico/search?q=João Silva
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... prestadores que contenham "João Silva" no nome ou código ... ]
+
+
+### Filtrar por Faixa de Valor de Consulta
+GET {{baseUrl}}/relacionamento/prestadores-servico?valorConsultaMin=100&valorConsultaMax=200
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... prestadores com valor de consulta entre R$ 100 e R$ 200 ... ]
+
+
+### Filtrar por Faixa de Valor Hora
+GET {{baseUrl}}/relacionamento/prestadores-servico?valorHoraMin=80&valorHoraMax=150
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... prestadores com valor hora entre R$ 80 e R$ 150 ... ]
+
+
+### Filtrar por Percentual de Repasse
+GET {{baseUrl}}/relacionamento/prestadores-servico?percentualRepasseMin=60&percentualRepasseMax=75
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... prestadores com repasse entre 60% e 75% ... ]
+
+
+### Obter Estatísticas de Prestadores
+GET {{baseUrl}}/relacionamento/prestadores-servico/estatisticas
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "total": 45,
+#   "ativos": 38,
+#   "inativos": 7,
+#   "porTipo": {
+#     "medico": 15,
+#     "enfermeiro": 10,
+#     "fisioterapeuta": 8,
+#     "psicologo": 6,
+#     "nutricionista": 4,
+#     "outros": 2
+#   },
+#   "porConselho": {
+#     "CRM": 15,
+#     "COREN": 10,
+#     "CREFITO": 8,
+#     "CRP": 6,
+#     "CRN": 4,
+#     "outros": 2
+#   },
+#   "mediaValorConsulta": 185.50,
+#   "mediaValorHora": 142.30,
+#   "mediaPercentualRepasse": 68.75
+# }
+
+
+### Listar Ordenado por Nome
+GET {{baseUrl}}/relacionamento/prestadores-servico?orderBy=razaoSocial&order=ASC
+Authorization: Bearer {{token}}
+
+
+### Listar Ordenado por Código
+GET {{baseUrl}}/relacionamento/prestadores-servico?orderBy=codigoPrestador&order=DESC
+Authorization: Bearer {{token}}
+
+
+### Listar Ordenado por Valor de Consulta
+GET {{baseUrl}}/relacionamento/prestadores-servico?orderBy=valorConsulta&order=ASC
+Authorization: Bearer {{token}}
+
+
+### Filtrar por Estado
+GET {{baseUrl}}/relacionamento/prestadores-servico?estado=SP
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... prestadores do estado de São Paulo ... ]
+
+
+### Filtrar por Cidade
+GET {{baseUrl}}/relacionamento/prestadores-servico?cidade=São Paulo
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... prestadores da cidade de São Paulo ... ]

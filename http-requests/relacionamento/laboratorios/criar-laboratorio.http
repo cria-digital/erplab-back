@@ -1,0 +1,253 @@
+### Criar Laboratório - Laboratório de Análises Clínicas
+POST {{baseUrl}}/relacionamento/laboratorios
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "laboratorio",
+    "cnpj": "12345678000190",
+    "razaoSocial": "Laboratório São Lucas Análises Clínicas LTDA",
+    "nomeFantasia": "Lab São Lucas",
+    "inscricaoEstadual": "123456789",
+    "inscricaoMunicipal": "987654321",
+    "email": "contato@labsaolucas.com.br",
+    "telefone": "(11) 3456-7890",
+    "celular": "(11) 98765-4321",
+    "website": "https://www.labsaolucas.com.br",
+    "cep": "01310-100",
+    "logradouro": "Av. Paulista",
+    "numero": "1000",
+    "complemento": "Sala 501",
+    "bairro": "Bela Vista",
+    "cidade": "São Paulo",
+    "estado": "SP",
+    "observacoes": "Laboratório parceiro desde 2020"
+  },
+  "codigoLaboratorio": "LAB-SL-001",
+  "responsavelTecnico": "Dr. João Silva",
+  "conselhoResponsavel": "CRF",
+  "numeroConselho": "12345-SP",
+  "tipoIntegracao": "api",
+  "urlIntegracao": "https://api.labsaolucas.com.br/v1",
+  "tokenIntegracao": "token-secreto-aqui",
+  "metodosEnvioResultado": ["email", "portal", "sistema"],
+  "portalResultadosUrl": "https://portal.labsaolucas.com.br",
+  "prazoPadraoEntregaNormal": 3,
+  "prazoPadraoEntregaUrgente": 1,
+  "taxaUrgencia": 50.00,
+  "percentualRepasse": 65.00,
+  "aceitaUrgencia": true,
+  "enviaResultadoAutomatico": true,
+  "observacoes": "Laboratório com certificação PALC. Atende urgências 24h."
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "id": "uuid",
+#   "codigoLaboratorio": "LAB-SL-001",
+#   "responsavelTecnico": "Dr. João Silva",
+#   "tipoIntegracao": "api",
+#   "empresa": {
+#     "id": "uuid",
+#     "cnpj": "12345678000190",
+#     "razaoSocial": "Laboratório São Lucas Análises Clínicas LTDA",
+#     "nomeFantasia": "Lab São Lucas"
+#   },
+#   ...
+# }
+
+
+### Criar Laboratório - Laboratório com Integração Manual
+POST {{baseUrl}}/relacionamento/laboratorios
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "laboratorio",
+    "cnpj": "98765432000111",
+    "razaoSocial": "Centro de Diagnósticos Médicos LTDA",
+    "nomeFantasia": "CDM Diagnósticos",
+    "email": "contato@cdmdiagnosticos.com.br",
+    "telefone": "(11) 2345-6789",
+    "celular": "(11) 99876-5432",
+    "cep": "04543-011",
+    "logradouro": "Av. Brigadeiro Luís Antônio",
+    "numero": "2500",
+    "bairro": "Jardim Paulista",
+    "cidade": "São Paulo",
+    "estado": "SP"
+  },
+  "codigoLaboratorio": "LAB-CDM-001",
+  "responsavelTecnico": "Dra. Maria Santos",
+  "conselhoResponsavel": "CRB",
+  "numeroConselho": "54321-SP",
+  "tipoIntegracao": "manual",
+  "metodosEnvioResultado": ["email", "whatsapp"],
+  "prazoPadraoEntregaNormal": 5,
+  "prazoPadraoEntregaUrgente": 2,
+  "taxaUrgencia": 35.00,
+  "percentualRepasse": 70.00,
+  "aceitaUrgencia": false,
+  "enviaResultadoAutomatico": false,
+  "observacoes": "Resultados enviados por email. Contato via WhatsApp."
+}
+
+
+### Criar Laboratório - Laboratório com WebService
+POST {{baseUrl}}/relacionamento/laboratorios
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "laboratorio",
+    "cnpj": "11223344000155",
+    "razaoSocial": "Laboratório BioTech Análises LTDA",
+    "nomeFantasia": "BioTech Lab",
+    "email": "sistemas@biotechlab.com.br",
+    "telefone": "(11) 3333-4444",
+    "celular": "(11) 97777-8888",
+    "website": "https://www.biotechlab.com.br",
+    "cep": "05408-000",
+    "logradouro": "Av. Faria Lima",
+    "numero": "3000",
+    "complemento": "Conj. 1001",
+    "bairro": "Itaim Bibi",
+    "cidade": "São Paulo",
+    "estado": "SP"
+  },
+  "codigoLaboratorio": "LAB-BT-001",
+  "responsavelTecnico": "Dr. Carlos Oliveira",
+  "conselhoResponsavel": "CRBM",
+  "numeroConselho": "98765-SP",
+  "tipoIntegracao": "webservice",
+  "urlIntegracao": "https://ws.biotechlab.com.br/soap/v2",
+  "usuarioIntegracao": "erplab_user",
+  "senhaIntegracao": "senha-segura-123",
+  "configuracaoAdicional": "{\"wsdl\": \"https://ws.biotechlab.com.br/soap/v2?wsdl\", \"namespace\": \"http://biotech.com.br/ws\"}",
+  "metodosEnvioResultado": ["sistema", "portal"],
+  "portalResultadosUrl": "https://resultados.biotechlab.com.br",
+  "prazoPadraoEntregaNormal": 4,
+  "prazoPadraoEntregaUrgente": 1,
+  "taxaUrgencia": 45.00,
+  "percentualRepasse": 60.00,
+  "aceitaUrgencia": true,
+  "enviaResultadoAutomatico": true,
+  "observacoes": "Integração via SOAP/WebService. Certificado SSL obrigatório."
+}
+
+
+### Criar Laboratório - Laboratório com FTP
+POST {{baseUrl}}/relacionamento/laboratorios
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "laboratorio",
+    "cnpj": "55667788000199",
+    "razaoSocial": "Laboratório Exame Certo LTDA",
+    "nomeFantasia": "Exame Certo",
+    "email": "ti@examecerto.com.br",
+    "telefone": "(11) 4444-5555",
+    "celular": "(11) 96666-7777",
+    "cep": "01419-001",
+    "logradouro": "Rua Augusta",
+    "numero": "1500",
+    "bairro": "Consolação",
+    "cidade": "São Paulo",
+    "estado": "SP"
+  },
+  "codigoLaboratorio": "LAB-EC-001",
+  "responsavelTecnico": "Dra. Ana Paula Lima",
+  "conselhoResponsavel": "CRF",
+  "numeroConselho": "11111-SP",
+  "tipoIntegracao": "ftp",
+  "urlIntegracao": "ftp://ftp.examecerto.com.br",
+  "usuarioIntegracao": "erplab_ftp",
+  "senhaIntegracao": "ftp-pass-456",
+  "configuracaoAdicional": "{\"porta\": 21, \"modo\": \"passivo\", \"diretorio\": \"/resultados/\"}",
+  "metodosEnvioResultado": ["ftp", "email"],
+  "prazoPadraoEntregaNormal": 5,
+  "prazoPadraoEntregaUrgente": 2,
+  "taxaUrgencia": 30.00,
+  "percentualRepasse": 75.00,
+  "aceitaUrgencia": true,
+  "enviaResultadoAutomatico": true,
+  "observacoes": "Resultados disponibilizados via FTP diariamente às 20h."
+}
+
+
+### Erro - CNPJ Duplicado
+POST {{baseUrl}}/relacionamento/laboratorios
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "laboratorio",
+    "cnpj": "12345678000190",
+    "razaoSocial": "Outro Laboratório LTDA",
+    "nomeFantasia": "Outro Lab"
+  },
+  "codigoLaboratorio": "LAB-OUT-001"
+}
+
+### Expected Response
+# Status: 409 Conflict
+# {
+#   "statusCode": 409,
+#   "message": "Já existe uma empresa com este CNPJ",
+#   "error": "Conflict"
+# }
+
+
+### Erro - Código Laboratório Duplicado
+POST {{baseUrl}}/relacionamento/laboratorios
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "laboratorio",
+    "cnpj": "99999999000188",
+    "razaoSocial": "Novo Laboratório LTDA",
+    "nomeFantasia": "Novo Lab"
+  },
+  "codigoLaboratorio": "LAB-SL-001"
+}
+
+### Expected Response
+# Status: 409 Conflict
+# {
+#   "statusCode": 409,
+#   "message": "Já existe um laboratório com este código",
+#   "error": "Conflict"
+# }
+
+
+### Erro - CNPJ Inválido
+POST {{baseUrl}}/relacionamento/laboratorios
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "laboratorio",
+    "cnpj": "12345",
+    "razaoSocial": "Laboratório Teste LTDA",
+    "nomeFantasia": "Lab Teste"
+  },
+  "codigoLaboratorio": "LAB-TEST-001"
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": ["cnpj must be a valid CNPJ"],
+#   "error": "Bad Request"
+# }

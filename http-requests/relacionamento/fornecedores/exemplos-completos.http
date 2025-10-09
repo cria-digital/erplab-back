@@ -1,0 +1,372 @@
+### ========================================
+### EXEMPLO COMPLETO 1: Fornecedor de Insumos Laboratoriais - Grande Porte
+### ========================================
+
+### 1.1 - Criar Fornecedor de Insumos com Dados Completos
+POST {{baseUrl}}/relacionamento/fornecedores
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "fornecedor",
+    "cnpj": "12345678000190",
+    "razaoSocial": "BioSupply Distribuidora de Insumos Laboratoriais LTDA",
+    "nomeFantasia": "BioSupply Lab",
+    "inscricaoEstadual": "123456789",
+    "inscricaoMunicipal": "987654321",
+    "email": "comercial@biosupply.com.br",
+    "telefone": "(11) 3456-7890",
+    "celular": "(11) 98765-4321",
+    "website": "https://www.biosupply.com.br",
+    "cep": "01310-100",
+    "logradouro": "Av. Paulista",
+    "numero": "2000",
+    "complemento": "Sala 801 - Torre A",
+    "bairro": "Bela Vista",
+    "cidade": "São Paulo",
+    "estado": "SP",
+    "observacoes": "Fornecedor homologado desde 2018. Certificações: ISO 9001, ISO 13485."
+  },
+  "codigoFornecedor": "FOR-INSU-001",
+  "tipoFornecedor": "insumos",
+  "categoriaPrincipal": "laboratorial",
+  "prazoPadraoEntrega": 5,
+  "condicoesPagamento": "30/60/90 dias com boleto bancário ou PIX à vista com 5% desconto",
+  "limiteCredito": 100000.00,
+  "descontoContrato": 15.00,
+  "formasPagamento": ["boleto", "transferencia", "pix", "cartao"],
+  "observacoesComerciais": "Fornecedor principal de reagentes, vidrarias e consumíveis. Entrega gratuita acima de R$ 1.000,00. Atendimento prioritário para pedidos urgentes. Disponível para negociação em grandes volumes."
+}
+
+### 1.2 - Buscar Fornecedor Criado
+GET {{baseUrl}}/relacionamento/fornecedores/codigo/FOR-INSU-001
+Authorization: Bearer {{token}}
+
+### 1.3 - Atualizar Condições Comerciais
+PATCH {{baseUrl}}/relacionamento/fornecedores/{fornecedorId}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "limiteCredito": 150000.00,
+  "descontoContrato": 18.00,
+  "condicoesPagamento": "30/45/60/90 dias com boleto bancário ou PIX à vista com 7% desconto"
+}
+
+### 1.4 - Listar Produtos do Fornecedor
+GET {{baseUrl}}/relacionamento/fornecedores/{fornecedorId}/produtos
+Authorization: Bearer {{token}}
+
+
+### ========================================
+### EXEMPLO COMPLETO 2: Fornecedor de Equipamentos - Médio Porte
+### ========================================
+
+### 2.1 - Criar Fornecedor de Equipamentos Hospitalares
+POST {{baseUrl}}/relacionamento/fornecedores
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "fornecedor",
+    "cnpj": "98765432000111",
+    "razaoSocial": "MedEquip Equipamentos Médicos e Hospitalares LTDA",
+    "nomeFantasia": "MedEquip",
+    "inscricaoEstadual": "234567890",
+    "inscricaoMunicipal": "876543210",
+    "email": "vendas@medequip.com.br",
+    "telefone": "(11) 2345-6789",
+    "celular": "(11) 99876-5432",
+    "website": "https://www.medequip.com.br",
+    "cep": "04543-011",
+    "logradouro": "Av. Brigadeiro Luís Antônio",
+    "numero": "3500",
+    "complemento": "Conj. 501",
+    "bairro": "Jardim Paulista",
+    "cidade": "São Paulo",
+    "estado": "SP"
+  },
+  "codigoFornecedor": "FOR-EQUIP-001",
+  "tipoFornecedor": "equipamentos",
+  "categoriaPrincipal": "hospitalar",
+  "prazoPadraoEntrega": 15,
+  "condicoesPagamento": "50% entrada + saldo em 30/60 dias ou 100% em 45 dias",
+  "limiteCredito": 250000.00,
+  "descontoContrato": 10.00,
+  "formasPagamento": ["boleto", "transferencia", "cheque"],
+  "observacoesComerciais": "Especializado em equipamentos de diagnóstico por imagem, ultrassom, raio-X e ressonância. Garantia estendida disponível. Assistência técnica 24h. Treinamento incluso na compra."
+}
+
+### 2.2 - Verificar Histórico de Pedidos
+GET {{baseUrl}}/relacionamento/fornecedores/{fornecedorId}/historico-pedidos
+Authorization: Bearer {{token}}
+
+### 2.3 - Atualizar Prazo de Entrega
+PATCH {{baseUrl}}/relacionamento/fornecedores/{fornecedorId}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "prazoPadraoEntrega": 12,
+  "observacoesComerciais": "Especializado em equipamentos de diagnóstico por imagem, ultrassom, raio-X e ressonância. Garantia estendida disponível. Assistência técnica 24h. Treinamento incluso. NOVO: Prazo reduzido para 12 dias em estoque disponível."
+}
+
+
+### ========================================
+### EXEMPLO COMPLETO 3: Fornecedor de Serviços - Manutenção
+### ========================================
+
+### 3.1 - Criar Fornecedor de Serviços de Manutenção
+POST {{baseUrl}}/relacionamento/fornecedores
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "fornecedor",
+    "cnpj": "11223344000155",
+    "razaoSocial": "TecService Manutenção, Calibração e Assistência Técnica LTDA",
+    "nomeFantasia": "TecService",
+    "email": "contato@tecservice.com.br",
+    "telefone": "(11) 3333-4444",
+    "celular": "(11) 97777-8888",
+    "website": "https://www.tecservice.com.br",
+    "cep": "05408-000",
+    "logradouro": "Av. Faria Lima",
+    "numero": "4000",
+    "complemento": "Conj. 1501",
+    "bairro": "Itaim Bibi",
+    "cidade": "São Paulo",
+    "estado": "SP"
+  },
+  "codigoFornecedor": "FOR-SERV-001",
+  "tipoFornecedor": "servicos",
+  "categoriaPrincipal": "laboratorial",
+  "prazoPadraoEntrega": 7,
+  "condicoesPagamento": "À vista ou 15/30 dias com acréscimo de 3%",
+  "limiteCredito": 35000.00,
+  "descontoContrato": 5.00,
+  "formasPagamento": ["pix", "transferencia", "boleto"],
+  "observacoesComerciais": "Atendimento 24h para urgências. Contrato de manutenção preventiva trimestral com desconto. Calibração certificada INMETRO. Equipe técnica especializada em equipamentos laboratoriais."
+}
+
+### 3.2 - Buscar por Tipo de Serviço
+GET {{baseUrl}}/relacionamento/fornecedores/tipo/servicos
+Authorization: Bearer {{token}}
+
+### 3.3 - Adicionar Nova Forma de Pagamento
+PATCH {{baseUrl}}/relacionamento/fornecedores/{fornecedorId}/formas-pagamento
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "formaPagamento": "cartao"
+}
+
+
+### ========================================
+### EXEMPLO COMPLETO 4: Fornecedor Misto - Veterinário
+### ========================================
+
+### 4.1 - Criar Fornecedor Misto (Equipamentos + Insumos Veterinários)
+POST {{baseUrl}}/relacionamento/fornecedores
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "fornecedor",
+    "cnpj": "55667788000199",
+    "razaoSocial": "VetSupply Produtos e Equipamentos Veterinários LTDA",
+    "nomeFantasia": "VetSupply",
+    "email": "comercial@vetsupply.com.br",
+    "telefone": "(11) 4444-5555",
+    "celular": "(11) 96666-7777",
+    "website": "https://www.vetsupply.com.br",
+    "cep": "01419-001",
+    "logradouro": "Rua Augusta",
+    "numero": "2500",
+    "bairro": "Consolação",
+    "cidade": "São Paulo",
+    "estado": "SP"
+  },
+  "codigoFornecedor": "FOR-VET-001",
+  "tipoFornecedor": "misto",
+  "categoriaPrincipal": "veterinario",
+  "prazoPadraoEntrega": 10,
+  "condicoesPagamento": "30/60 dias com boleto ou à vista com 8% desconto",
+  "limiteCredito": 80000.00,
+  "descontoContrato": 12.00,
+  "formasPagamento": ["boleto", "transferencia", "pix", "cartao"],
+  "observacoesComerciais": "Linha completa para laboratórios veterinários. Inclui equipamentos de hematologia, bioquímica veterinária, parasitologia e microbiologia. Reagentes e consumíveis para todas as análises veterinárias. Treinamento técnico incluso."
+}
+
+### 4.2 - Buscar Fornecedores Veterinários
+GET {{baseUrl}}/relacionamento/fornecedores/categoria/veterinario
+Authorization: Bearer {{token}}
+
+### 4.3 - Verificar Disponibilidade de Produtos
+GET {{baseUrl}}/relacionamento/fornecedores/{fornecedorId}/disponibilidade?produtos=uuid1,uuid2,uuid3
+Authorization: Bearer {{token}}
+
+
+### ========================================
+### EXEMPLO COMPLETO 5: Fornecedor Odontológico
+### ========================================
+
+### 5.1 - Criar Fornecedor de Insumos Odontológicos
+POST {{baseUrl}}/relacionamento/fornecedores
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "fornecedor",
+    "cnpj": "33445566000177",
+    "razaoSocial": "DentalMed Produtos e Materiais Odontológicos LTDA",
+    "nomeFantasia": "DentalMed",
+    "email": "vendas@dentalmed.com.br",
+    "telefone": "(11) 5555-6666",
+    "celular": "(11) 95555-7777",
+    "website": "https://www.dentalmed.com.br",
+    "cep": "04567-001",
+    "logradouro": "Rua dos Pinheiros",
+    "numero": "1800",
+    "complemento": "Loja 3",
+    "bairro": "Pinheiros",
+    "cidade": "São Paulo",
+    "estado": "SP"
+  },
+  "codigoFornecedor": "FOR-ODO-001",
+  "tipoFornecedor": "insumos",
+  "categoriaPrincipal": "odontologico",
+  "prazoPadraoEntrega": 3,
+  "condicoesPagamento": "À vista com 5% desconto ou 28 dias sem acréscimo",
+  "limiteCredito": 30000.00,
+  "descontoContrato": 8.00,
+  "formasPagamento": ["pix", "boleto", "transferencia", "cartao"],
+  "observacoesComerciais": "Pronta entrega de materiais odontológicos. Pedidos acima de R$ 500 com frete grátis para São Paulo capital. Linha completa de materiais restauradores, preventivos, cirúrgicos e ortodônticos."
+}
+
+### 5.2 - Buscar Fornecedores Odontológicos
+GET {{baseUrl}}/relacionamento/fornecedores/categoria/odontologico
+Authorization: Bearer {{token}}
+
+### 5.3 - Atualizar Limite de Crédito
+PATCH {{baseUrl}}/relacionamento/fornecedores/{fornecedorId}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "limiteCredito": 45000.00,
+  "descontoContrato": 10.00
+}
+
+
+### ========================================
+### EXEMPLO COMPLETO 6: Gestão Completa de Fornecedor
+### ========================================
+
+### 6.1 - Buscar Fornecedor por Código
+GET {{baseUrl}}/relacionamento/fornecedores/codigo/FOR-INSU-001
+Authorization: Bearer {{token}}
+
+### 6.2 - Buscar por CNPJ
+GET {{baseUrl}}/relacionamento/fornecedores/cnpj/12345678000190
+Authorization: Bearer {{token}}
+
+### 6.3 - Atualizar Múltiplos Campos
+PATCH {{baseUrl}}/relacionamento/fornecedores/{fornecedorId}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "prazoPadraoEntrega": 3,
+  "limiteCredito": 120000.00,
+  "descontoContrato": 20.00,
+  "condicoesPagamento": "28/45/60 dias ou PIX à vista com 10% desconto",
+  "observacoesComerciais": "Fornecedor premium. Atendimento prioritário 24h. Entrega expressa sem custo adicional."
+}
+
+### 6.4 - Atualizar Dados da Empresa
+PATCH {{baseUrl}}/relacionamento/fornecedores/{fornecedorId}/empresa
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nomeFantasia": "BioSupply Lab - Matriz SP",
+  "telefone": "(11) 3456-7899",
+  "email": "comercial.matriz@biosupply.com.br",
+  "website": "https://www.biosupply.com.br/sp"
+}
+
+### 6.5 - Listar Todos os Produtos do Fornecedor
+GET {{baseUrl}}/relacionamento/fornecedores/{fornecedorId}/produtos
+Authorization: Bearer {{token}}
+
+### 6.6 - Verificar Histórico de Pedidos
+GET {{baseUrl}}/relacionamento/fornecedores/{fornecedorId}/historico-pedidos
+Authorization: Bearer {{token}}
+
+### 6.7 - Desativar Temporariamente
+PATCH {{baseUrl}}/relacionamento/fornecedores/{fornecedorId}/toggle-status
+Authorization: Bearer {{token}}
+
+### 6.8 - Reativar Fornecedor
+PATCH {{baseUrl}}/relacionamento/fornecedores/{fornecedorId}/toggle-status
+Authorization: Bearer {{token}}
+
+
+### ========================================
+### EXEMPLO COMPLETO 7: Consultas e Estatísticas
+### ========================================
+
+### 7.1 - Obter Estatísticas Gerais
+GET {{baseUrl}}/relacionamento/fornecedores/estatisticas
+Authorization: Bearer {{token}}
+
+### 7.2 - Listar Apenas Fornecedores Ativos
+GET {{baseUrl}}/relacionamento/fornecedores/ativos
+Authorization: Bearer {{token}}
+
+### 7.3 - Buscar por Tipo de Fornecedor
+GET {{baseUrl}}/relacionamento/fornecedores/tipo/insumos
+Authorization: Bearer {{token}}
+
+### 7.4 - Buscar por Categoria
+GET {{baseUrl}}/relacionamento/fornecedores/categoria/laboratorial
+Authorization: Bearer {{token}}
+
+### 7.5 - Buscar por Forma de Pagamento
+GET {{baseUrl}}/relacionamento/fornecedores/forma-pagamento/pix
+Authorization: Bearer {{token}}
+
+### 7.6 - Buscar por Prazo Máximo de Entrega
+GET {{baseUrl}}/relacionamento/fornecedores?prazoPadraoEntregaMax=7
+Authorization: Bearer {{token}}
+
+### 7.7 - Buscar por Limite de Crédito Mínimo
+GET {{baseUrl}}/relacionamento/fornecedores?limiteCreditoMin=50000
+Authorization: Bearer {{token}}
+
+### 7.8 - Buscar por Desconto Mínimo
+GET {{baseUrl}}/relacionamento/fornecedores?descontoContratoMin=15
+Authorization: Bearer {{token}}
+
+### 7.9 - Buscar por Termo (busca ampla)
+GET {{baseUrl}}/relacionamento/fornecedores/search?q=BioSupply
+Authorization: Bearer {{token}}
+
+### 7.10 - Buscar Combinando Tipo e Categoria
+GET {{baseUrl}}/relacionamento/fornecedores?tipoFornecedor=insumos&categoriaPrincipal=laboratorial
+Authorization: Bearer {{token}}
+
+### 7.11 - Listar Ordenado por Prazo de Entrega
+GET {{baseUrl}}/relacionamento/fornecedores?orderBy=prazoPadraoEntrega&order=ASC
+Authorization: Bearer {{token}}
+
+### 7.12 - Listar Ordenado por Limite de Crédito
+GET {{baseUrl}}/relacionamento/fornecedores?orderBy=limiteCredito&order=DESC
+Authorization: Bearer {{token}}

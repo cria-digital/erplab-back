@@ -1,0 +1,313 @@
+### Buscar imobilizado por ID
+GET {{baseUrl}}/configuracoes/estrutura/imobilizados/550e8400-e29b-41d4-a716-446655440000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "550e8400-e29b-41d4-a716-446655440000",
+#   "codigoPatrimonio": "IMOB-2024-001",
+#   "placa": "PLACA-IMOVEL-001",
+#   "descricao": "Edificio Sede - Laboratorio Clinico",
+#   "categoria": "imovel",
+#   "subcategoria": "Edificio Comercial",
+#   "valorAquisicao": 2500000.00,
+#   "dataAquisicao": "2020-01-15",
+#   "fornecedorId": "uuid-fornecedor",
+#   "notaFiscal": "NF-IMOVEL-2020-001",
+#   "vidaUtilAnos": 50,
+#   "valorResidual": 500000.00,
+#   "metodoDepreciacao": "linear",
+#   "taxaDepreciacao": 2.00,
+#   "valorDepreciadoAcumulado": 250000.00,
+#   "valorContabil": 2250000.00,
+#   "setorResponsavel": "Administracao",
+#   "localizacao": "Rua das Flores, 1234 - Centro",
+#   "responsavel": "Dr. Carlos Silva",
+#   "status": "ativo",
+#   "observacoes": "Edificio de 3 andares...",
+#   "documentos": ["https://..."],
+#   "createdAt": "2025-10-09T10:00:00.000Z",
+#   "updatedAt": "2025-10-09T10:00:00.000Z"
+# }
+
+###
+
+### Buscar imobilizado por codigo patrimonio - Imovel
+GET {{baseUrl}}/configuracoes/estrutura/imobilizados/codigo/IMOB-2024-001
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar imobilizado por codigo patrimonio - Veiculo
+GET {{baseUrl}}/configuracoes/estrutura/imobilizados/codigo/VEI-2024-001
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar imobilizado por codigo patrimonio - Mobiliario
+GET {{baseUrl}}/configuracoes/estrutura/imobilizados/codigo/MOB-2024-010
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar imobilizado por codigo patrimonio - Equipamento TI
+GET {{baseUrl}}/configuracoes/estrutura/imobilizados/codigo/TI-2024-005
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar imobilizado por codigo patrimonio - Equipamento Medico
+GET {{baseUrl}}/configuracoes/estrutura/imobilizados/codigo/MED-2024-008
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar imobilizado por placa - Veiculo Ambulancia
+GET {{baseUrl}}/configuracoes/estrutura/imobilizados/placa/ABC-1234
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar imobilizado por placa - Veiculo Utilitario
+GET {{baseUrl}}/configuracoes/estrutura/imobilizados/placa/XYZ-5678
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar imobilizado por placa - Mesa Cirurgica
+GET {{baseUrl}}/configuracoes/estrutura/imobilizados/placa/PLACA-MOB-010
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar imobilizado por placa - Servidor
+GET {{baseUrl}}/configuracoes/estrutura/imobilizados/placa/PLACA-TI-005
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar imobilizado por placa - Ultrassom
+GET {{baseUrl}}/configuracoes/estrutura/imobilizados/placa/PLACA-MED-008
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar imobilizado por nota fiscal
+GET {{baseUrl}}/configuracoes/estrutura/imobilizados/nota-fiscal/NF-VEI-2024-0015
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar imobilizado inexistente por ID (deve retornar 404)
+GET {{baseUrl}}/configuracoes/estrutura/imobilizados/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Imobilizado com ID 00000000-0000-0000-0000-000000000000 nao encontrado",
+#   "error": "Not Found"
+# }
+
+###
+
+### Buscar imobilizado por codigo inexistente (deve retornar 404)
+GET {{baseUrl}}/configuracoes/estrutura/imobilizados/codigo/CODIGO-INEXISTENTE
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Imobilizado com codigo CODIGO-INEXISTENTE nao encontrado",
+#   "error": "Not Found"
+# }
+
+###
+
+### Buscar imobilizado por placa inexistente (deve retornar 404)
+GET {{baseUrl}}/configuracoes/estrutura/imobilizados/placa/PLACA-INEXISTENTE
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Imobilizado com placa PLACA-INEXISTENTE nao encontrado",
+#   "error": "Not Found"
+# }
+
+###
+
+### Obter historico de depreciacao de um imobilizado
+GET {{baseUrl}}/configuracoes/estrutura/imobilizados/550e8400-e29b-41d4-a716-446655440000/depreciacao/historico
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "mes": 10,
+#     "ano": 2024,
+#     "valorDepreciacaoMensal": 4166.67,
+#     "valorDepreciadoAcumulado": 250000.00,
+#     "valorContabil": 2250000.00,
+#     "taxaDepreciacao": 2.00
+#   }
+# ]
+
+###
+
+### Calcular depreciacao projetada de um imobilizado
+GET {{baseUrl}}/configuracoes/estrutura/imobilizados/550e8400-e29b-41d4-a716-446655440000/depreciacao/projecao?anos=5
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "imobilizadoId": "uuid",
+#   "codigoPatrimonio": "IMOB-2024-001",
+#   "valorAtual": 2250000.00,
+#   "projecao": [
+#     {
+#       "ano": 2025,
+#       "depreciacaoAnual": 50000.00,
+#       "valorContabil": 2200000.00
+#     },
+#     {
+#       "ano": 2026,
+#       "depreciacaoAnual": 50000.00,
+#       "valorContabil": 2150000.00
+#     }
+#   ]
+# }
+
+###
+
+### Obter documentos vinculados ao imobilizado
+GET {{baseUrl}}/configuracoes/estrutura/imobilizados/550e8400-e29b-41d4-a716-446655440000/documentos
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "imobilizadoId": "uuid",
+#   "codigoPatrimonio": "IMOB-2024-001",
+#   "documentos": [
+#     {
+#       "tipo": "nota_fiscal",
+#       "url": "https://storage.lab.com/documentos/nota-fiscal-001.pdf",
+#       "dataUpload": "2024-01-15"
+#     },
+#     {
+#       "tipo": "escritura",
+#       "url": "https://storage.lab.com/documentos/escritura-imovel-001.pdf",
+#       "dataUpload": "2024-01-15"
+#     }
+#   ]
+# }
+
+###
+
+### Verificar vida util restante
+GET {{baseUrl}}/configuracoes/estrutura/imobilizados/550e8400-e29b-41d4-a716-446655440000/vida-util
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "imobilizadoId": "uuid",
+#   "codigoPatrimonio": "IMOB-2024-001",
+#   "vidaUtilTotal": 50,
+#   "anosDecorridos": 4.75,
+#   "vidaUtilRestante": 45.25,
+#   "percentualDepreciado": 9.5,
+#   "dataAquisicao": "2020-01-15",
+#   "previsaoDepreciacaoTotal": "2070-01-15"
+# }
+
+###
+
+### Verificar se imobilizado requer substituicao
+GET {{baseUrl}}/configuracoes/estrutura/imobilizados/550e8400-e29b-41d4-a716-446655440000/requer-substituicao
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "imobilizadoId": "uuid",
+#   "codigoPatrimonio": "TI-2024-005",
+#   "requerSubstituicao": false,
+#   "vidaUtilRestante": 3.5,
+#   "percentualDepreciado": 30.0,
+#   "valorContabil": 59500.00,
+#   "recomendacoes": [
+#     "Vida util restante: 3.5 anos",
+#     "Planejamento de substituicao recomendado para 2028"
+#   ]
+# }
+
+###
+
+### Obter movimentacoes do imobilizado (mudancas de setor/localizacao)
+GET {{baseUrl}}/configuracoes/estrutura/imobilizados/550e8400-e29b-41d4-a716-446655440000/movimentacoes
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid-movimentacao",
+#     "data": "2024-05-10",
+#     "tipo": "transferencia_setor",
+#     "setorOrigem": "TI - Geral",
+#     "setorDestino": "TI - Datacenter",
+#     "localizacaoOrigem": "Sala 305",
+#     "localizacaoDestino": "Datacenter - Rack A3",
+#     "responsavelMovimentacao": "Coord. TI",
+#     "observacoes": "Realocacao para datacenter apos upgrade"
+#   }
+# ]
+
+###
+
+### Verificar garantia do imobilizado
+GET {{baseUrl}}/configuracoes/estrutura/imobilizados/550e8400-e29b-41d4-a716-446655440000/garantia
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "imobilizadoId": "uuid",
+#   "codigoPatrimonio": "TI-2024-005",
+#   "emGarantia": true,
+#   "dataAquisicao": "2024-02-10",
+#   "prazoGarantiaMeses": 36,
+#   "dataFimGarantia": "2027-02-10",
+#   "mesesRestantes": 28,
+#   "fornecedor": "Dell Technologies",
+#   "contatoSuporte": "0800-123-4567"
+# }
+
+###
+
+### Calcular valor de mercado atual (estimativa)
+GET {{baseUrl}}/configuracoes/estrutura/imobilizados/550e8400-e29b-41d4-a716-446655440000/valor-mercado
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "imobilizadoId": "uuid",
+#   "codigoPatrimonio": "VEI-2024-001",
+#   "valorAquisicao": 185000.00,
+#   "valorContabil": 139750.00,
+#   "valorMercadoEstimado": 155000.00,
+#   "percentualValorizacao": 10.9,
+#   "baseCalculo": "Tabela FIPE atualizada",
+#   "dataReferencia": "2024-10-01"
+# }
+
+###

@@ -1,0 +1,241 @@
+### Listar Todos os Fornecedores
+GET {{baseUrl}}/relacionamento/fornecedores
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [
+#     {
+#       "id": "uuid",
+#       "codigoFornecedor": "FOR-INSU-001",
+#       "tipoFornecedor": "insumos",
+#       "categoriaPrincipal": "laboratorial",
+#       "empresa": {
+#         "cnpj": "12345678000190",
+#         "razaoSocial": "BioSupply Distribuidora de Insumos LTDA",
+#         "nomeFantasia": "BioSupply Lab"
+#       },
+#       "ativo": true,
+#       ...
+#     }
+#   ],
+#   "meta": {
+#     "total": 15,
+#     "page": 1,
+#     "limit": 10
+#   }
+# }
+
+
+### Listar Apenas Fornecedores Ativos
+GET {{baseUrl}}/relacionamento/fornecedores/ativos
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... array de fornecedores ativos ... ]
+
+
+### Listar com Paginação
+GET {{baseUrl}}/relacionamento/fornecedores?page=1&limit=5
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [ ... ],
+#   "meta": {
+#     "total": 50,
+#     "page": 1,
+#     "limit": 5,
+#     "totalPages": 10
+#   }
+# }
+
+
+### Filtrar por Tipo de Fornecedor - Insumos
+GET {{baseUrl}}/relacionamento/fornecedores/tipo/insumos
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... fornecedores de insumos ... ]
+
+
+### Filtrar por Tipo de Fornecedor - Equipamentos
+GET {{baseUrl}}/relacionamento/fornecedores/tipo/equipamentos
+Authorization: Bearer {{token}}
+
+
+### Filtrar por Tipo de Fornecedor - Serviços
+GET {{baseUrl}}/relacionamento/fornecedores/tipo/servicos
+Authorization: Bearer {{token}}
+
+
+### Filtrar por Tipo de Fornecedor - Misto
+GET {{baseUrl}}/relacionamento/fornecedores/tipo/misto
+Authorization: Bearer {{token}}
+
+
+### Filtrar por Categoria Principal - Laboratorial
+GET {{baseUrl}}/relacionamento/fornecedores/categoria/laboratorial
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... fornecedores laboratoriais ... ]
+
+
+### Filtrar por Categoria Principal - Hospitalar
+GET {{baseUrl}}/relacionamento/fornecedores/categoria/hospitalar
+Authorization: Bearer {{token}}
+
+
+### Filtrar por Categoria Principal - Odontológico
+GET {{baseUrl}}/relacionamento/fornecedores/categoria/odontologico
+Authorization: Bearer {{token}}
+
+
+### Filtrar por Categoria Principal - Veterinário
+GET {{baseUrl}}/relacionamento/fornecedores/categoria/veterinario
+Authorization: Bearer {{token}}
+
+
+### Buscar por Termo (razão social, nome fantasia ou código)
+GET {{baseUrl}}/relacionamento/fornecedores/search?q=BioSupply
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... fornecedores que contenham "BioSupply" no nome ou código ... ]
+
+
+### Filtrar por Prazo de Entrega Máximo
+GET {{baseUrl}}/relacionamento/fornecedores?prazoPadraoEntregaMax=7
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... fornecedores com prazo de entrega até 7 dias ... ]
+
+
+### Filtrar por Prazo de Entrega Específico
+GET {{baseUrl}}/relacionamento/fornecedores?prazoPadraoEntrega=5
+Authorization: Bearer {{token}}
+
+
+### Filtrar por Limite de Crédito Mínimo
+GET {{baseUrl}}/relacionamento/fornecedores?limiteCreditoMin=50000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... fornecedores com limite de crédito acima de R$ 50.000 ... ]
+
+
+### Filtrar por Faixa de Limite de Crédito
+GET {{baseUrl}}/relacionamento/fornecedores?limiteCreditoMin=30000&limiteCreditoMax=100000
+Authorization: Bearer {{token}}
+
+
+### Filtrar por Desconto Contrato Mínimo
+GET {{baseUrl}}/relacionamento/fornecedores?descontoContratoMin=10
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... fornecedores com desconto de pelo menos 10% ... ]
+
+
+### Filtrar por Forma de Pagamento
+GET {{baseUrl}}/relacionamento/fornecedores/forma-pagamento/pix
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... fornecedores que aceitam PIX ... ]
+
+
+### Filtrar por Múltiplas Formas de Pagamento
+GET {{baseUrl}}/relacionamento/fornecedores?formasPagamento=pix,boleto
+Authorization: Bearer {{token}}
+
+
+### Obter Estatísticas de Fornecedores
+GET {{baseUrl}}/relacionamento/fornecedores/estatisticas
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "total": 35,
+#   "ativos": 30,
+#   "inativos": 5,
+#   "porTipo": {
+#     "insumos": 15,
+#     "equipamentos": 8,
+#     "servicos": 7,
+#     "misto": 5
+#   },
+#   "porCategoria": {
+#     "laboratorial": 20,
+#     "hospitalar": 8,
+#     "odontologico": 4,
+#     "veterinario": 3
+#   },
+#   "limiteCreditoTotal": 2500000.00,
+#   "descontoMedio": 10.5
+# }
+
+
+### Listar Ordenado por Razão Social
+GET {{baseUrl}}/relacionamento/fornecedores?orderBy=razaoSocial&order=ASC
+Authorization: Bearer {{token}}
+
+
+### Listar Ordenado por Código
+GET {{baseUrl}}/relacionamento/fornecedores?orderBy=codigoFornecedor&order=DESC
+Authorization: Bearer {{token}}
+
+
+### Listar Ordenado por Prazo de Entrega
+GET {{baseUrl}}/relacionamento/fornecedores?orderBy=prazoPadraoEntrega&order=ASC
+Authorization: Bearer {{token}}
+
+
+### Listar Ordenado por Limite de Crédito
+GET {{baseUrl}}/relacionamento/fornecedores?orderBy=limiteCredito&order=DESC
+Authorization: Bearer {{token}}
+
+
+### Filtrar por Estado
+GET {{baseUrl}}/relacionamento/fornecedores?estado=SP
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... fornecedores do estado de São Paulo ... ]
+
+
+### Filtrar por Cidade
+GET {{baseUrl}}/relacionamento/fornecedores?cidade=São Paulo
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... fornecedores da cidade de São Paulo ... ]
+
+
+### Buscar Fornecedores com Condições de Pagamento Específicas
+GET {{baseUrl}}/relacionamento/fornecedores/search?condicoes=30 dias
+Authorization: Bearer {{token}}
+
+
+### Buscar Fornecedores por Tipo e Categoria
+GET {{baseUrl}}/relacionamento/fornecedores?tipoFornecedor=insumos&categoriaPrincipal=laboratorial
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... fornecedores de insumos laboratoriais ... ]

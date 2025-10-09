@@ -1,0 +1,209 @@
+### Buscar Etiqueta por ID
+# Substitua {id} pelo UUID da etiqueta
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/{id}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "codigoEtiqueta": "ETQ-SANG-001",
+#   "nome": "Etiqueta Sangue - Tubo Pequeno",
+#   "tipoAmostra": "sangue",
+#   "largura": 40,
+#   "altura": 20,
+#   "orientacao": "paisagem",
+#   "layout": {
+#     "tipo": "grid",
+#     "colunas": 2,
+#     "linhas": 3,
+#     "espacamento": 2
+#   },
+#   "campos": ["codigoBarras", "nomeParaciente", "dataColeta", "horaColeta"],
+#   "corPrimaria": "#FF0000",
+#   "corSecundaria": "#FFFFFF",
+#   "templateZPL": "...",
+#   "padrao": true,
+#   "ativo": true,
+#   ...
+# }
+
+
+### Buscar por Código da Etiqueta
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/codigo/ETQ-SANG-001
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# { ... dados da etiqueta ... }
+
+
+### Buscar Etiquetas por Tipo de Amostra - Sangue
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/tipo/sangue
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... array de etiquetas para sangue ... ]
+
+
+### Buscar Etiquetas por Tipo de Amostra - Urina
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/tipo/urina
+Authorization: Bearer {{token}}
+
+
+### Buscar Etiquetas por Tipo de Amostra - Fezes
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/tipo/fezes
+Authorization: Bearer {{token}}
+
+
+### Buscar Etiquetas por Tipo de Amostra - Swab
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/tipo/swab
+Authorization: Bearer {{token}}
+
+
+### Buscar Etiquetas por Tipo de Amostra - Soro
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/tipo/soro
+Authorization: Bearer {{token}}
+
+
+### Buscar Etiquetas por Tipo de Amostra - Plasma
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/tipo/plasma
+Authorization: Bearer {{token}}
+
+
+### Buscar Etiquetas por Tipo de Amostra - Líquor
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/tipo/liquor
+Authorization: Bearer {{token}}
+
+
+### Buscar Etiquetas por Orientação - Paisagem
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/orientacao/paisagem
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... array de etiquetas em orientação paisagem ... ]
+
+
+### Buscar Etiquetas por Orientação - Retrato
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/orientacao/retrato
+Authorization: Bearer {{token}}
+
+
+### Buscar Etiquetas Padrão do Sistema
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/padrao
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... array de etiquetas marcadas como padrão ... ]
+
+
+### Obter Template ZPL da Etiqueta
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/{id}/template-zpl
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "codigoEtiqueta": "ETQ-SANG-001",
+#   "templateZPL": "^XA^FO50,50^BCN,100,Y,N,N^FD{codigo}^FS^FO50,170^A0N,25,25^FD{paciente}^FS^XZ",
+#   "variaveis": ["codigo", "paciente", "dataColeta", "horaColeta"]
+# }
+
+
+### Obter Campos Disponíveis da Etiqueta
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/{id}/campos
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "campos": [
+#     "codigoBarras",
+#     "nomeParaciente",
+#     "dataColeta",
+#     "horaColeta"
+#   ],
+#   "descricoes": {
+#     "codigoBarras": "Código de barras do exame/amostra",
+#     "nomeParaciente": "Nome completo do paciente",
+#     "dataColeta": "Data da coleta da amostra",
+#     "horaColeta": "Hora da coleta da amostra"
+#   }
+# }
+
+
+### Obter Estatísticas de Etiquetas
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/stats
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "total": 20,
+#   "ativas": 18,
+#   "inativas": 2,
+#   "padrao": 5,
+#   "porTipo": {
+#     "sangue": 4,
+#     "urina": 3,
+#     "fezes": 2,
+#     "swab": 2,
+#     "soro": 3,
+#     "plasma": 2,
+#     "liquor": 2,
+#     "outros": 2
+#   },
+#   "porOrientacao": {
+#     "paisagem": 15,
+#     "retrato": 5
+#   },
+#   "porTamanho": {
+#     "pequenas": 8,
+#     "medias": 10,
+#     "grandes": 2
+#   }
+# }
+
+
+### Validar Etiqueta para Tipo de Amostra
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/{id}/validar/{tipoAmostra}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "valida": true,
+#   "mensagem": "Etiqueta compatível com o tipo de amostra",
+#   "tamanhoAdequado": true,
+#   "camposObrigatorios": ["codigoBarras", "nomeParaciente"]
+# }
+
+
+### Erro - Etiqueta Não Encontrada
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Etiqueta não encontrada",
+#   "error": "Not Found"
+# }
+
+
+### Erro - Código Não Encontrado
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/codigo/INEXISTENTE
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Etiqueta com código INEXISTENTE não encontrada",
+#   "error": "Not Found"
+# }

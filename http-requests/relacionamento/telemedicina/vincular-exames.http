@@ -1,0 +1,485 @@
+### Vincular Exame à Plataforma de Telemedicina
+# Substitua {telemedicina_id} pelo UUID da plataforma
+POST {{baseUrl}}/relacionamento/telemedicina/{telemedicina_id}/exames
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "exameId": "uuid-do-exame",
+  "codigoTelemedicina": "ECG-TELE-001",
+  "nomeExameTelemedicina": "Eletrocardiograma Digital",
+  "categoriaTelemedicina": "Cardiologia",
+  "permiteUploadImagem": true,
+  "requerEspecialista": true,
+  "tempoLaudoPadrao": 120,
+  "valorLaudo": 80.00,
+  "observacoes": "Laudo disponível em até 2 horas"
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "id": "uuid",
+#   "telemedicinaId": "uuid-da-plataforma",
+#   "exameId": "uuid-do-exame",
+#   "codigoTelemedicina": "ECG-TELE-001",
+#   "nomeExameTelemedicina": "Eletrocardiograma Digital",
+#   "categoriaTelemedicina": "Cardiologia",
+#   "permiteUploadImagem": true,
+#   "requerEspecialista": true,
+#   "tempoLaudoPadrao": 120,
+#   "valorLaudo": 80.00,
+#   "ativo": true,
+#   ...
+# }
+
+
+### Vincular Exame de Imagem (Raio-X)
+POST {{baseUrl}}/relacionamento/telemedicina/{telemedicina_id}/exames
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "exameId": "uuid-do-raio-x",
+  "codigoTelemedicina": "RX-TELE-001",
+  "nomeExameTelemedicina": "Raio-X Tórax PA",
+  "categoriaTelemedicina": "Radiologia",
+  "permiteUploadImagem": true,
+  "requerEspecialista": true,
+  "tempoLaudoPadrao": 240,
+  "valorLaudo": 120.00,
+  "observacoes": "Upload de imagens DICOM. Laudo em até 4 horas."
+}
+
+
+### Vincular Exame Laboratorial (Hemograma)
+POST {{baseUrl}}/relacionamento/telemedicina/{telemedicina_id}/exames
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "exameId": "uuid-do-hemograma",
+  "codigoTelemedicina": "HEM-TELE-001",
+  "nomeExameTelemedicina": "Hemograma Completo Digital",
+  "categoriaTelemedicina": "Hematologia",
+  "permiteUploadImagem": false,
+  "requerEspecialista": false,
+  "tempoLaudoPadrao": 60,
+  "valorLaudo": 35.00,
+  "observacoes": "Resultado automatizado"
+}
+
+
+### Listar Exames Vinculados à Plataforma
+GET {{baseUrl}}/relacionamento/telemedicina/{telemedicina_id}/exames
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid",
+#     "exameId": "uuid",
+#     "exame": {
+#       "codigo": "ECG",
+#       "nome": "Eletrocardiograma",
+#       "descricao": "Avaliação da atividade elétrica do coração"
+#     },
+#     "codigoTelemedicina": "ECG-TELE-001",
+#     "nomeExameTelemedicina": "Eletrocardiograma Digital",
+#     "valorLaudo": 80.00,
+#     "ativo": true
+#   },
+#   ...
+# ]
+
+
+### Listar Apenas Exames Ativos da Plataforma
+GET {{baseUrl}}/relacionamento/telemedicina/{telemedicina_id}/exames/ativos
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... array de exames ativos ... ]
+
+
+### Buscar Exame Específico na Plataforma
+GET {{baseUrl}}/relacionamento/telemedicina/{telemedicina_id}/exames/{vinculo_id}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "telemedicinaId": "uuid",
+#   "exameId": "uuid",
+#   "exame": { ... },
+#   "codigoTelemedicina": "ECG-TELE-001",
+#   "valorLaudo": 80.00,
+#   ...
+# }
+
+
+### Buscar Exames por Código da Plataforma
+GET {{baseUrl}}/relacionamento/telemedicina/{telemedicina_id}/exames/codigo/ECG-TELE-001
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# { ... dados do exame vinculado ... }
+
+
+### Buscar Exames por Categoria
+GET {{baseUrl}}/relacionamento/telemedicina/{telemedicina_id}/exames?categoria=Cardiologia
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... exames de Cardiologia vinculados ... ]
+
+
+### Buscar Exames que Requerem Especialista
+GET {{baseUrl}}/relacionamento/telemedicina/{telemedicina_id}/exames?requerEspecialista=true
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... exames que requerem especialista ... ]
+
+
+### Buscar Exames que Permitem Upload de Imagem
+GET {{baseUrl}}/relacionamento/telemedicina/{telemedicina_id}/exames?permiteUploadImagem=true
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... exames que permitem upload de imagem ... ]
+
+
+### Buscar Exames por Faixa de Tempo de Laudo
+GET {{baseUrl}}/relacionamento/telemedicina/{telemedicina_id}/exames?tempoLaudoMax=180
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... exames com tempo de laudo até 180 minutos ... ]
+
+
+### Buscar Exames por Faixa de Valor
+GET {{baseUrl}}/relacionamento/telemedicina/{telemedicina_id}/exames?valorMin=50&valorMax=150
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... exames com valor entre R$ 50 e R$ 150 ... ]
+
+
+### Atualizar Vínculo Exame-Plataforma
+PATCH {{baseUrl}}/relacionamento/telemedicina/{telemedicina_id}/exames/{vinculo_id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tempoLaudoPadrao": 90,
+  "valorLaudo": 85.00,
+  "observacoes": "Laudo em até 90 minutos. Valor promocional."
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... vínculo atualizado ... }
+
+
+### Atualizar Valor do Laudo
+PATCH {{baseUrl}}/relacionamento/telemedicina/{telemedicina_id}/exames/{vinculo_id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "valorLaudo": 95.00
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... vínculo com valor atualizado ... }
+
+
+### Atualizar Tempo de Laudo
+PATCH {{baseUrl}}/relacionamento/telemedicina/{telemedicina_id}/exames/{vinculo_id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tempoLaudoPadrao": 60
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... vínculo com tempo de laudo atualizado ... }
+
+
+### Habilitar Upload de Imagem
+PATCH {{baseUrl}}/relacionamento/telemedicina/{telemedicina_id}/exames/{vinculo_id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "permiteUploadImagem": true
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... vínculo com upload de imagem habilitado ... }
+
+
+### Marcar Exame como Requerendo Especialista
+PATCH {{baseUrl}}/relacionamento/telemedicina/{telemedicina_id}/exames/{vinculo_id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "requerEspecialista": true,
+  "tempoLaudoPadrao": 240
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... vínculo atualizado ... }
+
+
+### Alternar Status do Exame na Plataforma
+PATCH {{baseUrl}}/relacionamento/telemedicina/{telemedicina_id}/exames/{vinculo_id}/toggle-status
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "ativo": false,
+#   "message": "Status do exame alterado com sucesso"
+# }
+
+
+### Remover Vínculo Exame-Plataforma
+DELETE {{baseUrl}}/relacionamento/telemedicina/{telemedicina_id}/exames/{vinculo_id}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Exame removido da plataforma com sucesso"
+# }
+
+
+### Adicionar Múltiplos Exames à Plataforma
+POST {{baseUrl}}/relacionamento/telemedicina/{telemedicina_id}/exames/bulk
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "exames": [
+    {
+      "exameId": "uuid-ecg",
+      "codigoTelemedicina": "ECG-001",
+      "nomeExameTelemedicina": "ECG Digital",
+      "valorLaudo": 80.00,
+      "tempoLaudoPadrao": 120
+    },
+    {
+      "exameId": "uuid-rx-torax",
+      "codigoTelemedicina": "RX-TORAX-001",
+      "nomeExameTelemedicina": "Raio-X Tórax",
+      "valorLaudo": 120.00,
+      "tempoLaudoPadrao": 240
+    },
+    {
+      "exameId": "uuid-usg",
+      "codigoTelemedicina": "USG-001",
+      "nomeExameTelemedicina": "Ultrassonografia",
+      "valorLaudo": 150.00,
+      "tempoLaudoPadrao": 180
+    }
+  ]
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "message": "3 exames adicionados à plataforma com sucesso",
+#   "exames": [ ... ]
+# }
+
+
+### Buscar Exames Disponíveis para Vincular
+# Retorna exames ainda não vinculados à plataforma
+GET {{baseUrl}}/relacionamento/telemedicina/{telemedicina_id}/exames/disponiveis
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid",
+#     "codigo": "TOMOGRAFIA",
+#     "nome": "Tomografia Computadorizada",
+#     "descricao": "Exame de imagem por TC"
+#   },
+#   ...
+# ]
+
+
+### Buscar Exames sem Vínculo em Qualquer Plataforma
+GET {{baseUrl}}/relacionamento/telemedicina/exames/sem-vinculo
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... exames sem vínculo em nenhuma plataforma ... ]
+
+
+### Obter Estatísticas de Exames da Plataforma
+GET {{baseUrl}}/relacionamento/telemedicina/{telemedicina_id}/exames/estatisticas
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "total": 45,
+#   "ativos": 40,
+#   "inativos": 5,
+#   "comUploadImagem": 25,
+#   "requeremEspecialista": 30,
+#   "valorMedioLaudo": 95.50,
+#   "tempoMedioLaudo": 150,
+#   "porCategoria": {
+#     "Cardiologia": 8,
+#     "Radiologia": 15,
+#     "Hematologia": 10,
+#     "Outros": 12
+#   }
+# }
+
+
+### Importar Mapeamento de Exames (Planilha)
+POST {{baseUrl}}/relacionamento/telemedicina/{telemedicina_id}/exames/importar
+Content-Type: multipart/form-data
+Authorization: Bearer {{token}}
+
+# file: arquivo.xlsx ou arquivo.csv
+# Formato esperado: codigo_exame, codigo_telemedicina, nome_telemedicina, valor_laudo
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Importação concluída com sucesso",
+#   "totalImportados": 25,
+#   "erros": []
+# }
+
+
+### Exportar Mapeamento de Exames
+GET {{baseUrl}}/relacionamento/telemedicina/{telemedicina_id}/exames/exportar?format=xlsx
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+# [ ... arquivo Excel com mapeamento ... ]
+
+
+### Vincular Automaticamente por Código
+POST {{baseUrl}}/relacionamento/telemedicina/{telemedicina_id}/exames/vincular-automaticamente
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "usarCodigoTUSS": true,
+  "usarCodigoAMB": false,
+  "valorLaudoPadrao": 100.00,
+  "tempoLaudoPadrao": 180
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Vinculação automática concluída",
+#   "totalVinculados": 18,
+#   "examesVinculados": [ ... ]
+# }
+
+
+### Erro - Exame Já Vinculado
+POST {{baseUrl}}/relacionamento/telemedicina/{telemedicina_id}/exames
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "exameId": "uuid-exame-ja-existente",
+  "codigoTelemedicina": "ECG-001"
+}
+
+### Expected Response
+# Status: 409 Conflict
+# {
+#   "statusCode": 409,
+#   "message": "Este exame já está vinculado à plataforma",
+#   "error": "Conflict"
+# }
+
+
+### Erro - Exame Não Encontrado
+POST {{baseUrl}}/relacionamento/telemedicina/{telemedicina_id}/exames
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "exameId": "00000000-0000-0000-0000-000000000000",
+  "codigoTelemedicina": "XXX-999"
+}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Exame não encontrado",
+#   "error": "Not Found"
+# }
+
+
+### Erro - Código Duplicado na Plataforma
+POST {{baseUrl}}/relacionamento/telemedicina/{telemedicina_id}/exames
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "exameId": "uuid-novo-exame",
+  "codigoTelemedicina": "ECG-001"
+}
+
+### Expected Response
+# Status: 409 Conflict
+# {
+#   "statusCode": 409,
+#   "message": "Já existe um exame com este código na plataforma",
+#   "error": "Conflict"
+# }
+
+
+### Erro - Valor de Laudo Inválido
+POST {{baseUrl}}/relacionamento/telemedicina/{telemedicina_id}/exames
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "exameId": "uuid-do-exame",
+  "codigoTelemedicina": "ECG-001",
+  "valorLaudo": -50.00
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": ["valorLaudo must not be less than 0"],
+#   "error": "Bad Request"
+# }

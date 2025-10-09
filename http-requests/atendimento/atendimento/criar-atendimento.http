@@ -1,0 +1,175 @@
+### Criar Atendimento - Consulta Particular
+POST {{baseUrl}}/atendimento/atendimento
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "pacienteId": "uuid-paciente-001",
+  "profissionalId": "uuid-profissional-001",
+  "unidadeSaudeId": "uuid-unidade-001",
+  "tipoAtendimento": "consulta",
+  "dataAtendimento": "2025-10-10T10:00:00Z",
+  "statusAtendimento": "agendado",
+  "motivoAtendimento": "Consulta de rotina - avaliação geral de saúde",
+  "valorConsulta": 250.00,
+  "valorExames": 0.00,
+  "valorTotal": 250.00,
+  "observacoes": "Paciente solicitou consulta de check-up anual"
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "message": "Atendimento criado com sucesso",
+#   "data": {
+#     "id": "uuid-atendimento",
+#     "numeroAtendimento": "ATD202510100001",
+#     "pacienteId": "uuid-paciente-001",
+#     "profissionalId": "uuid-profissional-001",
+#     "tipoAtendimento": "consulta",
+#     "statusAtendimento": "agendado",
+#     "valorTotal": 250.00,
+#     "createdAt": "2025-10-10T09:00:00Z"
+#   }
+# }
+
+###
+
+### Criar Atendimento - Consulta por Convênio
+POST {{baseUrl}}/atendimento/atendimento
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "pacienteId": "uuid-paciente-002",
+  "profissionalId": "uuid-profissional-001",
+  "unidadeSaudeId": "uuid-unidade-001",
+  "convenioId": "uuid-convenio-001",
+  "tipoAtendimento": "consulta",
+  "dataAtendimento": "2025-10-10T14:00:00Z",
+  "statusAtendimento": "agendado",
+  "motivoAtendimento": "Dor de cabeça persistente há 3 dias",
+  "valorConsulta": 180.00,
+  "valorExames": 0.00,
+  "valorTotal": 180.00,
+  "observacoes": "Paciente possui autorização do convênio número: AUT123456"
+}
+
+### Expected Response
+# Status: 201 Created
+
+###
+
+### Criar Atendimento - Urgência
+POST {{baseUrl}}/atendimento/atendimento
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "pacienteId": "uuid-paciente-003",
+  "profissionalId": "uuid-profissional-002",
+  "unidadeSaudeId": "uuid-unidade-001",
+  "tipoAtendimento": "urgencia",
+  "dataAtendimento": "2025-10-10T16:30:00Z",
+  "statusAtendimento": "em_atendimento",
+  "motivoAtendimento": "Febre alta (39.5°C) e dor abdominal intensa",
+  "anamnese": "Paciente relata dor abdominal iniciada há 6 horas, localizada em fossa ilíaca direita. Febre iniciou há 3 horas.",
+  "examesFisico": "Dor à palpação profunda em FID. Sinal de Blumberg positivo. FC: 98bpm, PA: 130/85mmHg, Tax: 39.5°C",
+  "valorConsulta": 350.00,
+  "valorExames": 0.00,
+  "valorTotal": 350.00,
+  "observacoes": "Caso de urgência - atendimento imediato"
+}
+
+### Expected Response
+# Status: 201 Created
+
+###
+
+### Criar Atendimento - Retorno de Consulta
+POST {{baseUrl}}/atendimento/atendimento
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "pacienteId": "uuid-paciente-001",
+  "profissionalId": "uuid-profissional-001",
+  "unidadeSaudeId": "uuid-unidade-001",
+  "tipoAtendimento": "retorno",
+  "dataAtendimento": "2025-10-17T10:00:00Z",
+  "statusAtendimento": "agendado",
+  "motivoAtendimento": "Retorno para avaliação de resultados de exames",
+  "valorConsulta": 0.00,
+  "valorExames": 0.00,
+  "valorTotal": 0.00,
+  "observacoes": "Retorno gratuito - consulta inicial em 10/10/2025"
+}
+
+### Expected Response
+# Status: 201 Created
+
+###
+
+### Criar Atendimento - Com Exames
+POST {{baseUrl}}/atendimento/atendimento
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "pacienteId": "uuid-paciente-004",
+  "profissionalId": "uuid-profissional-003",
+  "unidadeSaudeId": "uuid-unidade-001",
+  "tipoAtendimento": "exame",
+  "dataAtendimento": "2025-10-10T08:00:00Z",
+  "statusAtendimento": "agendado",
+  "motivoAtendimento": "Solicitação de exames laboratoriais - Hemograma completo, Glicemia, Colesterol total e frações",
+  "valorConsulta": 0.00,
+  "valorExames": 320.00,
+  "valorTotal": 320.00,
+  "prescricao": "Exames solicitados:\n- Hemograma completo\n- Glicemia de jejum\n- Colesterol total e frações (HDL, LDL, VLDL)\n- Triglicerídeos",
+  "observacoes": "Paciente deve estar em jejum de 12 horas para coleta"
+}
+
+### Expected Response
+# Status: 201 Created
+
+###
+
+### Criar Atendimento - Emergência com Hipótese Diagnóstica
+POST {{baseUrl}}/atendimento/atendimento
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "pacienteId": "uuid-paciente-005",
+  "profissionalId": "uuid-profissional-004",
+  "unidadeSaudeId": "uuid-unidade-001",
+  "tipoAtendimento": "emergencia",
+  "dataAtendimento": "2025-10-10T18:45:00Z",
+  "statusAtendimento": "em_atendimento",
+  "motivoAtendimento": "Dor torácica súbita com irradiação para braço esquerdo",
+  "anamnese": "Paciente masculino, 55 anos, hipertenso, diabético. Dor torácica súbita iniciada há 30 minutos, tipo aperto, com irradiação para braço esquerdo e mandíbula. Sudorese fria, náuseas.",
+  "examesFisico": "PA: 160/100mmHg, FC: 110bpm, FR: 22irpm, Tax: 36.8°C. Ausculta cardíaca: ritmo regular, sem sopros. Ausculta pulmonar: MVF sem RA.",
+  "hipoteseDiagnostica": "Síndrome coronariana aguda (IAM?)",
+  "conduta": "1. ECG de 12 derivações imediato\n2. Acesso venoso periférico\n3. Oxigenoterapia por cateter nasal 2L/min\n4. AAS 300mg VO\n5. Troponina, CK-MB, Hemograma, Eletrólitos\n6. Solicitar remoção para hospital de referência com UTI",
+  "prescricao": "AAS 300mg VO dose única\nNitroglicerina sublingual 5mg SN\nMorfina 2-4mg IV se dor persistente",
+  "valorConsulta": 500.00,
+  "valorExames": 450.00,
+  "valorTotal": 950.00,
+  "observacoes": "EMERGÊNCIA - Paciente encaminhado para hospital de referência após estabilização inicial"
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "message": "Atendimento criado com sucesso",
+#   "data": {
+#     "id": "uuid-atendimento",
+#     "numeroAtendimento": "ATD202510100006",
+#     "tipoAtendimento": "emergencia",
+#     "statusAtendimento": "em_atendimento",
+#     "hipoteseDiagnostica": "Síndrome coronariana aguda (IAM?)",
+#     "valorTotal": 950.00,
+#     ...
+#   }
+# }

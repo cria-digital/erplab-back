@@ -1,0 +1,162 @@
+### Listar Todas as Etiquetas
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [
+#     {
+#       "id": "uuid",
+#       "codigoEtiqueta": "ETQ-SANG-001",
+#       "nome": "Etiqueta Sangue - Tubo Pequeno",
+#       "tipoAmostra": "sangue",
+#       "largura": 40,
+#       "altura": 20,
+#       "ativo": true,
+#       ...
+#     }
+#   ],
+#   "meta": {
+#     "total": 10,
+#     "page": 1,
+#     "limit": 10
+#   }
+# }
+
+
+### Listar Apenas Etiquetas Ativas
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/ativas
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... array de etiquetas ativas ... ]
+
+
+### Listar Apenas Etiquetas Padrão
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/padrao
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... array de etiquetas padrão do sistema ... ]
+
+
+### Listar com Paginação
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra?page=1&limit=5
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [ ... ],
+#   "meta": {
+#     "total": 50,
+#     "page": 1,
+#     "limit": 5,
+#     "totalPages": 10
+#   }
+# }
+
+
+### Filtrar por Tipo de Amostra - Sangue
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra?tipoAmostra=sangue
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# Retorna apenas etiquetas para amostras de sangue
+
+
+### Filtrar por Tipo de Amostra - Urina
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra?tipoAmostra=urina
+Authorization: Bearer {{token}}
+
+
+### Filtrar por Tipo de Amostra - Fezes
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra?tipoAmostra=fezes
+Authorization: Bearer {{token}}
+
+
+### Filtrar por Tipo de Amostra - Swab
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra?tipoAmostra=swab
+Authorization: Bearer {{token}}
+
+
+### Filtrar por Orientação - Paisagem
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra?orientacao=paisagem
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# Retorna etiquetas em orientação paisagem
+
+
+### Filtrar por Orientação - Retrato
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra?orientacao=retrato
+Authorization: Bearer {{token}}
+
+
+### Filtrar por Tamanho - Pequenas (até 40x30mm)
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra?maxLargura=40&maxAltura=30
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# Retorna etiquetas pequenas adequadas para tubos
+
+
+### Filtrar por Tamanho - Médias (40-70mm)
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra?minLargura=40&maxLargura=70
+Authorization: Bearer {{token}}
+
+
+### Filtrar por Tamanho - Grandes (acima de 70mm)
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra?minLargura=70
+Authorization: Bearer {{token}}
+
+
+### Buscar por Termo (nome ou código)
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra?search=sangue
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# Retorna etiquetas que contenham "sangue" no nome ou código
+
+
+### Ordenar por Nome (A-Z)
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra?sortBy=nome&sortOrder=ASC
+Authorization: Bearer {{token}}
+
+
+### Ordenar por Data de Criação (Mais Recentes Primeiro)
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra?sortBy=criadoEm&sortOrder=DESC
+Authorization: Bearer {{token}}
+
+
+### Filtros Combinados - Sangue + Ativas + Paisagem + Paginação
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra?tipoAmostra=sangue&ativo=true&orientacao=paisagem&page=1&limit=10
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [ ... etiquetas que atendem todos os critérios ... ],
+#   "meta": {
+#     "total": 3,
+#     "page": 1,
+#     "limit": 10,
+#     "totalPages": 1
+#   }
+# }
+
+
+### Buscar Etiquetas com Código de Barras Habilitado
+GET {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra?codigoBarras=true
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# Retorna etiquetas configuradas para imprimir código de barras

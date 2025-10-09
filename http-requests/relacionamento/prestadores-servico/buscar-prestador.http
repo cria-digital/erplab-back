@@ -1,0 +1,267 @@
+### Buscar Prestador por ID
+# Substitua {id} pelo UUID do prestador
+GET {{baseUrl}}/relacionamento/prestadores-servico/{id}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "codigoPrestador": "PREST-MED-001",
+#   "tipoPrestador": "medico",
+#   "especialidade": "Cardiologia",
+#   "numeroConselho": "123456",
+#   "tipoConselho": "CRM",
+#   "ufConselho": "SP",
+#   "valorHora": 300.00,
+#   "valorConsulta": 250.00,
+#   "percentualRepasse": 70.00,
+#   "diasAtendimento": ["segunda", "terca", "quinta"],
+#   "empresa": {
+#     "id": "uuid",
+#     "cnpj": "12345678000190",
+#     "razaoSocial": "Dr. João Silva Cardiologia LTDA",
+#     "nomeFantasia": "Dr. João Silva",
+#     "email": "contato@drjoaosilva.com.br",
+#     "telefone": "(11) 3456-7890",
+#     "endereco": {
+#       "cep": "01310-100",
+#       "logradouro": "Av. Paulista",
+#       "numero": "1500",
+#       "cidade": "São Paulo",
+#       "estado": "SP"
+#     }
+#   },
+#   "ativo": true,
+#   ...
+# }
+
+
+### Buscar por Código do Prestador
+GET {{baseUrl}}/relacionamento/prestadores-servico/codigo/PREST-MED-001
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# { ... dados do prestador ... }
+
+
+### Buscar por CNPJ da Empresa
+GET {{baseUrl}}/relacionamento/prestadores-servico/cnpj/12345678000190
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# { ... dados do prestador ... }
+
+
+### Buscar por CNPJ Formatado
+GET {{baseUrl}}/relacionamento/prestadores-servico/cnpj/12.345.678/0001-90
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# { ... dados do prestador ... }
+
+
+### Buscar por Número de Conselho e Tipo
+GET {{baseUrl}}/relacionamento/prestadores-servico/conselho/CRM/123456
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# { ... dados do prestador ... }
+
+
+### Buscar Prestadores por Tipo
+GET {{baseUrl}}/relacionamento/prestadores-servico/tipo/medico
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... array de prestadores médicos ... ]
+
+
+### Buscar Prestadores por Especialidade
+GET {{baseUrl}}/relacionamento/prestadores-servico/especialidade/Cardiologia
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... prestadores de cardiologia ... ]
+
+
+### Buscar Prestadores por Conselho Profissional
+GET {{baseUrl}}/relacionamento/prestadores-servico/conselho/CRM
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... prestadores com registro no CRM ... ]
+
+
+### Buscar Prestadores por Dia de Atendimento
+GET {{baseUrl}}/relacionamento/prestadores-servico/dia-atendimento/segunda
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... prestadores que atendem às segundas ... ]
+
+
+### Buscar Prestadores Disponíveis em Múltiplos Dias
+GET {{baseUrl}}/relacionamento/prestadores-servico/search?dias=segunda,quarta,sexta
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... prestadores que atendem nos dias especificados ... ]
+
+
+### Buscar por Faixa de Preço de Consulta
+GET {{baseUrl}}/relacionamento/prestadores-servico?valorConsultaMin=150&valorConsultaMax=250
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... prestadores com valor de consulta na faixa especificada ... ]
+
+
+### Buscar por Faixa de Valor Hora
+GET {{baseUrl}}/relacionamento/prestadores-servico?valorHoraMin=100&valorHoraMax=200
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... prestadores com valor hora na faixa especificada ... ]
+
+
+### Buscar Prestadores por Percentual de Repasse
+GET {{baseUrl}}/relacionamento/prestadores-servico?percentualRepasseMin=65&percentualRepasseMax=75
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... prestadores com percentual de repasse na faixa especificada ... ]
+
+
+### Buscar por UF do Conselho
+GET {{baseUrl}}/relacionamento/prestadores-servico/search?ufConselho=SP
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... prestadores com registro no estado de São Paulo ... ]
+
+
+### Buscar Prestadores por Termo Livre
+GET {{baseUrl}}/relacionamento/prestadores-servico/search?q=cardiologia
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... prestadores que contenham "cardiologia" em qualquer campo ... ]
+
+
+### Buscar Prestadores com Filtros Combinados
+GET {{baseUrl}}/relacionamento/prestadores-servico?tipoPrestador=medico&ufConselho=SP&valorConsultaMax=300
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... médicos com CRM-SP e valor de consulta até R$ 300 ... ]
+
+
+### Obter Agendas do Prestador
+GET {{baseUrl}}/relacionamento/prestadores-servico/{id}/agendas
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "prestadorId": "uuid",
+#   "agendas": [
+#     {
+#       "id": "uuid",
+#       "diaSemana": "segunda",
+#       "horaInicio": "08:00",
+#       "horaFim": "12:00",
+#       "ativo": true
+#     },
+#     ...
+#   ]
+# }
+
+
+### Obter Atendimentos do Prestador
+GET {{baseUrl}}/relacionamento/prestadores-servico/{id}/atendimentos
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "prestadorId": "uuid",
+#   "totalAtendimentos": 150,
+#   "atendimentos": [
+#     {
+#       "id": "uuid",
+#       "paciente": "Nome do Paciente",
+#       "data": "2025-10-09",
+#       "tipo": "consulta",
+#       "status": "realizado"
+#     },
+#     ...
+#   ]
+# }
+
+
+### Erro - Prestador Não Encontrado
+GET {{baseUrl}}/relacionamento/prestadores-servico/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Prestador de serviço não encontrado",
+#   "error": "Not Found"
+# }
+
+
+### Erro - Código Não Encontrado
+GET {{baseUrl}}/relacionamento/prestadores-servico/codigo/PREST-XXX-999
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Prestador não encontrado com o código informado",
+#   "error": "Not Found"
+# }
+
+
+### Erro - CNPJ Não Encontrado
+GET {{baseUrl}}/relacionamento/prestadores-servico/cnpj/99999999000199
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Prestador não encontrado com o CNPJ informado",
+#   "error": "Not Found"
+# }
+
+
+### Erro - Conselho Não Encontrado
+GET {{baseUrl}}/relacionamento/prestadores-servico/conselho/CRM/999999
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Prestador não encontrado com o número de conselho informado",
+#   "error": "Not Found"
+# }

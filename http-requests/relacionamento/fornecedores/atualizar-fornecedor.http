@@ -1,0 +1,324 @@
+### Atualizar Informações Básicas do Fornecedor
+# Substitua {id} pelo UUID do fornecedor
+PATCH {{baseUrl}}/relacionamento/fornecedores/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "prazoPadraoEntrega": 3,
+  "observacoesComerciais": "Fornecedor homologado desde 2018. Entrega expressa disponível."
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "prazoPadraoEntrega": 3,
+#   "observacoesComerciais": "Fornecedor homologado desde 2018. Entrega expressa disponível.",
+#   ...
+# }
+
+
+### Atualizar Condições Comerciais
+PATCH {{baseUrl}}/relacionamento/fornecedores/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "condicoesPagamento": "30/45/60 dias com boleto bancário ou cartão",
+  "limiteCredito": 75000.00,
+  "descontoContrato": 18.00
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... fornecedor atualizado ... }
+
+
+### Atualizar Formas de Pagamento
+PATCH {{baseUrl}}/relacionamento/fornecedores/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "formasPagamento": ["pix", "boleto", "transferencia", "cartao", "cheque"]
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... fornecedor atualizado ... }
+
+
+### Adicionar Nova Forma de Pagamento
+PATCH {{baseUrl}}/relacionamento/fornecedores/{id}/formas-pagamento
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "formaPagamento": "dinheiro"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Forma de pagamento adicionada com sucesso",
+#   "formasPagamento": ["pix", "boleto", "transferencia", "cartao", "cheque", "dinheiro"]
+# }
+
+
+### Remover Forma de Pagamento
+DELETE {{baseUrl}}/relacionamento/fornecedores/{id}/formas-pagamento/dinheiro
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Forma de pagamento removida com sucesso",
+#   "formasPagamento": ["pix", "boleto", "transferencia", "cartao", "cheque"]
+# }
+
+
+### Atualizar Prazo de Entrega
+PATCH {{baseUrl}}/relacionamento/fornecedores/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "prazoPadraoEntrega": 7
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... fornecedor atualizado ... }
+
+
+### Atualizar Limite de Crédito
+PATCH {{baseUrl}}/relacionamento/fornecedores/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "limiteCredito": 100000.00
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... fornecedor atualizado ... }
+
+
+### Atualizar Desconto Contrato
+PATCH {{baseUrl}}/relacionamento/fornecedores/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "descontoContrato": 20.00
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... fornecedor atualizado ... }
+
+
+### Atualizar Tipo e Categoria
+PATCH {{baseUrl}}/relacionamento/fornecedores/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoFornecedor": "misto",
+  "categoriaPrincipal": "laboratorial"
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... fornecedor atualizado ... }
+
+
+### Atualizar Dados da Empresa (através do fornecedor)
+PATCH {{baseUrl}}/relacionamento/fornecedores/{id}/empresa
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nomeFantasia": "BioSupply Lab - Matriz",
+  "telefone": "(11) 3456-7899",
+  "celular": "(11) 98765-4322",
+  "email": "comercial.matriz@biosupply.com.br",
+  "website": "https://www.biosupply.com.br"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Dados da empresa atualizados com sucesso",
+#   "empresa": { ... }
+# }
+
+
+### Atualizar Endereço da Empresa
+PATCH {{baseUrl}}/relacionamento/fornecedores/{id}/empresa
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "cep": "01310-200",
+  "logradouro": "Av. Paulista",
+  "numero": "2100",
+  "complemento": "Torre A - Sala 1201",
+  "bairro": "Bela Vista",
+  "cidade": "São Paulo",
+  "estado": "SP"
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... empresa atualizada ... }
+
+
+### Alternar Status do Fornecedor (Ativar/Desativar)
+PATCH {{baseUrl}}/relacionamento/fornecedores/{id}/toggle-status
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "ativo": false,
+#   "message": "Fornecedor desativado com sucesso"
+# }
+
+
+### Reativar Fornecedor
+PATCH {{baseUrl}}/relacionamento/fornecedores/{id}/toggle-status
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "ativo": true,
+#   "message": "Fornecedor ativado com sucesso"
+# }
+
+
+### Atualizar Observações Comerciais
+PATCH {{baseUrl}}/relacionamento/fornecedores/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "observacoesComerciais": "Fornecedor principal de reagentes e vidrarias. Entrega gratuita acima de R$ 1.000,00. Disponível para negociação em grandes volumes."
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... fornecedor atualizado ... }
+
+
+### Erro - Validação: Limite de Crédito Negativo
+PATCH {{baseUrl}}/relacionamento/fornecedores/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "limiteCredito": -10000.00
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": ["limiteCredito must not be less than 0"],
+#   "error": "Bad Request"
+# }
+
+
+### Erro - Validação: Desconto Contrato Inválido
+PATCH {{baseUrl}}/relacionamento/fornecedores/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "descontoContrato": 150.00
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": ["descontoContrato must not be greater than 100"],
+#   "error": "Bad Request"
+# }
+
+
+### Erro - Validação: Prazo de Entrega Inválido
+PATCH {{baseUrl}}/relacionamento/fornecedores/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "prazoPadraoEntrega": 0
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": ["prazoPadraoEntrega must not be less than 1"],
+#   "error": "Bad Request"
+# }
+
+
+### Erro - Validação: Tipo de Fornecedor Inválido
+PATCH {{baseUrl}}/relacionamento/fornecedores/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoFornecedor": "tipo_invalido"
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": ["tipoFornecedor must be one of: insumos, equipamentos, servicos, misto"],
+#   "error": "Bad Request"
+# }
+
+
+### Erro - Validação: Categoria Principal Inválida
+PATCH {{baseUrl}}/relacionamento/fornecedores/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "categoriaPrincipal": "categoria_invalida"
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": ["categoriaPrincipal must be one of: laboratorial, hospitalar, odontologico, veterinario"],
+#   "error": "Bad Request"
+# }
+
+
+### Erro - Fornecedor Não Encontrado
+PATCH {{baseUrl}}/relacionamento/fornecedores/00000000-0000-0000-0000-000000000000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "prazoPadraoEntrega": 5
+}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Fornecedor não encontrado",
+#   "error": "Not Found"
+# }

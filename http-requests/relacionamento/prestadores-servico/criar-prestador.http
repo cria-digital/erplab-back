@@ -1,0 +1,281 @@
+### Criar Prestador - Médico Cardiologista
+POST {{baseUrl}}/relacionamento/prestadores-servico
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "prestador_servico",
+    "cnpj": "12345678000190",
+    "razaoSocial": "Dr. João Silva Cardiologia LTDA",
+    "nomeFantasia": "Dr. João Silva",
+    "email": "contato@drjoaosilva.com.br",
+    "telefone": "(11) 3456-7890",
+    "celular": "(11) 98765-4321",
+    "website": "https://www.drjoaosilva.com.br",
+    "cep": "01310-100",
+    "logradouro": "Av. Paulista",
+    "numero": "1500",
+    "complemento": "Sala 1201",
+    "bairro": "Bela Vista",
+    "cidade": "São Paulo",
+    "estado": "SP",
+    "observacoes": "Médico parceiro desde 2020"
+  },
+  "codigoPrestador": "PREST-MED-001",
+  "tipoPrestador": "medico",
+  "especialidade": "Cardiologia",
+  "numeroConselho": "123456",
+  "tipoConselho": "CRM",
+  "ufConselho": "SP",
+  "valorHora": 300.00,
+  "valorConsulta": 250.00,
+  "percentualRepasse": 70.00,
+  "diasAtendimento": ["segunda", "terca", "quinta"],
+  "observacoes": "Especialista em cardiologia intervencionista. Atende emergências."
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "id": "uuid",
+#   "codigoPrestador": "PREST-MED-001",
+#   "tipoPrestador": "medico",
+#   "especialidade": "Cardiologia",
+#   "numeroConselho": "123456",
+#   "tipoConselho": "CRM",
+#   "empresa": {
+#     "id": "uuid",
+#     "cnpj": "12345678000190",
+#     "razaoSocial": "Dr. João Silva Cardiologia LTDA",
+#     "nomeFantasia": "Dr. João Silva"
+#   },
+#   ...
+# }
+
+
+### Criar Prestador - Enfermeiro
+POST {{baseUrl}}/relacionamento/prestadores-servico
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "prestador_servico",
+    "cnpj": "98765432000111",
+    "razaoSocial": "Maria Santos Enfermagem LTDA",
+    "nomeFantasia": "Enfermeira Maria Santos",
+    "email": "contato@mariasantos.enf.br",
+    "telefone": "(11) 2345-6789",
+    "celular": "(11) 99876-5432",
+    "cep": "04543-011",
+    "logradouro": "Av. Brigadeiro Luís Antônio",
+    "numero": "2500",
+    "bairro": "Jardim Paulista",
+    "cidade": "São Paulo",
+    "estado": "SP"
+  },
+  "codigoPrestador": "PREST-ENF-001",
+  "tipoPrestador": "enfermeiro",
+  "especialidade": "Enfermagem do Trabalho",
+  "numeroConselho": "654321",
+  "tipoConselho": "COREN",
+  "ufConselho": "SP",
+  "valorHora": 80.00,
+  "percentualRepasse": 65.00,
+  "diasAtendimento": ["segunda", "terca", "quarta", "quinta", "sexta"],
+  "observacoes": "Especialista em saúde ocupacional e exames admissionais."
+}
+
+
+### Criar Prestador - Fisioterapeuta
+POST {{baseUrl}}/relacionamento/prestadores-servico
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "prestador_servico",
+    "cnpj": "11223344000155",
+    "razaoSocial": "Carlos Oliveira Fisioterapia LTDA",
+    "nomeFantasia": "Fisioterapeuta Carlos Oliveira",
+    "email": "contato@carlosoliveira.fisio.br",
+    "telefone": "(11) 3333-4444",
+    "celular": "(11) 97777-8888",
+    "website": "https://www.carlosoliveira.fisio.br",
+    "cep": "05408-000",
+    "logradouro": "Av. Faria Lima",
+    "numero": "3000",
+    "complemento": "Sala 501",
+    "bairro": "Itaim Bibi",
+    "cidade": "São Paulo",
+    "estado": "SP"
+  },
+  "codigoPrestador": "PREST-FISIO-001",
+  "tipoPrestador": "fisioterapeuta",
+  "especialidade": "Fisioterapia Ortopédica",
+  "numeroConselho": "111222",
+  "tipoConselho": "CREFITO",
+  "ufConselho": "SP",
+  "valorHora": 120.00,
+  "valorConsulta": 150.00,
+  "percentualRepasse": 68.00,
+  "diasAtendimento": ["segunda", "quarta", "sexta"],
+  "observacoes": "Especialista em reabilitação pós-operatória e lesões esportivas."
+}
+
+
+### Criar Prestador - Psicólogo
+POST {{baseUrl}}/relacionamento/prestadores-servico
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "prestador_servico",
+    "cnpj": "55667788000199",
+    "razaoSocial": "Ana Paula Lima Psicologia LTDA",
+    "nomeFantasia": "Psicóloga Ana Paula Lima",
+    "email": "contato@anapaulalima.psi.br",
+    "telefone": "(11) 4444-5555",
+    "celular": "(11) 96666-7777",
+    "cep": "01419-001",
+    "logradouro": "Rua Augusta",
+    "numero": "1500",
+    "complemento": "Sala 802",
+    "bairro": "Consolação",
+    "cidade": "São Paulo",
+    "estado": "SP"
+  },
+  "codigoPrestador": "PREST-PSI-001",
+  "tipoPrestador": "psicologo",
+  "especialidade": "Psicologia Clínica",
+  "numeroConselho": "333444",
+  "tipoConselho": "CRP",
+  "ufConselho": "SP",
+  "valorHora": 180.00,
+  "valorConsulta": 200.00,
+  "percentualRepasse": 75.00,
+  "diasAtendimento": ["terca", "quinta", "sabado"],
+  "observacoes": "Especialista em terapia cognitivo-comportamental. Atende presencial e online."
+}
+
+
+### Criar Prestador - Nutricionista
+POST {{baseUrl}}/relacionamento/prestadores-servico
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "prestador_servico",
+    "cnpj": "99887766000144",
+    "razaoSocial": "Pedro Costa Nutrição LTDA",
+    "nomeFantasia": "Nutricionista Pedro Costa",
+    "email": "contato@pedrocosta.nutri.br",
+    "telefone": "(11) 5555-6666",
+    "celular": "(11) 95555-4444",
+    "cep": "01310-200",
+    "logradouro": "Av. Paulista",
+    "numero": "2000",
+    "complemento": "Sala 305",
+    "bairro": "Bela Vista",
+    "cidade": "São Paulo",
+    "estado": "SP"
+  },
+  "codigoPrestador": "PREST-NUT-001",
+  "tipoPrestador": "nutricionista",
+  "especialidade": "Nutrição Clínica",
+  "numeroConselho": "555666",
+  "tipoConselho": "CRN",
+  "ufConselho": "SP",
+  "valorHora": 150.00,
+  "valorConsulta": 180.00,
+  "percentualRepasse": 72.00,
+  "diasAtendimento": ["segunda", "quarta", "sexta"],
+  "observacoes": "Especialista em nutrição esportiva e emagrecimento."
+}
+
+
+### Erro - CNPJ Duplicado
+POST {{baseUrl}}/relacionamento/prestadores-servico
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "prestador_servico",
+    "cnpj": "12345678000190",
+    "razaoSocial": "Outro Prestador LTDA",
+    "nomeFantasia": "Outro Prestador"
+  },
+  "codigoPrestador": "PREST-OUT-001",
+  "tipoPrestador": "medico",
+  "numeroConselho": "999999",
+  "tipoConselho": "CRM",
+  "ufConselho": "SP"
+}
+
+### Expected Response
+# Status: 409 Conflict
+# {
+#   "statusCode": 409,
+#   "message": "Já existe uma empresa com este CNPJ",
+#   "error": "Conflict"
+# }
+
+
+### Erro - Código Prestador Duplicado
+POST {{baseUrl}}/relacionamento/prestadores-servico
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "prestador_servico",
+    "cnpj": "99999999000188",
+    "razaoSocial": "Novo Prestador LTDA",
+    "nomeFantasia": "Novo Prestador"
+  },
+  "codigoPrestador": "PREST-MED-001",
+  "tipoPrestador": "medico",
+  "numeroConselho": "888888",
+  "tipoConselho": "CRM",
+  "ufConselho": "SP"
+}
+
+### Expected Response
+# Status: 409 Conflict
+# {
+#   "statusCode": 409,
+#   "message": "Já existe um prestador com este código",
+#   "error": "Conflict"
+# }
+
+
+### Erro - CNPJ Inválido
+POST {{baseUrl}}/relacionamento/prestadores-servico
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "prestador_servico",
+    "cnpj": "12345",
+    "razaoSocial": "Prestador Teste LTDA",
+    "nomeFantasia": "Prestador Teste"
+  },
+  "codigoPrestador": "PREST-TEST-001",
+  "tipoPrestador": "medico",
+  "numeroConselho": "777777",
+  "tipoConselho": "CRM",
+  "ufConselho": "SP"
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": ["cnpj must be a valid CNPJ"],
+#   "error": "Bad Request"
+# }

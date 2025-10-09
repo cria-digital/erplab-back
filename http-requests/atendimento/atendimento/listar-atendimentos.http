@@ -1,0 +1,286 @@
+### Listar Todos os Atendimentos
+GET {{baseUrl}}/atendimento/atendimento
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [...],
+#   "total": 150,
+#   "page": 1,
+#   "limit": 10,
+#   "totalPages": 15
+# }
+
+###
+
+### Listar com Paginação
+GET {{baseUrl}}/atendimento/atendimento?page=2&limit=20
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [...],
+#   "total": 150,
+#   "page": 2,
+#   "limit": 20,
+#   "totalPages": 8
+# }
+
+###
+
+### Filtrar por Paciente
+GET {{baseUrl}}/atendimento/atendimento?pacienteId=uuid-paciente-001
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [
+#     {
+#       "id": "uuid-atendimento",
+#       "numeroAtendimento": "ATD202510100001",
+#       "pacienteId": "uuid-paciente-001",
+#       "paciente": {
+#         "nome": "João da Silva"
+#       },
+#       "tipoAtendimento": "consulta",
+#       "statusAtendimento": "agendado",
+#       "dataAtendimento": "2025-10-10T10:00:00Z",
+#       "valorTotal": 250.00
+#     }
+#   ],
+#   "total": 5,
+#   "page": 1,
+#   "limit": 10,
+#   "totalPages": 1
+# }
+
+###
+
+### Filtrar por Profissional
+GET {{baseUrl}}/atendimento/atendimento?profissionalId=uuid-profissional-001
+Authorization: Bearer {{token}}
+
+###
+
+### Filtrar por Unidade de Saúde
+GET {{baseUrl}}/atendimento/atendimento?unidadeSaudeId=uuid-unidade-001
+Authorization: Bearer {{token}}
+
+###
+
+### Filtrar por Tipo de Atendimento
+GET {{baseUrl}}/atendimento/atendimento?tipoAtendimento=consulta
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [
+#     {
+#       "tipoAtendimento": "consulta",
+#       ...
+#     }
+#   ],
+#   "total": 45
+# }
+
+###
+
+### Filtrar por Status
+GET {{baseUrl}}/atendimento/atendimento?statusAtendimento=agendado
+Authorization: Bearer {{token}}
+
+###
+
+### Filtrar por Convênio
+GET {{baseUrl}}/atendimento/atendimento?convenioId=uuid-convenio-001
+Authorization: Bearer {{token}}
+
+###
+
+### Filtrar por Data (Início)
+GET {{baseUrl}}/atendimento/atendimento?dataInicio=2025-10-10
+Authorization: Bearer {{token}}
+
+###
+
+### Filtrar por Data (Fim)
+GET {{baseUrl}}/atendimento/atendimento?dataFim=2025-10-15
+Authorization: Bearer {{token}}
+
+###
+
+### Filtrar por Período
+GET {{baseUrl}}/atendimento/atendimento?dataInicio=2025-10-01&dataFim=2025-10-31
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [
+#     {
+#       "dataAtendimento": "2025-10-10T10:00:00Z",
+#       ...
+#     }
+#   ],
+#   "total": 120
+# }
+
+###
+
+### Filtros Combinados - Consultas do Dia por Profissional
+GET {{baseUrl}}/atendimento/atendimento?profissionalId=uuid-profissional-001&dataInicio=2025-10-10&dataFim=2025-10-10&tipoAtendimento=consulta&statusAtendimento=agendado
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [
+#     {
+#       "numeroAtendimento": "ATD202510100001",
+#       "paciente": {...},
+#       "tipoAtendimento": "consulta",
+#       "statusAtendimento": "agendado",
+#       "dataAtendimento": "2025-10-10T10:00:00Z"
+#     }
+#   ],
+#   "total": 8
+# }
+
+###
+
+### Filtros Combinados - Urgências e Emergências em Atendimento
+GET {{baseUrl}}/atendimento/atendimento?tipoAtendimento=urgencia,emergencia&statusAtendimento=em_atendimento
+Authorization: Bearer {{token}}
+
+###
+
+### Filtros Combinados - Atendimentos Concluídos por Convênio
+GET {{baseUrl}}/atendimento/atendimento?convenioId=uuid-convenio-001&statusAtendimento=concluido&dataInicio=2025-10-01&dataFim=2025-10-31&page=1&limit=50
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar por Número de Atendimento
+GET {{baseUrl}}/atendimento/atendimento?numeroAtendimento=ATD202510100001
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [
+#     {
+#       "numeroAtendimento": "ATD202510100001",
+#       ...
+#     }
+#   ],
+#   "total": 1
+# }
+
+###
+
+### Listar Atendimentos Ativos (Agendados ou Em Atendimento)
+GET {{baseUrl}}/atendimento/atendimento/ativos
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [
+#     {
+#       "statusAtendimento": "agendado",
+#       ...
+#     },
+#     {
+#       "statusAtendimento": "em_atendimento",
+#       ...
+#     }
+#   ],
+#   "total": 25
+# }
+
+###
+
+### Obter Estatísticas de Atendimentos
+GET {{baseUrl}}/atendimento/atendimento/stats
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "total": 1543,
+#   "porTipo": {
+#     "consulta": 850,
+#     "exame": 420,
+#     "retorno": 180,
+#     "urgencia": 70,
+#     "emergencia": 23
+#   },
+#   "porStatus": {
+#     "agendado": 120,
+#     "em_atendimento": 15,
+#     "concluido": 1350,
+#     "cancelado": 58
+#   },
+#   "porConvenio": {
+#     "particular": 720,
+#     "unimed": 450,
+#     "bradesco": 280,
+#     "outros": 93
+#   },
+#   "valorTotal": 387500.00,
+#   "valorMedio": 251.13
+# }
+
+###
+
+### Listar Atendimentos por Paciente (Histórico)
+GET {{baseUrl}}/atendimento/atendimento/paciente/uuid-paciente-001/historico
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [
+#     {
+#       "numeroAtendimento": "ATD202510170001",
+#       "dataAtendimento": "2025-10-17T10:00:00Z",
+#       "tipoAtendimento": "retorno",
+#       "statusAtendimento": "agendado"
+#     },
+#     {
+#       "numeroAtendimento": "ATD202510100001",
+#       "dataAtendimento": "2025-10-10T10:00:00Z",
+#       "tipoAtendimento": "consulta",
+#       "statusAtendimento": "concluido"
+#     }
+#   ],
+#   "total": 2
+# }
+
+###
+
+### Listar Atendimentos por Profissional (Agenda do Dia)
+GET {{baseUrl}}/atendimento/atendimento/profissional/uuid-profissional-001/agenda?data=2025-10-10
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [
+#     {
+#       "numeroAtendimento": "ATD202510100001",
+#       "dataAtendimento": "2025-10-10T10:00:00Z",
+#       "paciente": {
+#         "nome": "João da Silva",
+#         "telefone": "11999998888"
+#       },
+#       "tipoAtendimento": "consulta",
+#       "statusAtendimento": "agendado"
+#     }
+#   ],
+#   "total": 8
+# }

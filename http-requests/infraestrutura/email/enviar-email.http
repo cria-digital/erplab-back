@@ -1,0 +1,188 @@
+### Enviar Email Simples
+POST {{baseUrl}}/infraestrutura/email/enviar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "destinatario": "paciente@example.com",
+  "assunto": "Resultado de Exame Disponível",
+  "corpo": "<h1>Olá!</h1><p>Seu resultado de exame já está disponível.</p>"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Email enviado com sucesso",
+#   "data": {
+#     "id": "uuid-gerado",
+#     "destinatario": "paciente@example.com",
+#     "assunto": "Resultado de Exame Disponível",
+#     "status": "enviado",
+#     "dataEnvio": "2024-10-09T10:00:00Z"
+#   }
+# }
+
+###
+
+### Enviar Email para Múltiplos Destinatários
+POST {{baseUrl}}/infraestrutura/email/enviar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "destinatario": [
+    "paciente1@example.com",
+    "paciente2@example.com",
+    "paciente3@example.com"
+  ],
+  "assunto": "Lembrete de Consulta",
+  "corpo": "<p>Você tem uma consulta agendada para amanhã.</p>"
+}
+
+###
+
+### Enviar Email com Template
+POST {{baseUrl}}/infraestrutura/email/enviar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "destinatario": "joao.silva@example.com",
+  "template": "resultado-exame",
+  "variaveis": {
+    "nome": "João Silva",
+    "tipoExame": "Hemograma Completo",
+    "dataExame": "05/10/2024",
+    "linkResultado": "https://portal.laboratorio.com/resultado/123"
+  }
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Email enviado com sucesso",
+#   "data": {
+#     "id": "uuid-gerado",
+#     "destinatario": "joao.silva@example.com",
+#     "assunto": "Resultado do seu exame",
+#     "template": "resultado-exame",
+#     "status": "enviado"
+#   }
+# }
+
+###
+
+### Enviar Email Agendado
+POST {{baseUrl}}/infraestrutura/email/enviar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "destinatario": "maria.oliveira@example.com",
+  "assunto": "Lembrete de Consulta - Amanhã",
+  "corpo": "<p>Sua consulta está agendada para amanhã às 14h.</p>",
+  "agendarPara": "2024-10-10T08:00:00Z"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Email agendado com sucesso",
+#   "data": {
+#     "id": "uuid-gerado",
+#     "destinatario": "maria.oliveira@example.com",
+#     "status": "agendado",
+#     "dataAgendamento": "2024-10-10T08:00:00Z"
+#   }
+# }
+
+###
+
+### Enviar Email com Anexo
+POST {{baseUrl}}/infraestrutura/email/enviar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "destinatario": "cliente@example.com",
+  "assunto": "Laudo de Exame",
+  "corpo": "<p>Segue anexo o laudo do seu exame.</p>",
+  "anexos": [
+    {
+      "nome": "laudo_exame.pdf",
+      "tipo": "application/pdf",
+      "url": "https://storage.laboratorio.com/laudos/123.pdf"
+    }
+  ]
+}
+
+###
+
+### Enviar Email com Múltiplos Anexos
+POST {{baseUrl}}/infraestrutura/email/enviar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "destinatario": "paciente@example.com",
+  "assunto": "Documentos do Exame",
+  "corpo": "<p>Seguem anexos os documentos solicitados.</p>",
+  "anexos": [
+    {
+      "nome": "laudo.pdf",
+      "tipo": "application/pdf",
+      "url": "https://storage.laboratorio.com/laudo.pdf"
+    },
+    {
+      "nome": "resultado.pdf",
+      "tipo": "application/pdf",
+      "url": "https://storage.laboratorio.com/resultado.pdf"
+    },
+    {
+      "nome": "grafico.png",
+      "tipo": "image/png",
+      "url": "https://storage.laboratorio.com/grafico.png"
+    }
+  ]
+}
+
+###
+
+### Enviar Email com Template e Anexo
+POST {{baseUrl}}/infraestrutura/email/enviar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "destinatario": "paciente@example.com",
+  "template": "resultado-exame",
+  "variaveis": {
+    "nome": "Carlos Souza",
+    "tipoExame": "Raio-X Tórax",
+    "dataExame": "08/10/2024"
+  },
+  "anexos": [
+    {
+      "nome": "resultado_raio_x.pdf",
+      "tipo": "application/pdf",
+      "url": "https://storage.laboratorio.com/rx/456.pdf"
+    }
+  ]
+}
+
+###
+
+### Enviar Email com Confirmação de Leitura
+POST {{baseUrl}}/infraestrutura/email/enviar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "destinatario": "medico@example.com",
+  "assunto": "Resultado Urgente - Paciente XYZ",
+  "corpo": "<p>Resultado de exame urgente para análise imediata.</p>",
+  "confirmarLeitura": true,
+  "prioridade": "alta"
+}
+
+###

@@ -1,0 +1,306 @@
+### Atualizar Informações Básicas da Etiqueta
+# Substitua {id} pelo UUID da etiqueta
+PATCH {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Etiqueta Sangue - Tubo Pequeno EDTA K3",
+  "observacoes": "Etiqueta atualizada para tubos EDTA K3 de 3-5mL"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "codigoEtiqueta": "ETQ-SANG-001",
+#   "nome": "Etiqueta Sangue - Tubo Pequeno EDTA K3",
+#   "observacoes": "Etiqueta atualizada para tubos EDTA K3 de 3-5mL",
+#   ...
+# }
+
+
+### Atualizar Dimensões da Etiqueta
+PATCH {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "largura": 45,
+  "altura": 25,
+  "orientacao": "paisagem"
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... etiqueta atualizada ... }
+
+
+### Atualizar Layout da Etiqueta
+PATCH {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "layout": {
+    "tipo": "grid",
+    "colunas": 3,
+    "linhas": 4,
+    "espacamento": 3,
+    "alinhamento": "center"
+  }
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... etiqueta atualizada ... }
+
+
+### Atualizar Campos da Etiqueta
+PATCH {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "campos": [
+    "codigoBarras",
+    "nomeParaciente",
+    "dataNascimento",
+    "dataColeta",
+    "horaColeta",
+    "tipoExame",
+    "observacoes"
+  ]
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... etiqueta atualizada com novos campos ... }
+
+
+### Atualizar Cores da Etiqueta
+PATCH {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "corPrimaria": "#8B0000",
+  "corSecundaria": "#F5F5F5"
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... etiqueta atualizada com novas cores ... }
+
+
+### Atualizar Template ZPL
+PATCH {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "templateZPL": "^XA^FO60,60^BCN,110,Y,N,N^FD{codigo}^FS^FO60,190^A0N,28,28^FD{paciente}^FS^FO60,225^A0N,22,22^FD{dataColeta} {horaColeta}^FS^FO60,250^A0N,20,20^FD{tipoExame}^FS^XZ"
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... etiqueta atualizada com novo template ZPL ... }
+
+
+### Ativar Etiqueta
+PATCH {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/{id}/ativar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "codigoEtiqueta": "ETQ-SANG-001",
+#   "ativo": true,
+#   "message": "Etiqueta ativada com sucesso"
+# }
+
+
+### Desativar Etiqueta
+PATCH {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/{id}/desativar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "codigoEtiqueta": "ETQ-SANG-001",
+#   "ativo": false,
+#   "message": "Etiqueta desativada com sucesso"
+# }
+
+
+### Alternar Status da Etiqueta
+PATCH {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/{id}/toggle-status
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "ativo": true,
+#   "message": "Status alterado com sucesso"
+# }
+
+
+### Definir como Etiqueta Padrão
+PATCH {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/{id}/definir-padrao
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "padrao": true,
+#   "message": "Etiqueta definida como padrão para o tipo de amostra"
+# }
+
+
+### Remover como Etiqueta Padrão
+PATCH {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/{id}/remover-padrao
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "padrao": false,
+#   "message": "Etiqueta removida como padrão"
+# }
+
+
+### Atualizar Múltiplos Campos - Etiqueta Completa
+PATCH {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Etiqueta Sangue Hematologia - Tubo EDTA",
+  "largura": 42,
+  "altura": 22,
+  "layout": {
+    "tipo": "grid",
+    "colunas": 2,
+    "linhas": 4,
+    "espacamento": 2,
+    "padding": 3
+  },
+  "campos": [
+    "codigoBarras",
+    "nomeParaciente",
+    "dataNascimento",
+    "dataColeta",
+    "horaColeta",
+    "setor"
+  ],
+  "corPrimaria": "#800080",
+  "corSecundaria": "#FFFFFF",
+  "templateZPL": "^XA^FO55,55^BCN,105,Y,N,N^FD{codigo}^FS^FO55,180^A0N,26,26^FD{paciente}^FS^FO55,210^A0N,20,20^FDNasc: {dataNasc}^FS^FO55,235^A0N,20,20^FD{dataColeta} {horaColeta}^FS^FO55,260^A0N,18,18^FD{setor}^FS^XZ",
+  "observacoes": "Etiqueta otimizada para hematologia - tubo roxo EDTA"
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... etiqueta totalmente atualizada ... }
+
+
+### Erro - Validação: Largura Muito Pequena
+PATCH {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "largura": 5,
+  "altura": 10
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Largura mínima é 10mm e altura mínima é 10mm",
+#   "error": "Bad Request"
+# }
+
+
+### Erro - Validação: Cor Inválida
+PATCH {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "corPrimaria": "vermelho",
+  "corSecundaria": "azul"
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Cores devem estar no formato hexadecimal (#000000)",
+#   "error": "Bad Request"
+# }
+
+
+### Erro - Validação: Template ZPL Inválido
+PATCH {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "templateZPL": "template sem comando ZPL válido"
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Template ZPL inválido. Deve conter comandos ZPL válidos (^XA...^XZ)",
+#   "error": "Bad Request"
+# }
+
+
+### Erro - Etiqueta Não Encontrada
+PATCH {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/00000000-0000-0000-0000-000000000000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Nome Atualizado"
+}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Etiqueta não encontrada",
+#   "error": "Not Found"
+# }
+
+
+### Erro - Código Duplicado
+PATCH {{baseUrl}}/configuracoes/estrutura/etiquetas-amostra/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoEtiqueta": "ETQ-SANG-002"
+}
+
+### Expected Response
+# Status: 409 Conflict
+# {
+#   "statusCode": 409,
+#   "message": "Já existe uma etiqueta com o código ETQ-SANG-002",
+#   "error": "Conflict"
+# }

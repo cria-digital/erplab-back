@@ -1,0 +1,341 @@
+### ==========================================================
+### FLUXO COMPLETO - SETOR DE ANALISES CLINICAS DE REFERENCIA
+### ==========================================================
+
+### 1. Criar setor de analises clinicas completo
+POST {{baseUrl}}/configuracoes/estrutura/setores
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoSetor": "SET-AC-REF-001",
+  "nome": "Setor de Analises Clinicas - Referencia",
+  "tipo": "apoio_diagnostico",
+  "descricao": "Setor de referencia em analises clinicas com certificacao ISO 15189, acreditacao ANVISA e habilitacao para analises de alta complexidade. Atende exames de rotina, urgencia e testes especializados",
+  "responsavel": "Dra. Maria Santos Silva",
+  "ramal": "1001",
+  "email": "analises.referencia@lab.com.br",
+  "centrosCusto": ["CC-LAB-AC-001", "CC-LAB-AC-002", "CC-LAB-AC-003"],
+  "horarioFuncionamento": {
+    "segunda": { "abertura": "06:00", "fechamento": "22:00" },
+    "terca": { "abertura": "06:00", "fechamento": "22:00" },
+    "quarta": { "abertura": "06:00", "fechamento": "22:00" },
+    "quinta": { "abertura": "06:00", "fechamento": "22:00" },
+    "sexta": { "abertura": "06:00", "fechamento": "22:00" },
+    "sabado": { "abertura": "07:00", "fechamento": "18:00" },
+    "domingo": { "abertura": "08:00", "fechamento": "14:00" }
+  },
+  "observacoes": "Setor de referencia com 8 laboratorios especializados: Hematologia (Sysmex XN-1000), Bioquimica (Roche Cobas c701), Microbiologia NB2 (Vitek 2), Imunologia (Architect i2000), Biologia Molecular (PCR Real Time), Parasitologia, Urinanalise (Iris IQ200) e Coagulacao (ACL Top 750). Equipe de 25 profissionais qualificados. Integracao total com LIS e sistema de rastreabilidade completa. Responsavel Tecnico: Dra. Maria Santos Silva CRF 54321-SP. Certificacoes: ISO 15189:2022, ANVISA RDC 302/2005, PALC"
+}
+
+### 2. Verificar se foi criado
+GET {{baseUrl}}/configuracoes/estrutura/setores/codigo/SET-AC-REF-001
+Authorization: Bearer {{token}}
+
+### 3. Criar salas vinculadas ao setor
+POST {{baseUrl}}/configuracoes/estrutura/salas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoSala": "LAB-HEM-001",
+  "nome": "Laboratorio de Hematologia",
+  "tipo": "laboratorio",
+  "setorId": "{{$guid}}",
+  "andar": "2",
+  "capacidade": 6,
+  "area": 35.0,
+  "status": "disponivel",
+  "temArCondicionado": true,
+  "temExaustor": true,
+  "temPia": true,
+  "temGeladeira": true,
+  "temFreezer": true,
+  "nivelBiosseguranca": "NB2",
+  "observacoes": "Laboratorio de hematologia equipado com analisador Sysmex XN-1000, microscópios binoculares, centrifugas, estufas e sistema de coagulacao"
+}
+
+### 4. Obter todas as salas do setor
+GET {{baseUrl}}/configuracoes/estrutura/setores/{{$guid}}/salas
+Authorization: Bearer {{token}}
+
+### 5. Obter estatisticas do setor
+GET {{baseUrl}}/configuracoes/estrutura/setores/{{$guid}}/estatisticas
+Authorization: Bearer {{token}}
+
+### 6. Verificar disponibilidade
+GET {{baseUrl}}/configuracoes/estrutura/setores/{{$guid}}/disponibilidade
+Authorization: Bearer {{token}}
+
+### 7. Atualizar com novos centros de custo
+PATCH {{baseUrl}}/configuracoes/estrutura/setores/{{$guid}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "centrosCusto": ["CC-LAB-AC-001", "CC-LAB-AC-002", "CC-LAB-AC-003", "CC-LAB-AC-004"],
+  "observacoes": "Adicionado CC-LAB-AC-004 para novo laboratorio de biologia molecular com equipamentos PCR Real Time e sequenciador de nova geracao"
+}
+
+### 8. Ampliar horario de funcionamento
+PATCH {{baseUrl}}/configuracoes/estrutura/setores/{{$guid}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "horarioFuncionamento": null,
+  "observacoes": "Setor ampliado para funcionamento 24/7 com plantao permanente para atender urgencias e emergencias. Equipe ampliada com mais 10 profissionais em regime de plantao"
+}
+
+### ==========================================================
+### FLUXO COMPLETO - SETOR DE MICROBIOLOGIA NB3
+### ==========================================================
+
+### 1. Criar setor de microbiologia de alta seguranca
+POST {{baseUrl}}/configuracoes/estrutura/setores
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoSetor": "SET-MIC-NB3-001",
+  "nome": "Setor de Microbiologia NB3",
+  "tipo": "apoio_diagnostico",
+  "descricao": "Setor de microbiologia de nivel de biosseguranca NB3 para analise de agentes de risco biologico classe 3, incluindo tuberculose, fungos sistemicos e patogenos emergentes",
+  "responsavel": "Dr. Roberto Santos Alves",
+  "ramal": "1010",
+  "email": "microbiologia.nb3@lab.com.br",
+  "centrosCusto": ["CC-LAB-MIC-NB3"],
+  "horarioFuncionamento": {
+    "segunda": { "abertura": "08:00", "fechamento": "18:00" },
+    "terca": { "abertura": "08:00", "fechamento": "18:00" },
+    "quarta": { "abertura": "08:00", "fechamento": "18:00" },
+    "quinta": { "abertura": "08:00", "fechamento": "18:00" },
+    "sexta": { "abertura": "08:00", "fechamento": "18:00" }
+  },
+  "observacoes": "Setor NB3 com acesso restrito via biometria, sistema de pressao negativa, dupla porta com antecamara, cabine de seguranca biologica classe II tipo A2, autoclave de barreira dupla porta, sistema de filtragem HEPA, sistema de descontaminacao por formaldeido, ducha de emergencia, lava-olhos, sistema de monitoramento 24/7, alarmes de seguranca. Certificado ANVISA NB3-2024-001. Responsavel: Dr. Roberto Santos CRBM 98765-SP. Protocolos: CTNBio, ANVISA RDC 50/2002"
+}
+
+### 2. Verificar criacao
+GET {{baseUrl}}/configuracoes/estrutura/setores/codigo/SET-MIC-NB3-001
+Authorization: Bearer {{token}}
+
+### 3. Simular manutencao preventiva anual
+PATCH {{baseUrl}}/configuracoes/estrutura/setores/{{$guid}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "ativo": false,
+  "observacoes": "Setor temporariamente desativado para manutencao preventiva anual obrigatoria. Procedimentos: teste de integridade dos filtros HEPA, calibracao do sistema de pressao diferencial, validacao da cabine de seguranca biologica (NSF/ANSI 49), teste de alarmes, verificacao da autoclave de barreira, teste de ducha e lava-olhos, descontaminacao completa com formaldeido. Previsao: 10 dias uteis. Analises transferidas para laboratorio de apoio credenciado"
+}
+
+### 4. Reativar apos manutencao
+PATCH {{baseUrl}}/configuracoes/estrutura/setores/{{$guid}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "ativo": true,
+  "observacoes": "Setor NB3 liberado apos manutencao preventiva anual. Todos os sistemas validados e aprovados. Filtros HEPA: 99.999% eficiencia. Pressao diferencial: -35Pa estavel. Cabine classe II: certificacao NSF/ANSI 49 aprovada. Autoclave: validada com indicadores biologicos. Relatorio tecnico: MANUT-NB3-2025-003. Certificado valido ate out/2026. Inspecao ANVISA aprovada em 05/10/2025"
+}
+
+### ==========================================================
+### FLUXO COMPLETO - SETOR DE COLETA DOMICILIAR
+### ==========================================================
+
+### 1. Criar setor de coleta domiciliar
+POST {{baseUrl}}/configuracoes/estrutura/setores
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoSetor": "SET-COL-DOM-001",
+  "nome": "Setor de Coleta Domiciliar",
+  "tipo": "assistencial",
+  "descricao": "Setor especializado em coletas domiciliares com equipe movel equipada para atendimento em residencias, empresas, clinicas e hospitais",
+  "responsavel": "Enf. Patricia Lima Santos",
+  "ramal": "1200",
+  "email": "coleta.domiciliar@lab.com.br",
+  "centrosCusto": ["CC-COL-DOM-001"],
+  "horarioFuncionamento": {
+    "segunda": { "abertura": "06:00", "fechamento": "20:00" },
+    "terca": { "abertura": "06:00", "fechamento": "20:00" },
+    "quarta": { "abertura": "06:00", "fechamento": "20:00" },
+    "quinta": { "abertura": "06:00", "fechamento": "20:00" },
+    "sexta": { "abertura": "06:00", "fechamento": "20:00" },
+    "sabado": { "abertura": "07:00", "fechamento": "16:00" },
+    "domingo": { "abertura": "08:00", "fechamento": "13:00" }
+  },
+  "observacoes": "Setor de coleta domiciliar com 8 equipes moveis equipadas. Cada equipe possui: veiculo identificado, maleta de coleta refrigerada, material esteril completo, EPIs, tablet com sistema integrado ao LIS, impressora portatil de etiquetas, maquina de cartao. Atendimento em toda regiao metropolitana. Agendamento online e via WhatsApp. Prazo de atendimento: ate 4h apos solicitacao. Responsavel: Enf. Patricia Lima COREN 123456-RJ"
+}
+
+### 2. Verificar horarios disponiveis
+GET {{baseUrl}}/configuracoes/estrutura/setores/{{$guid}}/horarios
+Authorization: Bearer {{token}}
+
+### 3. Obter colaboradores
+GET {{baseUrl}}/configuracoes/estrutura/setores/{{$guid}}/colaboradores
+Authorization: Bearer {{token}}
+
+### 4. Ampliar area de cobertura
+PATCH {{baseUrl}}/configuracoes/estrutura/setores/{{$guid}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "descricao": "Setor especializado em coletas domiciliares com equipe movel equipada. Atendimento expandido para toda regiao metropolitana e cidades vizinhas num raio de 100km",
+  "observacoes": "Area de cobertura ampliada. Agora atendemos: capital, grande regiao metropolitana e 15 cidades vizinhas. Frota ampliada para 12 veiculos com rastreamento GPS. Sistema de roteirizacao automatica para otimizacao de rotas e reducao do tempo de deslocamento"
+}
+
+### ==========================================================
+### FLUXO COMPLETO - SETOR ADMINISTRATIVO INTEGRADO
+### ==========================================================
+
+### 1. Criar setor administrativo completo
+POST {{baseUrl}}/configuracoes/estrutura/setores
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoSetor": "SET-ADM-CORP-001",
+  "nome": "Setor Administrativo Corporativo",
+  "tipo": "administrativo",
+  "descricao": "Setor administrativo central com departamentos de RH, financeiro, compras, faturamento, TI, qualidade, marketing e gestao estrategica",
+  "responsavel": "Joana Ferreira Silva",
+  "ramal": "2000",
+  "email": "administrativo@lab.com.br",
+  "centrosCusto": ["CC-ADM-001", "CC-ADM-002", "CC-ADM-003", "CC-ADM-004"],
+  "horarioFuncionamento": {
+    "segunda": { "abertura": "08:00", "fechamento": "18:00" },
+    "terca": { "abertura": "08:00", "fechamento": "18:00" },
+    "quarta": { "abertura": "08:00", "fechamento": "18:00" },
+    "quinta": { "abertura": "08:00", "fechamento": "18:00" },
+    "sexta": { "abertura": "08:00", "fechamento": "18:00" }
+  },
+  "observacoes": "Setor administrativo corporativo com 45 colaboradores distribuidos em 8 departamentos: RH (8 pessoas), Financeiro (12 pessoas), Compras (5 pessoas), Faturamento (8 pessoas), TI (6 pessoas), Qualidade (3 pessoas), Marketing (2 pessoas), Diretoria (1 pessoa). Infraestrutura completa: servidores dedicados, sistema ERP integrado, telefonia VoIP, videoconferencia, sistema de gestao documental, backup automatizado"
+}
+
+### 2. Listar centros de custo
+GET {{baseUrl}}/configuracoes/estrutura/setores/{{$guid}}/centros-custo
+Authorization: Bearer {{token}}
+
+### 3. Adicionar novo departamento
+PATCH {{baseUrl}}/configuracoes/estrutura/setores/{{$guid}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "centrosCusto": ["CC-ADM-001", "CC-ADM-002", "CC-ADM-003", "CC-ADM-004", "CC-ADM-005"],
+  "observacoes": "Criado novo departamento de Compliance e Auditoria Interna (CC-ADM-005) com 3 colaboradores especializados em conformidade regulatoria, auditoria de processos e gestao de riscos"
+}
+
+### ==========================================================
+### CENARIOS DE GESTAO DE SETORES
+### ==========================================================
+
+### Listar todos os setores criados
+GET {{baseUrl}}/configuracoes/estrutura/setores
+Authorization: Bearer {{token}}
+
+### Obter estatisticas gerais
+GET {{baseUrl}}/configuracoes/estrutura/setores/estatisticas
+Authorization: Bearer {{token}}
+
+### Listar setores ativos
+GET {{baseUrl}}/configuracoes/estrutura/setores/ativos
+Authorization: Bearer {{token}}
+
+### Listar setores por tipo - Apoio Diagnostico
+GET {{baseUrl}}/configuracoes/estrutura/setores/tipo/apoio_diagnostico
+Authorization: Bearer {{token}}
+
+### Listar setores por tipo - Assistencial
+GET {{baseUrl}}/configuracoes/estrutura/setores/tipo/assistencial
+Authorization: Bearer {{token}}
+
+### Listar setores abertos agora
+GET {{baseUrl}}/configuracoes/estrutura/setores/abertos-agora
+Authorization: Bearer {{token}}
+
+### Buscar setores por nome
+GET {{baseUrl}}/configuracoes/estrutura/setores/search?q=microbiologia
+Authorization: Bearer {{token}}
+
+### Buscar setores por responsavel
+GET {{baseUrl}}/configuracoes/estrutura/setores/search?q=maria
+Authorization: Bearer {{token}}
+
+### Listar setores com salas
+GET {{baseUrl}}/configuracoes/estrutura/setores/com-salas
+Authorization: Bearer {{token}}
+
+### Listar setores que funcionam aos domingos
+GET {{baseUrl}}/configuracoes/estrutura/setores/horario?dia=domingo
+Authorization: Bearer {{token}}
+
+### ==========================================================
+### CENARIOS DE ERRO E VALIDACOES
+### ==========================================================
+
+### Tentar criar setor com codigo duplicado
+POST {{baseUrl}}/configuracoes/estrutura/setores
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoSetor": "SET-AC-REF-001",
+  "nome": "Setor Duplicado",
+  "tipo": "administrativo",
+  "responsavel": "Teste"
+}
+
+### Expected Response: 400 Bad Request - Codigo ja existe
+
+###
+
+### Tentar criar setor sem campos obrigatorios
+POST {{baseUrl}}/configuracoes/estrutura/setores
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Setor Incompleto"
+}
+
+### Expected Response: 400 Bad Request - Campos obrigatorios faltando
+
+###
+
+### Buscar setor inexistente
+GET {{baseUrl}}/configuracoes/estrutura/setores/codigo/SET-INEXISTENTE
+Authorization: Bearer {{token}}
+
+### Expected Response: 404 Not Found
+
+###
+
+### Tentar atualizar setor com tipo invalido
+PATCH {{baseUrl}}/configuracoes/estrutura/setores/{{$guid}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipo": "tipo_invalido"
+}
+
+### Expected Response: 400 Bad Request - Tipo invalido
+
+###
+
+### Tentar atualizar setor inexistente
+PATCH {{baseUrl}}/configuracoes/estrutura/setores/00000000-0000-0000-0000-000000000000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Teste"
+}
+
+### Expected Response: 404 Not Found
+
+###

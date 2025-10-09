@@ -1,0 +1,294 @@
+### Atualizar setor completo
+PATCH {{baseUrl}}/configuracoes/estrutura/setores/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Setor de Analises Clinicas - Reformulado",
+  "descricao": "Setor reformulado com novos laboratorios especializados e equipamentos de ultima geracao",
+  "responsavel": "Dra. Maria Santos Silva",
+  "ramal": "1001",
+  "email": "analises.clinicas@lab.com.br",
+  "observacoes": "Setor passou por completa renovacao em Outubro/2025 com aquisicao de analisadores automatizados de nova geracao"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "550e8400-e29b-41d4-a716-446655440000",
+#   "nome": "Setor de Analises Clinicas - Reformulado",
+#   "responsavel": "Dra. Maria Santos Silva",
+#   "updatedAt": "2025-10-09T15:30:00.000Z"
+# }
+
+###
+
+### Atualizar apenas responsavel
+PATCH {{baseUrl}}/configuracoes/estrutura/setores/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "responsavel": "Dr. Carlos Eduardo Silva",
+  "observacoes": "Mudanca de responsavel tecnico - Dr. Carlos assumiu a gestao do setor"
+}
+
+###
+
+### Atualizar contatos
+PATCH {{baseUrl}}/configuracoes/estrutura/setores/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "ramal": "1005",
+  "email": "setoranalises@lab.com.br",
+  "observacoes": "Contatos atualizados apos reorganizacao da telefonia"
+}
+
+###
+
+### Atualizar tipo do setor
+PATCH {{baseUrl}}/configuracoes/estrutura/setores/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipo": "assistencial",
+  "observacoes": "Setor reclassificado para assistencial apos inclusao de atendimento direto ao paciente"
+}
+
+###
+
+### Atualizar centros de custo
+PATCH {{baseUrl}}/configuracoes/estrutura/setores/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "centrosCusto": ["CC-LAB-001", "CC-LAB-002", "CC-LAB-003"],
+  "observacoes": "Adicionado novo centro de custo CC-LAB-003 para controle financeiro de novos equipamentos"
+}
+
+###
+
+### Atualizar horario de funcionamento
+PATCH {{baseUrl}}/configuracoes/estrutura/setores/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "horarioFuncionamento": {
+    "segunda": { "abertura": "06:00", "fechamento": "20:00" },
+    "terca": { "abertura": "06:00", "fechamento": "20:00" },
+    "quarta": { "abertura": "06:00", "fechamento": "20:00" },
+    "quinta": { "abertura": "06:00", "fechamento": "20:00" },
+    "sexta": { "abertura": "06:00", "fechamento": "20:00" },
+    "sabado": { "abertura": "07:00", "fechamento": "15:00" },
+    "domingo": { "abertura": "08:00", "fechamento": "12:00" }
+  },
+  "observacoes": "Horario ampliado para atender demanda crescente, incluindo funcionamento aos domingos"
+}
+
+###
+
+### Atualizar horario - Remover funcionamento aos domingos
+PATCH {{baseUrl}}/configuracoes/estrutura/setores/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "horarioFuncionamento": {
+    "segunda": { "abertura": "07:00", "fechamento": "19:00" },
+    "terca": { "abertura": "07:00", "fechamento": "19:00" },
+    "quarta": { "abertura": "07:00", "fechamento": "19:00" },
+    "quinta": { "abertura": "07:00", "fechamento": "19:00" },
+    "sexta": { "abertura": "07:00", "fechamento": "19:00" },
+    "sabado": { "abertura": "08:00", "fechamento": "14:00" }
+  },
+  "observacoes": "Funcionamento aos domingos suspenso temporariamente"
+}
+
+###
+
+### Configurar funcionamento 24h
+PATCH {{baseUrl}}/configuracoes/estrutura/setores/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "horarioFuncionamento": null,
+  "observacoes": "Setor operando 24 horas por dia, 7 dias por semana - Plantao permanente"
+}
+
+###
+
+### Atualizar apenas observacoes
+PATCH {{baseUrl}}/configuracoes/estrutura/setores/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "observacoes": "Setor de referencia em analises clinicas com certificacao ISO 9001. Equipamentos de ultima geracao com rastreabilidade total e integracao ao sistema LIS. Responsavel Tecnico: Dra. Maria Santos CRF 12345-SP"
+}
+
+###
+
+### Desativar setor temporariamente
+PATCH {{baseUrl}}/configuracoes/estrutura/setores/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "ativo": false,
+  "observacoes": "Setor temporariamente desativado para reforma estrutural completa. Previsao de reativacao: 30/11/2025. Analises redirecionadas para SET-AC-002"
+}
+
+###
+
+### Reativar setor
+PATCH {{baseUrl}}/configuracoes/estrutura/setores/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "ativo": true,
+  "observacoes": "Setor reativado apos conclusao da reforma. Novas instalacoes inauguradas com capacidade ampliada e tecnologia de ponta"
+}
+
+###
+
+### Remover ramal
+PATCH {{baseUrl}}/configuracoes/estrutura/setores/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "ramal": null,
+  "observacoes": "Ramal removido temporariamente durante migracao do sistema de telefonia"
+}
+
+###
+
+### Remover email
+PATCH {{baseUrl}}/configuracoes/estrutura/setores/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "email": null,
+  "observacoes": "Email institucional suspenso temporariamente"
+}
+
+###
+
+### Remover centros de custo
+PATCH {{baseUrl}}/configuracoes/estrutura/setores/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "centrosCusto": [],
+  "observacoes": "Centros de custo removidos temporariamente durante reestruturacao financeira"
+}
+
+###
+
+### Atualizar descricao
+PATCH {{baseUrl}}/configuracoes/estrutura/setores/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "descricao": "Setor de Analises Clinicas com laboratorios especializados: Hematologia, Bioquimica, Microbiologia, Imunologia, Parasitologia e Urinanalise. Equipamentos automatizados de ultima geracao com integracao total ao sistema LIS",
+  "observacoes": "Descricao atualizada apos expansao dos servicos"
+}
+
+###
+
+### Tentar atualizar codigo duplicado (deve dar erro)
+PATCH {{baseUrl}}/configuracoes/estrutura/setores/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoSetor": "SET-HEM-001"
+}
+
+### Expected Response (se codigo ja existir)
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Ja existe um setor com o codigo SET-HEM-001",
+#   "error": "Bad Request"
+# }
+
+###
+
+### Atualizar setor inexistente (deve retornar 404)
+PATCH {{baseUrl}}/configuracoes/estrutura/setores/00000000-0000-0000-0000-000000000000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Teste"
+}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Setor com ID 00000000-0000-0000-0000-000000000000 nao encontrado",
+#   "error": "Not Found"
+# }
+
+###
+
+### Atualizar configuracoes completas
+PATCH {{baseUrl}}/configuracoes/estrutura/setores/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Setor de Analises Clinicas e Microbiologia",
+  "tipo": "apoio_diagnostico",
+  "descricao": "Setor integrado de analises clinicas com laboratorios de hematologia, bioquimica, microbiologia, imunologia e biologia molecular",
+  "responsavel": "Dra. Maria Santos Silva",
+  "ramal": "1001",
+  "email": "analises@lab.com.br",
+  "centrosCusto": ["CC-LAB-001", "CC-LAB-002", "CC-LAB-005"],
+  "horarioFuncionamento": {
+    "segunda": { "abertura": "06:00", "fechamento": "20:00" },
+    "terca": { "abertura": "06:00", "fechamento": "20:00" },
+    "quarta": { "abertura": "06:00", "fechamento": "20:00" },
+    "quinta": { "abertura": "06:00", "fechamento": "20:00" },
+    "sexta": { "abertura": "06:00", "fechamento": "20:00" },
+    "sabado": { "abertura": "07:00", "fechamento": "16:00" }
+  },
+  "observacoes": "Setor reformulado em 2025 com expansao da area fisica, novos equipamentos automatizados, integracao LIS completa e certificacao ISO 15189. Capacidade aumentada em 60%. Equipe tecnica ampliada com 15 profissionais especializados"
+}
+
+###
+
+### Atualizar apenas nome
+PATCH {{baseUrl}}/configuracoes/estrutura/setores/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Setor de Patologia Clinica"
+}
+
+###
+
+### Adicionar centro de custo
+PATCH {{baseUrl}}/configuracoes/estrutura/setores/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "centrosCusto": ["CC-LAB-001", "CC-LAB-002", "CC-LAB-010"],
+  "observacoes": "Adicionado centro de custo CC-LAB-010 para novos projetos de pesquisa"
+}
+
+###

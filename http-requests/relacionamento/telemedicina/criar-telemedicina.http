@@ -1,0 +1,353 @@
+### Criar Telemedicina - Plataforma com Integração API
+POST {{baseUrl}}/relacionamento/telemedicina
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "telemedicina",
+    "cnpj": "12345678000190",
+    "razaoSocial": "TeleMed Brasil Soluções Digitais LTDA",
+    "nomeFantasia": "TeleMed Brasil",
+    "inscricaoEstadual": "123456789",
+    "inscricaoMunicipal": "987654321",
+    "email": "contato@telemedbrasil.com.br",
+    "telefone": "(11) 3456-7890",
+    "celular": "(11) 98765-4321",
+    "website": "https://www.telemedbrasil.com.br",
+    "cep": "01310-100",
+    "logradouro": "Av. Paulista",
+    "numero": "1000",
+    "complemento": "Sala 1501",
+    "bairro": "Bela Vista",
+    "cidade": "São Paulo",
+    "estado": "SP",
+    "observacoes": "Plataforma de telemedicina parceira desde 2020"
+  },
+  "codigoTelemedicina": "TELE-BR-001",
+  "tipoIntegracao": "api",
+  "urlIntegracao": "https://api.telemedbrasil.com.br/v1",
+  "tokenIntegracao": "token-api-seguro-aqui",
+  "statusIntegracao": "ativo",
+  "tipoPlataforma": "web",
+  "urlPlataforma": "https://plataforma.telemedbrasil.com.br",
+  "versaoSistema": "3.5.2",
+  "especialidadesAtendidas": ["Clinica Geral", "Pediatria", "Cardiologia", "Dermatologia"],
+  "tiposConsulta": ["Consulta Inicial", "Retorno", "Pronto Atendimento"],
+  "teleconsulta": true,
+  "telediagnostico": true,
+  "telemonitoramento": true,
+  "telecirurgia": false,
+  "tempoConsultaPadrao": 30,
+  "permiteAgendamentoOnline": true,
+  "permiteCancelamentoOnline": true,
+  "antecedenciaMinimaCancelamento": 2,
+  "certificadoDigital": "A3",
+  "suporteGravacao": true,
+  "suporteStreaming": true,
+  "criptografiaEndToEnd": true,
+  "protocoloSeguranca": "TLS 1.3",
+  "valorConsultaParticular": 150.00,
+  "percentualRepasse": 70.00,
+  "taxaPlataforma": 15.00,
+  "observacoes": "Plataforma certificada pela CFM. Suporte 24/7.",
+  "requisitosTecnicos": "Navegador atualizado, câmera e microfone funcionais, conexão de 5Mbps"
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "id": "uuid",
+#   "codigoTelemedicina": "TELE-BR-001",
+#   "tipoIntegracao": "api",
+#   "tipoPlataforma": "web",
+#   "empresa": {
+#     "id": "uuid",
+#     "cnpj": "12345678000190",
+#     "razaoSocial": "TeleMed Brasil Soluções Digitais LTDA",
+#     "nomeFantasia": "TeleMed Brasil"
+#   },
+#   ...
+# }
+
+
+### Criar Telemedicina - Plataforma com HL7/FHIR
+POST {{baseUrl}}/relacionamento/telemedicina
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "telemedicina",
+    "cnpj": "98765432000111",
+    "razaoSocial": "Saúde Digital FHIR LTDA",
+    "nomeFantasia": "Saúde Digital",
+    "email": "contato@saudedigital.com.br",
+    "telefone": "(11) 2345-6789",
+    "celular": "(11) 99876-5432",
+    "cep": "04543-011",
+    "logradouro": "Av. Brigadeiro Luís Antônio",
+    "numero": "2500",
+    "bairro": "Jardim Paulista",
+    "cidade": "São Paulo",
+    "estado": "SP"
+  },
+  "codigoTelemedicina": "TELE-SD-001",
+  "tipoIntegracao": "fhir",
+  "urlIntegracao": "https://fhir.saudedigital.com.br/r4",
+  "usuarioIntegracao": "erplab_fhir",
+  "senhaIntegracao": "senha-segura-fhir-123",
+  "configuracaoAdicional": "{\"version\": \"R4\", \"resources\": [\"Patient\", \"Observation\", \"DiagnosticReport\"]}",
+  "statusIntegracao": "ativo",
+  "tipoPlataforma": "hibrida",
+  "urlPlataforma": "https://app.saudedigital.com.br",
+  "versaoSistema": "2.1.0",
+  "especialidadesAtendidas": ["Radiologia", "Patologia", "Cardiologia"],
+  "tiposConsulta": ["Laudos a Distância", "Segunda Opinião"],
+  "teleconsulta": false,
+  "telediagnostico": true,
+  "telemonitoramento": false,
+  "telecirurgia": false,
+  "tempoConsultaPadrao": 45,
+  "permiteAgendamentoOnline": false,
+  "permiteCancelamentoOnline": false,
+  "certificadoDigital": "A3",
+  "suporteGravacao": false,
+  "suporteStreaming": false,
+  "criptografiaEndToEnd": true,
+  "protocoloSeguranca": "HTTPS + OAuth2",
+  "valorConsultaParticular": 200.00,
+  "percentualRepasse": 65.00,
+  "taxaPlataforma": 20.00,
+  "observacoes": "Integração FHIR R4 completa. Especializada em telediagnóstico."
+}
+
+
+### Criar Telemedicina - Plataforma Mobile para Teleconsulta
+POST {{baseUrl}}/relacionamento/telemedicina
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "telemedicina",
+    "cnpj": "11223344000155",
+    "razaoSocial": "MobileHealth Tecnologia LTDA",
+    "nomeFantasia": "MobileHealth",
+    "email": "sistemas@mobilehealth.com.br",
+    "telefone": "(11) 3333-4444",
+    "celular": "(11) 97777-8888",
+    "website": "https://www.mobilehealth.com.br",
+    "cep": "05408-000",
+    "logradouro": "Av. Faria Lima",
+    "numero": "3000",
+    "complemento": "Conj. 1001",
+    "bairro": "Itaim Bibi",
+    "cidade": "São Paulo",
+    "estado": "SP"
+  },
+  "codigoTelemedicina": "TELE-MH-001",
+  "tipoIntegracao": "api",
+  "urlIntegracao": "https://api.mobilehealth.com.br/v2",
+  "tokenIntegracao": "mobile-api-token-2025",
+  "configuracaoAdicional": "{\"api_key\": \"key-123\", \"timeout\": 30, \"retries\": 3}",
+  "statusIntegracao": "ativo",
+  "tipoPlataforma": "mobile",
+  "urlPlataforma": "https://app.mobilehealth.com.br",
+  "versaoSistema": "4.2.1",
+  "especialidadesAtendidas": ["Clinica Geral", "Pediatria", "Ginecologia", "Psiquiatria"],
+  "tiposConsulta": ["Consulta Agendada", "Pronto Atendimento", "Receita Digital"],
+  "teleconsulta": true,
+  "telediagnostico": false,
+  "telemonitoramento": true,
+  "telecirurgia": false,
+  "tempoConsultaPadrao": 20,
+  "permiteAgendamentoOnline": true,
+  "permiteCancelamentoOnline": true,
+  "antecedenciaMinimaAgendamento": 4,
+  "antecedenciaMinimaCancelamento": 2,
+  "certificadoDigital": "A1",
+  "suporteGravacao": true,
+  "suporteStreaming": true,
+  "criptografiaEndToEnd": true,
+  "protocoloSeguranca": "TLS 1.3 + E2E",
+  "valorConsultaParticular": 120.00,
+  "percentualRepasse": 75.00,
+  "taxaPlataforma": 12.00,
+  "observacoes": "App mobile iOS e Android. Push notifications integrado.",
+  "requisitosTecnicos": "iOS 13+ ou Android 8+, 4G mínimo, 100MB espaço livre"
+}
+
+
+### Criar Telemedicina - Plataforma com Webhook
+POST {{baseUrl}}/relacionamento/telemedicina
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "telemedicina",
+    "cnpj": "55667788000199",
+    "razaoSocial": "TeleLaudo Diagnósticos LTDA",
+    "nomeFantasia": "TeleLaudo",
+    "email": "ti@telelaudo.com.br",
+    "telefone": "(11) 4444-5555",
+    "celular": "(11) 96666-7777",
+    "cep": "01419-001",
+    "logradouro": "Rua Augusta",
+    "numero": "1500",
+    "bairro": "Consolação",
+    "cidade": "São Paulo",
+    "estado": "SP"
+  },
+  "codigoTelemedicina": "TELE-TL-001",
+  "tipoIntegracao": "webhook",
+  "urlIntegracao": "https://webhook.telelaudo.com.br/events",
+  "tokenIntegracao": "webhook-secret-token",
+  "configuracaoAdicional": "{\"events\": [\"exame.recebido\", \"laudo.pronto\", \"resultado.enviado\"], \"signature\": \"HMAC-SHA256\"}",
+  "statusIntegracao": "ativo",
+  "tipoPlataforma": "web",
+  "urlPlataforma": "https://plataforma.telelaudo.com.br",
+  "versaoSistema": "1.8.0",
+  "especialidadesAtendidas": ["Radiologia", "Ultrassonografia", "Tomografia", "Ressonância"],
+  "tiposConsulta": ["Laudo de Exame"],
+  "teleconsulta": false,
+  "telediagnostico": true,
+  "telemonitoramento": false,
+  "telecirurgia": false,
+  "tempoConsultaPadrao": 60,
+  "permiteAgendamentoOnline": false,
+  "permiteCancelamentoOnline": false,
+  "certificadoDigital": "A3",
+  "suporteGravacao": false,
+  "suporteStreaming": false,
+  "criptografiaEndToEnd": true,
+  "protocoloSeguranca": "HTTPS + Webhook Signature",
+  "valorConsultaParticular": 180.00,
+  "percentualRepasse": 60.00,
+  "taxaPlataforma": 25.00,
+  "observacoes": "Especializado em telediagnóstico por imagem. Laudos em até 24h."
+}
+
+
+### Criar Telemedicina - Plataforma Manual (Sem Integração Automática)
+POST {{baseUrl}}/relacionamento/telemedicina
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "telemedicina",
+    "cnpj": "22334455000177",
+    "razaoSocial": "Consultório Virtual LTDA",
+    "nomeFantasia": "Consultório Virtual",
+    "email": "contato@consultoriovirtual.com.br",
+    "telefone": "(11) 5555-6666",
+    "celular": "(11) 95555-6666",
+    "cep": "01452-000",
+    "logradouro": "Rua Haddock Lobo",
+    "numero": "595",
+    "bairro": "Cerqueira César",
+    "cidade": "São Paulo",
+    "estado": "SP"
+  },
+  "codigoTelemedicina": "TELE-CV-001",
+  "tipoIntegracao": "manual",
+  "statusIntegracao": "ativo",
+  "tipoPlataforma": "desktop",
+  "urlPlataforma": "https://consultoriovirtual.com.br",
+  "versaoSistema": "1.0.0",
+  "especialidadesAtendidas": ["Psicologia", "Nutrição", "Fisioterapia"],
+  "tiposConsulta": ["Consulta Individual", "Terapia em Grupo"],
+  "teleconsulta": true,
+  "telediagnostico": false,
+  "telemonitoramento": false,
+  "telecirurgia": false,
+  "tempoConsultaPadrao": 50,
+  "permiteAgendamentoOnline": true,
+  "permiteCancelamentoOnline": true,
+  "antecedenciaMinimaAgendamento": 24,
+  "antecedenciaMinimaCancelamento": 12,
+  "certificadoDigital": "A1",
+  "suporteGravacao": false,
+  "suporteStreaming": true,
+  "criptografiaEndToEnd": true,
+  "protocoloSeguranca": "TLS 1.2",
+  "valorConsultaParticular": 100.00,
+  "percentualRepasse": 80.00,
+  "taxaPlataforma": 10.00,
+  "observacoes": "Plataforma para profissionais autônomos. Agendamento manual.",
+  "requisitosTecnicos": "Windows 10 ou macOS 10.15+, Chrome/Firefox atualizado"
+}
+
+
+### Erro - CNPJ Duplicado
+POST {{baseUrl}}/relacionamento/telemedicina
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "telemedicina",
+    "cnpj": "12345678000190",
+    "razaoSocial": "Outra Plataforma LTDA",
+    "nomeFantasia": "Outra Plataforma"
+  },
+  "codigoTelemedicina": "TELE-OUT-001"
+}
+
+### Expected Response
+# Status: 409 Conflict
+# {
+#   "statusCode": 409,
+#   "message": "Já existe uma empresa com este CNPJ",
+#   "error": "Conflict"
+# }
+
+
+### Erro - Código Telemedicina Duplicado
+POST {{baseUrl}}/relacionamento/telemedicina
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "telemedicina",
+    "cnpj": "99999999000188",
+    "razaoSocial": "Nova Plataforma LTDA",
+    "nomeFantasia": "Nova Plataforma"
+  },
+  "codigoTelemedicina": "TELE-BR-001"
+}
+
+### Expected Response
+# Status: 409 Conflict
+# {
+#   "statusCode": 409,
+#   "message": "Já existe uma plataforma de telemedicina com este código",
+#   "error": "Conflict"
+# }
+
+
+### Erro - CNPJ Inválido
+POST {{baseUrl}}/relacionamento/telemedicina
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "telemedicina",
+    "cnpj": "12345",
+    "razaoSocial": "Plataforma Teste LTDA",
+    "nomeFantasia": "Plataforma Teste"
+  },
+  "codigoTelemedicina": "TELE-TEST-001"
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": ["cnpj must be a valid CNPJ"],
+#   "error": "Bad Request"
+# }

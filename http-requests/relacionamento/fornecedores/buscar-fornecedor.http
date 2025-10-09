@@ -1,0 +1,269 @@
+### Buscar Fornecedor por ID
+# Substitua {id} pelo UUID do fornecedor
+GET {{baseUrl}}/relacionamento/fornecedores/{id}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "codigoFornecedor": "FOR-INSU-001",
+#   "tipoFornecedor": "insumos",
+#   "categoriaPrincipal": "laboratorial",
+#   "prazoPadraoEntrega": 5,
+#   "condicoesPagamento": "30/60/90 dias com boleto bancário",
+#   "limiteCredito": 50000.00,
+#   "descontoContrato": 15.00,
+#   "formasPagamento": ["boleto", "transferencia", "pix"],
+#   "observacoesComerciais": "Fornecedor principal de reagentes...",
+#   "empresa": {
+#     "id": "uuid",
+#     "cnpj": "12345678000190",
+#     "razaoSocial": "BioSupply Distribuidora de Insumos LTDA",
+#     "nomeFantasia": "BioSupply Lab",
+#     "email": "comercial@biosupply.com.br",
+#     "telefone": "(11) 3456-7890",
+#     "endereco": {
+#       "cep": "01310-100",
+#       "logradouro": "Av. Paulista",
+#       "numero": "2000",
+#       "cidade": "São Paulo",
+#       "estado": "SP"
+#     }
+#   },
+#   "ativo": true,
+#   ...
+# }
+
+
+### Buscar por Código do Fornecedor
+GET {{baseUrl}}/relacionamento/fornecedores/codigo/FOR-INSU-001
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# { ... dados do fornecedor ... }
+
+
+### Buscar por CNPJ da Empresa
+GET {{baseUrl}}/relacionamento/fornecedores/cnpj/12345678000190
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# { ... dados do fornecedor ... }
+
+
+### Buscar por CNPJ Formatado
+GET {{baseUrl}}/relacionamento/fornecedores/cnpj/12.345.678/0001-90
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# { ... dados do fornecedor ... }
+
+
+### Buscar Fornecedores por Tipo
+GET {{baseUrl}}/relacionamento/fornecedores/tipo/insumos
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... array de fornecedores de insumos ... ]
+
+
+### Buscar Fornecedores por Categoria
+GET {{baseUrl}}/relacionamento/fornecedores/categoria/laboratorial
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... array de fornecedores laboratoriais ... ]
+
+
+### Buscar Fornecedores por Forma de Pagamento
+GET {{baseUrl}}/relacionamento/fornecedores/forma-pagamento/pix
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... fornecedores que aceitam PIX ... ]
+
+
+### Buscar Fornecedores por Prazo de Entrega
+GET {{baseUrl}}/relacionamento/fornecedores?prazoPadraoEntrega=5
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... fornecedores com prazo de entrega de 5 dias ... ]
+
+
+### Buscar Fornecedores por Prazo Máximo
+GET {{baseUrl}}/relacionamento/fornecedores?prazoPadraoEntregaMax=7
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... fornecedores com prazo de até 7 dias ... ]
+
+
+### Buscar Fornecedores por Limite de Crédito Mínimo
+GET {{baseUrl}}/relacionamento/fornecedores?limiteCreditoMin=50000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... fornecedores com limite de crédito acima de R$ 50.000 ... ]
+
+
+### Buscar Fornecedores por Faixa de Limite de Crédito
+GET {{baseUrl}}/relacionamento/fornecedores?limiteCreditoMin=30000&limiteCreditoMax=100000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... fornecedores com limite entre R$ 30.000 e R$ 100.000 ... ]
+
+
+### Buscar Fornecedores por Desconto Mínimo
+GET {{baseUrl}}/relacionamento/fornecedores?descontoContratoMin=10
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... fornecedores com desconto de pelo menos 10% ... ]
+
+
+### Buscar Fornecedores por Faixa de Desconto
+GET {{baseUrl}}/relacionamento/fornecedores?descontoContratoMin=10&descontoContratoMax=20
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... fornecedores com desconto entre 10% e 20% ... ]
+
+
+### Buscar Fornecedores por Termo (busca ampla)
+GET {{baseUrl}}/relacionamento/fornecedores/search?q=BioSupply
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... fornecedores que contenham "BioSupply" em razão social, nome fantasia ou código ... ]
+
+
+### Buscar Fornecedores por Termo nas Condições de Pagamento
+GET {{baseUrl}}/relacionamento/fornecedores/search?condicoes=boleto
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... fornecedores que aceitam boleto nas condições de pagamento ... ]
+
+
+### Obter Histórico de Pedidos do Fornecedor
+GET {{baseUrl}}/relacionamento/fornecedores/{id}/historico-pedidos
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "fornecedorId": "uuid",
+#   "totalPedidos": 45,
+#   "valorTotal": 125000.00,
+#   "ultimoPedido": "2025-10-05T10:30:00Z",
+#   "pedidos": [
+#     {
+#       "id": "uuid",
+#       "numeroPedido": "PED-2025-001",
+#       "dataPedido": "2025-10-01T14:20:00Z",
+#       "valorTotal": 5500.00,
+#       "status": "entregue"
+#     },
+#     ...
+#   ]
+# }
+
+
+### Obter Produtos Fornecidos
+GET {{baseUrl}}/relacionamento/fornecedores/{id}/produtos
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "fornecedorId": "uuid",
+#   "produtos": [
+#     {
+#       "id": "uuid",
+#       "codigoProduto": "REAG-001",
+#       "nomeProduto": "Reagente para Hemograma",
+#       "categoria": "reagente",
+#       "unidadeMedida": "frasco",
+#       "valorUnitario": 125.00,
+#       "estoqueMinimo": 10
+#     },
+#     ...
+#   ],
+#   "total": 150
+# }
+
+
+### Verificar Disponibilidade de Produtos
+GET {{baseUrl}}/relacionamento/fornecedores/{id}/disponibilidade?produtos=uuid1,uuid2,uuid3
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "fornecedorId": "uuid",
+#   "produtos": [
+#     {
+#       "produtoId": "uuid1",
+#       "disponivel": true,
+#       "prazoEntrega": 5,
+#       "valorUnitario": 125.00
+#     },
+#     ...
+#   ]
+# }
+
+
+### Erro - Fornecedor Não Encontrado
+GET {{baseUrl}}/relacionamento/fornecedores/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Fornecedor não encontrado",
+#   "error": "Not Found"
+# }
+
+
+### Erro - Código Não Encontrado
+GET {{baseUrl}}/relacionamento/fornecedores/codigo/FOR-XXX-999
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Fornecedor não encontrado com o código informado",
+#   "error": "Not Found"
+# }
+
+
+### Erro - CNPJ Não Encontrado
+GET {{baseUrl}}/relacionamento/fornecedores/cnpj/99999999000199
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Fornecedor não encontrado com o CNPJ informado",
+#   "error": "Not Found"
+# }

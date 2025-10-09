@@ -1,0 +1,383 @@
+### ========================================
+### EXEMPLO COMPLETO 1: Médico Cardiologista - Consultório Próprio
+### ========================================
+
+### 1.1 - Criar Médico Cardiologista
+POST {{baseUrl}}/relacionamento/prestadores-servico
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "prestador_servico",
+    "cnpj": "12345678000190",
+    "razaoSocial": "Dr. João Silva Cardiologia LTDA",
+    "nomeFantasia": "Dr. João Silva - Cardiologista",
+    "inscricaoEstadual": "ISENTO",
+    "inscricaoMunicipal": "123456789",
+    "email": "contato@drjoaosilva.com.br",
+    "telefone": "(11) 3456-7890",
+    "celular": "(11) 98765-4321",
+    "website": "https://www.drjoaosilva.com.br",
+    "cep": "01310-100",
+    "logradouro": "Av. Paulista",
+    "numero": "1500",
+    "complemento": "Sala 1201 - Torre A",
+    "bairro": "Bela Vista",
+    "cidade": "São Paulo",
+    "estado": "SP",
+    "observacoes": "Médico parceiro desde 2020. Especialista renomado."
+  },
+  "codigoPrestador": "PREST-MED-001",
+  "tipoPrestador": "medico",
+  "especialidade": "Cardiologia",
+  "numeroConselho": "123456",
+  "tipoConselho": "CRM",
+  "ufConselho": "SP",
+  "valorHora": 300.00,
+  "valorConsulta": 250.00,
+  "percentualRepasse": 70.00,
+  "diasAtendimento": ["segunda", "terca", "quinta"],
+  "observacoes": "Especialista em cardiologia intervencionista. Atende emergências cardiovasculares 24h. Realiza ecocardiogramas e testes ergométricos."
+}
+
+### 1.2 - Buscar Médico Cadastrado
+GET {{baseUrl}}/relacionamento/prestadores-servico/codigo/PREST-MED-001
+Authorization: Bearer {{token}}
+
+### 1.3 - Atualizar Dias de Atendimento
+PATCH {{baseUrl}}/relacionamento/prestadores-servico/{prestadorId}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "diasAtendimento": ["segunda", "terca", "quarta", "quinta", "sexta"]
+}
+
+### 1.4 - Buscar Agendas do Médico
+GET {{baseUrl}}/relacionamento/prestadores-servico/{prestadorId}/agendas
+Authorization: Bearer {{token}}
+
+### 1.5 - Buscar Atendimentos Realizados
+GET {{baseUrl}}/relacionamento/prestadores-servico/{prestadorId}/atendimentos?mes=10&ano=2025
+Authorization: Bearer {{token}}
+
+
+### ========================================
+### EXEMPLO COMPLETO 2: Enfermeira - Saúde Ocupacional
+### ========================================
+
+### 2.1 - Criar Enfermeira de Saúde Ocupacional
+POST {{baseUrl}}/relacionamento/prestadores-servico
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "prestador_servico",
+    "cnpj": "98765432000111",
+    "razaoSocial": "Maria Santos Enfermagem LTDA",
+    "nomeFantasia": "Enfermeira Maria Santos",
+    "inscricaoEstadual": "ISENTO",
+    "email": "contato@mariasantos.enf.br",
+    "telefone": "(11) 2345-6789",
+    "celular": "(11) 99876-5432",
+    "cep": "04543-011",
+    "logradouro": "Av. Brigadeiro Luís Antônio",
+    "numero": "2500",
+    "complemento": "Sala 801",
+    "bairro": "Jardim Paulista",
+    "cidade": "São Paulo",
+    "estado": "SP"
+  },
+  "codigoPrestador": "PREST-ENF-001",
+  "tipoPrestador": "enfermeiro",
+  "especialidade": "Enfermagem do Trabalho",
+  "numeroConselho": "654321",
+  "tipoConselho": "COREN",
+  "ufConselho": "SP",
+  "valorHora": 80.00,
+  "percentualRepasse": 65.00,
+  "diasAtendimento": ["segunda", "terca", "quarta", "quinta", "sexta"],
+  "observacoes": "Especialista em saúde ocupacional. Realiza exames admissionais, periódicos e demissionais. Atende empresas in loco."
+}
+
+### 2.2 - Buscar Enfermeiros Disponíveis
+GET {{baseUrl}}/relacionamento/prestadores-servico/tipo/enfermeiro
+Authorization: Bearer {{token}}
+
+### 2.3 - Atualizar Valores
+PATCH {{baseUrl}}/relacionamento/prestadores-servico/{prestadorId}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "valorHora": 85.00,
+  "percentualRepasse": 67.00
+}
+
+
+### ========================================
+### EXEMPLO COMPLETO 3: Fisioterapeuta - Ortopedia
+### ========================================
+
+### 3.1 - Criar Fisioterapeuta Ortopédico
+POST {{baseUrl}}/relacionamento/prestadores-servico
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "prestador_servico",
+    "cnpj": "11223344000155",
+    "razaoSocial": "Carlos Oliveira Fisioterapia LTDA",
+    "nomeFantasia": "Fisio Carlos Oliveira",
+    "inscricaoEstadual": "ISENTO",
+    "email": "contato@carlosoliveira.fisio.br",
+    "telefone": "(11) 3333-4444",
+    "celular": "(11) 97777-8888",
+    "website": "https://www.carlosoliveira.fisio.br",
+    "cep": "05408-000",
+    "logradouro": "Av. Faria Lima",
+    "numero": "3000",
+    "complemento": "Conj. 501",
+    "bairro": "Itaim Bibi",
+    "cidade": "São Paulo",
+    "estado": "SP"
+  },
+  "codigoPrestador": "PREST-FISIO-001",
+  "tipoPrestador": "fisioterapeuta",
+  "especialidade": "Fisioterapia Ortopédica e Esportiva",
+  "numeroConselho": "111222",
+  "tipoConselho": "CREFITO",
+  "ufConselho": "SP",
+  "valorHora": 120.00,
+  "valorConsulta": 150.00,
+  "percentualRepasse": 68.00,
+  "diasAtendimento": ["segunda", "quarta", "sexta"],
+  "observacoes": "Especialista em reabilitação pós-operatória, lesões esportivas e RPG. Atende atletas profissionais e amadores."
+}
+
+### 3.2 - Buscar Fisioterapeutas por Especialidade
+GET {{baseUrl}}/relacionamento/prestadores-servico/especialidade/Ortopédica
+Authorization: Bearer {{token}}
+
+### 3.3 - Atualizar Especialidade e Dias
+PATCH {{baseUrl}}/relacionamento/prestadores-servico/{prestadorId}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "especialidade": "Fisioterapia Ortopédica, Esportiva e RPG",
+  "diasAtendimento": ["segunda", "terca", "quarta", "quinta", "sexta", "sabado"]
+}
+
+
+### ========================================
+### EXEMPLO COMPLETO 4: Psicóloga - Terapia Online e Presencial
+### ========================================
+
+### 4.1 - Criar Psicóloga Clínica
+POST {{baseUrl}}/relacionamento/prestadores-servico
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "prestador_servico",
+    "cnpj": "55667788000199",
+    "razaoSocial": "Ana Paula Lima Psicologia LTDA",
+    "nomeFantasia": "Psicóloga Ana Paula Lima",
+    "inscricaoEstadual": "ISENTO",
+    "email": "contato@anapaulalima.psi.br",
+    "telefone": "(11) 4444-5555",
+    "celular": "(11) 96666-7777",
+    "website": "https://www.anapaulalima.psi.br",
+    "cep": "01419-001",
+    "logradouro": "Rua Augusta",
+    "numero": "1500",
+    "complemento": "Sala 802",
+    "bairro": "Consolação",
+    "cidade": "São Paulo",
+    "estado": "SP"
+  },
+  "codigoPrestador": "PREST-PSI-001",
+  "tipoPrestador": "psicologo",
+  "especialidade": "Psicologia Clínica - Terapia Cognitivo Comportamental",
+  "numeroConselho": "333444",
+  "tipoConselho": "CRP",
+  "ufConselho": "SP",
+  "valorHora": 180.00,
+  "valorConsulta": 200.00,
+  "percentualRepasse": 75.00,
+  "diasAtendimento": ["terca", "quinta", "sabado"],
+  "observacoes": "Especialista em TCC. Atende crianças, adolescentes e adultos. Realiza atendimentos presenciais e online via telemedicina. Disponível para avaliações psicológicas ocupacionais."
+}
+
+### 4.2 - Buscar Psicólogos Disponíveis em Horário Específico
+GET {{baseUrl}}/relacionamento/prestadores-servico/search?tipoPrestador=psicologo&dia=sabado
+Authorization: Bearer {{token}}
+
+### 4.3 - Atualizar para Incluir Atendimento Online
+PATCH {{baseUrl}}/relacionamento/prestadores-servico/{prestadorId}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "observacoes": "Especialista em TCC. Atende crianças, adolescentes e adultos. Atendimentos presenciais e online (telemedicina). Avaliações psicológicas ocupacionais. Plantão psicológico disponível."
+}
+
+
+### ========================================
+### EXEMPLO COMPLETO 5: Nutricionista - Nutrição Esportiva
+### ========================================
+
+### 5.1 - Criar Nutricionista Esportivo
+POST {{baseUrl}}/relacionamento/prestadores-servico
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresaData": {
+    "tipoEmpresa": "prestador_servico",
+    "cnpj": "99887766000144",
+    "razaoSocial": "Pedro Costa Nutrição LTDA",
+    "nomeFantasia": "Nutricionista Pedro Costa",
+    "inscricaoEstadual": "ISENTO",
+    "email": "contato@pedrocosta.nutri.br",
+    "telefone": "(11) 5555-6666",
+    "celular": "(11) 95555-4444",
+    "website": "https://www.pedrocosta.nutri.br",
+    "cep": "01310-200",
+    "logradouro": "Av. Paulista",
+    "numero": "2000",
+    "complemento": "Sala 305",
+    "bairro": "Bela Vista",
+    "cidade": "São Paulo",
+    "estado": "SP"
+  },
+  "codigoPrestador": "PREST-NUT-001",
+  "tipoPrestador": "nutricionista",
+  "especialidade": "Nutrição Clínica e Esportiva",
+  "numeroConselho": "555666",
+  "tipoConselho": "CRN",
+  "ufConselho": "SP",
+  "valorHora": 150.00,
+  "valorConsulta": 180.00,
+  "percentualRepasse": 72.00,
+  "diasAtendimento": ["segunda", "quarta", "sexta"],
+  "observacoes": "Especialista em nutrição esportiva, emagrecimento e ganho de massa muscular. Elabora planos alimentares personalizados. Atende atletas profissionais e amadores."
+}
+
+### 5.2 - Buscar Nutricionistas
+GET {{baseUrl}}/relacionamento/prestadores-servico/tipo/nutricionista
+Authorization: Bearer {{token}}
+
+### 5.3 - Atualizar Valores e Dias
+PATCH {{baseUrl}}/relacionamento/prestadores-servico/{prestadorId}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "valorHora": 160.00,
+  "valorConsulta": 190.00,
+  "percentualRepasse": 73.00,
+  "diasAtendimento": ["segunda", "terca", "quarta", "quinta", "sexta"]
+}
+
+
+### ========================================
+### EXEMPLO COMPLETO 6: Gestão Completa de Prestadores
+### ========================================
+
+### 6.1 - Listar Todos os Prestadores Ativos
+GET {{baseUrl}}/relacionamento/prestadores-servico/ativos
+Authorization: Bearer {{token}}
+
+### 6.2 - Buscar Prestadores por Faixa de Preço
+GET {{baseUrl}}/relacionamento/prestadores-servico?valorConsultaMin=150&valorConsultaMax=250
+Authorization: Bearer {{token}}
+
+### 6.3 - Buscar Médicos com CRM-SP
+GET {{baseUrl}}/relacionamento/prestadores-servico?tipoPrestador=medico&tipoConselho=CRM&ufConselho=SP
+Authorization: Bearer {{token}}
+
+### 6.4 - Buscar Prestadores que Atendem às Segundas
+GET {{baseUrl}}/relacionamento/prestadores-servico/dia-atendimento/segunda
+Authorization: Bearer {{token}}
+
+### 6.5 - Obter Estatísticas Gerais
+GET {{baseUrl}}/relacionamento/prestadores-servico/estatisticas
+Authorization: Bearer {{token}}
+
+### 6.6 - Buscar por Especialidade
+GET {{baseUrl}}/relacionamento/prestadores-servico/especialidade/Cardiologia
+Authorization: Bearer {{token}}
+
+### 6.7 - Buscar Prestadores por Percentual de Repasse
+GET {{baseUrl}}/relacionamento/prestadores-servico?percentualRepasseMin=70&percentualRepasseMax=75
+Authorization: Bearer {{token}}
+
+### 6.8 - Buscar por CNPJ
+GET {{baseUrl}}/relacionamento/prestadores-servico/cnpj/12345678000190
+Authorization: Bearer {{token}}
+
+### 6.9 - Buscar por Número de Conselho
+GET {{baseUrl}}/relacionamento/prestadores-servico/conselho/CRM/123456
+Authorization: Bearer {{token}}
+
+### 6.10 - Desativar Prestador Temporariamente
+PATCH {{baseUrl}}/relacionamento/prestadores-servico/{prestadorId}/toggle-status
+Authorization: Bearer {{token}}
+
+### 6.11 - Reativar Prestador
+PATCH {{baseUrl}}/relacionamento/prestadores-servico/{prestadorId}/toggle-status
+Authorization: Bearer {{token}}
+
+### 6.12 - Atualizar Dados da Empresa do Prestador
+PATCH {{baseUrl}}/relacionamento/prestadores-servico/{prestadorId}/empresa
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "telefone": "(11) 3456-7899",
+  "celular": "(11) 98765-4322",
+  "email": "novo@email.com.br"
+}
+
+
+### ========================================
+### EXEMPLO COMPLETO 7: Cenários de Busca Avançada
+### ========================================
+
+### 7.1 - Buscar Médicos Cardiologistas em SP com Valor até R$ 300
+GET {{baseUrl}}/relacionamento/prestadores-servico?tipoPrestador=medico&especialidade=Cardiologia&ufConselho=SP&valorConsultaMax=300
+Authorization: Bearer {{token}}
+
+### 7.2 - Buscar Fisioterapeutas que Atendem Final de Semana
+GET {{baseUrl}}/relacionamento/prestadores-servico?tipoPrestador=fisioterapeuta&dia=sabado
+Authorization: Bearer {{token}}
+
+### 7.3 - Buscar Psicólogos com Atendimento Online
+GET {{baseUrl}}/relacionamento/prestadores-servico/search?tipoPrestador=psicologo&q=online
+Authorization: Bearer {{token}}
+
+### 7.4 - Buscar Enfermeiros de Saúde Ocupacional
+GET {{baseUrl}}/relacionamento/prestadores-servico?tipoPrestador=enfermeiro&especialidade=Trabalho
+Authorization: Bearer {{token}}
+
+### 7.5 - Buscar Nutricionistas com Valor Hora até R$ 150
+GET {{baseUrl}}/relacionamento/prestadores-servico?tipoPrestador=nutricionista&valorHoraMax=150
+Authorization: Bearer {{token}}
+
+### 7.6 - Buscar Prestadores com Alto Percentual de Repasse (>70%)
+GET {{baseUrl}}/relacionamento/prestadores-servico?percentualRepasseMin=70
+Authorization: Bearer {{token}}
+
+### 7.7 - Buscar Prestadores na Cidade de São Paulo
+GET {{baseUrl}}/relacionamento/prestadores-servico?cidade=São Paulo&estado=SP
+Authorization: Bearer {{token}}
+
+### 7.8 - Buscar Prestadores Ordenados por Valor de Consulta
+GET {{baseUrl}}/relacionamento/prestadores-servico?orderBy=valorConsulta&order=ASC
+Authorization: Bearer {{token}}

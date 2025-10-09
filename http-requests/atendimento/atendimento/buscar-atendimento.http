@@ -1,0 +1,241 @@
+### Buscar Atendimento por ID
+GET {{baseUrl}}/atendimento/atendimento/123e4567-e89b-12d3-a456-426614174000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "123e4567-e89b-12d3-a456-426614174000",
+#   "numeroAtendimento": "ATD202510100001",
+#   "pacienteId": "uuid-paciente-001",
+#   "paciente": {
+#     "id": "uuid-paciente-001",
+#     "nome": "João da Silva",
+#     "cpf": "12345678901",
+#     "dataNascimento": "1985-05-15",
+#     "telefone": "11999998888"
+#   },
+#   "profissionalId": "uuid-profissional-001",
+#   "profissional": {
+#     "id": "uuid-profissional-001",
+#     "nome": "Dr. Carlos Alberto Souza",
+#     "especialidade": "Clínico Geral",
+#     "crm": "123456/SP"
+#   },
+#   "unidadeSaudeId": "uuid-unidade-001",
+#   "unidadeSaude": {
+#     "id": "uuid-unidade-001",
+#     "nome": "Clínica Vida e Saúde",
+#     "endereco": "Av. Paulista, 1000"
+#   },
+#   "tipoAtendimento": "consulta",
+#   "dataAtendimento": "2025-10-10T10:00:00Z",
+#   "statusAtendimento": "concluido",
+#   "motivoAtendimento": "Consulta de rotina - avaliação geral de saúde",
+#   "anamnese": "Paciente refere boa saúde geral. Sem queixas específicas. Procura consulta para check-up anual.",
+#   "examesFisico": "PA: 120/80mmHg, FC: 72bpm, FR: 16irpm, Tax: 36.5°C. Ausculta cardiopulmonar normal. Abdome sem alterações.",
+#   "hipoteseDiagnostica": "Paciente hígido",
+#   "conduta": "Manter acompanhamento anual. Orientado sobre hábitos de vida saudáveis.",
+#   "prescricao": "Não há prescrição medicamentosa.",
+#   "valorConsulta": 250.00,
+#   "valorExames": 0.00,
+#   "valorTotal": 250.00,
+#   "observacoes": "Paciente solicitou consulta de check-up anual",
+#   "createdAt": "2025-10-10T09:00:00Z",
+#   "updatedAt": "2025-10-10T11:00:00Z"
+# }
+
+###
+
+### Buscar Atendimento por Número
+GET {{baseUrl}}/atendimento/atendimento/numero/ATD202510100001
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "numeroAtendimento": "ATD202510100001",
+#   "paciente": {...},
+#   "profissional": {...},
+#   "dataAtendimento": "2025-10-10T10:00:00Z",
+#   ...
+# }
+
+###
+
+### Buscar Atendimento - Detalhes Completos
+GET {{baseUrl}}/atendimento/atendimento/123e4567-e89b-12d3-a456-426614174000?includeDetails=true
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "123e4567-e89b-12d3-a456-426614174000",
+#   "numeroAtendimento": "ATD202510100001",
+#   "paciente": {
+#     "id": "uuid-paciente-001",
+#     "nome": "João da Silva",
+#     "cpf": "12345678901",
+#     "dataNascimento": "1985-05-15",
+#     "telefone": "11999998888",
+#     "email": "joao.silva@email.com",
+#     "endereco": {...},
+#     "historicoAtendimentos": [...]
+#   },
+#   "profissional": {
+#     "id": "uuid-profissional-001",
+#     "nome": "Dr. Carlos Alberto Souza",
+#     "especialidade": "Clínico Geral",
+#     "crm": "123456/SP",
+#     "conselhoRegional": "CRM-SP",
+#     "telefone": "1133334444"
+#   },
+#   "unidadeSaude": {...},
+#   "convenio": null,
+#   "examesRealizados": [],
+#   "medicamentosPrescritos": [],
+#   "procedimentosRealizados": [],
+#   ...
+# }
+
+###
+
+### Buscar Último Atendimento do Paciente
+GET {{baseUrl}}/atendimento/atendimento/paciente/uuid-paciente-001/ultimo
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "numeroAtendimento": "ATD202510170001",
+#   "dataAtendimento": "2025-10-17T10:00:00Z",
+#   "tipoAtendimento": "retorno",
+#   "statusAtendimento": "agendado",
+#   "profissional": {...}
+# }
+
+###
+
+### Buscar Próximo Atendimento do Paciente
+GET {{baseUrl}}/atendimento/atendimento/paciente/uuid-paciente-001/proximo
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "numeroAtendimento": "ATD202510200001",
+#   "dataAtendimento": "2025-10-20T14:00:00Z",
+#   "tipoAtendimento": "consulta",
+#   "statusAtendimento": "agendado",
+#   "profissional": {
+#     "nome": "Dr. Carlos Alberto Souza",
+#     "especialidade": "Clínico Geral"
+#   },
+#   "unidadeSaude": {
+#     "nome": "Clínica Vida e Saúde",
+#     "endereco": "Av. Paulista, 1000"
+#   }
+# }
+
+###
+
+### Buscar Atendimentos do Paciente por Tipo
+GET {{baseUrl}}/atendimento/atendimento/paciente/uuid-paciente-001?tipoAtendimento=consulta
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [
+#     {
+#       "tipoAtendimento": "consulta",
+#       ...
+#     }
+#   ],
+#   "total": 5
+# }
+
+###
+
+### Buscar Atendimentos do Paciente por Profissional
+GET {{baseUrl}}/atendimento/atendimento/paciente/uuid-paciente-001?profissionalId=uuid-profissional-001
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar Atendimentos do Paciente por Período
+GET {{baseUrl}}/atendimento/atendimento/paciente/uuid-paciente-001?dataInicio=2025-01-01&dataFim=2025-12-31
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar Atendimentos por CPF do Paciente
+GET {{baseUrl}}/atendimento/atendimento/paciente/cpf/12345678901
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [
+#     {
+#       "numeroAtendimento": "ATD202510100001",
+#       "paciente": {
+#         "nome": "João da Silva",
+#         "cpf": "12345678901"
+#       },
+#       ...
+#     }
+#   ],
+#   "total": 8
+# }
+
+###
+
+### Validar Disponibilidade de Horário
+GET {{baseUrl}}/atendimento/atendimento/disponibilidade?profissionalId=uuid-profissional-001&dataHora=2025-10-10T10:00:00Z
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "disponivel": false,
+#   "motivo": "Profissional já possui atendimento agendado para este horário",
+#   "atendimentoConflitante": {
+#     "numeroAtendimento": "ATD202510100001",
+#     "dataAtendimento": "2025-10-10T10:00:00Z"
+#   }
+# }
+
+###
+
+### Obter Resumo Financeiro do Atendimento
+GET {{baseUrl}}/atendimento/atendimento/123e4567-e89b-12d3-a456-426614174000/financeiro
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "numeroAtendimento": "ATD202510100001",
+#   "valorConsulta": 250.00,
+#   "valorExames": 0.00,
+#   "valorProcedimentos": 0.00,
+#   "valorMedicamentos": 0.00,
+#   "valorTotal": 250.00,
+#   "valorPago": 250.00,
+#   "valorPendente": 0.00,
+#   "formaPagamento": "dinheiro",
+#   "statusPagamento": "pago",
+#   "convenio": null,
+#   "coparticipacao": 0.00
+# }
+
+###
+
+### Exportar Prontuário do Atendimento (PDF)
+GET {{baseUrl}}/atendimento/atendimento/123e4567-e89b-12d3-a456-426614174000/prontuario
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# Content-Type: application/pdf
+# (PDF do prontuário médico)

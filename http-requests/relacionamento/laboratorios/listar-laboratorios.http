@@ -1,0 +1,160 @@
+### Listar Todos os Laboratórios
+GET {{baseUrl}}/relacionamento/laboratorios
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [
+#     {
+#       "id": "uuid",
+#       "codigoLaboratorio": "LAB-SL-001",
+#       "responsavelTecnico": "Dr. João Silva",
+#       "tipoIntegracao": "api",
+#       "empresa": {
+#         "cnpj": "12345678000190",
+#         "razaoSocial": "Laboratório São Lucas LTDA",
+#         "nomeFantasia": "Lab São Lucas"
+#       },
+#       "ativo": true,
+#       ...
+#     }
+#   ],
+#   "meta": {
+#     "total": 10,
+#     "page": 1,
+#     "limit": 10
+#   }
+# }
+
+
+### Listar Apenas Laboratórios Ativos
+GET {{baseUrl}}/relacionamento/laboratorios/ativos
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... array de laboratórios ativos ... ]
+
+
+### Listar com Paginação
+GET {{baseUrl}}/relacionamento/laboratorios?page=1&limit=5
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [ ... ],
+#   "meta": {
+#     "total": 50,
+#     "page": 1,
+#     "limit": 5,
+#     "totalPages": 10
+#   }
+# }
+
+
+### Filtrar por Tipo de Integração - API
+GET {{baseUrl}}/relacionamento/laboratorios/integracao/api
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... laboratórios com integração API ... ]
+
+
+### Filtrar por Tipo de Integração - Manual
+GET {{baseUrl}}/relacionamento/laboratorios/integracao/manual
+Authorization: Bearer {{token}}
+
+
+### Filtrar por Tipo de Integração - WebService
+GET {{baseUrl}}/relacionamento/laboratorios/integracao/webservice
+Authorization: Bearer {{token}}
+
+
+### Filtrar por Tipo de Integração - FTP
+GET {{baseUrl}}/relacionamento/laboratorios/integracao/ftp
+Authorization: Bearer {{token}}
+
+
+### Filtrar por Tipo de Integração - Email
+GET {{baseUrl}}/relacionamento/laboratorios/integracao/email
+Authorization: Bearer {{token}}
+
+
+### Buscar Laboratórios que Aceitam Urgência
+GET {{baseUrl}}/relacionamento/laboratorios/aceita-urgencia
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... laboratórios que aceitam urgência ... ]
+
+
+### Buscar Laboratórios com Resultado Automático
+GET {{baseUrl}}/relacionamento/laboratorios/resultado-automatico
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... laboratórios com envio automático de resultados ... ]
+
+
+### Buscar por Termo (razão social, nome fantasia ou código)
+GET {{baseUrl}}/relacionamento/laboratorios/search?q=São Lucas
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... laboratórios que contenham "São Lucas" no nome ou código ... ]
+
+
+### Obter Estatísticas de Laboratórios
+GET {{baseUrl}}/relacionamento/laboratorios/estatisticas
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "total": 25,
+#   "ativos": 20,
+#   "inativos": 5,
+#   "porTipoIntegracao": {
+#     "api": 10,
+#     "webservice": 5,
+#     "manual": 6,
+#     "ftp": 3,
+#     "email": 1
+#   },
+#   "aceitamUrgencia": 15,
+#   "resultadoAutomatico": 12
+# }
+
+
+### Listar Ordenado por Razão Social
+GET {{baseUrl}}/relacionamento/laboratorios?orderBy=razaoSocial&order=ASC
+Authorization: Bearer {{token}}
+
+
+### Listar Ordenado por Código
+GET {{baseUrl}}/relacionamento/laboratorios?orderBy=codigoLaboratorio&order=DESC
+Authorization: Bearer {{token}}
+
+
+### Filtrar por Estado
+GET {{baseUrl}}/relacionamento/laboratorios?estado=SP
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... laboratórios do estado de São Paulo ... ]
+
+
+### Filtrar por Cidade
+GET {{baseUrl}}/relacionamento/laboratorios?cidade=São Paulo
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... laboratórios da cidade de São Paulo ... ]

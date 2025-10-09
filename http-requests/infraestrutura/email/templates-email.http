@@ -1,0 +1,231 @@
+### Listar Todos os Templates
+GET {{baseUrl}}/infraestrutura/email/templates
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [
+#     {
+#       "id": "uuid-1",
+#       "nome": "boas-vindas",
+#       "assunto": "Bem-vindo ao Laboratório",
+#       "categoria": "cadastro",
+#       "ativo": true
+#     },
+#     ...
+#   ]
+# }
+
+###
+
+### Listar Templates por Categoria
+GET {{baseUrl}}/infraestrutura/email/templates?categoria=resultado
+Authorization: Bearer {{token}}
+
+###
+
+### Listar Templates Ativos
+GET {{baseUrl}}/infraestrutura/email/templates?ativo=true
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar Template por ID
+GET {{baseUrl}}/infraestrutura/email/templates/uuid-template-123
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": {
+#     "id": "uuid-template-123",
+#     "nome": "resultado-exame",
+#     "assunto": "Resultado do seu exame: {{tipoExame}}",
+#     "corpo": "<h1>Olá {{nome}},</h1><p>Seu resultado está disponível...</p>",
+#     "categoria": "resultado",
+#     "variaveis": ["nome", "tipoExame", "dataExame", "linkResultado"],
+#     "ativo": true
+#   }
+# }
+
+###
+
+### Buscar Template por Nome
+GET {{baseUrl}}/infraestrutura/email/templates?nome=confirmacao-consulta
+Authorization: Bearer {{token}}
+
+###
+
+### Criar Template de Boas-Vindas
+POST {{baseUrl}}/infraestrutura/email/templates
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "boas-vindas",
+  "assunto": "Bem-vindo ao Laboratório {{nomeLaboratorio}}",
+  "corpo": "<h1>Olá {{nome}}!</h1><p>Seja bem-vindo ao nosso laboratório.</p><p>Seu cadastro foi realizado com sucesso em {{data}}.</p><p>Atenciosamente,<br>Equipe {{nomeLaboratorio}}</p>",
+  "categoria": "cadastro",
+  "variaveis": ["nome", "nomeLaboratorio", "data"],
+  "ativo": true
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "message": "Template criado com sucesso",
+#   "data": {
+#     "id": "uuid-gerado",
+#     "nome": "boas-vindas",
+#     "categoria": "cadastro",
+#     "ativo": true
+#   }
+# }
+
+###
+
+### Criar Template de Resultado de Exame
+POST {{baseUrl}}/infraestrutura/email/templates
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "resultado-exame",
+  "assunto": "Resultado do seu exame: {{tipoExame}}",
+  "corpo": "<h1>Olá {{nome}},</h1><p>O resultado do seu exame <strong>{{tipoExame}}</strong> realizado em {{dataExame}} já está disponível.</p><p>Acesse o link abaixo para visualizar:</p><p><a href='{{linkResultado}}'>Ver Resultado</a></p><p>Em caso de dúvidas, entre em contato conosco.</p><p>Atenciosamente,<br>Laboratório</p>",
+  "categoria": "resultado",
+  "variaveis": ["nome", "tipoExame", "dataExame", "linkResultado"],
+  "ativo": true
+}
+
+###
+
+### Criar Template de Confirmação de Consulta
+POST {{baseUrl}}/infraestrutura/email/templates
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "confirmacao-consulta",
+  "assunto": "Confirmação de Consulta - {{data}} às {{hora}}",
+  "corpo": "<h1>Consulta Confirmada</h1><p>Olá {{nome}},</p><p>Sua consulta está confirmada para:</p><ul><li><strong>Data:</strong> {{data}}</li><li><strong>Horário:</strong> {{hora}}</li><li><strong>Profissional:</strong> {{profissional}}</li><li><strong>Local:</strong> {{local}}</li></ul><p>Por favor, chegue com 15 minutos de antecedência.</p><p>Atenciosamente,<br>Equipe</p>",
+  "categoria": "agendamento",
+  "variaveis": ["nome", "data", "hora", "profissional", "local"],
+  "ativo": true
+}
+
+###
+
+### Criar Template de Lembrete
+POST {{baseUrl}}/infraestrutura/email/templates
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "lembrete-consulta",
+  "assunto": "Lembrete: Consulta amanhã às {{hora}}",
+  "corpo": "<h1>Lembrete de Consulta</h1><p>Olá {{nome}},</p><p>Este é um lembrete da sua consulta agendada para <strong>amanhã</strong>:</p><ul><li><strong>Data:</strong> {{data}}</li><li><strong>Horário:</strong> {{hora}}</li><li><strong>Profissional:</strong> {{profissional}}</li></ul><p>Não esqueça de trazer seus documentos e exames anteriores.</p><p>Atenciosamente,<br>Equipe</p>",
+  "categoria": "lembrete",
+  "variaveis": ["nome", "data", "hora", "profissional"],
+  "ativo": true
+}
+
+###
+
+### Criar Template de Notificação
+POST {{baseUrl}}/infraestrutura/email/templates
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "notificacao-resultado-urgente",
+  "assunto": "URGENTE: Resultado de Exame Disponível",
+  "corpo": "<h1 style='color: red;'>RESULTADO URGENTE</h1><p>Olá {{nome}},</p><p>O resultado do seu exame <strong>{{tipoExame}}</strong> está disponível e requer atenção.</p><p>Por favor, entre em contato com nosso laboratório imediatamente:</p><ul><li><strong>Telefone:</strong> {{telefone}}</li><li><strong>Email:</strong> {{email}}</li></ul><p>Atenciosamente,<br>Equipe Médica</p>",
+  "categoria": "notificacao",
+  "variaveis": ["nome", "tipoExame", "telefone", "email"],
+  "ativo": true
+}
+
+###
+
+### Atualizar Template
+PATCH {{baseUrl}}/infraestrutura/email/templates/uuid-template-123
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "assunto": "Novo assunto atualizado: {{tipoExame}}",
+  "corpo": "<h1>Corpo atualizado</h1><p>Novo conteúdo...</p>",
+  "ativo": true
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Template atualizado com sucesso",
+#   "data": {
+#     "id": "uuid-template-123",
+#     "nome": "resultado-exame",
+#     "assunto": "Novo assunto atualizado: {{tipoExame}}",
+#     "atualizado_em": "2024-10-09T10:30:00Z"
+#   }
+# }
+
+###
+
+### Desativar Template
+PATCH {{baseUrl}}/infraestrutura/email/templates/uuid-template-123
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "ativo": false
+}
+
+###
+
+### Ativar Template
+PATCH {{baseUrl}}/infraestrutura/email/templates/uuid-template-123
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "ativo": true
+}
+
+###
+
+### Atualizar Corpo do Template
+PATCH {{baseUrl}}/infraestrutura/email/templates/uuid-template-123
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "corpo": "<html><body><h1>Olá {{nome}}</h1><p>Este é o novo corpo do email com formatação HTML rica.</p><div style='background-color: #f0f0f0; padding: 10px;'><p>Informações importantes aqui.</p></div></body></html>"
+}
+
+###
+
+### Adicionar Variáveis ao Template
+PATCH {{baseUrl}}/infraestrutura/email/templates/uuid-template-123
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "variaveis": ["nome", "tipoExame", "dataExame", "linkResultado", "nomeMedico", "telefoneContato"]
+}
+
+###
+
+### Deletar Template
+DELETE {{baseUrl}}/infraestrutura/email/templates/uuid-template-123
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Template removido com sucesso"
+# }
+
+###

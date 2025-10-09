@@ -1,0 +1,455 @@
+### Atualizar Informações Básicas da Plataforma
+# Substitua {id} pelo UUID da plataforma
+PATCH {{baseUrl}}/relacionamento/telemedicina/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "observacoes": "Plataforma certificada pela CFM. Atualização de certificação em 2025.",
+  "requisitosTecnicos": "Navegador atualizado (Chrome 90+, Firefox 88+), câmera HD, microfone, 10Mbps"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "observacoes": "Plataforma certificada pela CFM. Atualização de certificação em 2025.",
+#   "requisitosTecnicos": "Navegador atualizado (Chrome 90+, Firefox 88+), câmera HD, microfone, 10Mbps",
+#   ...
+# }
+
+
+### Atualizar Configurações de Integração - API
+PATCH {{baseUrl}}/relacionamento/telemedicina/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoIntegracao": "api",
+  "urlIntegracao": "https://api.telemedbrasil.com.br/v2",
+  "tokenIntegracao": "novo-token-api-2025",
+  "configuracaoAdicional": "{\"api_version\": \"v2\", \"timeout\": 45, \"retries\": 5}"
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... plataforma atualizada ... }
+
+
+### Atualizar Configurações de Integração - FHIR
+PATCH {{baseUrl}}/relacionamento/telemedicina/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoIntegracao": "fhir",
+  "urlIntegracao": "https://fhir.saudedigital.com.br/r5",
+  "usuarioIntegracao": "erplab_fhir_v5",
+  "senhaIntegracao": "nova-senha-fhir-2025",
+  "configuracaoAdicional": "{\"version\": \"R5\", \"resources\": [\"Patient\", \"Observation\", \"DiagnosticReport\", \"Medication\"]}"
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... plataforma atualizada ... }
+
+
+### Atualizar URL da Plataforma
+PATCH {{baseUrl}}/relacionamento/telemedicina/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "urlPlataforma": "https://nova-plataforma.telemedbrasil.com.br",
+  "versaoSistema": "4.0.0"
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... plataforma atualizada ... }
+
+
+### Atualizar Serviços Oferecidos
+PATCH {{baseUrl}}/relacionamento/telemedicina/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "teleconsulta": true,
+  "telediagnostico": true,
+  "telemonitoramento": true,
+  "telecirurgia": true
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... plataforma atualizada ... }
+
+
+### Habilitar/Desabilitar Serviço Específico
+PATCH {{baseUrl}}/relacionamento/telemedicina/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "telecirurgia": true
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... plataforma com telecirurgia habilitada ... }
+
+
+### Atualizar Especialidades Atendidas
+PATCH {{baseUrl}}/relacionamento/telemedicina/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "especialidadesAtendidas": [
+    "Clinica Geral",
+    "Pediatria",
+    "Cardiologia",
+    "Dermatologia",
+    "Ginecologia",
+    "Ortopedia"
+  ]
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... plataforma com especialidades atualizadas ... }
+
+
+### Atualizar Tipos de Consulta
+PATCH {{baseUrl}}/relacionamento/telemedicina/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tiposConsulta": [
+    "Consulta Inicial",
+    "Retorno",
+    "Pronto Atendimento",
+    "Receita Digital",
+    "Atestado Médico"
+  ]
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... plataforma com tipos de consulta atualizados ... }
+
+
+### Atualizar Tempo de Consulta Padrão
+PATCH {{baseUrl}}/relacionamento/telemedicina/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tempoConsultaPadrao": 45
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... plataforma com tempo de consulta atualizado ... }
+
+
+### Habilitar Agendamento e Cancelamento Online
+PATCH {{baseUrl}}/relacionamento/telemedicina/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "permiteAgendamentoOnline": true,
+  "permiteCancelamentoOnline": true,
+  "antecedenciaMinimaAgendamento": 2,
+  "antecedenciaMinimaCancelamento": 1
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... plataforma atualizada ... }
+
+
+### Desabilitar Cancelamento Online
+PATCH {{baseUrl}}/relacionamento/telemedicina/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "permiteCancelamentoOnline": false
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... plataforma com cancelamento online desabilitado ... }
+
+
+### Atualizar Configurações de Segurança
+PATCH {{baseUrl}}/relacionamento/telemedicina/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "certificadoDigital": "A3",
+  "criptografiaEndToEnd": true,
+  "protocoloSeguranca": "TLS 1.3 + E2EE"
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... plataforma com segurança atualizada ... }
+
+
+### Atualizar Recursos de Mídia
+PATCH {{baseUrl}}/relacionamento/telemedicina/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "suporteGravacao": true,
+  "suporteStreaming": true
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... plataforma com recursos de mídia atualizados ... }
+
+
+### Atualizar Valores e Repasses
+PATCH {{baseUrl}}/relacionamento/telemedicina/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "valorConsultaParticular": 180.00,
+  "percentualRepasse": 75.00,
+  "taxaPlataforma": 12.00
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... plataforma com valores atualizados ... }
+
+
+### Atualizar Apenas Valor da Consulta
+PATCH {{baseUrl}}/relacionamento/telemedicina/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "valorConsultaParticular": 200.00
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... plataforma com valor atualizado ... }
+
+
+### Atualizar Percentual de Repasse
+PATCH {{baseUrl}}/relacionamento/telemedicina/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "percentualRepasse": 80.00
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... plataforma com percentual de repasse atualizado ... }
+
+
+### Atualizar Status de Integração
+PATCH {{baseUrl}}/relacionamento/telemedicina/{id}/status-integracao
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "statusIntegracao": "manutencao"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "statusIntegracao": "manutencao",
+#   "message": "Status de integração atualizado com sucesso"
+# }
+
+
+### Reativar Integração
+PATCH {{baseUrl}}/relacionamento/telemedicina/{id}/status-integracao
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "statusIntegracao": "ativo"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "statusIntegracao": "ativo",
+#   "message": "Integração reativada com sucesso"
+# }
+
+
+### Desativar Integração
+PATCH {{baseUrl}}/relacionamento/telemedicina/{id}/status-integracao
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "statusIntegracao": "inativo"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "statusIntegracao": "inativo",
+#   "message": "Integração desativada com sucesso"
+# }
+
+
+### Atualizar Dados da Empresa (através da plataforma)
+PATCH {{baseUrl}}/relacionamento/telemedicina/{id}/empresa
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nomeFantasia": "TeleMed Brasil - Nova Unidade",
+  "telefone": "(11) 3456-7899",
+  "celular": "(11) 98765-4322",
+  "email": "contato.novo@telemedbrasil.com.br",
+  "website": "https://novo.telemedbrasil.com.br"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Dados da empresa atualizados com sucesso",
+#   "empresa": { ... }
+# }
+
+
+### Alternar Status da Plataforma (Ativar/Desativar)
+PATCH {{baseUrl}}/relacionamento/telemedicina/{id}/toggle-status
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "ativo": false,
+#   "message": "Plataforma desativada com sucesso"
+# }
+
+
+### Erro - Validação: Percentual de Repasse Inválido
+PATCH {{baseUrl}}/relacionamento/telemedicina/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "percentualRepasse": 150.00
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": ["percentualRepasse must not be greater than 100"],
+#   "error": "Bad Request"
+# }
+
+
+### Erro - Validação: Valor de Consulta Negativo
+PATCH {{baseUrl}}/relacionamento/telemedicina/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "valorConsultaParticular": -50.00
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": ["valorConsultaParticular must not be less than 0"],
+#   "error": "Bad Request"
+# }
+
+
+### Erro - Validação: Tempo de Consulta Inválido
+PATCH {{baseUrl}}/relacionamento/telemedicina/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tempoConsultaPadrao": 0
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": ["tempoConsultaPadrao must be greater than 0"],
+#   "error": "Bad Request"
+# }
+
+
+### Erro - Plataforma Não Encontrada
+PATCH {{baseUrl}}/relacionamento/telemedicina/00000000-0000-0000-0000-000000000000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "observacoes": "Teste"
+}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Plataforma de telemedicina não encontrada",
+#   "error": "Not Found"
+# }
+
+
+### Atualização Completa de Configuração
+PATCH {{baseUrl}}/relacionamento/telemedicina/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoIntegracao": "api",
+  "urlIntegracao": "https://api.telemedbrasil.com.br/v3",
+  "tokenIntegracao": "new-secure-token-2025",
+  "statusIntegracao": "ativo",
+  "urlPlataforma": "https://plataforma-v3.telemedbrasil.com.br",
+  "versaoSistema": "5.0.0",
+  "especialidadesAtendidas": ["Clinica Geral", "Cardiologia", "Psiquiatria"],
+  "teleconsulta": true,
+  "telediagnostico": true,
+  "telemonitoramento": true,
+  "tempoConsultaPadrao": 30,
+  "permiteAgendamentoOnline": true,
+  "permiteCancelamentoOnline": true,
+  "certificadoDigital": "A3",
+  "suporteGravacao": true,
+  "suporteStreaming": true,
+  "criptografiaEndToEnd": true,
+  "protocoloSeguranca": "TLS 1.3",
+  "valorConsultaParticular": 180.00,
+  "percentualRepasse": 72.00,
+  "taxaPlataforma": 15.00
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... plataforma completamente atualizada ... }

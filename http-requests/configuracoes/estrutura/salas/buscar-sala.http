@@ -1,0 +1,249 @@
+### Buscar sala por ID
+GET {{baseUrl}}/configuracoes/estrutura/salas/550e8400-e29b-41d4-a716-446655440000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "550e8400-e29b-41d4-a716-446655440000",
+#   "codigoSala": "SALA-COL-001",
+#   "nome": "Sala de Coleta 1",
+#   "tipo": "coleta",
+#   "setorId": "uuid-setor",
+#   "setor": {
+#     "id": "uuid-setor",
+#     "nome": "Setor de Coletas"
+#   },
+#   "andar": "1",
+#   "capacidade": 3,
+#   "area": 12.5,
+#   "status": "disponivel",
+#   "temArCondicionado": true,
+#   "temExaustor": false,
+#   "temPia": true,
+#   "temGeladeira": true,
+#   "temFreezer": false,
+#   "nivelBiosseguranca": "NB2",
+#   "equipamentos": [],
+#   "capacidadeAgendamento": 20,
+#   "horarioFuncionamento": {
+#     "segunda": { "abertura": "07:00", "fechamento": "17:00" },
+#     "terca": { "abertura": "07:00", "fechamento": "17:00" }
+#   },
+#   "observacoes": "Sala equipada...",
+#   "createdAt": "2025-10-09T10:00:00.000Z",
+#   "updatedAt": "2025-10-09T10:00:00.000Z"
+# }
+
+###
+
+### Buscar sala por codigo
+GET {{baseUrl}}/configuracoes/estrutura/salas/codigo/SALA-COL-001
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar sala por codigo - Atendimento
+GET {{baseUrl}}/configuracoes/estrutura/salas/codigo/SALA-ATD-101
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar sala por codigo - Laboratorio
+GET {{baseUrl}}/configuracoes/estrutura/salas/codigo/LAB-AC-201
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar sala por codigo - Exame
+GET {{baseUrl}}/configuracoes/estrutura/salas/codigo/SALA-EXA-102
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar sala por codigo - Almoxarifado
+GET {{baseUrl}}/configuracoes/estrutura/salas/codigo/ALM-001
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar sala por codigo - Expurgo
+GET {{baseUrl}}/configuracoes/estrutura/salas/codigo/EXP-001
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar sala por codigo - Esterilizacao
+GET {{baseUrl}}/configuracoes/estrutura/salas/codigo/EST-001
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar sala por codigo - Administrativa
+GET {{baseUrl}}/configuracoes/estrutura/salas/codigo/ADM-301
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar sala por andar - Salas do 1o andar
+GET {{baseUrl}}/configuracoes/estrutura/salas/andar/1
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar sala por andar - Salas do 2o andar
+GET {{baseUrl}}/configuracoes/estrutura/salas/andar/2
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar sala por andar - Salas do terreo
+GET {{baseUrl}}/configuracoes/estrutura/salas/andar/Terreo
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar sala por andar - Salas do subsolo
+GET {{baseUrl}}/configuracoes/estrutura/salas/andar/Subsolo
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar sala inexistente por ID (deve retornar 404)
+GET {{baseUrl}}/configuracoes/estrutura/salas/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Sala com ID 00000000-0000-0000-0000-000000000000 nao encontrada",
+#   "error": "Not Found"
+# }
+
+###
+
+### Buscar sala por codigo inexistente (deve retornar 404)
+GET {{baseUrl}}/configuracoes/estrutura/salas/codigo/CODIGO-INEXISTENTE
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Sala com codigo CODIGO-INEXISTENTE nao encontrada",
+#   "error": "Not Found"
+# }
+
+###
+
+### Obter equipamentos de uma sala
+GET {{baseUrl}}/configuracoes/estrutura/salas/550e8400-e29b-41d4-a716-446655440000/equipamentos
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid-equipamento",
+#     "codigoEquipamento": "EQ-001",
+#     "nome": "Centrifuga",
+#     "tipo": "centrifuga",
+#     "marca": "Eppendorf",
+#     "status": "operante"
+#   }
+# ]
+
+###
+
+### Verificar disponibilidade da sala
+GET {{baseUrl}}/configuracoes/estrutura/salas/550e8400-e29b-41d4-a716-446655440000/disponibilidade
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "salaId": "uuid",
+#   "disponivel": true,
+#   "status": "disponivel",
+#   "ocupacaoAtual": 0,
+#   "capacidadeTotal": 3,
+#   "percentualOcupacao": 0,
+#   "proximosAgendamentos": []
+# }
+
+###
+
+### Obter horario de funcionamento
+GET {{baseUrl}}/configuracoes/estrutura/salas/550e8400-e29b-41d4-a716-446655440000/horarios
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "salaId": "uuid",
+#   "nome": "Sala de Coleta 1",
+#   "horarioFuncionamento": {
+#     "segunda": { "abertura": "07:00", "fechamento": "17:00" },
+#     "terca": { "abertura": "07:00", "fechamento": "17:00" },
+#     "quarta": { "abertura": "07:00", "fechamento": "17:00" },
+#     "quinta": { "abertura": "07:00", "fechamento": "17:00" },
+#     "sexta": { "abertura": "07:00", "fechamento": "17:00" },
+#     "sabado": { "abertura": "08:00", "fechamento": "12:00" },
+#     "domingo": null
+#   }
+# }
+
+###
+
+### Verificar se sala esta aberta agora
+GET {{baseUrl}}/configuracoes/estrutura/salas/550e8400-e29b-41d4-a716-446655440000/aberta
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "salaId": "uuid",
+#   "aberta": true,
+#   "horarioAtual": "14:30",
+#   "diaSemana": "segunda",
+#   "horarioAbertura": "07:00",
+#   "horarioFechamento": "17:00"
+# }
+
+###
+
+### Obter capacidade de agendamento
+GET {{baseUrl}}/configuracoes/estrutura/salas/550e8400-e29b-41d4-a716-446655440000/capacidade-agendamento
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "salaId": "uuid",
+#   "nome": "Sala de Coleta 1",
+#   "capacidadeAgendamento": 20,
+#   "agendamentosHoje": 8,
+#   "vagasDisponiveis": 12,
+#   "percentualOcupacao": 40.0
+# }
+
+###
+
+### Listar salas do mesmo tipo
+GET {{baseUrl}}/configuracoes/estrutura/salas/550e8400-e29b-41d4-a716-446655440000/mesmo-tipo
+Authorization: Bearer {{token}}
+
+###
+
+### Listar salas do mesmo setor
+GET {{baseUrl}}/configuracoes/estrutura/salas/550e8400-e29b-41d4-a716-446655440000/mesmo-setor
+Authorization: Bearer {{token}}
+
+###
+
+### Listar salas do mesmo andar
+GET {{baseUrl}}/configuracoes/estrutura/salas/550e8400-e29b-41d4-a716-446655440000/mesmo-andar
+Authorization: Bearer {{token}}
+
+###

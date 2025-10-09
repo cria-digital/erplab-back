@@ -1,0 +1,340 @@
+### Atualizar Informações Básicas do Prestador
+# Substitua {id} pelo UUID do prestador
+PATCH {{baseUrl}}/relacionamento/prestadores-servico/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "especialidade": "Cardiologia Intervencionista",
+  "numeroConselho": "123456",
+  "observacoes": "Especialista em cardiologia intervencionista. Atende emergências 24h."
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "especialidade": "Cardiologia Intervencionista",
+#   "numeroConselho": "123456",
+#   "observacoes": "Especialista em cardiologia intervencionista. Atende emergências 24h.",
+#   ...
+# }
+
+
+### Atualizar Valores de Consulta e Hora
+PATCH {{baseUrl}}/relacionamento/prestadores-servico/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "valorHora": 320.00,
+  "valorConsulta": 280.00,
+  "percentualRepasse": 72.00
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... prestador atualizado ... }
+
+
+### Atualizar Dias de Atendimento
+PATCH {{baseUrl}}/relacionamento/prestadores-servico/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "diasAtendimento": ["segunda", "terca", "quarta", "quinta", "sexta"]
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... prestador atualizado com novos dias de atendimento ... }
+
+
+### Adicionar Dias de Atendimento (Final de Semana)
+PATCH {{baseUrl}}/relacionamento/prestadores-servico/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "diasAtendimento": ["segunda", "terca", "quinta", "sabado"]
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... prestador atualizado ... }
+
+
+### Atualizar Tipo de Prestador e Especialidade
+PATCH {{baseUrl}}/relacionamento/prestadores-servico/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoPrestador": "medico",
+  "especialidade": "Clínica Médica"
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... prestador atualizado ... }
+
+
+### Atualizar Conselho Profissional
+PATCH {{baseUrl}}/relacionamento/prestadores-servico/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "numeroConselho": "654321",
+  "tipoConselho": "CRM",
+  "ufConselho": "RJ"
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... prestador atualizado ... }
+
+
+### Atualizar Percentual de Repasse
+PATCH {{baseUrl}}/relacionamento/prestadores-servico/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "percentualRepasse": 75.00
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... prestador atualizado ... }
+
+
+### Remover Valor de Consulta (tornar opcional)
+PATCH {{baseUrl}}/relacionamento/prestadores-servico/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "valorConsulta": null
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... prestador atualizado sem valor de consulta ... }
+
+
+### Atualizar Observações
+PATCH {{baseUrl}}/relacionamento/prestadores-servico/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "observacoes": "Prestador credenciado desde 2020. Atende consultas presenciais e telemedicina. Disponível para emergências."
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... prestador atualizado ... }
+
+
+### Atualizar Dados da Empresa (através do prestador)
+PATCH {{baseUrl}}/relacionamento/prestadores-servico/{id}/empresa
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nomeFantasia": "Dr. João Silva - Cardiologista",
+  "telefone": "(11) 3456-7899",
+  "celular": "(11) 98765-4322",
+  "email": "contato@drjoaosilva.med.br",
+  "website": "https://www.drjoaosilva.med.br"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Dados da empresa atualizados com sucesso",
+#   "empresa": { ... }
+# }
+
+
+### Atualizar Endereço da Empresa
+PATCH {{baseUrl}}/relacionamento/prestadores-servico/{id}/empresa
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "cep": "01310-200",
+  "logradouro": "Av. Paulista",
+  "numero": "1578",
+  "complemento": "Sala 1505",
+  "bairro": "Bela Vista",
+  "cidade": "São Paulo",
+  "estado": "SP"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Dados da empresa atualizados com sucesso",
+#   "empresa": { ... }
+# }
+
+
+### Alternar Status do Prestador (Ativar/Desativar)
+PATCH {{baseUrl}}/relacionamento/prestadores-servico/{id}/toggle-status
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "ativo": false,
+#   "message": "Prestador desativado com sucesso"
+# }
+
+
+### Atualizar Múltiplos Campos
+PATCH {{baseUrl}}/relacionamento/prestadores-servico/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "especialidade": "Cardiologia e Clínica Médica",
+  "valorHora": 350.00,
+  "valorConsulta": 300.00,
+  "percentualRepasse": 73.00,
+  "diasAtendimento": ["segunda", "terca", "quarta", "quinta", "sexta", "sabado"],
+  "observacoes": "Médico especialista com atendimento presencial e online. Urgências 24h."
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... prestador atualizado com todos os campos ... }
+
+
+### Erro - Validação: Percentual de Repasse Inválido
+PATCH {{baseUrl}}/relacionamento/prestadores-servico/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "percentualRepasse": 150.00
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": ["percentualRepasse must not be greater than 100"],
+#   "error": "Bad Request"
+# }
+
+
+### Erro - Validação: Valor Hora Negativo
+PATCH {{baseUrl}}/relacionamento/prestadores-servico/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "valorHora": -50.00
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": ["valorHora must not be less than 0"],
+#   "error": "Bad Request"
+# }
+
+
+### Erro - Validação: Valor Consulta Negativo
+PATCH {{baseUrl}}/relacionamento/prestadores-servico/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "valorConsulta": -100.00
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": ["valorConsulta must not be less than 0"],
+#   "error": "Bad Request"
+# }
+
+
+### Erro - Validação: Tipo de Prestador Inválido
+PATCH {{baseUrl}}/relacionamento/prestadores-servico/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoPrestador": "invalido"
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": ["tipoPrestador must be one of: medico, enfermeiro, fisioterapeuta, psicologo, nutricionista, etc"],
+#   "error": "Bad Request"
+# }
+
+
+### Erro - Validação: Tipo de Conselho Inválido
+PATCH {{baseUrl}}/relacionamento/prestadores-servico/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoConselho": "INVALIDO"
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": ["tipoConselho must be one of: CRM, CRO, COREN, CREFITO, CRP, CRN, etc"],
+#   "error": "Bad Request"
+# }
+
+
+### Erro - Validação: Dias de Atendimento Inválidos
+PATCH {{baseUrl}}/relacionamento/prestadores-servico/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "diasAtendimento": ["segunda", "dia-invalido", "sexta"]
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": ["diasAtendimento must contain valid weekdays"],
+#   "error": "Bad Request"
+# }
+
+
+### Erro - Prestador Não Encontrado
+PATCH {{baseUrl}}/relacionamento/prestadores-servico/00000000-0000-0000-0000-000000000000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "especialidade": "Teste"
+}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Prestador de serviço não encontrado",
+#   "error": "Not Found"
+# }

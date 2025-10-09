@@ -1,0 +1,296 @@
+### Atualizar equipamento completo
+PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Analisador Hematologico BC-6800 Plus",
+  "modelo": "BC-6800 Plus",
+  "salaId": "{{salaId}}",
+  "status": "operante",
+  "ultimaManutencao": "2024-10-15",
+  "proximaManutencao": "2025-04-15",
+  "ultimaCalibracao": "2024-10-10",
+  "proximaCalibracao": "2025-04-10",
+  "observacoes": "Equipamento atualizado com novo software v3.5 - performance aprimorada",
+  "manuais": [
+    "https://storage.lab.com/manuais/bc6800-manual-pt-v3.pdf",
+    "https://storage.lab.com/manuais/bc6800-calibracao-v3.pdf",
+    "https://storage.lab.com/manuais/bc6800-software-v3.5.pdf"
+  ]
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "550e8400-e29b-41d4-a716-446655440000",
+#   "nome": "Analisador Hematologico BC-6800 Plus",
+#   "modelo": "BC-6800 Plus",
+#   "status": "operante",
+#   "updatedAt": "2025-10-09T15:30:00.000Z"
+# }
+
+###
+
+### Atualizar apenas status - Colocar em manutencao
+PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "status": "manutencao",
+  "observacoes": "Equipamento em manutencao corretiva - substituicao de bomba de reagentes. Previsao de retorno: 15/10/2025"
+}
+
+###
+
+### Atualizar status - Retornar de manutencao
+PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "status": "operante",
+  "ultimaManutencao": "2024-10-15",
+  "proximaManutencao": "2025-01-15",
+  "observacoes": "Manutencao corretiva concluida - bomba de reagentes substituida. Equipamento testado e aprovado"
+}
+
+###
+
+### Atualizar status - Colocar em calibracao
+PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "status": "calibracao",
+  "observacoes": "Equipamento em processo de calibracao anual - RBC-LAB Metrologia"
+}
+
+###
+
+### Atualizar status - Marcar como inoperante
+PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "status": "inoperante",
+  "observacoes": "Equipamento inoperante - defeito na placa mae. Aguardando orcamento para reparo"
+}
+
+###
+
+### Atualizar datas de manutencao
+PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "ultimaManutencao": "2024-10-20",
+  "proximaManutencao": "2025-04-20",
+  "observacoes": "Manutencao preventiva trimestral realizada"
+}
+
+###
+
+### Atualizar datas de calibracao
+PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "ultimaCalibracao": "2024-10-25",
+  "proximaCalibracao": "2025-04-25",
+  "observacoes": "Calibracao semestral realizada - Certificado CERT-2024-125 - Resultado: Conforme"
+}
+
+###
+
+### Atualizar setor e sala
+PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "setorId": "{{novoSetorId}}",
+  "salaId": "{{novaSalaId}}",
+  "observacoes": "Equipamento transferido para Setor de Hematologia - Sala 203"
+}
+
+###
+
+### Atualizar apenas observacoes
+PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "observacoes": "Observacao importante: Equipamento operando perfeitamente. Ultimo resultado de controle de qualidade: 99.8% de acuracia. Responsavel tecnico: Dr. Roberto Silva (CRBM 12345)"
+}
+
+###
+
+### Adicionar manual ao equipamento
+PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "manuais": [
+    "https://storage.lab.com/manuais/bc6800-manual-pt.pdf",
+    "https://storage.lab.com/manuais/bc6800-calibracao.pdf",
+    "https://storage.lab.com/manuais/bc6800-atualizacao-software.pdf",
+    "https://storage.lab.com/manuais/bc6800-troubleshooting.pdf"
+  ]
+}
+
+###
+
+### Atualizar fornecedor
+PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "fornecedorId": "{{novoFornecedorId}}",
+  "observacoes": "Fornecedor alterado para novo representante autorizado Mindray"
+}
+
+###
+
+### Remover sala (equipamento sem sala especifica)
+PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "salaId": null,
+  "observacoes": "Equipamento removido da sala - em transito para nova localizacao"
+}
+
+###
+
+### Atualizar marca e modelo (caso de troca de componentes)
+PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "modelo": "BC-6800 Elite",
+  "observacoes": "Modelo atualizado apos upgrade de hardware - agora versao Elite com modulo adicional"
+}
+
+###
+
+### Tentar atualizar codigo duplicado (deve dar erro)
+PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoEquipamento": "EQ-CF-001"
+}
+
+### Expected Response (se codigo ja existir)
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Ja existe um equipamento com o codigo EQ-CF-001",
+#   "error": "Bad Request"
+# }
+
+###
+
+### Tentar atualizar numero de serie duplicado (deve dar erro)
+PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "numeroSerie": "EP5810R-2024-005"
+}
+
+### Expected Response (se numero de serie ja existir)
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Ja existe um equipamento com o numero de serie EP5810R-2024-005",
+#   "error": "Bad Request"
+# }
+
+###
+
+### Tentar atualizar patrimonio duplicado (deve dar erro)
+PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "patrimonio": "PAT-2024-002"
+}
+
+### Expected Response (se patrimonio ja existir)
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Ja existe um equipamento com o patrimonio PAT-2024-002",
+#   "error": "Bad Request"
+# }
+
+###
+
+### Atualizar equipamento inexistente (deve retornar 404)
+PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/00000000-0000-0000-0000-000000000000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Teste"
+}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Equipamento com ID 00000000-0000-0000-0000-000000000000 nao encontrado",
+#   "error": "Not Found"
+# }
+
+###
+
+### Registrar nova manutencao
+POST {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000/manutencoes
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipo": "preventiva",
+  "data": "2024-10-20",
+  "descricao": "Manutencao preventiva trimestral - limpeza, lubrificacao e troca de filtros",
+  "realizadoPor": "Tecnico Jose Silva - Tech Lab Assistencia",
+  "custo": 1800.00,
+  "proximaManutencao": "2025-01-20",
+  "observacoes": "Todas as verificacoes OK. Equipamento operando normalmente"
+}
+
+###
+
+### Registrar nova calibracao
+POST {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000/calibracoes
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "data": "2024-10-25",
+  "certificado": "CERT-2024-125",
+  "laboratorio": "RBC-LAB Metrologia e Calibracao Ltda",
+  "realizadoPor": "Eng. Carlos Souza CREA-SP 123456",
+  "custo": 950.00,
+  "proximaCalibracao": "2025-04-25",
+  "resultado": "Conforme",
+  "observacoes": "Todos os parametros dentro das especificacoes. Certificado com rastreabilidade RBC"
+}
+
+###

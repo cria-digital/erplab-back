@@ -1,0 +1,242 @@
+### Listar todos os equipamentos
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid-1",
+#     "codigoEquipamento": "EQ-AH-001",
+#     "nome": "Analisador Hematologico BC-6800",
+#     "tipo": "analisador",
+#     "marca": "Mindray",
+#     "status": "operante",
+#     "setorId": "uuid-setor",
+#     "createdAt": "2025-10-09T10:00:00.000Z"
+#   }
+# ]
+
+###
+
+### Listar apenas equipamentos operantes
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos/status/operante
+Authorization: Bearer {{token}}
+
+###
+
+### Listar equipamentos em manutencao
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos/status/manutencao
+Authorization: Bearer {{token}}
+
+###
+
+### Listar equipamentos inoperantes
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos/status/inoperante
+Authorization: Bearer {{token}}
+
+###
+
+### Listar equipamentos em calibracao
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos/status/calibracao
+Authorization: Bearer {{token}}
+
+###
+
+### Listar por tipo - Analisadores
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos/tipo/analisador
+Authorization: Bearer {{token}}
+
+###
+
+### Listar por tipo - Centrifugas
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos/tipo/centrifuga
+Authorization: Bearer {{token}}
+
+###
+
+### Listar por tipo - Microscopios
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos/tipo/microscopio
+Authorization: Bearer {{token}}
+
+###
+
+### Listar por tipo - Autoclaves
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos/tipo/autoclave
+Authorization: Bearer {{token}}
+
+###
+
+### Listar por tipo - Balancas
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos/tipo/balanca
+Authorization: Bearer {{token}}
+
+###
+
+### Listar por tipo - Freezers
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos/tipo/freezer
+Authorization: Bearer {{token}}
+
+###
+
+### Listar por tipo - Estufas
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos/tipo/estufa
+Authorization: Bearer {{token}}
+
+###
+
+### Listar por tipo - Agitadores
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos/tipo/agitador
+Authorization: Bearer {{token}}
+
+###
+
+### Listar por setor
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos/setor/{{setorId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Listar por sala
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos/sala/{{salaId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Listar por marca - Mindray
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos/marca/Mindray
+Authorization: Bearer {{token}}
+
+###
+
+### Listar por marca - Olympus
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos/marca/Olympus
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar equipamentos por nome (search)
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos/search?q=analisador
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar equipamentos por modelo
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos/search?q=BC-6800
+Authorization: Bearer {{token}}
+
+###
+
+### Listar equipamentos com manutencao vencida
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos/manutencao/vencida
+Authorization: Bearer {{token}}
+
+###
+
+### Listar equipamentos com manutencao proxima (proximos 30 dias)
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos/manutencao/proxima
+Authorization: Bearer {{token}}
+
+###
+
+### Listar equipamentos com calibracao vencida
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos/calibracao/vencida
+Authorization: Bearer {{token}}
+
+###
+
+### Listar equipamentos com calibracao proxima (proximos 30 dias)
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos/calibracao/proxima
+Authorization: Bearer {{token}}
+
+###
+
+### Listar equipamentos adquiridos em periodo especifico
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos/aquisicao?inicio=2024-01-01&fim=2024-12-31
+Authorization: Bearer {{token}}
+
+###
+
+### Listar equipamentos por faixa de valor
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos/valor?min=10000&max=50000
+Authorization: Bearer {{token}}
+
+###
+
+### Listar equipamentos ativos
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos/ativos
+Authorization: Bearer {{token}}
+
+###
+
+### Obter estatisticas de equipamentos
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos/estatisticas
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "total": 50,
+#   "porStatus": {
+#     "operante": 42,
+#     "manutencao": 5,
+#     "inoperante": 2,
+#     "calibracao": 1
+#   },
+#   "porTipo": {
+#     "analisador": 12,
+#     "centrifuga": 8,
+#     "microscopio": 15,
+#     "autoclave": 4,
+#     "balanca": 6,
+#     "freezer": 3,
+#     "estufa": 2
+#   },
+#   "valorTotal": 1250000.00,
+#   "manutencaoVencida": 3,
+#   "calibracaoVencida": 2
+# }
+
+###
+
+### Listar com paginacao - Pagina 1
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos?page=1&limit=10
+Authorization: Bearer {{token}}
+
+###
+
+### Listar com paginacao - Pagina 2
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos?page=2&limit=10
+Authorization: Bearer {{token}}
+
+###
+
+### Listar ordenando por nome
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos?sort=nome&order=asc
+Authorization: Bearer {{token}}
+
+###
+
+### Listar ordenando por data de aquisicao (mais recentes primeiro)
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos?sort=dataAquisicao&order=desc
+Authorization: Bearer {{token}}
+
+###
+
+### Listar ordenando por valor (maior para menor)
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos?sort=valorAquisicao&order=desc
+Authorization: Bearer {{token}}
+
+###
+
+### Filtros combinados - Analisadores operantes com manutencao em dia
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos?tipo=analisador&status=operante&manutencaoEmDia=true
+Authorization: Bearer {{token}}
+
+###
+
+### Filtros combinados - Equipamentos de um setor especifico em manutencao
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos?setorId={{setorId}}&status=manutencao
+Authorization: Bearer {{token}}
+
+###
