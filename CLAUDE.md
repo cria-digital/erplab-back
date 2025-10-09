@@ -90,6 +90,7 @@
 O projeto teve suas rotas completamente reorganizadas por área funcional:
 
 #### Rotas Antes da Reorganização (Inconsistentes)
+
 ```
 ❌ /auth/login
 ❌ /usuarios
@@ -100,6 +101,7 @@ O projeto teve suas rotas completamente reorganizadas por área funcional:
 ```
 
 #### Rotas Após Reorganização (100% Consistentes)
+
 ```
 /api/v1/
 ├── auth/*                    (sem prefixo, decisão arquitetural)
@@ -119,6 +121,7 @@ O projeto teve suas rotas completamente reorganizadas por área funcional:
 **Decisão Arquitetural:** Auth, Usuarios e Perfil mantidos sem prefixo de área para evitar redundância (`/autenticacao/auth` seria redundante).
 
 **Arquivos Atualizados:**
+
 - ✅ 42 controllers
 - ✅ 81 arquivos `.http`
 - ✅ Build: 0 erros
@@ -170,12 +173,14 @@ src/modules/
 **Regras de profundidade de imports:**
 
 - **De módulo raiz para outra área**: `../../area/modulo/`
+
   ```typescript
   // De src/modules/cadastros/profissionais/profissionais.module.ts
   import { Agenda } from '../../atendimento/agendas/entities/agenda.entity';
   ```
 
 - **De subfolder/entities para outra área**: `../../../area/modulo/` ou `../../../../area/modulo/`
+
   ```typescript
   // De src/modules/cadastros/profissionais/entities/profissional.entity.ts
   import { Agenda } from '../../../atendimento/agendas/entities/agenda.entity';
@@ -482,6 +487,9 @@ curl -X GET http://localhost:10016/api/v1/usuarios \
 - ✅ **cnaes** - Classificação Nacional de Atividades Econômicas
 - ✅ **preferencias_usuario** - Preferências e configurações do usuário (notificações, interface, privacidade)
 - ✅ **historico_senhas** - Histórico de alterações de senha para validação de segurança
+- ✅ **matrizes_exames** - Templates de exames padronizados (Audiometria, Hemograma, etc)
+- ✅ **campos_matriz** - Campos/parâmetros das matrizes de exames
+- ✅ **amostras** - Tipos de amostras biológicas (sangue, urina, etc)
 
 ### Migrations Executadas
 
@@ -492,7 +500,9 @@ curl -X GET http://localhost:10016/api/v1/usuarios \
 5. `CreateExamesTables1757809611114`
 6. `AddPasswordResetFields1757842882650`
 7. `CreateCnaeTable1757970200000`
-8. `CreatePerfilTables1759884401000` ⏳ (Pendente de execução)
+8. `CreatePerfilTables1759884401000`
+9. `CreateMatrizesExamesTable1728404000000`
+10. `CreateAmostrasTable1728405000000`
 
 ## Estrutura de Entidades
 
@@ -1013,16 +1023,288 @@ Criados em `/http-requests/perfil/`:
 - **Auditoria**: Registra todas as operações em `auditoria_logs`
 - **Auth**: Usa decorador `@Request()` para obter usuário logado
 
+## Módulo de Matrizes de Exames (Criado Outubro 2025)
+
+### Funcionalidades Implementadas
+
+Módulo completo para gerenciamento de templates/matrizes para exames padronizados.
+
+#### Características Principais
+
+- **Templates Padronizados**: Matrizes para Audiometria, Hemograma, Densitometria, Eletrocardiograma, etc
+- **Campos Customizáveis**: 14 tipos de campos (texto, número, select, tabela, calculado, etc)
+- **Fórmulas de Cálculo**: Suporte a campos calculados automaticamente
+- **Layout Configurável**: Sistema de grid para posicionamento (linha, coluna, largura)
+- **Valores de Referência**: Min/max com destaque de valores alterados
+- **Versionamento**: Controle de versões das matrizes
+- **Duplicação**: Copiar matrizes para criar novas versões
+
+### Estrutura das Tabelas
+
+#### Tabela `matrizes_exames` (24 colunas)
+
+```sql
+matrizes_exames
+├── id, codigo_interno, nome, descricao
+├── tipo_matriz (ENUM: audiometria, densitometria, hemograma, etc) - 7 tipos
+├── status (ENUM: ativo, inativo, em_revisao) - 3 status
+├── versao, padrao_sistema
+├── tipo_exame_id (FK), exame_id (FK)
+├── tem_calculo_automatico, formulas_calculo (JSONB)
+├── layout_visualizacao (JSONB)
+├── template_impressao, requer_assinatura_digital
+├── permite_edicao_apos_liberacao, regras_validacao (JSONB)
+├── instrucoes_preenchimento, observacoes
+├── referencias_bibliograficas
+├── ativo, empresa_id
+└── criado_por, atualizado_por, criado_em, atualizado_em
+```
+
+#### Tabela `campos_matriz` (31 colunas)
+
+```sql
+campos_matriz
+├── id, matriz_id (FK), codigo_campo, label
+├── tipo_campo (ENUM: 14 tipos)
+│   └── texto, numero, decimal, boolean, data, hora
+│   └── select, radio, checkbox, textarea
+│   └── tabela, imagem, calculado, grupo
+├── placeholder, descricao, opcoes (JSONB)
+├── valor_padrao
+├── unidade_medida (ENUM: 13 unidades)
+│   └── dB, Hz, mmHg, mL, g/dL, mg/dL, mm, cm, kg, %, bpm, score, personalizada
+├── unidade_medida_customizada
+├── valor_referencia_min, valor_referencia_max, texto_referencia
+├── obrigatorio, valor_min, valor_max
+├── mascara, regex_validacao, mensagem_validacao
+├── formula_calculo, campos_dependentes (JSONB)
+├── ordem_exibicao, linha, coluna, largura
+├── visivel, somente_leitura, destacar_alterado
+├── grupo, secao, configuracoes (JSONB)
+├── ativo
+└── criado_em, atualizado_em
+```
+
+### Arquivos Criados
+
+- **Entidades**: `matriz-exame.entity.ts`, `campo-matriz.entity.ts`
+- **DTOs**: `create-matriz.dto.ts`, `update-matriz.dto.ts`, `create-campo-matriz.dto.ts`, `update-campo-matriz.dto.ts`
+- **Service**: `matrizes.service.ts` (15 métodos)
+- **Controller**: `matrizes.controller.ts` (13 endpoints)
+- **Módulo**: `matrizes.module.ts`
+- **Migration**: `1728404000000-CreateMatrizesExamesTable.ts`
+- **Documentação**: `MATRIZ_DESIGN.md`
+
+### API Endpoints (13 endpoints)
+
+#### Matrizes (`/api/v1/exames/matrizes`)
+
+- `GET /` - Listar com paginação e filtros
+- `GET /ativas` - Apenas ativas
+- `GET /padrao` - Matrizes padrão do sistema
+- `GET /stats` - Estatísticas
+- `GET /tipo/:tipo` - Por tipo
+- `GET /codigo/:codigo` - Por código
+- `GET /:id` - Por ID
+- `POST /` - Criar nova
+- `POST /:id/duplicar` - Duplicar matriz
+- `PATCH /:id` - Atualizar
+- `PATCH /:id/ativar` - Ativar
+- `PATCH /:id/desativar` - Desativar
+- `DELETE /:id` - Remover (soft delete)
+
+### Funcionalidades do Service
+
+- **CRUD Completo**: Com transações para integridade
+- **Busca Especializada**: Por tipo, código, padrão
+- **Duplicação**: Copia matriz completa com todos os campos
+- **Estatísticas**: Total, ativas, inativas, por tipo
+- **Validações**: Código único, proteção de matrizes padrão
+
+### Status de Implementação
+
+- ✅ Migration criada e executada
+- ✅ Entidades implementadas com 2 relacionamentos
+- ✅ DTOs criados com validações completas
+- ✅ Service completo com transações
+- ✅ Controller com 13 endpoints REST
+- ✅ Módulo registrado no AppModule
+- ✅ Build 100% sem erros
+- ✅ Lint 100% sem erros
+- ✅ Documentação completa
+- ✅ Total: 9 arquivos, 1932 linhas de código
+
+## Módulo de Amostras (Criado Outubro 2025)
+
+### Funcionalidades Implementadas
+
+Módulo completo para gerenciamento de tipos de amostras biológicas utilizadas em exames laboratoriais.
+
+#### Características Principais
+
+- **12 Tipos de Amostras**: Sangue, Soro, Plasma, Urina, Fezes, Swab, Líquor, Escarro, Tecido, Saliva, Secreção, Outros
+- **Instruções de Coleta**: Recipiente, materiais, volumes, técnicas
+- **Preparo do Paciente**: Jejum, restrições, instruções
+- **Armazenamento**: 6 faixas de temperatura, validade, centrifugação, sensibilidade à luz
+- **Transporte**: Instruções, temperatura, embalagem especial
+- **Etiquetagem**: Cores, código de barras, templates customizados
+
+### Estrutura da Tabela
+
+#### Tabela `amostras` (42 colunas)
+
+```sql
+amostras
+├── IDENTIFICAÇÃO
+│   ├── id, codigo_interno, nome, descricao
+│   └── tipo_amostra (ENUM: 12 tipos)
+│
+├── COLETA
+│   ├── recipiente_padrao, cor_tampa
+│   ├── volume_minimo, volume_ideal, unidade_volume (ENUM: 5 unidades)
+│   ├── instrucoes_coleta
+│   └── materiais_necessarios (JSONB array)
+│
+├── PREPARO DO PACIENTE
+│   ├── requer_jejum, tempo_jejum
+│   ├── instrucoes_preparo_paciente
+│   └── restricoes
+│
+├── ARMAZENAMENTO
+│   ├── temperatura_armazenamento (ENUM: 6 faixas)
+│   ├── temperatura_min, temperatura_max
+│   ├── prazo_validade_horas
+│   ├── condicoes_armazenamento
+│   ├── sensibilidade_luz
+│   └── requer_centrifugacao, tempo_centrifugacao, rotacao_centrifugacao
+│
+├── TRANSPORTE
+│   ├── instrucoes_transporte
+│   ├── temperatura_transporte (ENUM: 5 opções)
+│   ├── embalagem_especial
+│   └── observacoes_transporte
+│
+├── ETIQUETAGEM
+│   ├── cor_etiqueta (hex)
+│   ├── codigo_barras
+│   └── template_etiqueta
+│
+└── CONTROLE
+    ├── exige_autorizacao, observacoes
+    ├── ativo, empresa_id
+    └── criado_por, atualizado_por, criado_em, atualizado_em
+```
+
+### Enumerações
+
+- **TipoAmostra** (12): sangue, soro, plasma, urina, fezes, swab, liquor, escarro, tecido, saliva, secrecao, outros
+- **UnidadeVolume** (5): mL, L, g, mg, unidade
+- **TemperaturaArmazenamento** (6): ambiente, refrigerado, congelado, ultracongelado, nitrogenio, especial
+- **TemperaturaTransporte** (5): ambiente, refrigerado, congelado, gelo_seco, nitrogenio
+
+### Arquivos Criados
+
+- **Entidade**: `amostra.entity.ts`
+- **DTOs**: `create-amostra.dto.ts`, `update-amostra.dto.ts`
+- **Service**: `amostras.service.ts`
+- **Controller**: `amostras.controller.ts`
+- **Módulo**: `amostras.module.ts`
+- **Migration**: `1728405000000-CreateAmostrasTable.ts`
+- **Documentação**: `AMOSTRAS_DESIGN.md`
+
+### API Endpoints (10 endpoints)
+
+#### Amostras (`/api/v1/exames/amostras`)
+
+- `GET /` - Listar com paginação e filtros
+- `GET /ativas` - Apenas ativas
+- `GET /stats` - Estatísticas
+- `GET /tipo/:tipo` - Por tipo
+- `GET /codigo/:codigo` - Por código
+- `GET /:id` - Por ID
+- `POST /` - Criar nova
+- `PATCH /:id` - Atualizar
+- `PATCH /:id/ativar` - Ativar
+- `PATCH /:id/desativar` - Desativar
+- `DELETE /:id` - Remover (soft delete)
+
+### Funcionalidades do Service
+
+- **CRUD Completo**: Operações padrão
+- **Validações Rigorosas**:
+  - Volume mínimo ≤ Volume ideal
+  - Temperatura mínima < Temperatura máxima
+  - Jejum obrigatório → tempo > 0
+  - Centrifugação obrigatória → tempo e rotação > 0
+  - Prazo validade > 0
+- **Busca Especializada**: Por tipo, código, ativas
+- **Estatísticas**: Total, ativas, inativas, por tipo
+
+### Status de Implementação
+
+- ✅ Migration criada e executada
+- ✅ Entidade com 42 campos
+- ✅ DTOs com validações completas
+- ✅ Service com validações de negócio
+- ✅ Controller com 10 endpoints
+- ✅ Módulo registrado no AppModule
+- ✅ Build 100% sem erros
+- ✅ Lint 100% sem erros
+- ✅ Documentação completa
+- ✅ Total: 6 arquivos, ~800 linhas de código
+
+## Módulo de Estrutura Física (Em Desenvolvimento - Outubro 2025)
+
+### Visão Geral
+
+Módulo para gerenciamento da estrutura física do laboratório, dividido em 5 sub-módulos:
+
+1. **Salas** - Ambientes físicos
+2. **Setores** - Divisões organizacionais
+3. **Equipamentos** - Máquinas e aparelhos
+4. **Imobilizados** - Bens patrimoniais
+5. **Etiquetas de Amostra** - Templates de etiquetas
+
+### Status Atual
+
+- ✅ Documentação de design criada (`ESTRUTURA_DESIGN.md`)
+- ✅ Entidade Sala criada
+- ⏳ Entidades Setor, Equipamento, Imobilizado, EtiquetaAmostra (pendente)
+- ⏳ DTOs, Services, Controllers (pendente)
+- ⏳ Migrations (pendente)
+
+### Próxima Implementação
+
+Seguindo a ordem:
+
+1. Salas → 2. Setores → 3. Equipamentos → 4. Imobilizados → 5. Etiquetas
+
 ## Próximos Passos Sugeridos
 
-1. Executar migrations dos módulos (laboratórios, convênios, telemedicina, **perfil**)
-2. Testar endpoints do módulo de perfil com arquivos `.http`
-3. (Opcional) Criar seeder para popular preferências de usuários existentes
-4. Criar testes para o módulo de laboratórios
-5. Implementar sistema de permissões granulares
-6. Adicionar rate limiting nos endpoints
-7. Implementar cache com Redis
-8. Adicionar testes E2E
-9. Configurar CI/CD pipeline
-10. Implementar websockets para notificações real-time
-11. Adicionar sistema de filas para processamento assíncrono
+### Módulos em Implementação (Alta Prioridade)
+
+1. ✅ **Matrizes de Exames** - Concluído
+2. ✅ **Amostras** - Concluído
+3. ⏳ **Estrutura Física** - Em andamento
+   - ⏳ Salas (entidade criada, falta migration/DTO/service/controller)
+   - ⏳ Setores
+   - ⏳ Equipamentos
+   - ⏳ Imobilizados
+   - ⏳ Etiquetas de Amostra
+
+### Tarefas Técnicas
+
+4. Criar seeders para:
+   - Matrizes padrão (Audiometria, Hemograma, etc)
+   - Amostras comuns (Sangue EDTA, Urina, etc)
+   - Preferências de usuários existentes
+5. Criar testes unitários para módulos Matrizes e Amostras
+6. Testar endpoints com arquivos `.http`
+7. Criar testes para o módulo de laboratórios
+8. Implementar sistema de permissões granulares
+9. Adicionar rate limiting nos endpoints
+10. Implementar cache com Redis
+11. Adicionar testes E2E
+12. Configurar CI/CD pipeline
+13. Implementar websockets para notificações real-time
+14. Adicionar sistema de filas para processamento assíncrono

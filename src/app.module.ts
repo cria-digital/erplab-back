@@ -22,6 +22,8 @@ import { ExamesModule } from './modules/exames/exames/exames.module';
 import { FormulariosModule } from './modules/exames/formularios/formularios.module';
 import { KitsModule } from './modules/exames/kits/kits.module';
 import { MetodosModule } from './modules/exames/metodos/metodos.module';
+import { MatrizesModule } from './modules/exames/matrizes/matrizes.module';
+import { AmostrasModule } from './modules/exames/amostras/amostras.module';
 
 // Relacionamento
 import { ConveniosModule } from './modules/relacionamento/convenios/convenios.module';
@@ -76,6 +78,8 @@ import { SeedModule } from './database/seeds/seed.module';
     FormulariosModule,
     KitsModule,
     MetodosModule,
+    MatrizesModule,
+    AmostrasModule,
 
     // 4. Relacionamento com Empresas
     ConveniosModule,
