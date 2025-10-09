@@ -41,6 +41,13 @@ import { IntegracoesModule } from './modules/atendimento/integracoes/integracoes
 import { FinanceiroModule } from './modules/financeiro/core/financeiro.module';
 import { ContasPagarModule } from './modules/financeiro/core/contas-pagar/contas-pagar.module';
 
+// Configurações - Estrutura Física
+import { SalasModule } from './modules/configuracoes/estrutura/salas/salas.module';
+import { SetoresModule } from './modules/configuracoes/estrutura/setores/setores.module';
+import { EquipamentosModule } from './modules/configuracoes/estrutura/equipamentos/equipamentos.module';
+import { ImobilizadosModule } from './modules/configuracoes/estrutura/imobilizados/imobilizados.module';
+import { EtiquetasAmostraModule } from './modules/configuracoes/estrutura/etiquetas-amostra/etiquetas-amostra.module';
+
 // Infraestrutura
 import { AuditoriaModule } from './modules/infraestrutura/auditoria/auditoria.module';
 import { CommonModule } from './modules/infraestrutura/common/common.module';
@@ -97,7 +104,14 @@ import { SeedModule } from './database/seeds/seed.module';
     FinanceiroModule,
     ContasPagarModule,
 
-    // 7. Infraestrutura
+    // 7. Configurações - Estrutura Física
+    SalasModule,
+    SetoresModule,
+    EquipamentosModule,
+    ImobilizadosModule,
+    EtiquetasAmostraModule,
+
+    // 8. Infraestrutura
     AuditoriaModule,
     CommonModule,
     EmailModule,

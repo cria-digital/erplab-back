@@ -5,7 +5,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   Index,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
+import { UnidadeSaude } from '../../../../cadastros/unidade-saude/entities/unidade-saude.entity';
+import { Setor } from '../../setores/entities/setor.entity';
 
 export enum TipoSala {
   COLETA = 'coleta',
@@ -29,6 +33,7 @@ export enum TipoSala {
 @Index(['nome'])
 @Index(['tipoSala'])
 @Index(['setorId'])
+@Index(['unidadeId'])
 @Index(['empresaId'])
 export class Sala {
   @PrimaryGeneratedColumn('uuid')
@@ -114,10 +119,9 @@ export class Sala {
   })
   setorId: string;
 
-  // Relacionamento será criado quando o módulo de setores estiver pronto
-  // @ManyToOne(() => Setor)
-  // @JoinColumn({ name: 'setor_id' })
-  // setor: Setor;
+  @ManyToOne(() => Setor, { nullable: true })
+  @JoinColumn({ name: 'setor_id' })
+  setor: Setor;
 
   @Column({
     name: 'possui_climatizacao',
@@ -159,6 +163,17 @@ export class Sala {
     comment: 'Se a sala está ativa',
   })
   ativo: boolean;
+
+  @Column({
+    name: 'unidade_id',
+    type: 'uuid',
+    comment: 'ID da unidade de saúde',
+  })
+  unidadeId: string;
+
+  @ManyToOne(() => UnidadeSaude)
+  @JoinColumn({ name: 'unidade_id' })
+  unidade: UnidadeSaude;
 
   @Column({
     name: 'empresa_id',
