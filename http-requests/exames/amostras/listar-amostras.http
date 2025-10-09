@@ -1,0 +1,67 @@
+### Listar Todas as Amostras
+GET {{baseUrl}}/exames/amostras
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [
+#     {
+#       "id": "uuid",
+#       "codigoInterno": "SANG-EDTA-001",
+#       "nome": "Sangue Total com EDTA",
+#       "tipoAmostra": "sangue",
+#       "ativo": true,
+#       ...
+#     }
+#   ],
+#   "meta": {
+#     "total": 10,
+#     "page": 1,
+#     "limit": 10
+#   }
+# }
+
+
+### Listar Apenas Amostras Ativas
+GET {{baseUrl}}/exames/amostras/ativas
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... array de amostras ativas ... ]
+
+
+### Listar com Paginação
+GET {{baseUrl}}/exames/amostras?page=1&limit=5
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [ ... ],
+#   "meta": {
+#     "total": 50,
+#     "page": 1,
+#     "limit": 5,
+#     "totalPages": 10
+#   }
+# }
+
+
+### Filtrar por Tipo de Amostra
+GET {{baseUrl}}/exames/amostras?tipoAmostra=sangue
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# Retorna apenas amostras do tipo sangue
+
+
+### Buscar por Termo (nome ou código)
+GET {{baseUrl}}/exames/amostras?search=EDTA
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# Retorna amostras que contenham "EDTA" no nome ou código

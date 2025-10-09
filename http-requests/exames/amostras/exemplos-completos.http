@@ -1,0 +1,235 @@
+### ========================================
+### EXEMPLOS COMPLETOS - AMOSTRAS
+### Casos de uso reais para popular banco
+### ========================================
+
+
+### 1. Criar Amostra - Plasma com Heparina
+POST {{baseUrl}}/exames/amostras
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoInterno": "PLASMA-HEP-001",
+  "nome": "Plasma com Heparina",
+  "descricao": "Plasma obtido de sangue coletado com heparina sódica",
+  "tipoAmostra": "plasma",
+  "recipientePadrao": "Tubo com heparina sódica (tampa verde)",
+  "corTampa": "#00FF00",
+  "volumeMinimo": 2,
+  "volumeIdeal": 4,
+  "unidadeVolume": "mL",
+  "instrucoesColeta": "Coletar sangue em tubo com heparina. Homogeneizar por inversão. Centrifugar em até 30 minutos.",
+  "materiaisNecessarios": ["Tubo heparina", "Agulha", "Sistema a vácuo", "Álcool 70%"],
+  "requerJejum": true,
+  "tempoJejum": 8,
+  "temperaturaArmazenamento": "refrigerado",
+  "temperaturaMin": 2,
+  "temperaturaMax": 8,
+  "prazoValidadeHoras": 24,
+  "requerCentrifugacao": true,
+  "tempoCentrifugacao": 10,
+  "rotacaoCentrifugacao": 3000,
+  "temperaturaTransporte": "refrigerado",
+  "corEtiqueta": "#00FF00",
+  "codigoBarras": true,
+  "ativo": true
+}
+
+
+### 2. Criar Amostra - Swab Nasofaríngeo
+POST {{baseUrl}}/exames/amostras
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoInterno": "SWAB-NASO-001",
+  "nome": "Swab Nasofaríngeo",
+  "descricao": "Swab para coleta de secreção nasofaríngea",
+  "tipoAmostra": "swab",
+  "recipientePadrao": "Tubo com meio de transporte viral",
+  "volumeMinimo": 1,
+  "volumeIdeal": 1,
+  "unidadeVolume": "unidade",
+  "instrucoesColeta": "Inserir swab estéril na cavidade nasal até nasofaringe. Rotacionar 3-5x. Repetir na outra narina.",
+  "materiaisNecessarios": ["Swab estéril", "Meio de transporte viral", "Luvas", "Máscara N95"],
+  "requerJejum": false,
+  "temperaturaArmazenamento": "refrigerado",
+  "temperaturaMin": 2,
+  "temperaturaMax": 8,
+  "prazoValidadeHoras": 48,
+  "requerCentrifugacao": false,
+  "temperaturaTransporte": "refrigerado",
+  "embalagemEspecial": true,
+  "observacoesTransporte": "Manter refrigerado. Entregar em até 48h.",
+  "corEtiqueta": "#ADD8E6",
+  "codigoBarras": true,
+  "exigeAutorizacao": false,
+  "ativo": true
+}
+
+
+### 3. Criar Amostra - Líquor (LCR)
+POST {{baseUrl}}/exames/amostras
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoInterno": "LIQUOR-001",
+  "nome": "Líquor (Líquido Cefalorraquidiano)",
+  "descricao": "Líquido cefalorraquidiano obtido por punção lombar",
+  "tipoAmostra": "liquor",
+  "recipientePadrao": "Tubos estéreis numerados (1, 2, 3)",
+  "volumeMinimo": 3,
+  "volumeIdeal": 10,
+  "unidadeVolume": "mL",
+  "instrucoesColeta": "Coleta por médico via punção lombar. Coletar em 3 tubos estéreis numerados sequencialmente.",
+  "materiaisNecessarios": ["3 tubos estéreis", "Agulha espinhal", "Anestésico local", "Material de assepsia"],
+  "requerJejum": false,
+  "temperaturaArmazenamento": "ambiente",
+  "prazoValidadeHoras": 1,
+  "condicoesArmazenamento": "Processar imediatamente. NÃO refrigerar nem congelar para bioquímica e citologia.",
+  "sensibilidadeLuz": true,
+  "requerCentrifugacao": false,
+  "temperaturaTransporte": "ambiente",
+  "embalagemEspecial": true,
+  "observacoesTransporte": "Proteger da luz. Entregar IMEDIATAMENTE ao laboratório.",
+  "corEtiqueta": "#FFD700",
+  "codigoBarras": true,
+  "exigeAutorizacao": true,
+  "observacoes": "Material de alto risco biológico. Requer autorização médica.",
+  "ativo": true
+}
+
+
+### 4. Criar Amostra - Escarro
+POST {{baseUrl}}/exames/amostras
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoInterno": "ESCARRO-001",
+  "nome": "Escarro",
+  "descricao": "Amostra de escarro para cultura ou pesquisa de BAAR",
+  "tipoAmostra": "escarro",
+  "recipientePadrao": "Frasco estéril de boca larga",
+  "volumeMinimo": 3,
+  "volumeIdeal": 10,
+  "unidadeVolume": "mL",
+  "instrucoesColeta": "Coletar primeira amostra da manhã. Realizar higiene oral. Tossir profundamente para expectorar secreção dos brônquios.",
+  "materiaisNecessarios": ["Frasco estéril boca larga", "Água para enxágue bucal"],
+  "requerJejum": false,
+  "instrucoesPreparo Paciente": "Fazer higiene oral com água. NÃO usar creme dental. Coletar pela manhã ao despertar.",
+  "temperaturaArmazenamento": "refrigerado",
+  "temperaturaMin": 2,
+  "temperaturaMax": 8,
+  "prazoValidadeHoras": 24,
+  "requerCentrifugacao": false,
+  "temperaturaTransporte": "refrigerado",
+  "embalagemEspecial": true,
+  "corEtiqueta": "#90EE90",
+  "codigoBarras": true,
+  "exigeAutorizacao": false,
+  "ativo": true
+}
+
+
+### 5. Criar Amostra - Saliva
+POST {{baseUrl}}/exames/amostras
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoInterno": "SALIVA-001",
+  "nome": "Saliva",
+  "descricao": "Amostra de saliva para exames moleculares ou hormonais",
+  "tipoAmostra": "saliva",
+  "recipientePadrao": "Coletor de saliva específico (Salivette)",
+  "volumeMinimo": 1,
+  "volumeIdeal": 2,
+  "unidadeVolume": "mL",
+  "instrucoesColeta": "Não escovar dentes 30min antes. Mascar algodão por 1-2min ou cuspir diretamente no coletor.",
+  "materiaisNecessarios": ["Coletor Salivette ou tubo específico"],
+  "requerJejum": false,
+  "instrucoesPreparo Paciente": "Não escovar dentes, comer ou beber 30 minutos antes da coleta.",
+  "restricoes": "Não fumar ou mascar chiclete antes da coleta.",
+  "temperaturaArmazenamento": "congelado",
+  "temperaturaMin": -20,
+  "temperaturaMax": -10,
+  "prazoValidadeHoras": 168,
+  "requerCentrifugacao": true,
+  "tempoCentrifugacao": 5,
+  "rotacaoCentrifugacao": 1500,
+  "temperaturaTransporte": "refrigerado",
+  "corEtiqueta": "#E0FFFF",
+  "codigoBarras": true,
+  "ativo": true
+}
+
+
+### 6. Criar Amostra - Tecido/Biópsia
+POST {{baseUrl}}/exames/amostras
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoInterno": "BIOPSIA-001",
+  "nome": "Tecido para Biópsia",
+  "descricao": "Fragmento de tecido para análise anatomopatológica",
+  "tipoAmostra": "tecido",
+  "recipientePadrao": "Frasco com formol 10%",
+  "volumeMinimo": 1,
+  "volumeIdeal": 1,
+  "unidadeVolume": "unidade",
+  "instrucoesColeta": "Fragmento deve ser imerso imediatamente em formol 10%. Proporção mínima: 1 parte de tecido para 10 partes de formol.",
+  "materiaisNecessarios": ["Frasco com formol 10%", "Instrumento de biópsia", "Pinça", "Material de assepsia"],
+  "requerJejum": false,
+  "temperaturaArmazenamento": "ambiente",
+  "condicoesArmazenamento": "Manter em formol 10% em temperatura ambiente.",
+  "requerCentrifugacao": false,
+  "temperaturaTransporte": "ambiente",
+  "embalagemEspecial": true,
+  "observacoesTransporte": "Frasco bem vedado. Identificar como material biológico.",
+  "corEtiqueta": "#FFB6C1",
+  "codigoBarras": true,
+  "exigeAutorizacao": true,
+  "observacoes": "Material para anatomopatológico. Requer requisição médica detalhada.",
+  "ativo": true
+}
+
+
+### 7. Buscar Todas as Amostras Criadas
+GET {{baseUrl}}/exames/amostras
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [
+#     { ... 6 amostras criadas ... }
+#   ],
+#   "meta": {
+#     "total": 6
+#   }
+# }
+
+
+### 8. Obter Estatísticas
+GET {{baseUrl}}/exames/amostras/stats
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "total": 6,
+#   "ativas": 6,
+#   "inativas": 0,
+#   "porTipo": {
+#     "plasma": 1,
+#     "swab": 1,
+#     "liquor": 1,
+#     "escarro": 1,
+#     "saliva": 1,
+#     "tecido": 1
+#   }
+# }

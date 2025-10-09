@@ -1,0 +1,78 @@
+### Matriz Completa - Hemograma com Campos
+POST {{baseUrl}}/exames/matrizes
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoInterno": "MAT-HEMO-COMPLETO-001",
+  "nome": "Matriz Hemograma Completo",
+  "descricao": "Template completo de hemograma com todos os parâmetros",
+  "tipoMatriz": "hemograma",
+  "status": "ativo",
+  "versao": "3.0",
+  "padraoSistema": true,
+  "temCalculoAutomatico": true,
+  "requerAssinaturaDigital": true,
+  "campos": [
+    {
+      "codigoCampo": "hemacias",
+      "label": "Hemácias",
+      "tipoCampo": "decimal",
+      "unidadeMedida": "milhões/mm³",
+      "valorReferenciaMin": 4.5,
+      "valorReferenciaMax": 6.0,
+      "obrigatorio": true,
+      "ordemExibicao": 1
+    },
+    {
+      "codigoCampo": "hemoglobina",
+      "label": "Hemoglobina",
+      "tipoCampo": "decimal",
+      "unidadeMedida": "g/dL",
+      "valorReferenciaMin": 13.0,
+      "valorReferenciaMax": 17.0,
+      "obrigatorio": true,
+      "ordemExibicao": 2
+    },
+    {
+      "codigoCampo": "hematocrito",
+      "label": "Hematócrito",
+      "tipoCampo": "decimal",
+      "unidadeMedida": "%",
+      "valorReferenciaMin": 40,
+      "valorReferenciaMax": 54,
+      "obrigatorio": true,
+      "ordemExibicao": 3
+    },
+    {
+      "codigoCampo": "vcm",
+      "label": "VCM (Volume Corpuscular Médio)",
+      "tipoCampo": "calculado",
+      "unidadeMedida": "fL",
+      "valorReferenciaMin": 80,
+      "valorReferenciaMax": 100,
+      "formulaCalculo": "hematocrito / hemacias * 10",
+      "ordemExibicao": 4
+    }
+  ]
+}
+
+### Duplicar Matriz para Criar Variação
+POST {{baseUrl}}/exames/matrizes/{id}/duplicar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "novoCodigoInterno": "MAT-HEMO-PEDIATRIA-001",
+  "novoNome": "Matriz Hemograma - Pediatria",
+  "novaVersao": "1.0",
+  "alterarValoresReferencia": true
+}
+
+### Buscar Todas as Matrizes Criadas
+GET {{baseUrl}}/exames/matrizes
+Authorization: Bearer {{token}}
+
+### Obter Estatísticas
+GET {{baseUrl}}/exames/matrizes/stats
+Authorization: Bearer {{token}}

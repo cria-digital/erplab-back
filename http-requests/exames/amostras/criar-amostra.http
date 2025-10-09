@@ -1,0 +1,165 @@
+### Criar Amostra - Sangue com EDTA
+POST {{baseUrl}}/exames/amostras
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoInterno": "SANG-EDTA-001",
+  "nome": "Sangue Total com EDTA",
+  "descricao": "Amostra de sangue total coletado em tubo com anticoagulante EDTA",
+  "tipoAmostra": "sangue",
+  "recipientePadrao": "Tubo com EDTA (tampa roxa)",
+  "corTampa": "#800080",
+  "volumeMinimo": 3,
+  "volumeIdeal": 5,
+  "unidadeVolume": "mL",
+  "instrucoesColeta": "Coletar sangue venoso por punção. Homogeneizar suavemente por inversão 8-10 vezes imediatamente após a coleta.",
+  "materiaisNecessarios": ["Tubo EDTA", "Agulha", "Seringa ou sistema a vácuo", "Álcool 70%", "Algodão", "Garrote"],
+  "requerJejum": true,
+  "tempoJejum": 8,
+  "instrucoesPreparo Paciente": "Jejum de 8 horas. Água pode ser ingerida normalmente.",
+  "restricoes": "Evitar atividades físicas intensas nas 24h anteriores. Não fumar ou consumir álcool.",
+  "temperaturaArmazenamento": "refrigerado",
+  "temperaturaMin": 2,
+  "temperaturaMax": 8,
+  "prazoValidade Horas": 48,
+  "condicoesArmazenamento": "Manter refrigerado entre 2-8°C. Não congelar.",
+  "sensibilidadeLuz": false,
+  "requerCentrifugacao": false,
+  "instrucoesTransporte": "Transportar em caixa térmica refrigerada. Manter entre 2-8°C durante o transporte.",
+  "temperaturaTransporte": "refrigerado",
+  "embalagemEspecial": true,
+  "observacoesTransporte": "Proteger de luz solar direta. Não inclinar ou agitar durante o transporte.",
+  "corEtiqueta": "#FF0000",
+  "codigoBarras": true,
+  "templateEtiqueta": "SANGUE-EDTA",
+  "exigeAutorizacao": false,
+  "observacoes": "Material utilizado para hemograma completo, tipagem sanguínea e outros exames hematológicos."
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "id": "uuid",
+#   "codigoInterno": "SANG-EDTA-001",
+#   "nome": "Sangue Total com EDTA",
+#   "tipoAmostra": "sangue",
+#   ...
+# }
+
+
+### Criar Amostra - Urina Tipo 1
+POST {{baseUrl}}/exames/amostras
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoInterno": "URINA-T1-001",
+  "nome": "Urina Tipo 1 (EAS)",
+  "descricao": "Amostra de urina para exame de rotina (EAS - Elementos Anormais e Sedimentoscopia)",
+  "tipoAmostra": "urina",
+  "recipientePadrao": "Frasco estéril descartável",
+  "corTampa": "#FFFF00",
+  "volumeMinimo": 20,
+  "volumeIdeal": 50,
+  "unidadeVolume": "mL",
+  "instrucoesColeta": "Coletar primeira urina da manhã ou após retenção mínima de 4 horas. Realizar higiene íntima antes da coleta. Desprezar o primeiro jato e coletar o jato médio.",
+  "materiaisNecessarios": ["Frasco estéril", "Papel toalha", "Sabonete neutro"],
+  "requerJejum": false,
+  "instrucoesPreparo Paciente": "Higiene íntima rigorosa. Preferencialmente coletar primeira urina da manhã.",
+  "restricoes": "Não coletar durante período menstrual. Evitar relações sexuais 24h antes.",
+  "temperaturaArmazenamento": "refrigerado",
+  "temperaturaMin": 2,
+  "temperaturaMax": 8,
+  "prazoValidadeHoras": 2,
+  "condicoesArmazenamento": "Refrigerar imediatamente. Processar em até 2 horas.",
+  "sensibilidadeLuz": true,
+  "requerCentrifugacao": true,
+  "tempoCentrifugacao": 5,
+  "rotacaoCentrifugacao": 1500,
+  "instrucoesTransporte": "Transportar refrigerado em até 1 hora após a coleta.",
+  "temperaturaTransporte": "refrigerado",
+  "embalagemEspecial": false,
+  "corEtiqueta": "#FFFF00",
+  "codigoBarras": true,
+  "templateEtiqueta": "URINA-PADRAO",
+  "exigeAutorizacao": false,
+  "observacoes": "Amostra de urina para análise física, química e microscópica."
+}
+
+
+### Criar Amostra - Fezes para Parasitológico
+POST {{baseUrl}}/exames/amostras
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoInterno": "FEZES-PARA-001",
+  "nome": "Fezes para Parasitológico",
+  "descricao": "Amostra de fezes para pesquisa de parasitas",
+  "tipoAmostra": "fezes",
+  "recipientePadrao": "Frasco coletor universal",
+  "volumeMinimo": 10,
+  "volumeIdeal": 20,
+  "unidadeVolume": "g",
+  "instrucoesColeta": "Coletar fezes recém-emitidas em frasco limpo e seco. Caso fezes líquidas, coletar a maior quantidade possível.",
+  "materiaisNecessarios": ["Frasco coletor", "Espátula coletora", "Luvas descartáveis"],
+  "requerJejum": false,
+  "instrucoesPreparo Paciente": "Não usar laxantes 3 dias antes. Não usar contraste radiológico 7 dias antes.",
+  "restricoes": "Evitar contaminação com urina. Não coletar do vaso sanitário.",
+  "temperaturaArmazenamento": "ambiente",
+  "prazoValidadeHoras": 24,
+  "condicoesArmazenamento": "Manter em temperatura ambiente. Entregar ao laboratório em até 2 horas se fezes líquidas.",
+  "sensibilidadeLuz": false,
+  "requerCentrifugacao": false,
+  "instrucoesTransporte": "Transportar em temperatura ambiente. Entregar rapidamente.",
+  "temperaturaTransporte": "ambiente",
+  "embalagemEspecial": true,
+  "observacoesTransporte": "Embalar em saco plástico fechado. Proteger de vazamento.",
+  "corEtiqueta": "#8B4513",
+  "codigoBarras": true,
+  "templateEtiqueta": "FEZES-PADRAO",
+  "exigeAutorizacao": false,
+  "observacoes": "Para pesquisa de ovos, cistos e larvas de parasitas."
+}
+
+
+### Criar Amostra - Soro
+POST {{baseUrl}}/exames/amostras
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoInterno": "SORO-001",
+  "nome": "Soro Sanguíneo",
+  "descricao": "Soro obtido após centrifugação de sangue total sem anticoagulante",
+  "tipoAmostra": "soro",
+  "recipientePadrao": "Tubo seco sem anticoagulante (tampa vermelha)",
+  "corTampa": "#FF0000",
+  "volumeMinimo": 2,
+  "volumeIdeal": 5,
+  "unidadeVolume": "mL",
+  "instrucoesColeta": "Coletar sangue venoso em tubo seco. Deixar coagular naturalmente por 30-60 minutos em temperatura ambiente antes de centrifugar.",
+  "materiaisNecessarios": ["Tubo seco (tampa vermelha)", "Agulha", "Seringa ou sistema a vácuo", "Álcool 70%", "Algodão", "Garrote"],
+  "requerJejum": true,
+  "tempoJejum": 12,
+  "instrucoesPreparo Paciente": "Jejum de 12 horas. Água permitida.",
+  "restricoes": "Não realizar atividades físicas intensas 24h antes. Não consumir álcool.",
+  "temperaturaArmazenamento": "refrigerado",
+  "temperaturaMin": 2,
+  "temperaturaMax": 8,
+  "prazoValidadeHoras": 72,
+  "condicoesArmazenamento": "Refrigerar após separação. Congelar se análise > 72h.",
+  "sensibilidadeLuz": false,
+  "requerCentrifugacao": true,
+  "tempoCentrifugacao": 10,
+  "rotacaoCentrifugacao": 3000,
+  "instrucoesTransporte": "Transportar refrigerado após centrifugação e separação do soro.",
+  "temperaturaTransporte": "refrigerado",
+  "embalagemEspecial": false,
+  "corEtiqueta": "#FF6347",
+  "codigoBarras": true,
+  "templateEtiqueta": "SORO-PADRAO",
+  "exigeAutorizacao": false,
+  "observacoes": "Material para dosagens bioquímicas, sorologias e hormonais."
+}

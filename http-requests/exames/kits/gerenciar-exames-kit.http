@@ -1,0 +1,153 @@
+### Adicionar Exame ao Kit
+# Substitua {kitId} pelo UUID do kit
+POST {{baseUrl}}/exames/kits/{kitId}/exames
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "exameId": "uuid-do-exame",
+  "ordem": 6,
+  "obrigatorio": true,
+  "observacoes": "Exame adicional recomendado"
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "id": "uuid",
+#   "kitId": "uuid-do-kit",
+#   "exameId": "uuid-do-exame",
+#   "ordem": 6,
+#   "obrigatorio": true,
+#   ...
+# }
+
+
+### Listar Exames do Kit
+GET {{baseUrl}}/exames/kits/{kitId}/exames
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid",
+#     "exameId": "uuid",
+#     "exame": {
+#       "nome": "Hemograma Completo",
+#       "codigo": "HEM001"
+#     },
+#     "ordem": 1,
+#     "obrigatorio": true
+#   },
+#   ...
+# ]
+
+
+### Atualizar Ordem do Exame no Kit
+# Substitua {kitId} e {kitExameId}
+PATCH {{baseUrl}}/exames/kits/{kitId}/exames/{kitExameId}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "ordem": 2,
+  "obrigatorio": false
+}
+
+### Expected Response
+# Status: 200 OK
+# { "ordem": 2, "obrigatorio": false, ... }
+
+
+### Remover Exame do Kit
+DELETE {{baseUrl}}/exames/kits/{kitId}/exames/{kitExameId}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Exame removido do kit com sucesso"
+# }
+
+
+### Adicionar Múltiplos Exames ao Kit
+POST {{baseUrl}}/exames/kits/{kitId}/exames/bulk
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "exames": [
+    {
+      "exameId": "uuid-hemograma",
+      "ordem": 1,
+      "obrigatorio": true
+    },
+    {
+      "exameId": "uuid-glicemia",
+      "ordem": 2,
+      "obrigatorio": true
+    },
+    {
+      "exameId": "uuid-colesterol",
+      "ordem": 3,
+      "obrigatorio": false
+    }
+  ]
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "message": "3 exames adicionados ao kit com sucesso",
+#   "exames": [ ... ]
+# }
+
+
+### Reordenar Exames do Kit
+PATCH {{baseUrl}}/exames/kits/{kitId}/exames/reorder
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "ordens": [
+    {
+      "kitExameId": "uuid-1",
+      "ordem": 1
+    },
+    {
+      "kitExameId": "uuid-2",
+      "ordem": 2
+    },
+    {
+      "kitExameId": "uuid-3",
+      "ordem": 3
+    }
+  ]
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Exames reordenados com sucesso"
+# }
+
+
+### Erro - Exame Já Existe no Kit
+POST {{baseUrl}}/exames/kits/{kitId}/exames
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "exameId": "uuid-exame-ja-existente",
+  "ordem": 10,
+  "obrigatorio": true
+}
+
+### Expected Response
+# Status: 409 Conflict
+# {
+#   "statusCode": 409,
+#   "message": "Este exame já está vinculado ao kit",
+#   "error": "Conflict"
+# }

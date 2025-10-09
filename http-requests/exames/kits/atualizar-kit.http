@@ -1,0 +1,96 @@
+### Atualizar Informações Básicas do Kit
+# Substitua {id} pelo UUID do kit
+PATCH {{baseUrl}}/exames/kits/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nomeKit": "Kit Check-up Básico Atualizado",
+  "descricao": "Descrição atualizada do kit com informações adicionais"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "codigoInterno": "KIT-CHECKUP-001",
+#   "nomeKit": "Kit Check-up Básico Atualizado",
+#   "descricao": "Descrição atualizada...",
+#   ...
+# }
+
+
+### Atualizar Status do Kit
+PATCH {{baseUrl}}/exames/kits/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "statusKit": "EM_REVISAO"
+}
+
+### Expected Response
+# Status: 200 OK
+# { "statusKit": "EM_REVISAO", ... }
+
+
+### Atualizar Valores do Kit
+PATCH {{baseUrl}}/exames/kits/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "valorTotal": 400.00,
+  "precoKit": 320.00
+}
+
+### Expected Response
+# Status: 200 OK
+# { "valorTotal": 400.00, "precoKit": 320.00, ... }
+
+
+### Atualizar Prazo de Entrega
+PATCH {{baseUrl}}/exames/kits/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "prazoPadraoEntrega": 5
+}
+
+### Expected Response
+# Status: 200 OK
+# { "prazoPadraoEntrega": 5, ... }
+
+
+### Atualizar Observações
+PATCH {{baseUrl}}/exames/kits/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "observacoes": "Observações atualizadas sobre o kit. Recomendado para pacientes acima de 40 anos."
+}
+
+### Expected Response
+# Status: 200 OK
+# { "observacoes": "Observações atualizadas...", ... }
+
+
+### Erro - Preço do Kit Maior que Valor Total
+PATCH {{baseUrl}}/exames/kits/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "valorTotal": 100.00,
+  "precoKit": 200.00
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Preço do kit não pode ser maior que o valor total",
+#   "error": "Bad Request"
+# }

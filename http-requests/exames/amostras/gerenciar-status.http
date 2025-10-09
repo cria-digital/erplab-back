@@ -1,0 +1,53 @@
+### Ativar Amostra
+# Substitua {id} pelo UUID da amostra
+PATCH {{baseUrl}}/exames/amostras/{id}/ativar
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "codigoInterno": "SANG-EDTA-001",
+#   "nome": "Sangue Total com EDTA",
+#   "ativo": true,
+#   ...
+# }
+
+
+### Desativar Amostra
+PATCH {{baseUrl}}/exames/amostras/{id}/desativar
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "codigoInterno": "SANG-EDTA-001",
+#   "nome": "Sangue Total com EDTA",
+#   "ativo": false,
+#   ...
+# }
+
+
+### Remover Amostra (Soft Delete)
+DELETE {{baseUrl}}/exames/amostras/{id}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Amostra removida com sucesso"
+# }
+
+
+### Erro - Tentar Ativar Amostra Inexistente
+PATCH {{baseUrl}}/exames/amostras/00000000-0000-0000-0000-000000000000/ativar
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Amostra não encontrada",
+#   "error": "Not Found"
+# }

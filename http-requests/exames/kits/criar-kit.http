@@ -1,0 +1,243 @@
+### Criar Kit - Check-up Básico
+POST {{baseUrl}}/exames/kits
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoInterno": "KIT-CHECKUP-001",
+  "nomeKit": "Kit Check-up Básico",
+  "descricao": "Kit de exames para check-up básico preventivo incluindo hemograma, glicemia, colesterol e função renal",
+  "tipoKit": "CHECK_UP",
+  "prazoPadraoEntrega": 3,
+  "empresaId": "uuid-da-empresa",
+  "valorTotal": 350.00,
+  "precoKit": 280.00,
+  "observacoes": "Kit recomendado para avaliação anual de saúde geral",
+  "exames": [
+    {
+      "exameId": "uuid-hemograma",
+      "ordem": 1,
+      "obrigatorio": true
+    },
+    {
+      "exameId": "uuid-glicemia",
+      "ordem": 2,
+      "obrigatorio": true
+    },
+    {
+      "exameId": "uuid-colesterol",
+      "ordem": 3,
+      "obrigatorio": true
+    },
+    {
+      "exameId": "uuid-ureia",
+      "ordem": 4,
+      "obrigatorio": true
+    },
+    {
+      "exameId": "uuid-creatinina",
+      "ordem": 5,
+      "obrigatorio": true
+    }
+  ]
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "id": "uuid",
+#   "codigoInterno": "KIT-CHECKUP-001",
+#   "nomeKit": "Kit Check-up Básico",
+#   "tipoKit": "CHECK_UP",
+#   "statusKit": "ATIVO",
+#   "valorTotal": 350.00,
+#   "precoKit": 280.00,
+#   ...
+# }
+
+
+### Criar Kit - Exames Ocupacionais Admissionais
+POST {{baseUrl}}/exames/kits
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoInterno": "KIT-OCUP-ADM-001",
+  "nomeKit": "Kit Exames Ocupacionais - Admissional",
+  "descricao": "Kit de exames para admissão conforme NR7 - função administrativa",
+  "tipoKit": "OCUPACIONAL",
+  "prazoPadraoEntrega": 2,
+  "empresaId": "uuid-da-empresa",
+  "valorTotal": 180.00,
+  "precoKit": 150.00,
+  "observacoes": "Kit padrão para cargos administrativos. Adicionar audiometria se necessário.",
+  "exames": [
+    {
+      "exameId": "uuid-hemograma",
+      "ordem": 1,
+      "obrigatorio": true
+    },
+    {
+      "exameId": "uuid-glicemia",
+      "ordem": 2,
+      "obrigatorio": true
+    },
+    {
+      "exameId": "uuid-eas",
+      "ordem": 3,
+      "obrigatorio": true
+    },
+    {
+      "exameId": "uuid-raio-x-torax",
+      "ordem": 4,
+      "obrigatorio": false
+    }
+  ]
+}
+
+
+### Criar Kit - Pré-Natal Completo
+POST {{baseUrl}}/exames/kits
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoInterno": "KIT-PRENATAL-001",
+  "nomeKit": "Kit Pré-Natal Completo",
+  "descricao": "Kit completo de exames para acompanhamento pré-natal - 1º trimestre",
+  "tipoKit": "PRE_NATAL",
+  "prazoPadraoEntrega": 5,
+  "empresaId": "uuid-da-empresa",
+  "valorTotal": 520.00,
+  "precoKit": 450.00,
+  "observacoes": "Kit completo recomendado para primeira consulta pré-natal",
+  "exames": [
+    {
+      "exameId": "uuid-hemograma",
+      "ordem": 1,
+      "obrigatorio": true
+    },
+    {
+      "exameId": "uuid-tipagem-sanguinea",
+      "ordem": 2,
+      "obrigatorio": true
+    },
+    {
+      "exameId": "uuid-glicemia",
+      "ordem": 3,
+      "obrigatorio": true
+    },
+    {
+      "exameId": "uuid-eas",
+      "ordem": 4,
+      "obrigatorio": true
+    },
+    {
+      "exameId": "uuid-hiv",
+      "ordem": 5,
+      "obrigatorio": true
+    },
+    {
+      "exameId": "uuid-sifilis",
+      "ordem": 6,
+      "obrigatorio": true
+    },
+    {
+      "exameId": "uuid-toxoplasmose",
+      "ordem": 7,
+      "obrigatorio": true
+    },
+    {
+      "exameId": "uuid-rubeola",
+      "ordem": 8,
+      "obrigatorio": true
+    }
+  ]
+}
+
+
+### Criar Kit Personalizado
+POST {{baseUrl}}/exames/kits
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoInterno": "KIT-CUSTOM-001",
+  "nomeKit": "Kit Personalizado - Diabetes",
+  "descricao": "Kit personalizado para acompanhamento de pacientes diabéticos",
+  "tipoKit": "PERSONALIZADO",
+  "prazoPadraoEntrega": 3,
+  "empresaId": "uuid-da-empresa",
+  "valorTotal": 280.00,
+  "precoKit": 240.00,
+  "observacoes": "Kit para monitoramento trimestral de pacientes diabéticos",
+  "exames": [
+    {
+      "exameId": "uuid-glicemia-jejum",
+      "ordem": 1,
+      "obrigatorio": true
+    },
+    {
+      "exameId": "uuid-hemoglobina-glicada",
+      "ordem": 2,
+      "obrigatorio": true
+    },
+    {
+      "exameId": "uuid-frutosamina",
+      "ordem": 3,
+      "obrigatorio": false
+    },
+    {
+      "exameId": "uuid-microalbuminuria",
+      "ordem": 4,
+      "obrigatorio": true
+    },
+    {
+      "exameId": "uuid-creatinina",
+      "ordem": 5,
+      "obrigatorio": true
+    }
+  ]
+}
+
+
+### Erro - Código Interno Duplicado
+POST {{baseUrl}}/exames/kits
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoInterno": "KIT-CHECKUP-001",
+  "nomeKit": "Outro Kit",
+  "tipoKit": "CHECK_UP",
+  "empresaId": "uuid-da-empresa"
+}
+
+### Expected Response
+# Status: 409 Conflict
+# {
+#   "statusCode": 409,
+#   "message": "Já existe um kit com este código interno",
+#   "error": "Conflict"
+# }
+
+
+### Erro - Empresa Não Encontrada
+POST {{baseUrl}}/exames/kits
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoInterno": "KIT-TEST-999",
+  "nomeKit": "Kit Teste",
+  "tipoKit": "CHECK_UP",
+  "empresaId": "00000000-0000-0000-0000-000000000000"
+}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Empresa não encontrada",
+#   "error": "Not Found"
+# }

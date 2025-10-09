@@ -1,0 +1,50 @@
+### Adicionar Campo à Matriz
+POST {{baseUrl}}/exames/matrizes/{matrizId}/campos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoCampo": "hemoglobina",
+  "label": "Hemoglobina",
+  "tipoCampo": "decimal",
+  "unidadeMedida": "g/dL",
+  "valorReferenciaMin": 12.0,
+  "valorReferenciaMax": 16.0,
+  "obrigatorio": true,
+  "ordemExibicao": 1,
+  "linha": 1,
+  "coluna": 1,
+  "largura": 12
+}
+
+### Listar Campos da Matriz
+GET {{baseUrl}}/exames/matrizes/{matrizId}/campos
+Authorization: Bearer {{token}}
+
+### Atualizar Campo
+PATCH {{baseUrl}}/exames/matrizes/{matrizId}/campos/{campoId}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "label": "Hemoglobina (Hb)",
+  "valorReferenciaMin": 13.0,
+  "valorReferenciaMax": 17.0
+}
+
+### Remover Campo
+DELETE {{baseUrl}}/exames/matrizes/{matrizId}/campos/{campoId}
+Authorization: Bearer {{token}}
+
+### Reordenar Campos
+PATCH {{baseUrl}}/exames/matrizes/{matrizId}/campos/reorder
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "campos": [
+    { "campoId": "uuid-1", "ordemExibicao": 1 },
+    { "campoId": "uuid-2", "ordemExibicao": 2 },
+    { "campoId": "uuid-3", "ordemExibicao": 3 }
+  ]
+}

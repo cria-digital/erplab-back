@@ -1,0 +1,99 @@
+### Buscar Amostra por ID
+# Substitua {id} pelo UUID da amostra
+GET {{baseUrl}}/exames/amostras/{id}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "codigoInterno": "SANG-EDTA-001",
+#   "nome": "Sangue Total com EDTA",
+#   "descricao": "...",
+#   "tipoAmostra": "sangue",
+#   "recipientePadrao": "Tubo com EDTA (tampa roxa)",
+#   "volumeMinimo": 3,
+#   "volumeIdeal": 5,
+#   "requerJejum": true,
+#   "tempoJejum": 8,
+#   "temperaturaArmazenamento": "refrigerado",
+#   "prazoValidadeHoras": 48,
+#   "ativo": true,
+#   ...
+# }
+
+
+### Buscar por Código Interno
+GET {{baseUrl}}/exames/amostras/codigo/SANG-EDTA-001
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# { ... dados da amostra ... }
+
+
+### Buscar Amostras por Tipo
+GET {{baseUrl}}/exames/amostras/tipo/sangue
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... array de amostras do tipo sangue ... ]
+
+
+### Buscar Amostras por Tipo - Urina
+GET {{baseUrl}}/exames/amostras/tipo/urina
+Authorization: Bearer {{token}}
+
+
+### Buscar Amostras por Tipo - Fezes
+GET {{baseUrl}}/exames/amostras/tipo/fezes
+Authorization: Bearer {{token}}
+
+
+### Buscar Amostras por Tipo - Soro
+GET {{baseUrl}}/exames/amostras/tipo/soro
+Authorization: Bearer {{token}}
+
+
+### Buscar Amostras por Tipo - Plasma
+GET {{baseUrl}}/exames/amostras/tipo/plasma
+Authorization: Bearer {{token}}
+
+
+### Buscar Amostras por Tipo - Swab
+GET {{baseUrl}}/exames/amostras/tipo/swab
+Authorization: Bearer {{token}}
+
+
+### Obter Estatísticas de Amostras
+GET {{baseUrl}}/exames/amostras/stats
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "total": 50,
+#   "ativas": 45,
+#   "inativas": 5,
+#   "porTipo": {
+#     "sangue": 15,
+#     "urina": 10,
+#     "fezes": 8,
+#     "soro": 12,
+#     "plasma": 5
+#   }
+# }
+
+
+### Erro - Amostra Não Encontrada
+GET {{baseUrl}}/exames/amostras/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Amostra não encontrada",
+#   "error": "Not Found"
+# }

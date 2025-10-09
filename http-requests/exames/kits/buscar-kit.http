@@ -1,0 +1,81 @@
+### Buscar Kit por ID
+# Substitua {id} pelo UUID do kit
+GET {{baseUrl}}/exames/kits/{id}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "codigoInterno": "KIT-CHECKUP-001",
+#   "nomeKit": "Kit Check-up Básico",
+#   "tipoKit": "CHECK_UP",
+#   "statusKit": "ATIVO",
+#   "valorTotal": 350.00,
+#   "precoKit": 280.00,
+#   "kitExames": [ ... ],
+#   ...
+# }
+
+
+### Buscar Kit por Código Interno
+GET {{baseUrl}}/exames/kits/codigo/KIT-CHECKUP-001
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# { ... dados do kit ... }
+
+
+### Buscar Kits por Tipo - Check-up
+GET {{baseUrl}}/exames/kits/tipo/CHECK_UP
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... array de kits do tipo CHECK_UP ... ]
+
+
+### Buscar Kits por Tipo - Ocupacional
+GET {{baseUrl}}/exames/kits/tipo/OCUPACIONAL
+Authorization: Bearer {{token}}
+
+
+### Buscar Kits por Tipo - Pré-Natal
+GET {{baseUrl}}/exames/kits/tipo/PRE_NATAL
+Authorization: Bearer {{token}}
+
+
+### Obter Estatísticas de Kits
+GET {{baseUrl}}/exames/kits/stats
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "total": 15,
+#   "ativos": 12,
+#   "inativos": 2,
+#   "emRevisao": 1,
+#   "porTipo": {
+#     "CHECK_UP": 5,
+#     "OCUPACIONAL": 4,
+#     "PRE_NATAL": 3,
+#     "COM_DESCRICAO": 2,
+#     "PERSONALIZADO": 1
+#   },
+#   "valorTotalKits": 5250.00
+# }
+
+
+### Erro - Kit Não Encontrado
+GET {{baseUrl}}/exames/kits/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Kit não encontrado",
+#   "error": "Not Found"
+# }

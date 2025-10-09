@@ -1,0 +1,66 @@
+### Listar Todos os Kits
+GET {{baseUrl}}/exames/kits
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [
+#     {
+#       "id": "uuid",
+#       "codigoInterno": "KIT-CHECKUP-001",
+#       "nomeKit": "Kit Check-up Básico",
+#       "tipoKit": "CHECK_UP",
+#       "statusKit": "ATIVO",
+#       ...
+#     }
+#   ],
+#   "meta": {
+#     "total": 10,
+#     "page": 1,
+#     "limit": 10
+#   }
+# }
+
+
+### Listar Apenas Kits Ativos
+GET {{baseUrl}}/exames/kits/ativos
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [ ... array de kits com statusKit: "ATIVO" ... ]
+
+
+### Listar com Paginação
+GET {{baseUrl}}/exames/kits?page=1&limit=5
+Authorization: Bearer {{token}}
+
+
+### Filtrar por Tipo de Kit - Check-up
+GET {{baseUrl}}/exames/kits?tipoKit=CHECK_UP
+Authorization: Bearer {{token}}
+
+
+### Filtrar por Tipo - Ocupacional
+GET {{baseUrl}}/exames/kits?tipoKit=OCUPACIONAL
+Authorization: Bearer {{token}}
+
+
+### Filtrar por Tipo - Pré-Natal
+GET {{baseUrl}}/exames/kits?tipoKit=PRE_NATAL
+Authorization: Bearer {{token}}
+
+
+### Filtrar por Status
+GET {{baseUrl}}/exames/kits?statusKit=ATIVO
+Authorization: Bearer {{token}}
+
+
+### Buscar por Termo (nome ou código)
+GET {{baseUrl}}/exames/kits?search=check-up
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# Retorna kits que contenham "check-up" no nome ou código

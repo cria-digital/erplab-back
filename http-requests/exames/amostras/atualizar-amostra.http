@@ -1,0 +1,163 @@
+### Atualizar Informações Básicas da Amostra
+# Substitua {id} pelo UUID da amostra
+PATCH {{baseUrl}}/exames/amostras/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Sangue Total com EDTA K3",
+  "descricao": "Amostra de sangue total coletado em tubo com anticoagulante EDTA K3 - Atualizado",
+  "volumeMinimo": 2,
+  "volumeIdeal": 4
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "codigoInterno": "SANG-EDTA-001",
+#   "nome": "Sangue Total com EDTA K3",
+#   "descricao": "Amostra de sangue total coletado em tubo com anticoagulante EDTA K3 - Atualizado",
+#   "volumeMinimo": 2,
+#   "volumeIdeal": 4,
+#   ...
+# }
+
+
+### Atualizar Condições de Armazenamento
+PATCH {{baseUrl}}/exames/amostras/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "temperaturaArmazenamento": "congelado",
+  "temperaturaMin": -20,
+  "temperaturaMax": -10,
+  "prazoValidadeHoras": 720,
+  "condicoesArmazenamento": "Manter congelado a -20°C. Não descongelar.",
+  "sensibilidadeLuz": true
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... amostra atualizada ... }
+
+
+### Atualizar Preparo do Paciente
+PATCH {{baseUrl}}/exames/amostras/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "requerJejum": true,
+  "tempoJejum": 12,
+  "instrucoesPreparo Paciente": "Jejum de 12 horas. Suspender medicamentos conforme orientação médica.",
+  "restricoes": "Não consumir álcool 48h antes. Evitar atividade física intensa 24h antes."
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... amostra atualizada ... }
+
+
+### Atualizar Instruções de Coleta
+PATCH {{baseUrl}}/exames/amostras/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "instrucoesColeta": "Coletar sangue venoso por punção. Homogeneizar imediatamente após coleta por inversão suave 8-10 vezes. NÃO agitar vigorosamente.",
+  "materiaisNecessarios": ["Tubo EDTA K3", "Agulha calibre 21G", "Sistema a vácuo", "Álcool 70%", "Algodão estéril", "Garrote", "Luvas descartáveis"],
+  "recipientePadrao": "Tubo EDTA K3 (tampa roxa/lilás) 5mL"
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... amostra atualizada ... }
+
+
+### Atualizar Parâmetros de Centrifugação
+PATCH {{baseUrl}}/exames/amostras/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "requerCentrifugacao": true,
+  "tempoCentrifugacao": 15,
+  "rotacaoCentrifugacao": 3500
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... amostra atualizada ... }
+
+
+### Atualizar Instruções de Transporte
+PATCH {{baseUrl}}/exames/amostras/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "instrucoesTransporte": "Transportar em caixa térmica com gelo reciclável. Manter entre 2-8°C durante todo o transporte.",
+  "temperaturaTransporte": "refrigerado",
+  "embalagemEspecial": true,
+  "observacoesTransporte": "Proteger de luz solar. Não inclinar. Entregar no laboratório em até 4 horas."
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... amostra atualizada ... }
+
+
+### Atualizar Configurações de Etiqueta
+PATCH {{baseUrl}}/exames/amostras/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "corEtiqueta": "#8B00FF",
+  "codigoBarras": true,
+  "templateEtiqueta": "SANGUE-EDTA-K3"
+}
+
+### Expected Response
+# Status: 200 OK
+# { ... amostra atualizada ... }
+
+
+### Erro - Validação: Volume Mínimo Maior que Volume Ideal
+PATCH {{baseUrl}}/exames/amostras/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "volumeMinimo": 10,
+  "volumeIdeal": 5
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Volume mínimo não pode ser maior que volume ideal",
+#   "error": "Bad Request"
+# }
+
+
+### Erro - Validação: Temperatura Inválida
+PATCH {{baseUrl}}/exames/amostras/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "temperaturaMin": 10,
+  "temperaturaMax": 5
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Temperatura mínima deve ser menor que temperatura máxima",
+#   "error": "Bad Request"
+# }

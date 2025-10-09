@@ -1,0 +1,15 @@
+### Buscar Matriz por ID
+GET {{baseUrl}}/exames/matrizes/{id}
+Authorization: Bearer {{token}}
+
+### Buscar por Código Interno
+GET {{baseUrl}}/exames/matrizes/codigo/MAT-AUDIO-001
+Authorization: Bearer {{token}}
+
+### Buscar por Tipo
+GET {{baseUrl}}/exames/matrizes/tipo/hemograma
+Authorization: Bearer {{token}}
+
+### Erro - Matriz Não Encontrada
+GET {{baseUrl}}/exames/matrizes/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{token}}

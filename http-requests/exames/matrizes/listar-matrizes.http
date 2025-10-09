@@ -1,0 +1,23 @@
+### Listar Todas as Matrizes
+GET {{baseUrl}}/exames/matrizes
+Authorization: Bearer {{token}}
+
+### Listar Apenas Matrizes Ativas
+GET {{baseUrl}}/exames/matrizes/ativas
+Authorization: Bearer {{token}}
+
+### Listar Matrizes Padrão do Sistema
+GET {{baseUrl}}/exames/matrizes/padrao
+Authorization: Bearer {{token}}
+
+### Filtrar por Tipo de Matriz
+GET {{baseUrl}}/exames/matrizes/tipo/audiometria
+Authorization: Bearer {{token}}
+
+### Listar com Paginação
+GET {{baseUrl}}/exames/matrizes?page=1&limit=10
+Authorization: Bearer {{token}}
+
+### Obter Estatísticas
+GET {{baseUrl}}/exames/matrizes/stats
+Authorization: Bearer {{token}}

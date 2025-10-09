@@ -1,0 +1,20 @@
+### Duplicar Matriz
+POST {{baseUrl}}/exames/matrizes/{id}/duplicar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "novoCodigoInterno": "MAT-AUDIO-002",
+  "novoNome": "Matriz de Audiometria - Cópia",
+  "novaVersao": "1.0"
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "id": "novo-uuid",
+#   "codigoInterno": "MAT-AUDIO-002",
+#   "nome": "Matriz de Audiometria - Cópia",
+#   "versao": "1.0",
+#   "campos": [ ... todos os campos copiados ... ]
+# }

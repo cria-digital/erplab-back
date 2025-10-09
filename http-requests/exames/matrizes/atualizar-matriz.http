@@ -1,0 +1,27 @@
+### Atualizar Informações da Matriz
+PATCH {{baseUrl}}/exames/matrizes/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Matriz de Audiometria Atualizada",
+  "descricao": "Nova descrição",
+  "versao": "1.1"
+}
+
+### Atualizar Status
+PATCH {{baseUrl}}/exames/matrizes/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "status": "em_revisao"
+}
+
+### Ativar Matriz
+PATCH {{baseUrl}}/exames/matrizes/{id}/ativar
+Authorization: Bearer {{token}}
+
+### Desativar Matriz
+PATCH {{baseUrl}}/exames/matrizes/{id}/desativar
+Authorization: Bearer {{token}}

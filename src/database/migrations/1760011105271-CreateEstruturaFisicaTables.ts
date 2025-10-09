@@ -289,66 +289,71 @@ export class CreateEstruturaFisicaTables1760011105271
     await queryRunner.query(
       `CREATE TABLE "campos_personalizados_convenio" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "empresa_id" uuid NOT NULL, "nome_campo" character varying NOT NULL, "tipo_campo" character varying NOT NULL, "valor" character varying, "valor_json" json, "descricao" character varying, "obrigatorio" boolean NOT NULL DEFAULT false, "ativo" boolean NOT NULL DEFAULT true, "criado_em" TIMESTAMP NOT NULL DEFAULT now(), "atualizado_em" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_9155e5930177c1bcb06714020c1" PRIMARY KEY ("id"))`,
     );
-    await queryRunner.query(
-      `CREATE TABLE "laboratorios_metodos" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "laboratorio_id" uuid NOT NULL, "metodo_id" uuid NOT NULL, "validado" boolean NOT NULL DEFAULT false, "data_validacao" TIMESTAMP, "observacoes" text, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_ed743591a5d616dd3dadc957187" UNIQUE ("laboratorio_id", "metodo_id"), CONSTRAINT "PK_136be598d2ab033852085122c82" PRIMARY KEY ("id")); COMMENT ON COLUMN "laboratorios_metodos"."laboratorio_id" IS 'ID do laboratório'; COMMENT ON COLUMN "laboratorios_metodos"."metodo_id" IS 'ID do método'; COMMENT ON COLUMN "laboratorios_metodos"."validado" IS 'Indica se o laboratório está validado para usar este método'; COMMENT ON COLUMN "laboratorios_metodos"."data_validacao" IS 'Data de validação do laboratório para o método'; COMMENT ON COLUMN "laboratorios_metodos"."observacoes" IS 'Observações sobre o vínculo laboratório-método'`,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "IDX_7d18ea692673166969ee739164" ON "laboratorios_metodos" ("metodo_id") `,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "IDX_e1445f18d757962ef62fcd75ef" ON "laboratorios_metodos" ("laboratorio_id") `,
-    );
-    await queryRunner.query(
-      `CREATE TYPE "public"."metodos_status_enum" AS ENUM('ativo', 'inativo', 'em_validacao')`,
-    );
-    await queryRunner.query(
-      `CREATE TABLE "metodos" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "nome" character varying(255) NOT NULL, "codigo_interno" character varying(50) NOT NULL, "descricao" text, "status" "public"."metodos_status_enum" NOT NULL DEFAULT 'em_validacao', "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_808aa72c9cd62a9f8bb83691bdd" UNIQUE ("codigo_interno"), CONSTRAINT "PK_1b6527a88a7afc35d98723e8bdd" PRIMARY KEY ("id")); COMMENT ON COLUMN "metodos"."nome" IS 'Nome do método'; COMMENT ON COLUMN "metodos"."codigo_interno" IS 'Código interno do método (ex: MET123)'; COMMENT ON COLUMN "metodos"."descricao" IS 'Descrição detalhada do método'; COMMENT ON COLUMN "metodos"."status" IS 'Status do método'`,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "IDX_8a7c2084abeadd7660da4350ca" ON "metodos" ("nome") `,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "IDX_808aa72c9cd62a9f8bb83691bd" ON "metodos" ("codigo_interno") `,
-    );
-    await queryRunner.query(
-      `CREATE TYPE "public"."campos_matriz_tipo_campo_enum" AS ENUM('texto', 'numero', 'decimal', 'boolean', 'data', 'hora', 'select', 'radio', 'checkbox', 'textarea', 'tabela', 'imagem', 'calculado', 'grupo')`,
-    );
-    await queryRunner.query(
-      `CREATE TYPE "public"."campos_matriz_unidade_medida_enum" AS ENUM('dB', 'Hz', 'mmHg', 'mL', 'g/dL', 'mg/dL', 'mm', 'cm', 'kg', '%', 'bpm', 'score', 'personalizada')`,
-    );
-    await queryRunner.query(
-      `CREATE TABLE "campos_matriz" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "matriz_id" uuid NOT NULL, "codigo_campo" character varying(100) NOT NULL, "label" character varying(255) NOT NULL, "tipo_campo" "public"."campos_matriz_tipo_campo_enum" NOT NULL, "placeholder" character varying(255), "descricao" text, "opcoes" jsonb, "valor_padrao" character varying(255), "unidade_medida" "public"."campos_matriz_unidade_medida_enum", "unidade_medida_customizada" character varying(50), "valor_referencia_min" numeric(15,5), "valor_referencia_max" numeric(15,5), "texto_referencia" character varying(500), "obrigatorio" boolean NOT NULL DEFAULT false, "valor_min" numeric(15,5), "valor_max" numeric(15,5), "mascara" character varying(100), "regex_validacao" character varying(500), "mensagem_validacao" character varying(255), "formula_calculo" text, "campos_dependentes" jsonb, "ordem_exibicao" integer NOT NULL DEFAULT '0', "linha" integer, "coluna" integer, "largura" integer, "visivel" boolean NOT NULL DEFAULT true, "somente_leitura" boolean NOT NULL DEFAULT false, "destacar_alterado" boolean NOT NULL DEFAULT true, "grupo" character varying(100), "secao" character varying(100), "configuracoes" jsonb, "ativo" boolean NOT NULL DEFAULT true, "criado_em" TIMESTAMP NOT NULL DEFAULT now(), "atualizado_em" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_362da5d8736c87f89499c397e66" PRIMARY KEY ("id")); COMMENT ON COLUMN "campos_matriz"."matriz_id" IS 'ID da matriz à qual este campo pertence'; COMMENT ON COLUMN "campos_matriz"."codigo_campo" IS 'Código único do campo dentro da matriz (ex: audio_od_500hz)'; COMMENT ON COLUMN "campos_matriz"."label" IS 'Rótulo/label do campo (ex: Orelha Direita 500Hz)'; COMMENT ON COLUMN "campos_matriz"."tipo_campo" IS 'Tipo do campo'; COMMENT ON COLUMN "campos_matriz"."placeholder" IS 'Texto de placeholder'; COMMENT ON COLUMN "campos_matriz"."descricao" IS 'Descrição/ajuda do campo'; COMMENT ON COLUMN "campos_matriz"."opcoes" IS 'Opções para campos select/radio/checkbox (array de {value, label})'; COMMENT ON COLUMN "campos_matriz"."valor_padrao" IS 'Valor padrão do campo'; COMMENT ON COLUMN "campos_matriz"."unidade_medida" IS 'Unidade de medida do campo'; COMMENT ON COLUMN "campos_matriz"."unidade_medida_customizada" IS 'Unidade de medida customizada (quando unidadeMedida = PERSONALIZADA)'; COMMENT ON COLUMN "campos_matriz"."valor_referencia_min" IS 'Valor mínimo de referência'; COMMENT ON COLUMN "campos_matriz"."valor_referencia_max" IS 'Valor máximo de referência'; COMMENT ON COLUMN "campos_matriz"."texto_referencia" IS 'Texto descritivo dos valores de referência'; COMMENT ON COLUMN "campos_matriz"."obrigatorio" IS 'Se o campo é obrigatório'; COMMENT ON COLUMN "campos_matriz"."valor_min" IS 'Valor mínimo permitido (validação)'; COMMENT ON COLUMN "campos_matriz"."valor_max" IS 'Valor máximo permitido (validação)'; COMMENT ON COLUMN "campos_matriz"."mascara" IS 'Máscara de formatação (ex: ##/##/####)'; COMMENT ON COLUMN "campos_matriz"."regex_validacao" IS 'Expressão regular para validação customizada'; COMMENT ON COLUMN "campos_matriz"."mensagem_validacao" IS 'Mensagem de erro de validação customizada'; COMMENT ON COLUMN "campos_matriz"."formula_calculo" IS 'Fórmula para cálculo automático (ex: {campo1} + {campo2} * 2)'; COMMENT ON COLUMN "campos_matriz"."campos_dependentes" IS 'Array de IDs de campos dos quais este depende para cálculo'; COMMENT ON COLUMN "campos_matriz"."ordem_exibicao" IS 'Ordem de exibição do campo'; COMMENT ON COLUMN "campos_matriz"."linha" IS 'Linha no grid de layout (para posicionamento)'; COMMENT ON COLUMN "campos_matriz"."coluna" IS 'Coluna no grid de layout (para posicionamento)'; COMMENT ON COLUMN "campos_matriz"."largura" IS 'Largura do campo em colunas do grid'; COMMENT ON COLUMN "campos_matriz"."visivel" IS 'Se o campo é visível'; COMMENT ON COLUMN "campos_matriz"."somente_leitura" IS 'Se o campo é somente leitura (calculado ou bloqueado)'; COMMENT ON COLUMN "campos_matriz"."destacar_alterado" IS 'Se deve destacar quando valor está fora da referência'; COMMENT ON COLUMN "campos_matriz"."grupo" IS 'Nome do grupo ao qual o campo pertence (para organização)'; COMMENT ON COLUMN "campos_matriz"."secao" IS 'Nome da seção ao qual o campo pertence (nível acima do grupo)'; COMMENT ON COLUMN "campos_matriz"."configuracoes" IS 'Configurações adicionais específicas do campo'; COMMENT ON COLUMN "campos_matriz"."ativo" IS 'Se o campo está ativo'; COMMENT ON COLUMN "campos_matriz"."criado_em" IS 'Data de criação do registro'; COMMENT ON COLUMN "campos_matriz"."atualizado_em" IS 'Data da última atualização'`,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "IDX_512435525fae90f76085881327" ON "campos_matriz" ("ordem_exibicao") `,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "IDX_84987dd1407e9794c40ee1105a" ON "campos_matriz" ("codigo_campo") `,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "IDX_2d05ae8e0cccf6f741a2d1934e" ON "campos_matriz" ("matriz_id") `,
-    );
-    await queryRunner.query(
-      `CREATE TYPE "public"."matrizes_exames_tipo_matriz_enum" AS ENUM('audiometria', 'densitometria', 'eletrocardiograma', 'hemograma', 'espirometria', 'acuidade_visual', 'personalizada')`,
-    );
-    await queryRunner.query(
-      `CREATE TYPE "public"."matrizes_exames_status_enum" AS ENUM('ativo', 'inativo', 'em_desenvolvimento')`,
-    );
-    await queryRunner.query(
-      `CREATE TABLE "matrizes_exames" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "codigo_interno" character varying(50) NOT NULL, "nome" character varying(255) NOT NULL, "descricao" text, "tipo_matriz" "public"."matrizes_exames_tipo_matriz_enum" NOT NULL, "tipo_exame_id" uuid, "exame_id" uuid, "versao" character varying(20) NOT NULL DEFAULT '1.0', "padrao_sistema" boolean NOT NULL DEFAULT false, "tem_calculo_automatico" boolean NOT NULL DEFAULT false, "formulas_calculo" jsonb, "layout_visualizacao" jsonb, "template_impressao" text, "requer_assinatura_digital" boolean NOT NULL DEFAULT true, "permite_edicao_apos_liberacao" boolean NOT NULL DEFAULT false, "regras_validacao" jsonb, "instrucoes_preenchimento" text, "observacoes" text, "referencias_bibliograficas" text, "status" "public"."matrizes_exames_status_enum" NOT NULL DEFAULT 'ativo', "ativo" boolean NOT NULL DEFAULT true, "criado_em" TIMESTAMP NOT NULL DEFAULT now(), "atualizado_em" TIMESTAMP NOT NULL DEFAULT now(), "criado_por" uuid, "atualizado_por" uuid, CONSTRAINT "UQ_42f89fd5f1738e2e54f25c0955f" UNIQUE ("codigo_interno"), CONSTRAINT "PK_690c83677f8194aebe3504238aa" PRIMARY KEY ("id")); COMMENT ON COLUMN "matrizes_exames"."codigo_interno" IS 'Código interno único da matriz (ex: MTZ-AUDIO-001)'; COMMENT ON COLUMN "matrizes_exames"."nome" IS 'Nome da matriz (ex: Audiometria Tonal Padrão)'; COMMENT ON COLUMN "matrizes_exames"."descricao" IS 'Descrição detalhada da matriz e sua finalidade'; COMMENT ON COLUMN "matrizes_exames"."tipo_matriz" IS 'Tipo/categoria da matriz'; COMMENT ON COLUMN "matrizes_exames"."tipo_exame_id" IS 'ID do tipo de exame ao qual esta matriz pertence'; COMMENT ON COLUMN "matrizes_exames"."exame_id" IS 'ID do exame específico (opcional, para matrizes exclusivas)'; COMMENT ON COLUMN "matrizes_exames"."versao" IS 'Versão da matriz (para controle de mudanças)'; COMMENT ON COLUMN "matrizes_exames"."padrao_sistema" IS 'Se é uma matriz padrão do sistema (não pode ser deletada)'; COMMENT ON COLUMN "matrizes_exames"."tem_calculo_automatico" IS 'Se possui cálculos automáticos entre campos'; COMMENT ON COLUMN "matrizes_exames"."formulas_calculo" IS 'Fórmulas de cálculo em JSON (campo_destino: formula)'; COMMENT ON COLUMN "matrizes_exames"."layout_visualizacao" IS 'Configurações de layout para visualização (grid, posicionamento)'; COMMENT ON COLUMN "matrizes_exames"."template_impressao" IS 'Template HTML/Handlebars para impressão do laudo'; COMMENT ON COLUMN "matrizes_exames"."requer_assinatura_digital" IS 'Se requer assinatura digital do responsável técnico'; COMMENT ON COLUMN "matrizes_exames"."permite_edicao_apos_liberacao" IS 'Se permite edição após liberação do resultado'; COMMENT ON COLUMN "matrizes_exames"."regras_validacao" IS 'Regras de validação customizadas em JSON'; COMMENT ON COLUMN "matrizes_exames"."instrucoes_preenchimento" IS 'Instruções para preenchimento da matriz'; COMMENT ON COLUMN "matrizes_exames"."observacoes" IS 'Observações gerais sobre a matriz'; COMMENT ON COLUMN "matrizes_exames"."referencias_bibliograficas" IS 'Referências bibliográficas e normas técnicas'; COMMENT ON COLUMN "matrizes_exames"."status" IS 'Status da matriz'; COMMENT ON COLUMN "matrizes_exames"."ativo" IS 'Se a matriz está ativa (soft delete)'; COMMENT ON COLUMN "matrizes_exames"."criado_em" IS 'Data de criação do registro'; COMMENT ON COLUMN "matrizes_exames"."atualizado_em" IS 'Data da última atualização'; COMMENT ON COLUMN "matrizes_exames"."criado_por" IS 'ID do usuário que criou o registro'; COMMENT ON COLUMN "matrizes_exames"."atualizado_por" IS 'ID do usuário que atualizou o registro'`,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "IDX_f6db3a4dfb5633ff6cab58234e" ON "matrizes_exames" ("tipo_exame_id") `,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "IDX_e41a58c56f5b258bd82da5867e" ON "matrizes_exames" ("tipo_matriz") `,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "IDX_3fc41a143f193d646bb0b1062b" ON "matrizes_exames" ("nome") `,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "IDX_42f89fd5f1738e2e54f25c0955" ON "matrizes_exames" ("codigo_interno") `,
-    );
+
+    // REMOVED: As tabelas 'laboratorios_metodos' e 'metodos' já foram criadas pela migração
+    // CreateMetodosTables1759169110387. Removido para evitar conflito.
+    // await queryRunner.query(
+    //   `CREATE TABLE "laboratorios_metodos" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "laboratorio_id" uuid NOT NULL, "metodo_id" uuid NOT NULL, "validado" boolean NOT NULL DEFAULT false, "data_validacao" TIMESTAMP, "observacoes" text, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_ed743591a5d616dd3dadc957187" UNIQUE ("laboratorio_id", "metodo_id"), CONSTRAINT "PK_136be598d2ab033852085122c82" PRIMARY KEY ("id")); COMMENT ON COLUMN "laboratorios_metodos"."laboratorio_id" IS 'ID do laboratório'; COMMENT ON COLUMN "laboratorios_metodos"."metodo_id" IS 'ID do método'; COMMENT ON COLUMN "laboratorios_metodos"."validado" IS 'Indica se o laboratório está validado para usar este método'; COMMENT ON COLUMN "laboratorios_metodos"."data_validacao" IS 'Data de validação do laboratório para o método'; COMMENT ON COLUMN "laboratorios_metodos"."observacoes" IS 'Observações sobre o vínculo laboratório-método'`,
+    // );
+    // await queryRunner.query(
+    //   `CREATE INDEX "IDX_7d18ea692673166969ee739164" ON "laboratorios_metodos" ("metodo_id") `,
+    // );
+    // await queryRunner.query(
+    //   `CREATE INDEX "IDX_e1445f18d757962ef62fcd75ef" ON "laboratorios_metodos" ("laboratorio_id") `,
+    // );
+    // await queryRunner.query(
+    //   `CREATE TYPE "public"."metodos_status_enum" AS ENUM('ativo', 'inativo', 'em_validacao')`,
+    // );
+    // await queryRunner.query(
+    //   `CREATE TABLE "metodos" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "nome" character varying(255) NOT NULL, "codigo_interno" character varying(50) NOT NULL, "descricao" text, "status" "public"."metodos_status_enum" NOT NULL DEFAULT 'em_validacao', "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_808aa72c9cd62a9f8bb83691bdd" UNIQUE ("codigo_interno"), CONSTRAINT "PK_1b6527a88a7afc35d98723e8bdd" PRIMARY KEY ("id")); COMMENT ON COLUMN "metodos"."nome" IS 'Nome do método'; COMMENT ON COLUMN "metodos"."codigo_interno" IS 'Código interno do método (ex: MET123)'; COMMENT ON COLUMN "metodos"."descricao" IS 'Descrição detalhada do método'; COMMENT ON COLUMN "metodos"."status" IS 'Status do método'`,
+    // );
+    // await queryRunner.query(
+    //   `CREATE INDEX "IDX_8a7c2084abeadd7660da4350ca" ON "metodos" ("nome") `,
+    // );
+    // await queryRunner.query(
+    //   `CREATE INDEX "IDX_808aa72c9cd62a9f8bb83691bd" ON "metodos" ("codigo_interno") `,
+    // );
+    // REMOVED: As tabelas 'matrizes_exames' e 'campos_matriz' já foram criadas pela migração
+    // CreateMatrizesExamesTable1728404000000. Removido para evitar conflito.
+    // await queryRunner.query(
+    //   `CREATE TYPE "public"."campos_matriz_tipo_campo_enum" AS ENUM('texto', 'numero', 'decimal', 'boolean', 'data', 'hora', 'select', 'radio', 'checkbox', 'textarea', 'tabela', 'imagem', 'calculado', 'grupo')`,
+    // );
+    // await queryRunner.query(
+    //   `CREATE TYPE "public"."campos_matriz_unidade_medida_enum" AS ENUM('dB', 'Hz', 'mmHg', 'mL', 'g/dL', 'mg/dL', 'mm', 'cm', 'kg', '%', 'bpm', 'score', 'personalizada')`,
+    // );
+    // await queryRunner.query(
+    //   `CREATE TABLE "campos_matriz" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "matriz_id" uuid NOT NULL, "codigo_campo" character varying(100) NOT NULL, "label" character varying(255) NOT NULL, "tipo_campo" "public"."campos_matriz_tipo_campo_enum" NOT NULL, "placeholder" character varying(255), "descricao" text, "opcoes" jsonb, "valor_padrao" character varying(255), "unidade_medida" "public"."campos_matriz_unidade_medida_enum", "unidade_medida_customizada" character varying(50), "valor_referencia_min" numeric(15,5), "valor_referencia_max" numeric(15,5), "texto_referencia" character varying(500), "obrigatorio" boolean NOT NULL DEFAULT false, "valor_min" numeric(15,5), "valor_max" numeric(15,5), "mascara" character varying(100), "regex_validacao" character varying(500), "mensagem_validacao" character varying(255), "formula_calculo" text, "campos_dependentes" jsonb, "ordem_exibicao" integer NOT NULL DEFAULT '0', "linha" integer, "coluna" integer, "largura" integer, "visivel" boolean NOT NULL DEFAULT true, "somente_leitura" boolean NOT NULL DEFAULT false, "destacar_alterado" boolean NOT NULL DEFAULT true, "grupo" character varying(100), "secao" character varying(100), "configuracoes" jsonb, "ativo" boolean NOT NULL DEFAULT true, "criado_em" TIMESTAMP NOT NULL DEFAULT now(), "atualizado_em" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_362da5d8736c87f89499c397e66" PRIMARY KEY ("id")); COMMENT ON COLUMN "campos_matriz"."matriz_id" IS 'ID da matriz à qual este campo pertence'; COMMENT ON COLUMN "campos_matriz"."codigo_campo" IS 'Código único do campo dentro da matriz (ex: audio_od_500hz)'; COMMENT ON COLUMN "campos_matriz"."label" IS 'Rótulo/label do campo (ex: Orelha Direita 500Hz)'; COMMENT ON COLUMN "campos_matriz"."tipo_campo" IS 'Tipo do campo'; COMMENT ON COLUMN "campos_matriz"."placeholder" IS 'Texto de placeholder'; COMMENT ON COLUMN "campos_matriz"."descricao" IS 'Descrição/ajuda do campo'; COMMENT ON COLUMN "campos_matriz"."opcoes" IS 'Opções para campos select/radio/checkbox (array de {value, label})'; COMMENT ON COLUMN "campos_matriz"."valor_padrao" IS 'Valor padrão do campo'; COMMENT ON COLUMN "campos_matriz"."unidade_medida" IS 'Unidade de medida do campo'; COMMENT ON COLUMN "campos_matriz"."unidade_medida_customizada" IS 'Unidade de medida customizada (quando unidadeMedida = PERSONALIZADA)'; COMMENT ON COLUMN "campos_matriz"."valor_referencia_min" IS 'Valor mínimo de referência'; COMMENT ON COLUMN "campos_matriz"."valor_referencia_max" IS 'Valor máximo de referência'; COMMENT ON COLUMN "campos_matriz"."texto_referencia" IS 'Texto descritivo dos valores de referência'; COMMENT ON COLUMN "campos_matriz"."obrigatorio" IS 'Se o campo é obrigatório'; COMMENT ON COLUMN "campos_matriz"."valor_min" IS 'Valor mínimo permitido (validação)'; COMMENT ON COLUMN "campos_matriz"."valor_max" IS 'Valor máximo permitido (validação)'; COMMENT ON COLUMN "campos_matriz"."mascara" IS 'Máscara de formatação (ex: ##/##/####)'; COMMENT ON COLUMN "campos_matriz"."regex_validacao" IS 'Expressão regular para validação customizada'; COMMENT ON COLUMN "campos_matriz"."mensagem_validacao" IS 'Mensagem de erro de validação customizada'; COMMENT ON COLUMN "campos_matriz"."formula_calculo" IS 'Fórmula para cálculo automático (ex: {campo1} + {campo2} * 2)'; COMMENT ON COLUMN "campos_matriz"."campos_dependentes" IS 'Array de IDs de campos dos quais este depende para cálculo'; COMMENT ON COLUMN "campos_matriz"."ordem_exibicao" IS 'Ordem de exibição do campo'; COMMENT ON COLUMN "campos_matriz"."linha" IS 'Linha no grid de layout (para posicionamento)'; COMMENT ON COLUMN "campos_matriz"."coluna" IS 'Coluna no grid de layout (para posicionamento)'; COMMENT ON COLUMN "campos_matriz"."largura" IS 'Largura do campo em colunas do grid'; COMMENT ON COLUMN "campos_matriz"."visivel" IS 'Se o campo é visível'; COMMENT ON COLUMN "campos_matriz"."somente_leitura" IS 'Se o campo é somente leitura (calculado ou bloqueado)'; COMMENT ON COLUMN "campos_matriz"."destacar_alterado" IS 'Se deve destacar quando valor está fora da referência'; COMMENT ON COLUMN "campos_matriz"."grupo" IS 'Nome do grupo ao qual o campo pertence (para organização)'; COMMENT ON COLUMN "campos_matriz"."secao" IS 'Nome da seção ao qual o campo pertence (nível acima do grupo)'; COMMENT ON COLUMN "campos_matriz"."configuracoes" IS 'Configurações adicionais específicas do campo'; COMMENT ON COLUMN "campos_matriz"."ativo" IS 'Se o campo está ativo'; COMMENT ON COLUMN "campos_matriz"."criado_em" IS 'Data de criação do registro'; COMMENT ON COLUMN "campos_matriz"."atualizado_em" IS 'Data da última atualização'`,
+    // );
+    // await queryRunner.query(
+    //   `CREATE INDEX "IDX_512435525fae90f76085881327" ON "campos_matriz" ("ordem_exibicao") `,
+    // );
+    // await queryRunner.query(
+    //   `CREATE INDEX "IDX_84987dd1407e9794c40ee1105a" ON "campos_matriz" ("codigo_campo") `,
+    // );
+    // await queryRunner.query(
+    //   `CREATE INDEX "IDX_2d05ae8e0cccf6f741a2d1934e" ON "campos_matriz" ("matriz_id") `,
+    // );
+    // await queryRunner.query(
+    //   `CREATE TYPE "public"."matrizes_exames_tipo_matriz_enum" AS ENUM('audiometria', 'densitometria', 'eletrocardiograma', 'hemograma', 'espirometria', 'acuidade_visual', 'personalizada')`,
+    // );
+    // await queryRunner.query(
+    //   `CREATE TYPE "public"."matrizes_exames_status_enum" AS ENUM('ativo', 'inativo', 'em_desenvolvimento')`,
+    // );
+    // await queryRunner.query(
+    //   `CREATE TABLE "matrizes_exames" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "codigo_interno" character varying(50) NOT NULL, "nome" character varying(255) NOT NULL, "descricao" text, "tipo_matriz" "public"."matrizes_exames_tipo_matriz_enum" NOT NULL, "tipo_exame_id" uuid, "exame_id" uuid, "versao" character varying(20) NOT NULL DEFAULT '1.0', "padrao_sistema" boolean NOT NULL DEFAULT false, "tem_calculo_automatico" boolean NOT NULL DEFAULT false, "formulas_calculo" jsonb, "layout_visualizacao" jsonb, "template_impressao" text, "requer_assinatura_digital" boolean NOT NULL DEFAULT true, "permite_edicao_apos_liberacao" boolean NOT NULL DEFAULT false, "regras_validacao" jsonb, "instrucoes_preenchimento" text, "observacoes" text, "referencias_bibliograficas" text, "status" "public"."matrizes_exames_status_enum" NOT NULL DEFAULT 'ativo', "ativo" boolean NOT NULL DEFAULT true, "criado_em" TIMESTAMP NOT NULL DEFAULT now(), "atualizado_em" TIMESTAMP NOT NULL DEFAULT now(), "criado_por" uuid, "atualizado_por" uuid, CONSTRAINT "UQ_42f89fd5f1738e2e54f25c0955f" UNIQUE ("codigo_interno"), CONSTRAINT "PK_690c83677f8194aebe3504238aa" PRIMARY KEY ("id")); COMMENT ON COLUMN "matrizes_exames"."codigo_interno" IS 'Código interno único da matriz (ex: MTZ-AUDIO-001)'; COMMENT ON COLUMN "matrizes_exames"."nome" IS 'Nome da matriz (ex: Audiometria Tonal Padrão)'; COMMENT ON COLUMN "matrizes_exames"."descricao" IS 'Descrição detalhada da matriz e sua finalidade'; COMMENT ON COLUMN "matrizes_exames"."tipo_matriz" IS 'Tipo/categoria da matriz'; COMMENT ON COLUMN "matrizes_exames"."tipo_exame_id" IS 'ID do tipo de exame ao qual esta matriz pertence'; COMMENT ON COLUMN "matrizes_exames"."exame_id" IS 'ID do exame específico (opcional, para matrizes exclusivas)'; COMMENT ON COLUMN "matrizes_exames"."versao" IS 'Versão da matriz (para controle de mudanças)'; COMMENT ON COLUMN "matrizes_exames"."padrao_sistema" IS 'Se é uma matriz padrão do sistema (não pode ser deletada)'; COMMENT ON COLUMN "matrizes_exames"."tem_calculo_automatico" IS 'Se possui cálculos automáticos entre campos'; COMMENT ON COLUMN "matrizes_exames"."formulas_calculo" IS 'Fórmulas de cálculo em JSON (campo_destino: formula)'; COMMENT ON COLUMN "matrizes_exames"."layout_visualizacao" IS 'Configurações de layout para visualização (grid, posicionamento)'; COMMENT ON COLUMN "matrizes_exames"."template_impressao" IS 'Template HTML/Handlebars para impressão do laudo'; COMMENT ON COLUMN "matrizes_exames"."requer_assinatura_digital" IS 'Se requer assinatura digital do responsável técnico'; COMMENT ON COLUMN "matrizes_exames"."permite_edicao_apos_liberacao" IS 'Se permite edição após liberação do resultado'; COMMENT ON COLUMN "matrizes_exames"."regras_validacao" IS 'Regras de validação customizadas em JSON'; COMMENT ON COLUMN "matrizes_exames"."instrucoes_preenchimento" IS 'Instruções para preenchimento da matriz'; COMMENT ON COLUMN "matrizes_exames"."observacoes" IS 'Observações gerais sobre a matriz'; COMMENT ON COLUMN "matrizes_exames"."referencias_bibliograficas" IS 'Referências bibliográficas e normas técnicas'; COMMENT ON COLUMN "matrizes_exames"."status" IS 'Status da matriz'; COMMENT ON COLUMN "matrizes_exames"."ativo" IS 'Se a matriz está ativa (soft delete)'; COMMENT ON COLUMN "matrizes_exames"."criado_em" IS 'Data de criação do registro'; COMMENT ON COLUMN "matrizes_exames"."atualizado_em" IS 'Data da última atualização'; COMMENT ON COLUMN "matrizes_exames"."criado_por" IS 'ID do usuário que criou o registro'; COMMENT ON COLUMN "matrizes_exames"."atualizado_por" IS 'ID do usuário que atualizou o registro'`,
+    // );
+    // await queryRunner.query(
+    //   `CREATE INDEX "IDX_f6db3a4dfb5633ff6cab58234e" ON "matrizes_exames" ("tipo_exame_id") `,
+    // );
+    // await queryRunner.query(
+    //   `CREATE INDEX "IDX_e41a58c56f5b258bd82da5867e" ON "matrizes_exames" ("tipo_matriz") `,
+    // );
+    // await queryRunner.query(
+    //   `CREATE INDEX "IDX_3fc41a143f193d646bb0b1062b" ON "matrizes_exames" ("nome") `,
+    // );
+    // await queryRunner.query(
+    //   `CREATE INDEX "IDX_42f89fd5f1738e2e54f25c0955" ON "matrizes_exames" ("codigo_interno") `,
+    // );
     await queryRunner.query(
       `CREATE TYPE "public"."alternativas_campo_status_enum" AS ENUM('ativa', 'inativa')`,
     );
@@ -421,36 +426,41 @@ export class CreateEstruturaFisicaTables1760011105271
     await queryRunner.query(
       `CREATE UNIQUE INDEX "IDX_a124ea8ed8eaee5a435f05f7ac" ON "respostas_campo" ("resposta_formulario_id", "campo_formulario_id") `,
     );
-    await queryRunner.query(
-      `CREATE TYPE "public"."amostras_tipo_amostra_enum" AS ENUM('sangue', 'soro', 'plasma', 'urina', 'fezes', 'swab', 'liquor', 'escarro', 'tecido', 'saliva', 'secrecao', 'outros')`,
-    );
-    await queryRunner.query(
-      `CREATE TYPE "public"."amostras_unidade_volume_enum" AS ENUM('mL', 'L', 'g', 'mg', 'unidade')`,
-    );
-    await queryRunner.query(
-      `CREATE TYPE "public"."amostras_temperatura_armazenamento_enum" AS ENUM('ambiente', 'refrigerado', 'congelado', 'ultracongelado', 'nitrogenio', 'especial')`,
-    );
-    await queryRunner.query(
-      `CREATE TYPE "public"."amostras_temperatura_transporte_enum" AS ENUM('ambiente', 'refrigerado', 'congelado', 'gelo_seco', 'nitrogenio')`,
-    );
-    await queryRunner.query(
-      `CREATE TABLE "amostras" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "codigo_interno" character varying(50) NOT NULL, "nome" character varying(255) NOT NULL, "descricao" text, "tipo_amostra" "public"."amostras_tipo_amostra_enum" NOT NULL, "recipiente_padrao" character varying(255), "cor_tampa" character varying(50), "volume_minimo" numeric(10,2), "volume_ideal" numeric(10,2), "unidade_volume" "public"."amostras_unidade_volume_enum", "instrucoes_coleta" text, "materiais_necessarios" jsonb, "requer_jejum" boolean NOT NULL DEFAULT false, "tempo_jejum" integer, "instrucoes_preparo_paciente" text, "restricoes" text, "temperatura_armazenamento" "public"."amostras_temperatura_armazenamento_enum", "temperatura_min" numeric(5,2), "temperatura_max" numeric(5,2), "prazo_validade_horas" integer, "condicoes_armazenamento" text, "sensibilidade_luz" boolean NOT NULL DEFAULT false, "requer_centrifugacao" boolean NOT NULL DEFAULT false, "tempo_centrifugacao" integer, "rotacao_centrifugacao" integer, "instrucoes_transporte" text, "temperatura_transporte" "public"."amostras_temperatura_transporte_enum", "embalagem_especial" boolean NOT NULL DEFAULT false, "observacoes_transporte" text, "cor_etiqueta" character varying(7), "codigo_barras" boolean NOT NULL DEFAULT true, "template_etiqueta" text, "exige_autorizacao" boolean NOT NULL DEFAULT false, "observacoes" text, "ativo" boolean NOT NULL DEFAULT true, "empresa_id" uuid, "criado_por" uuid NOT NULL, "atualizado_por" uuid NOT NULL, "criado_em" TIMESTAMP NOT NULL DEFAULT now(), "atualizado_em" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_88e38233ec5fb69e0c0e9c98510" UNIQUE ("codigo_interno"), CONSTRAINT "PK_2f390d860d415aa51548f236107" PRIMARY KEY ("id")); COMMENT ON COLUMN "amostras"."codigo_interno" IS 'Código único da amostra (ex: SANG-EDTA-001)'; COMMENT ON COLUMN "amostras"."nome" IS 'Nome da amostra (ex: Sangue Total com EDTA)'; COMMENT ON COLUMN "amostras"."descricao" IS 'Descrição detalhada da amostra'; COMMENT ON COLUMN "amostras"."tipo_amostra" IS 'Tipo/categoria da amostra'; COMMENT ON COLUMN "amostras"."recipiente_padrao" IS 'Tipo de recipiente padrão (ex: Tubo EDTA, Frasco estéril)'; COMMENT ON COLUMN "amostras"."cor_tampa" IS 'Cor da tampa do tubo (roxa, vermelha, amarela, etc)'; COMMENT ON COLUMN "amostras"."volume_minimo" IS 'Volume mínimo necessário'; COMMENT ON COLUMN "amostras"."volume_ideal" IS 'Volume ideal recomendado'; COMMENT ON COLUMN "amostras"."unidade_volume" IS 'Unidade de medida do volume'; COMMENT ON COLUMN "amostras"."instrucoes_coleta" IS 'Instruções detalhadas de coleta'; COMMENT ON COLUMN "amostras"."materiais_necessarios" IS 'Array de materiais necessários para coleta'; COMMENT ON COLUMN "amostras"."requer_jejum" IS 'Se a coleta requer jejum do paciente'; COMMENT ON COLUMN "amostras"."tempo_jejum" IS 'Tempo de jejum necessário em horas'; COMMENT ON COLUMN "amostras"."instrucoes_preparo_paciente" IS 'Instruções de preparo do paciente (dieta, medicamentos, etc)'; COMMENT ON COLUMN "amostras"."restricoes" IS 'Restrições (não fumar, não beber álcool, etc)'; COMMENT ON COLUMN "amostras"."temperatura_armazenamento" IS 'Faixa de temperatura de armazenamento'; COMMENT ON COLUMN "amostras"."temperatura_min" IS 'Temperatura mínima de armazenamento em °C'; COMMENT ON COLUMN "amostras"."temperatura_max" IS 'Temperatura máxima de armazenamento em °C'; COMMENT ON COLUMN "amostras"."prazo_validade_horas" IS 'Prazo de validade da amostra em horas'; COMMENT ON COLUMN "amostras"."condicoes_armazenamento" IS 'Condições especiais de armazenamento'; COMMENT ON COLUMN "amostras"."sensibilidade_luz" IS 'Se a amostra é sensível à luz (proteger)'; COMMENT ON COLUMN "amostras"."requer_centrifugacao" IS 'Se a amostra requer centrifugação'; COMMENT ON COLUMN "amostras"."tempo_centrifugacao" IS 'Tempo de centrifugação em minutos'; COMMENT ON COLUMN "amostras"."rotacao_centrifugacao" IS 'Rotação da centrífuga em RPM'; COMMENT ON COLUMN "amostras"."instrucoes_transporte" IS 'Instruções de transporte'; COMMENT ON COLUMN "amostras"."temperatura_transporte" IS 'Condição de temperatura para transporte'; COMMENT ON COLUMN "amostras"."embalagem_especial" IS 'Se requer embalagem especial'; COMMENT ON COLUMN "amostras"."observacoes_transporte" IS 'Observações sobre transporte'; COMMENT ON COLUMN "amostras"."cor_etiqueta" IS 'Cor da etiqueta em formato hexadecimal (ex: #FF0000)'; COMMENT ON COLUMN "amostras"."codigo_barras" IS 'Se deve gerar código de barras na etiqueta'; COMMENT ON COLUMN "amostras"."template_etiqueta" IS 'Template customizado para impressão de etiqueta'; COMMENT ON COLUMN "amostras"."exige_autorizacao" IS 'Se a coleta exige autorização especial'; COMMENT ON COLUMN "amostras"."observacoes" IS 'Observações gerais'; COMMENT ON COLUMN "amostras"."ativo" IS 'Se a amostra está ativa'; COMMENT ON COLUMN "amostras"."empresa_id" IS 'ID da empresa (multi-tenant)'; COMMENT ON COLUMN "amostras"."criado_por" IS 'ID do usuário que criou o registro'; COMMENT ON COLUMN "amostras"."atualizado_por" IS 'ID do usuário que atualizou o registro'; COMMENT ON COLUMN "amostras"."criado_em" IS 'Data de criação do registro'; COMMENT ON COLUMN "amostras"."atualizado_em" IS 'Data da última atualização'`,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "IDX_24833a3b712fb7e53435edd318" ON "amostras" ("empresa_id") `,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "IDX_5640f3bce2ce98e78057d6f0b2" ON "amostras" ("tipo_amostra") `,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "IDX_f7b65b2693ca98424dd580927c" ON "amostras" ("nome") `,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "IDX_88e38233ec5fb69e0c0e9c9851" ON "amostras" ("codigo_interno") `,
-    );
-    await queryRunner.query(
-      `CREATE TABLE "preferencias_usuario" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "usuario_id" uuid NOT NULL, "notificar_email" boolean NOT NULL DEFAULT true, "notificar_whatsapp" boolean NOT NULL DEFAULT false, "notificar_sms" boolean NOT NULL DEFAULT false, "notificar_sistema" boolean NOT NULL DEFAULT true, "tema" character varying(20) NOT NULL DEFAULT 'claro', "idioma" character varying(10) NOT NULL DEFAULT 'pt-BR', "timezone" character varying(50) NOT NULL DEFAULT 'America/Sao_Paulo', "perfil_publico" boolean NOT NULL DEFAULT false, "mostrar_email" boolean NOT NULL DEFAULT false, "mostrar_telefone" boolean NOT NULL DEFAULT false, "sessao_multipla" boolean NOT NULL DEFAULT true, "tempo_inatividade" integer NOT NULL DEFAULT '30', "configuracoes_adicionais" jsonb, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_b33aaf0ab1fb5318c3ea848e8e5" UNIQUE ("usuario_id"), CONSTRAINT "PK_c6c8f3cd2aea439da76a1edf8d5" PRIMARY KEY ("id"))`,
-    );
+
+    // REMOVED: Tabela 'amostras' já foi criada pela migração CreateAmostrasTable1728405000000
+    // await queryRunner.query(
+    //   `CREATE TYPE "public"."amostras_tipo_amostra_enum" AS ENUM('sangue', 'soro', 'plasma', 'urina', 'fezes', 'swab', 'liquor', 'escarro', 'tecido', 'saliva', 'secrecao', 'outros')`,
+    // );
+    // await queryRunner.query(
+    //   `CREATE TYPE "public"."amostras_unidade_volume_enum" AS ENUM('mL', 'L', 'g', 'mg', 'unidade')`,
+    // );
+    // await queryRunner.query(
+    //   `CREATE TYPE "public"."amostras_temperatura_armazenamento_enum" AS ENUM('ambiente', 'refrigerado', 'congelado', 'ultracongelado', 'nitrogenio', 'especial')`,
+    // );
+    // await queryRunner.query(
+    //   `CREATE TYPE "public"."amostras_temperatura_transporte_enum" AS ENUM('ambiente', 'refrigerado', 'congelado', 'gelo_seco', 'nitrogenio')`,
+    // );
+    // await queryRunner.query(
+    //   `CREATE TABLE "amostras" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "codigo_interno" character varying(50) NOT NULL, "nome" character varying(255) NOT NULL, "descricao" text, "tipo_amostra" "public"."amostras_tipo_amostra_enum" NOT NULL, "recipiente_padrao" character varying(255), "cor_tampa" character varying(50), "volume_minimo" numeric(10,2), "volume_ideal" numeric(10,2), "unidade_volume" "public"."amostras_unidade_volume_enum", "instrucoes_coleta" text, "materiais_necessarios" jsonb, "requer_jejum" boolean NOT NULL DEFAULT false, "tempo_jejum" integer, "instrucoes_preparo_paciente" text, "restricoes" text, "temperatura_armazenamento" "public"."amostras_temperatura_armazenamento_enum", "temperatura_min" numeric(5,2), "temperatura_max" numeric(5,2), "prazo_validade_horas" integer, "condicoes_armazenamento" text, "sensibilidade_luz" boolean NOT NULL DEFAULT false, "requer_centrifugacao" boolean NOT NULL DEFAULT false, "tempo_centrifugacao" integer, "rotacao_centrifugacao" integer, "instrucoes_transporte" text, "temperatura_transporte" "public"."amostras_temperatura_transporte_enum", "embalagem_especial" boolean NOT NULL DEFAULT false, "observacoes_transporte" text, "cor_etiqueta" character varying(7), "codigo_barras" boolean NOT NULL DEFAULT true, "template_etiqueta" text, "exige_autorizacao" boolean NOT NULL DEFAULT false, "observacoes" text, "ativo" boolean NOT NULL DEFAULT true, "empresa_id" uuid, "criado_por" uuid NOT NULL, "atualizado_por" uuid NOT NULL, "criado_em" TIMESTAMP NOT NULL DEFAULT now(), "atualizado_em" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_88e38233ec5fb69e0c0e9c98510" UNIQUE ("codigo_interno"), CONSTRAINT "PK_2f390d860d415aa51548f236107" PRIMARY KEY ("id")); COMMENT ON COLUMN "amostras"."codigo_interno" IS 'Código único da amostra (ex: SANG-EDTA-001)'; COMMENT ON COLUMN "amostras"."nome" IS 'Nome da amostra (ex: Sangue Total com EDTA)'; COMMENT ON COLUMN "amostras"."descricao" IS 'Descrição detalhada da amostra'; COMMENT ON COLUMN "amostras"."tipo_amostra" IS 'Tipo/categoria da amostra'; COMMENT ON COLUMN "amostras"."recipiente_padrao" IS 'Tipo de recipiente padrão (ex: Tubo EDTA, Frasco estéril)'; COMMENT ON COLUMN "amostras"."cor_tampa" IS 'Cor da tampa do tubo (roxa, vermelha, amarela, etc)'; COMMENT ON COLUMN "amostras"."volume_minimo" IS 'Volume mínimo necessário'; COMMENT ON COLUMN "amostras"."volume_ideal" IS 'Volume ideal recomendado'; COMMENT ON COLUMN "amostras"."unidade_volume" IS 'Unidade de medida do volume'; COMMENT ON COLUMN "amostras"."instrucoes_coleta" IS 'Instruções detalhadas de coleta'; COMMENT ON COLUMN "amostras"."materiais_necessarios" IS 'Array de materiais necessários para coleta'; COMMENT ON COLUMN "amostras"."requer_jejum" IS 'Se a coleta requer jejum do paciente'; COMMENT ON COLUMN "amostras"."tempo_jejum" IS 'Tempo de jejum necessário em horas'; COMMENT ON COLUMN "amostras"."instrucoes_preparo_paciente" IS 'Instruções de preparo do paciente (dieta, medicamentos, etc)'; COMMENT ON COLUMN "amostras"."restricoes" IS 'Restrições (não fumar, não beber álcool, etc)'; COMMENT ON COLUMN "amostras"."temperatura_armazenamento" IS 'Faixa de temperatura de armazenamento'; COMMENT ON COLUMN "amostras"."temperatura_min" IS 'Temperatura mínima de armazenamento em °C'; COMMENT ON COLUMN "amostras"."temperatura_max" IS 'Temperatura máxima de armazenamento em °C'; COMMENT ON COLUMN "amostras"."prazo_validade_horas" IS 'Prazo de validade da amostra em horas'; COMMENT ON COLUMN "amostras"."condicoes_armazenamento" IS 'Condições especiais de armazenamento'; COMMENT ON COLUMN "amostras"."sensibilidade_luz" IS 'Se a amostra é sensível à luz (proteger)'; COMMENT ON COLUMN "amostras"."requer_centrifugacao" IS 'Se a amostra requer centrifugação'; COMMENT ON COLUMN "amostras"."tempo_centrifugacao" IS 'Tempo de centrifugação em minutos'; COMMENT ON COLUMN "amostras"."rotacao_centrifugacao" IS 'Rotação da centrífuga em RPM'; COMMENT ON COLUMN "amostras"."instrucoes_transporte" IS 'Instruções de transporte'; COMMENT ON COLUMN "amostras"."temperatura_transporte" IS 'Condição de temperatura para transporte'; COMMENT ON COLUMN "amostras"."embalagem_especial" IS 'Se requer embalagem especial'; COMMENT ON COLUMN "amostras"."observacoes_transporte" IS 'Observações sobre transporte'; COMMENT ON COLUMN "amostras"."cor_etiqueta" IS 'Cor da etiqueta em formato hexadecimal (ex: #FF0000)'; COMMENT ON COLUMN "amostras"."codigo_barras" IS 'Se deve gerar código de barras na etiqueta'; COMMENT ON COLUMN "amostras"."template_etiqueta" IS 'Template customizado para impressão de etiqueta'; COMMENT ON COLUMN "amostras"."exige_autorizacao" IS 'Se a coleta exige autorização especial'; COMMENT ON COLUMN "amostras"."observacoes" IS 'Observações gerais'; COMMENT ON COLUMN "amostras"."ativo" IS 'Se a amostra está ativa'; COMMENT ON COLUMN "amostras"."empresa_id" IS 'ID da empresa (multi-tenant)'; COMMENT ON COLUMN "amostras"."criado_por" IS 'ID do usuário que criou o registro'; COMMENT ON COLUMN "amostras"."atualizado_por" IS 'ID do usuário que atualizou o registro'; COMMENT ON COLUMN "amostras"."criado_em" IS 'Data de criação do registro'; COMMENT ON COLUMN "amostras"."atualizado_em" IS 'Data da última atualização'`,
+    // );
+    // await queryRunner.query(
+    //   `CREATE INDEX "IDX_24833a3b712fb7e53435edd318" ON "amostras" ("empresa_id") `,
+    // );
+    // await queryRunner.query(
+    //   `CREATE INDEX "IDX_5640f3bce2ce98e78057d6f0b2" ON "amostras" ("tipo_amostra") `,
+    // );
+    // await queryRunner.query(
+    //   `CREATE INDEX "IDX_f7b65b2693ca98424dd580927c" ON "amostras" ("nome") `,
+    // );
+    // await queryRunner.query(
+    //   `CREATE INDEX "IDX_88e38233ec5fb69e0c0e9c9851" ON "amostras" ("codigo_interno") `,
+    // );
+
+    // REMOVED: Tabela 'preferencias_usuario' já foi criada pela migração CreatePerfilTables1759884401000
+    // await queryRunner.query(
+    //   `CREATE TABLE "preferencias_usuario" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "usuario_id" uuid NOT NULL, "notificar_email" boolean NOT NULL DEFAULT true, "notificar_whatsapp" boolean NOT NULL DEFAULT false, "notificar_sms" boolean NOT NULL DEFAULT false, "notificar_sistema" boolean NOT NULL DEFAULT true, "tema" character varying(20) NOT NULL DEFAULT 'claro', "idioma" character varying(10) NOT NULL DEFAULT 'pt-BR', "timezone" character varying(50) NOT NULL DEFAULT 'America/Sao_Paulo', "perfil_publico" boolean NOT NULL DEFAULT false, "mostrar_email" boolean NOT NULL DEFAULT false, "mostrar_telefone" boolean NOT NULL DEFAULT false, "sessao_multipla" boolean NOT NULL DEFAULT true, "tempo_inatividade" integer NOT NULL DEFAULT '30', "configuracoes_adicionais" jsonb, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_b33aaf0ab1fb5318c3ea848e8e5" UNIQUE ("usuario_id"), CONSTRAINT "PK_c6c8f3cd2aea439da76a1edf8d5" PRIMARY KEY ("id"))`,
+    // );
+
     await queryRunner.query(
       `CREATE TYPE "public"."integracoes_tipo_integracao_enum" AS ENUM('laboratorio_apoio', 'telemedicina', 'gateway_pagamento', 'banco', 'prefeitura_nfse', 'sefaz', 'receita_federal', 'power_bi', 'pabx', 'correios', 'ocr', 'convenios', 'adquirentes', 'pacs', 'email', 'whatsapp', 'concessionarias', 'outros')`,
     );
@@ -475,9 +485,12 @@ export class CreateEstruturaFisicaTables1760011105271
     await queryRunner.query(
       `CREATE INDEX "IDX_31f9e7b77d84db8376b81c265b" ON "integracoes" ("tipo_integracao", "unidade_saude_id") `,
     );
-    await queryRunner.query(
-      `CREATE TABLE "historico_senhas" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "usuario_id" uuid NOT NULL, "senha_hash" character varying(255) NOT NULL, "motivo_alteracao" character varying(100), "ip_origem" character varying(45), "user_agent" text, "alterado_por_usuario_id" uuid, "data_alteracao" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_2ddb1d4745b2bdc84e7297f71d2" PRIMARY KEY ("id"))`,
-    );
+
+    // REMOVED: Tabela 'historico_senhas' já foi criada pela migração CreatePerfilTables1759884401000
+    // await queryRunner.query(
+    //   `CREATE TABLE "historico_senhas" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "usuario_id" uuid NOT NULL, "senha_hash" character varying(255) NOT NULL, "motivo_alteracao" character varying(100), "ip_origem" character varying(45), "user_agent" text, "alterado_por_usuario_id" uuid, "data_alteracao" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_2ddb1d4745b2bdc84e7297f71d2" PRIMARY KEY ("id"))`,
+    // );
+
     await queryRunner.query(
       `CREATE TYPE "public"."repasses_filtros_entidade_tipo_enum" AS ENUM('medico', 'especialidade', 'setor', 'exame')`,
     );
@@ -1577,21 +1590,25 @@ export class CreateEstruturaFisicaTables1760011105271
     await queryRunner.query(
       `ALTER TABLE "contas_contabeis" ADD CONSTRAINT "FK_003f0bfce24fd17c82b6bd274f8" FOREIGN KEY ("conta_pai_id") REFERENCES "contas_contabeis"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
-    await queryRunner.query(
-      `ALTER TABLE "laboratorios_metodos" ADD CONSTRAINT "FK_e1445f18d757962ef62fcd75ef0" FOREIGN KEY ("laboratorio_id") REFERENCES "laboratorios"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "laboratorios_metodos" ADD CONSTRAINT "FK_7d18ea692673166969ee7391640" FOREIGN KEY ("metodo_id") REFERENCES "metodos"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "campos_matriz" ADD CONSTRAINT "FK_2d05ae8e0cccf6f741a2d1934eb" FOREIGN KEY ("matriz_id") REFERENCES "matrizes_exames"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "matrizes_exames" ADD CONSTRAINT "FK_f6db3a4dfb5633ff6cab58234ee" FOREIGN KEY ("tipo_exame_id") REFERENCES "tipos_exame"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "matrizes_exames" ADD CONSTRAINT "FK_79ac34bb25b9669b6d4eca58eaa" FOREIGN KEY ("exame_id") REFERENCES "exames"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
+
+    // REMOVED: Foreign keys da tabela laboratorios_metodos (tabela já existe)
+    // await queryRunner.query(
+    //   `ALTER TABLE "laboratorios_metodos" ADD CONSTRAINT "FK_e1445f18d757962ef62fcd75ef0" FOREIGN KEY ("laboratorio_id") REFERENCES "laboratorios"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
+    // );
+    // await queryRunner.query(
+    //   `ALTER TABLE "laboratorios_metodos" ADD CONSTRAINT "FK_7d18ea692673166969ee7391640" FOREIGN KEY ("metodo_id") REFERENCES "metodos"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
+    // );
+
+    // REMOVED: FKs das tabelas campos_matriz e matrizes_exames (já existem)
+    // await queryRunner.query(
+    //   `ALTER TABLE "campos_matriz" ADD CONSTRAINT "FK_2d05ae8e0cccf6f741a2d1934eb" FOREIGN KEY ("matriz_id") REFERENCES "matrizes_exames"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    // );
+    // await queryRunner.query(
+    //   `ALTER TABLE "matrizes_exames" ADD CONSTRAINT "FK_f6db3a4dfb5633ff6cab58234ee" FOREIGN KEY ("tipo_exame_id") REFERENCES "tipos_exame"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    // );
+    // await queryRunner.query(
+    //   `ALTER TABLE "matrizes_exames" ADD CONSTRAINT "FK_79ac34bb25b9669b6d4eca58eaa" FOREIGN KEY ("exame_id") REFERENCES "exames"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    // );
     await queryRunner.query(
       `ALTER TABLE "kit_exames" ADD CONSTRAINT "FK_4d245b6a8b4628b601487308a60" FOREIGN KEY ("kit_id") REFERENCES "kits"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
@@ -1643,15 +1660,20 @@ export class CreateEstruturaFisicaTables1760011105271
     await queryRunner.query(
       `ALTER TABLE "respostas_campo" ADD CONSTRAINT "FK_8a2a015b4025a55cc423ecd8256" FOREIGN KEY ("campo_formulario_id") REFERENCES "campos_formulario"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
-    await queryRunner.query(
-      `ALTER TABLE "preferencias_usuario" ADD CONSTRAINT "FK_b33aaf0ab1fb5318c3ea848e8e5" FOREIGN KEY ("usuario_id") REFERENCES "usuarios"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
+
+    // REMOVED: FKs das tabelas preferencias_usuario e historico_senhas (já existem)
+    // await queryRunner.query(
+    //   `ALTER TABLE "preferencias_usuario" ADD CONSTRAINT "FK_b33aaf0ab1fb5318c3ea848e8e5" FOREIGN KEY ("usuario_id") REFERENCES "usuarios"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    // );
+
     await queryRunner.query(
       `ALTER TABLE "integracoes" ADD CONSTRAINT "FK_84ec1c9f1b03cc6f743c6c756cc" FOREIGN KEY ("unidade_saude_id") REFERENCES "unidades_saude"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
-    await queryRunner.query(
-      `ALTER TABLE "historico_senhas" ADD CONSTRAINT "FK_750f73ca82db3115a418560f53c" FOREIGN KEY ("usuario_id") REFERENCES "usuarios"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
+
+    // REMOVED: FK de historico_senhas (já existe)
+    // await queryRunner.query(
+    //   `ALTER TABLE "historico_senhas" ADD CONSTRAINT "FK_750f73ca82db3115a418560f53c" FOREIGN KEY ("usuario_id") REFERENCES "usuarios"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    // );
     await queryRunner.query(
       `ALTER TABLE "repasses_filtros" ADD CONSTRAINT "FK_85c7968b9f7dd30548b4b5b3c01" FOREIGN KEY ("repasse_id") REFERENCES "repasses"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
@@ -1892,12 +1914,15 @@ export class CreateEstruturaFisicaTables1760011105271
     await queryRunner.query(
       `ALTER TABLE "campos_matriz" DROP CONSTRAINT "FK_2d05ae8e0cccf6f741a2d1934eb"`,
     );
-    await queryRunner.query(
-      `ALTER TABLE "laboratorios_metodos" DROP CONSTRAINT "FK_7d18ea692673166969ee7391640"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "laboratorios_metodos" DROP CONSTRAINT "FK_e1445f18d757962ef62fcd75ef0"`,
-    );
+
+    // REMOVED: DROP das foreign keys de laboratorios_metodos (tabela gerenciada por outra migration)
+    // await queryRunner.query(
+    //   `ALTER TABLE "laboratorios_metodos" DROP CONSTRAINT "FK_7d18ea692673166969ee7391640"`,
+    // );
+    // await queryRunner.query(
+    //   `ALTER TABLE "laboratorios_metodos" DROP CONSTRAINT "FK_e1445f18d757962ef62fcd75ef0"`,
+    // );
+
     await queryRunner.query(
       `ALTER TABLE "contas_contabeis" DROP CONSTRAINT "FK_003f0bfce24fd17c82b6bd274f8"`,
     );
@@ -2963,7 +2988,9 @@ export class CreateEstruturaFisicaTables1760011105271
     await queryRunner.query(
       `DROP TYPE "public"."repasses_filtros_entidade_tipo_enum"`,
     );
-    await queryRunner.query(`DROP TABLE "historico_senhas"`);
+
+    // REMOVED: DROP de historico_senhas (tabela gerenciada por outra migration)
+    // await queryRunner.query(`DROP TABLE "historico_senhas"`);
     await queryRunner.query(
       `DROP INDEX "public"."IDX_31f9e7b77d84db8376b81c265b"`,
     );
@@ -2984,7 +3011,9 @@ export class CreateEstruturaFisicaTables1760011105271
     await queryRunner.query(
       `DROP TYPE "public"."integracoes_tipo_integracao_enum"`,
     );
-    await queryRunner.query(`DROP TABLE "preferencias_usuario"`);
+
+    // REMOVED: DROP de preferencias_usuario (tabela gerenciada por outra migration)
+    // await queryRunner.query(`DROP TABLE "preferencias_usuario"`);
     await queryRunner.query(
       `DROP INDEX "public"."IDX_88e38233ec5fb69e0c0e9c9851"`,
     );
@@ -2997,17 +3026,21 @@ export class CreateEstruturaFisicaTables1760011105271
     await queryRunner.query(
       `DROP INDEX "public"."IDX_24833a3b712fb7e53435edd318"`,
     );
-    await queryRunner.query(`DROP TABLE "amostras"`);
-    await queryRunner.query(
-      `DROP TYPE "public"."amostras_temperatura_transporte_enum"`,
-    );
-    await queryRunner.query(
-      `DROP TYPE "public"."amostras_temperatura_armazenamento_enum"`,
-    );
-    await queryRunner.query(
-      `DROP TYPE "public"."amostras_unidade_volume_enum"`,
-    );
-    await queryRunner.query(`DROP TYPE "public"."amostras_tipo_amostra_enum"`);
+
+    // REMOVED: DROP de amostras e ENUMs relacionados (tabela gerenciada por outra migration)
+    // await queryRunner.query(`DROP TABLE "amostras"`);
+    // await queryRunner.query(
+    //   `DROP TYPE "public"."amostras_temperatura_transporte_enum"`,
+    // );
+    // await queryRunner.query(
+    //   `DROP TYPE "public"."amostras_temperatura_armazenamento_enum"`,
+    // );
+
+    // REMOVED: DROP de ENUMs de amostras (gerenciados por outra migration)
+    // await queryRunner.query(
+    //   `DROP TYPE "public"."amostras_unidade_volume_enum"`,
+    // );
+    // await queryRunner.query(`DROP TYPE "public"."amostras_tipo_amostra_enum"`);
     await queryRunner.query(
       `DROP INDEX "public"."IDX_a124ea8ed8eaee5a435f05f7ac"`,
     );
@@ -3076,42 +3109,45 @@ export class CreateEstruturaFisicaTables1760011105271
     await queryRunner.query(
       `DROP INDEX "public"."IDX_f6db3a4dfb5633ff6cab58234e"`,
     );
-    await queryRunner.query(`DROP TABLE "matrizes_exames"`);
-    await queryRunner.query(`DROP TYPE "public"."matrizes_exames_status_enum"`);
-    await queryRunner.query(
-      `DROP TYPE "public"."matrizes_exames_tipo_matriz_enum"`,
-    );
-    await queryRunner.query(
-      `DROP INDEX "public"."IDX_2d05ae8e0cccf6f741a2d1934e"`,
-    );
-    await queryRunner.query(
-      `DROP INDEX "public"."IDX_84987dd1407e9794c40ee1105a"`,
-    );
-    await queryRunner.query(
-      `DROP INDEX "public"."IDX_512435525fae90f76085881327"`,
-    );
-    await queryRunner.query(`DROP TABLE "campos_matriz"`);
-    await queryRunner.query(
-      `DROP TYPE "public"."campos_matriz_unidade_medida_enum"`,
-    );
-    await queryRunner.query(
-      `DROP TYPE "public"."campos_matriz_tipo_campo_enum"`,
-    );
-    await queryRunner.query(
-      `DROP INDEX "public"."IDX_808aa72c9cd62a9f8bb83691bd"`,
-    );
-    await queryRunner.query(
-      `DROP INDEX "public"."IDX_8a7c2084abeadd7660da4350ca"`,
-    );
-    await queryRunner.query(`DROP TABLE "metodos"`);
-    await queryRunner.query(`DROP TYPE "public"."metodos_status_enum"`);
-    await queryRunner.query(
-      `DROP INDEX "public"."IDX_e1445f18d757962ef62fcd75ef"`,
-    );
-    await queryRunner.query(
-      `DROP INDEX "public"."IDX_7d18ea692673166969ee739164"`,
-    );
-    await queryRunner.query(`DROP TABLE "laboratorios_metodos"`);
+
+    // REMOVED: DROP de matrizes_exames, campos_matriz e ENUMs relacionados (gerenciados por outra migration)
+    // await queryRunner.query(`DROP TABLE "matrizes_exames"`);
+    // await queryRunner.query(`DROP TYPE "public"."matrizes_exames_status_enum"`);
+    // await queryRunner.query(
+    //   `DROP TYPE "public"."matrizes_exames_tipo_matriz_enum"`,
+    // );
+    // await queryRunner.query(
+    //   `DROP INDEX "public"."IDX_2d05ae8e0cccf6f741a2d1934e"`,
+    // );
+    // await queryRunner.query(
+    //   `DROP INDEX "public"."IDX_84987dd1407e9794c40ee1105a"`,
+    // );
+    // await queryRunner.query(
+    //   `DROP INDEX "public"."IDX_512435525fae90f76085881327"`,
+    // );
+    // await queryRunner.query(`DROP TABLE "campos_matriz"`);
+    // await queryRunner.query(
+    //   `DROP TYPE "public"."campos_matriz_unidade_medida_enum"`,
+    // );
+    // await queryRunner.query(
+    //   `DROP TYPE "public"."campos_matriz_tipo_campo_enum"`,
+    // );
+    // REMOVED: DROP de tabelas, índices e tipos que já existem (gerenciados por outra migration)
+    // await queryRunner.query(
+    //   `DROP INDEX "public"."IDX_808aa72c9cd62a9f8bb83691bd"`,
+    // );
+    // await queryRunner.query(
+    //   `DROP INDEX "public"."IDX_8a7c2084abeadd7660da4350ca"`,
+    // );
+    // await queryRunner.query(`DROP TABLE "metodos"`);
+    // await queryRunner.query(`DROP TYPE "public"."metodos_status_enum"`);
+    // await queryRunner.query(
+    //   `DROP INDEX "public"."IDX_e1445f18d757962ef62fcd75ef"`,
+    // );
+    // await queryRunner.query(
+    //   `DROP INDEX "public"."IDX_7d18ea692673166969ee739164"`,
+    // );
+    // await queryRunner.query(`DROP TABLE "laboratorios_metodos"`);
     await queryRunner.query(`DROP TABLE "campos_personalizados_convenio"`);
     await queryRunner.query(`DROP TABLE "configuracoes_atendimento_convenio"`);
     await queryRunner.query(`DROP TABLE "configuracoes_campos_convenio"`);

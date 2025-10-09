@@ -1,0 +1,56 @@
+### Criar Matriz - Audiometria
+POST {{baseUrl}}/exames/matrizes
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoInterno": "MAT-AUDIO-001",
+  "nome": "Matriz de Audiometria",
+  "descricao": "Template para exame de audiometria ocupacional",
+  "tipoMatriz": "audiometria",
+  "status": "ativo",
+  "versao": "1.0",
+  "padraoSistema": false,
+  "temCalculoAutomatico": false,
+  "requerAssinaturaDigital": true
+}
+
+### Criar Matriz - Hemograma
+POST {{baseUrl}}/exames/matrizes
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoInterno": "MAT-HEMO-001",
+  "nome": "Matriz de Hemograma Completo",
+  "descricao": "Template para hemograma com valores de referência",
+  "tipoMatriz": "hemograma",
+  "status": "ativo",
+  "versao": "2.0",
+  "padraoSistema": true,
+  "temCalculoAutomatico": true,
+  "formulasCalculo": {
+    "vhcm": "hgb / rbc * 10",
+    "hcm": "hgb / rbc"
+  }
+}
+
+### Criar Matriz - Densitometria Óssea
+POST {{baseUrl}}/exames/matrizes
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoInterno": "MAT-DENSI-001",
+  "nome": "Matriz de Densitometria Óssea",
+  "descricao": "Template para densitometria óssea com cálculo de T-Score e Z-Score",
+  "tipoMatriz": "densitometria",
+  "status": "ativo",
+  "versao": "1.5",
+  "padraoSistema": false,
+  "temCalculoAutomatico": true,
+  "formulasCalculo": {
+    "tscore": "(dmo - dmo_jovem) / dp_jovem",
+    "zscore": "(dmo - dmo_idade) / dp_idade"
+  }
+}
