@@ -6,94 +6,26 @@ Authorization: Bearer {{token}}
 # Status: 200 OK
 # {
 #   "id": "550e8400-e29b-41d4-a716-446655440000",
-#   "codigoEquipamento": "EQ-AH-001",
+#   "patrimonio": "PAT-2024-001",
 #   "nome": "Analisador Hematologico BC-6800",
-#   "tipo": "analisador",
 #   "marca": "Mindray",
 #   "modelo": "BC-6800",
 #   "numeroSerie": "BC6800-2024-001",
-#   "patrimonio": "PAT-2024-001",
 #   "setorId": "uuid-setor",
 #   "salaId": "uuid-sala",
+#   "fornecedorId": "uuid-fornecedor",
+#   "unidadeId": "uuid-unidade",
 #   "dataAquisicao": "2024-01-15",
 #   "valorAquisicao": 185000.00,
-#   "fornecedorId": "uuid-fornecedor",
-#   "status": "operante",
-#   "ultimaManutencao": "2024-09-15",
-#   "proximaManutencao": "2025-03-15",
-#   "ultimaCalibracao": "2024-10-01",
-#   "proximaCalibracao": "2025-04-01",
+#   "situacao": "ativo",
+#   "dataUltimaManutencao": "2024-09-15",
+#   "dataProximaManutencao": "2025-03-15",
+#   "periodicidadeManutencaoDias": 180,
 #   "observacoes": "Equipamento de alta performance...",
-#   "manuais": ["https://..."],
-#   "createdAt": "2025-10-09T10:00:00.000Z",
-#   "updatedAt": "2025-10-09T10:00:00.000Z"
+#   "ativo": true,
+#   "criadoEm": "2025-10-09T10:00:00.000Z",
+#   "atualizadoEm": "2025-10-09T10:00:00.000Z"
 # }
-
-###
-
-### Buscar equipamento por codigo
-GET {{baseUrl}}/configuracoes/estrutura/equipamentos/codigo/EQ-AH-001
-Authorization: Bearer {{token}}
-
-###
-
-### Buscar equipamento por codigo - Centrifuga
-GET {{baseUrl}}/configuracoes/estrutura/equipamentos/codigo/EQ-CF-001
-Authorization: Bearer {{token}}
-
-###
-
-### Buscar equipamento por codigo - Microscopio
-GET {{baseUrl}}/configuracoes/estrutura/equipamentos/codigo/EQ-MC-001
-Authorization: Bearer {{token}}
-
-###
-
-### Buscar equipamento por codigo - Autoclave
-GET {{baseUrl}}/configuracoes/estrutura/equipamentos/codigo/EQ-AT-001
-Authorization: Bearer {{token}}
-
-###
-
-### Buscar equipamento por codigo - Freezer
-GET {{baseUrl}}/configuracoes/estrutura/equipamentos/codigo/EQ-FR-001
-Authorization: Bearer {{token}}
-
-###
-
-### Buscar equipamento por codigo - Balanca
-GET {{baseUrl}}/configuracoes/estrutura/equipamentos/codigo/EQ-BL-001
-Authorization: Bearer {{token}}
-
-###
-
-### Buscar equipamento por codigo - Estufa
-GET {{baseUrl}}/configuracoes/estrutura/equipamentos/codigo/EQ-ES-001
-Authorization: Bearer {{token}}
-
-###
-
-### Buscar equipamento por codigo - Agitador
-GET {{baseUrl}}/configuracoes/estrutura/equipamentos/codigo/EQ-AG-001
-Authorization: Bearer {{token}}
-
-###
-
-### Buscar equipamento por numero de serie
-GET {{baseUrl}}/configuracoes/estrutura/equipamentos/numero-serie/BC6800-2024-001
-Authorization: Bearer {{token}}
-
-###
-
-### Buscar equipamento por numero de serie - Centrifuga
-GET {{baseUrl}}/configuracoes/estrutura/equipamentos/numero-serie/EP5810R-2024-005
-Authorization: Bearer {{token}}
-
-###
-
-### Buscar equipamento por numero de serie - Microscopio
-GET {{baseUrl}}/configuracoes/estrutura/equipamentos/numero-serie/OLY-CX23-2024-010
-Authorization: Bearer {{token}}
 
 ###
 
@@ -121,12 +53,6 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Buscar equipamento por patrimonio - Freezer
-GET {{baseUrl}}/configuracoes/estrutura/equipamentos/patrimonio/PAT-2024-005
-Authorization: Bearer {{token}}
-
-###
-
 ### Buscar equipamento inexistente por ID (deve retornar 404)
 GET {{baseUrl}}/configuracoes/estrutura/equipamentos/00000000-0000-0000-0000-000000000000
 Authorization: Bearer {{token}}
@@ -135,35 +61,7 @@ Authorization: Bearer {{token}}
 # Status: 404 Not Found
 # {
 #   "statusCode": 404,
-#   "message": "Equipamento com ID 00000000-0000-0000-0000-000000000000 nao encontrado",
-#   "error": "Not Found"
-# }
-
-###
-
-### Buscar equipamento por codigo inexistente (deve retornar 404)
-GET {{baseUrl}}/configuracoes/estrutura/equipamentos/codigo/CODIGO-INEXISTENTE
-Authorization: Bearer {{token}}
-
-### Expected Response
-# Status: 404 Not Found
-# {
-#   "statusCode": 404,
-#   "message": "Equipamento com codigo CODIGO-INEXISTENTE nao encontrado",
-#   "error": "Not Found"
-# }
-
-###
-
-### Buscar equipamento por numero de serie inexistente (deve retornar 404)
-GET {{baseUrl}}/configuracoes/estrutura/equipamentos/numero-serie/SERIE-INEXISTENTE
-Authorization: Bearer {{token}}
-
-### Expected Response
-# Status: 404 Not Found
-# {
-#   "statusCode": 404,
-#   "message": "Equipamento com numero de serie SERIE-INEXISTENTE nao encontrado",
+#   "message": "Equipamento com ID 00000000-0000-0000-0000-000000000000 não encontrado",
 #   "error": "Not Found"
 # }
 
@@ -177,68 +75,8 @@ Authorization: Bearer {{token}}
 # Status: 404 Not Found
 # {
 #   "statusCode": 404,
-#   "message": "Equipamento com patrimonio PAT-INEXISTENTE nao encontrado",
+#   "message": "Equipamento com patrimônio PAT-INEXISTENTE não encontrado",
 #   "error": "Not Found"
-# }
-
-###
-
-### Obter historico de manutencao de um equipamento
-GET {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000/manutencoes
-Authorization: Bearer {{token}}
-
-### Expected Response
-# Status: 200 OK
-# [
-#   {
-#     "id": "uuid-manutencao",
-#     "equipamentoId": "uuid-equipamento",
-#     "tipo": "preventiva",
-#     "data": "2024-09-15",
-#     "descricao": "Manutencao preventiva trimestral",
-#     "realizadoPor": "Tecnico Jose Silva",
-#     "custo": 1500.00,
-#     "proximaManutencao": "2025-03-15"
-#   }
-# ]
-
-###
-
-### Obter historico de calibracao de um equipamento
-GET {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000/calibracoes
-Authorization: Bearer {{token}}
-
-### Expected Response
-# Status: 200 OK
-# [
-#   {
-#     "id": "uuid-calibracao",
-#     "equipamentoId": "uuid-equipamento",
-#     "data": "2024-10-01",
-#     "certificado": "CERT-2024-001",
-#     "realizadoPor": "Laboratorio Metrologia Certificado",
-#     "custo": 800.00,
-#     "proximaCalibracao": "2025-04-01",
-#     "resultado": "Conforme"
-#   }
-# ]
-
-###
-
-### Verificar disponibilidade do equipamento
-GET {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000/disponibilidade
-Authorization: Bearer {{token}}
-
-### Expected Response
-# Status: 200 OK
-# {
-#   "equipamentoId": "uuid",
-#   "disponivel": true,
-#   "status": "operante",
-#   "proximaManutencao": "2025-03-15",
-#   "diasAteManutencao": 45,
-#   "emUso": false,
-#   "agendamentos": []
 # }
 
 ###

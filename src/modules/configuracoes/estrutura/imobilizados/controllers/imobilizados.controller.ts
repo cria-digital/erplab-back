@@ -28,7 +28,7 @@ import {
 @ApiTags('Estrutura - Imobilizados')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('api/v1/configuracoes/estrutura/imobilizados')
+@Controller('configuracoes/estrutura/imobilizados')
 export class ImobilizadosController {
   constructor(private readonly imobilizadosService: ImobilizadosService) {}
 

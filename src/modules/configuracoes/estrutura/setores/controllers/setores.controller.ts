@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Request,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -25,7 +26,7 @@ import { TipoSetor } from '../entities/setor.entity';
 @ApiTags('Estrutura - Setores')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('api/v1/configuracoes/estrutura/setores')
+@Controller('configuracoes/estrutura/setores')
 export class SetoresController {
   constructor(private readonly setoresService: SetoresService) {}
 
@@ -78,8 +79,9 @@ export class SetoresController {
   @ApiOperation({ summary: 'Buscar setores por unidade' })
   @ApiParam({ name: 'unidadeId', type: 'string' })
   @ApiResponse({ status: 200, description: 'Setores encontrados' })
+  @ApiResponse({ status: 400, description: 'UUID inválido' })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
-  async findByUnidade(@Param('unidadeId') unidadeId: string) {
+  async findByUnidade(@Param('unidadeId', ParseUUIDPipe) unidadeId: string) {
     return await this.setoresService.findByUnidade(unidadeId);
   }
 
@@ -97,9 +99,10 @@ export class SetoresController {
   @ApiOperation({ summary: 'Buscar setor por ID' })
   @ApiParam({ name: 'id', type: 'string' })
   @ApiResponse({ status: 200, description: 'Setor encontrado' })
+  @ApiResponse({ status: 400, description: 'UUID inválido' })
   @ApiResponse({ status: 404, description: 'Setor não encontrado' })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
     return await this.setoresService.findOne(id);
   }
 
@@ -107,11 +110,11 @@ export class SetoresController {
   @ApiOperation({ summary: 'Atualizar setor' })
   @ApiParam({ name: 'id', type: 'string' })
   @ApiResponse({ status: 200, description: 'Setor atualizado com sucesso' })
+  @ApiResponse({ status: 400, description: 'UUID inválido ou dados inválidos' })
   @ApiResponse({ status: 404, description: 'Setor não encontrado' })
-  @ApiResponse({ status: 400, description: 'Dados inválidos' })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateSetorDto: UpdateSetorDto,
     @Request() req,
   ) {
@@ -129,9 +132,10 @@ export class SetoresController {
     status: 200,
     description: 'Status do setor alterado com sucesso',
   })
+  @ApiResponse({ status: 400, description: 'UUID inválido' })
   @ApiResponse({ status: 404, description: 'Setor não encontrado' })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
-  async toggleAtivo(@Param('id') id: string, @Request() req) {
+  async toggleAtivo(@Param('id', ParseUUIDPipe) id: string, @Request() req) {
     return await this.setoresService.toggleAtivo(id, req.user.userId);
   }
 
@@ -139,9 +143,10 @@ export class SetoresController {
   @ApiOperation({ summary: 'Remover setor' })
   @ApiParam({ name: 'id', type: 'string' })
   @ApiResponse({ status: 200, description: 'Setor removido com sucesso' })
+  @ApiResponse({ status: 400, description: 'UUID inválido' })
   @ApiResponse({ status: 404, description: 'Setor não encontrado' })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
-  async remove(@Param('id') id: string) {
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
     await this.setoresService.remove(id);
     return { message: 'Setor removido com sucesso' };
   }

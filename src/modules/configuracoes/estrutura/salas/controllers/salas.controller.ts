@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Request,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -25,7 +26,7 @@ import { TipoSala } from '../entities/sala.entity';
 @ApiTags('Estrutura - Salas')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('api/v1/configuracoes/estrutura/salas')
+@Controller('configuracoes/estrutura/salas')
 export class SalasController {
   constructor(private readonly salasService: SalasService) {}
 
@@ -75,8 +76,9 @@ export class SalasController {
   @ApiOperation({ summary: 'Buscar salas por unidade' })
   @ApiParam({ name: 'unidadeId', type: 'string' })
   @ApiResponse({ status: 200, description: 'Salas encontradas' })
+  @ApiResponse({ status: 400, description: 'UUID inválido' })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
-  async findByUnidade(@Param('unidadeId') unidadeId: string) {
+  async findByUnidade(@Param('unidadeId', ParseUUIDPipe) unidadeId: string) {
     return await this.salasService.findByUnidade(unidadeId);
   }
 
@@ -84,8 +86,9 @@ export class SalasController {
   @ApiOperation({ summary: 'Buscar salas por setor' })
   @ApiParam({ name: 'setorId', type: 'string' })
   @ApiResponse({ status: 200, description: 'Salas encontradas' })
+  @ApiResponse({ status: 400, description: 'UUID inválido' })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
-  async findBySetor(@Param('setorId') setorId: string) {
+  async findBySetor(@Param('setorId', ParseUUIDPipe) setorId: string) {
     return await this.salasService.findBySetor(setorId);
   }
 
@@ -103,9 +106,10 @@ export class SalasController {
   @ApiOperation({ summary: 'Buscar sala por ID' })
   @ApiParam({ name: 'id', type: 'string' })
   @ApiResponse({ status: 200, description: 'Sala encontrada' })
+  @ApiResponse({ status: 400, description: 'UUID inválido' })
   @ApiResponse({ status: 404, description: 'Sala não encontrada' })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
     return await this.salasService.findOne(id);
   }
 
@@ -113,11 +117,11 @@ export class SalasController {
   @ApiOperation({ summary: 'Atualizar sala' })
   @ApiParam({ name: 'id', type: 'string' })
   @ApiResponse({ status: 200, description: 'Sala atualizada com sucesso' })
+  @ApiResponse({ status: 400, description: 'UUID inválido ou dados inválidos' })
   @ApiResponse({ status: 404, description: 'Sala não encontrada' })
-  @ApiResponse({ status: 400, description: 'Dados inválidos' })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateSalaDto: UpdateSalaDto,
     @Request() req,
   ) {
@@ -131,9 +135,10 @@ export class SalasController {
     status: 200,
     description: 'Status da sala alterado com sucesso',
   })
+  @ApiResponse({ status: 400, description: 'UUID inválido' })
   @ApiResponse({ status: 404, description: 'Sala não encontrada' })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
-  async toggleAtivo(@Param('id') id: string, @Request() req) {
+  async toggleAtivo(@Param('id', ParseUUIDPipe) id: string, @Request() req) {
     return await this.salasService.toggleAtivo(id, req.user.userId);
   }
 
@@ -141,9 +146,10 @@ export class SalasController {
   @ApiOperation({ summary: 'Remover sala' })
   @ApiParam({ name: 'id', type: 'string' })
   @ApiResponse({ status: 200, description: 'Sala removida com sucesso' })
+  @ApiResponse({ status: 400, description: 'UUID inválido' })
   @ApiResponse({ status: 404, description: 'Sala não encontrada' })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
-  async remove(@Param('id') id: string) {
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
     await this.salasService.remove(id);
     return { message: 'Sala removida com sucesso' };
   }

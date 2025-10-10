@@ -25,7 +25,7 @@ import { TipoImpressora } from '../entities/etiqueta-amostra.entity';
 @ApiTags('Estrutura - Etiquetas de Amostra')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('api/v1/configuracoes/estrutura/etiquetas-amostra')
+@Controller('configuracoes/estrutura/etiquetas-amostra')
 export class EtiquetasAmostraController {
   constructor(
     private readonly etiquetasAmostraService: EtiquetasAmostraService,

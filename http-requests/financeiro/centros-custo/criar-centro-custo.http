@@ -1,0 +1,144 @@
+### Criar novo centro de custo
+POST {{baseUrl}}/financeiro/centros-custo
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo": "CC-ADM-001",
+  "nome": "Administrativo",
+  "descricao": "Centro de custo para despesas administrativas",
+  "unidadeId": "{{unidadeId}}"
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "id": "uuid",
+#   "codigo": "CC-ADM-001",
+#   "nome": "Administrativo",
+#   "descricao": "Centro de custo para despesas administrativas",
+#   "unidadeId": "uuid",
+#   "ativo": true,
+#   "createdAt": "2025-10-10T...",
+#   "updatedAt": "2025-10-10T..."
+# }
+
+###
+
+### Criar centro de custo - Laboratorio
+POST {{baseUrl}}/financeiro/centros-custo
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo": "CC-LAB-001",
+  "nome": "Laboratório de Análises",
+  "descricao": "Centro de custo para despesas do laboratório"
+}
+
+###
+
+### Criar centro de custo - RH
+POST {{baseUrl}}/financeiro/centros-custo
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo": "CC-RH-001",
+  "nome": "Recursos Humanos",
+  "descricao": "Centro de custo para despesas com pessoal"
+}
+
+###
+
+### Criar centro de custo - TI
+POST {{baseUrl}}/financeiro/centros-custo
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo": "CC-TI-001",
+  "nome": "Tecnologia da Informação",
+  "descricao": "Centro de custo para infraestrutura de TI"
+}
+
+###
+
+### Criar centro de custo - Financeiro
+POST {{baseUrl}}/financeiro/centros-custo
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo": "CC-FIN-001",
+  "nome": "Financeiro",
+  "descricao": "Centro de custo para despesas financeiras e bancárias"
+}
+
+###
+
+### Criar centro de custo - Manutenção
+POST {{baseUrl}}/financeiro/centros-custo
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo": "CC-MAN-001",
+  "nome": "Manutenção",
+  "descricao": "Centro de custo para manutenção predial e equipamentos"
+}
+
+###
+
+### Validar campos obrigatórios (deve falhar)
+POST {{baseUrl}}/financeiro/centros-custo
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "descricao": "Sem código e nome"
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": ["codigo should not be empty", "nome should not be empty"],
+#   "error": "Bad Request"
+# }
+
+###
+
+### Criar com código duplicado (deve falhar)
+POST {{baseUrl}}/financeiro/centros-custo
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo": "CC-ADM-001",
+  "nome": "Duplicado"
+}
+
+### Expected Response
+# Status: 409 Conflict
+# {
+#   "statusCode": 409,
+#   "message": "Já existe um centro de custo com este código",
+#   "error": "Conflict"
+# }
+
+###
+
+### Criar sem autenticação (deve falhar)
+POST {{baseUrl}}/financeiro/centros-custo
+Content-Type: {{contentType}}
+
+{
+  "codigo": "CC-TEST-001",
+  "nome": "Teste"
+}
+
+### Expected Response
+# Status: 401 Unauthorized
+
+###

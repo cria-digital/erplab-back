@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Request,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -25,7 +26,7 @@ import { SituacaoEquipamento } from '../entities/equipamento.entity';
 @ApiTags('Estrutura - Equipamentos')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('api/v1/configuracoes/estrutura/equipamentos')
+@Controller('configuracoes/estrutura/equipamentos')
 export class EquipamentosController {
   constructor(private readonly equipamentosService: EquipamentosService) {}
 
@@ -95,8 +96,9 @@ export class EquipamentosController {
   @ApiOperation({ summary: 'Buscar equipamentos por unidade' })
   @ApiParam({ name: 'unidadeId', type: 'string' })
   @ApiResponse({ status: 200, description: 'Equipamentos encontrados' })
+  @ApiResponse({ status: 400, description: 'UUID inválido' })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
-  async findByUnidade(@Param('unidadeId') unidadeId: string) {
+  async findByUnidade(@Param('unidadeId', ParseUUIDPipe) unidadeId: string) {
     return await this.equipamentosService.findByUnidade(unidadeId);
   }
 
@@ -104,8 +106,9 @@ export class EquipamentosController {
   @ApiOperation({ summary: 'Buscar equipamentos por sala' })
   @ApiParam({ name: 'salaId', type: 'string' })
   @ApiResponse({ status: 200, description: 'Equipamentos encontrados' })
+  @ApiResponse({ status: 400, description: 'UUID inválido' })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
-  async findBySala(@Param('salaId') salaId: string) {
+  async findBySala(@Param('salaId', ParseUUIDPipe) salaId: string) {
     return await this.equipamentosService.findBySala(salaId);
   }
 
@@ -113,8 +116,9 @@ export class EquipamentosController {
   @ApiOperation({ summary: 'Buscar equipamentos por setor' })
   @ApiParam({ name: 'setorId', type: 'string' })
   @ApiResponse({ status: 200, description: 'Equipamentos encontrados' })
+  @ApiResponse({ status: 400, description: 'UUID inválido' })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
-  async findBySetor(@Param('setorId') setorId: string) {
+  async findBySetor(@Param('setorId', ParseUUIDPipe) setorId: string) {
     return await this.equipamentosService.findBySetor(setorId);
   }
 
@@ -132,9 +136,10 @@ export class EquipamentosController {
   @ApiOperation({ summary: 'Buscar equipamento por ID' })
   @ApiParam({ name: 'id', type: 'string' })
   @ApiResponse({ status: 200, description: 'Equipamento encontrado' })
+  @ApiResponse({ status: 400, description: 'UUID inválido' })
   @ApiResponse({ status: 404, description: 'Equipamento não encontrado' })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
     return await this.equipamentosService.findOne(id);
   }
 
@@ -145,11 +150,11 @@ export class EquipamentosController {
     status: 200,
     description: 'Equipamento atualizado com sucesso',
   })
+  @ApiResponse({ status: 400, description: 'UUID inválido ou dados inválidos' })
   @ApiResponse({ status: 404, description: 'Equipamento não encontrado' })
-  @ApiResponse({ status: 400, description: 'Dados inválidos' })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateEquipamentoDto: UpdateEquipamentoDto,
     @Request() req,
   ) {
@@ -167,10 +172,11 @@ export class EquipamentosController {
     status: 200,
     description: 'Situação do equipamento atualizada com sucesso',
   })
+  @ApiResponse({ status: 400, description: 'UUID inválido' })
   @ApiResponse({ status: 404, description: 'Equipamento não encontrado' })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
   async updateSituacao(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body('situacao') situacao: SituacaoEquipamento,
     @Request() req,
   ) {
@@ -188,9 +194,10 @@ export class EquipamentosController {
     status: 200,
     description: 'Status do equipamento alterado com sucesso',
   })
+  @ApiResponse({ status: 400, description: 'UUID inválido' })
   @ApiResponse({ status: 404, description: 'Equipamento não encontrado' })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
-  async toggleAtivo(@Param('id') id: string, @Request() req) {
+  async toggleAtivo(@Param('id', ParseUUIDPipe) id: string, @Request() req) {
     return await this.equipamentosService.toggleAtivo(id, req.user.userId);
   }
 
@@ -201,9 +208,10 @@ export class EquipamentosController {
     status: 200,
     description: 'Equipamento removido com sucesso',
   })
+  @ApiResponse({ status: 400, description: 'UUID inválido' })
   @ApiResponse({ status: 404, description: 'Equipamento não encontrado' })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
-  async remove(@Param('id') id: string) {
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
     await this.equipamentosService.remove(id);
     return { message: 'Equipamento removido com sucesso' };
   }

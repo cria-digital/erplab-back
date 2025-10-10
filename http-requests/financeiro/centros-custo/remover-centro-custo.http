@@ -1,0 +1,44 @@
+### Remover centro de custo
+DELETE {{baseUrl}}/financeiro/centros-custo/{{centroCustoId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 204 No Content
+
+###
+
+### Remover ID inexistente (deve retornar 404)
+DELETE {{baseUrl}}/financeiro/centros-custo/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Centro de custo com ID 00000000-0000-0000-0000-000000000000 não encontrado",
+#   "error": "Not Found"
+# }
+
+###
+
+### Remover com UUID inválido (deve retornar 400)
+DELETE {{baseUrl}}/financeiro/centros-custo/invalid-uuid
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Validation failed (uuid is expected)",
+#   "error": "Bad Request"
+# }
+
+###
+
+### Remover sem autenticação (deve falhar)
+DELETE {{baseUrl}}/financeiro/centros-custo/{{centroCustoId}}
+
+### Expected Response
+# Status: 401 Unauthorized
+
+###

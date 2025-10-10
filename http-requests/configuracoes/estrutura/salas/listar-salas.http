@@ -9,205 +9,19 @@ Authorization: Bearer {{token}}
 #     "id": "uuid-1",
 #     "codigoSala": "SALA-COL-001",
 #     "nome": "Sala de Coleta 1",
-#     "tipo": "coleta",
+#     "tipoSala": "coleta",
 #     "andar": "1",
-#     "capacidade": 3,
 #     "area": 12.5,
-#     "status": "disponivel",
+#     "capacidadePessoas": 3,
 #     "setorId": "uuid-setor",
-#     "createdAt": "2025-10-09T10:00:00.000Z"
+#     "ativo": true,
+#     "criadoEm": "2025-10-09T10:00:00.000Z"
 #   }
 # ]
 
 ###
 
-### Listar apenas salas disponiveis
-GET {{baseUrl}}/configuracoes/estrutura/salas/status/disponivel
-Authorization: Bearer {{token}}
-
-###
-
-### Listar salas ocupadas
-GET {{baseUrl}}/configuracoes/estrutura/salas/status/ocupada
-Authorization: Bearer {{token}}
-
-###
-
-### Listar salas em manutencao
-GET {{baseUrl}}/configuracoes/estrutura/salas/status/manutencao
-Authorization: Bearer {{token}}
-
-###
-
-### Listar salas inativas
-GET {{baseUrl}}/configuracoes/estrutura/salas/status/inativa
-Authorization: Bearer {{token}}
-
-###
-
-### Listar por tipo - Salas de coleta
-GET {{baseUrl}}/configuracoes/estrutura/salas/tipo/coleta
-Authorization: Bearer {{token}}
-
-###
-
-### Listar por tipo - Salas de atendimento
-GET {{baseUrl}}/configuracoes/estrutura/salas/tipo/atendimento
-Authorization: Bearer {{token}}
-
-###
-
-### Listar por tipo - Salas de exame
-GET {{baseUrl}}/configuracoes/estrutura/salas/tipo/exame
-Authorization: Bearer {{token}}
-
-###
-
-### Listar por tipo - Laboratorios
-GET {{baseUrl}}/configuracoes/estrutura/salas/tipo/laboratorio
-Authorization: Bearer {{token}}
-
-###
-
-### Listar por tipo - Salas administrativas
-GET {{baseUrl}}/configuracoes/estrutura/salas/tipo/administrativo
-Authorization: Bearer {{token}}
-
-###
-
-### Listar por tipo - Salas de espera
-GET {{baseUrl}}/configuracoes/estrutura/salas/tipo/espera
-Authorization: Bearer {{token}}
-
-###
-
-### Listar por tipo - Almoxarifados
-GET {{baseUrl}}/configuracoes/estrutura/salas/tipo/almoxarifado
-Authorization: Bearer {{token}}
-
-###
-
-### Listar por tipo - Expurgos
-GET {{baseUrl}}/configuracoes/estrutura/salas/tipo/expurgo
-Authorization: Bearer {{token}}
-
-###
-
-### Listar por tipo - Salas de esterilizacao
-GET {{baseUrl}}/configuracoes/estrutura/salas/tipo/esterilizacao
-Authorization: Bearer {{token}}
-
-###
-
-### Listar por setor
-GET {{baseUrl}}/configuracoes/estrutura/salas/setor/{{setorId}}
-Authorization: Bearer {{token}}
-
-###
-
-### Listar por andar - Terreo
-GET {{baseUrl}}/configuracoes/estrutura/salas/andar/Terreo
-Authorization: Bearer {{token}}
-
-###
-
-### Listar por andar - 1o andar
-GET {{baseUrl}}/configuracoes/estrutura/salas/andar/1
-Authorization: Bearer {{token}}
-
-###
-
-### Listar por andar - 2o andar
-GET {{baseUrl}}/configuracoes/estrutura/salas/andar/2
-Authorization: Bearer {{token}}
-
-###
-
-### Buscar salas por nome (search)
-GET {{baseUrl}}/configuracoes/estrutura/salas/search?q=coleta
-Authorization: Bearer {{token}}
-
-###
-
-### Buscar salas por codigo
-GET {{baseUrl}}/configuracoes/estrutura/salas/search?q=SALA-COL
-Authorization: Bearer {{token}}
-
-###
-
-### Listar salas com ar condicionado
-GET {{baseUrl}}/configuracoes/estrutura/salas/filtros?temArCondicionado=true
-Authorization: Bearer {{token}}
-
-###
-
-### Listar salas com exaustor
-GET {{baseUrl}}/configuracoes/estrutura/salas/filtros?temExaustor=true
-Authorization: Bearer {{token}}
-
-###
-
-### Listar salas com pia
-GET {{baseUrl}}/configuracoes/estrutura/salas/filtros?temPia=true
-Authorization: Bearer {{token}}
-
-###
-
-### Listar salas com geladeira
-GET {{baseUrl}}/configuracoes/estrutura/salas/filtros?temGeladeira=true
-Authorization: Bearer {{token}}
-
-###
-
-### Listar salas com freezer
-GET {{baseUrl}}/configuracoes/estrutura/salas/filtros?temFreezer=true
-Authorization: Bearer {{token}}
-
-###
-
-### Listar salas por nivel de biosseguranca - NB2
-GET {{baseUrl}}/configuracoes/estrutura/salas/biosseguranca/NB2
-Authorization: Bearer {{token}}
-
-###
-
-### Listar salas por nivel de biosseguranca - NB3
-GET {{baseUrl}}/configuracoes/estrutura/salas/biosseguranca/NB3
-Authorization: Bearer {{token}}
-
-###
-
-### Listar salas com capacidade minima (10 pessoas)
-GET {{baseUrl}}/configuracoes/estrutura/salas/filtros?capacidadeMin=10
-Authorization: Bearer {{token}}
-
-###
-
-### Listar salas com capacidade maxima (5 pessoas)
-GET {{baseUrl}}/configuracoes/estrutura/salas/filtros?capacidadeMax=5
-Authorization: Bearer {{token}}
-
-###
-
-### Listar salas por area minima (20m²)
-GET {{baseUrl}}/configuracoes/estrutura/salas/filtros?areaMin=20
-Authorization: Bearer {{token}}
-
-###
-
-### Listar salas por area maxima (15m²)
-GET {{baseUrl}}/configuracoes/estrutura/salas/filtros?areaMax=15
-Authorization: Bearer {{token}}
-
-###
-
-### Listar salas disponiveis para agendamento
-GET {{baseUrl}}/configuracoes/estrutura/salas/disponiveis-agendamento
-Authorization: Bearer {{token}}
-
-###
-
-### Listar salas ativas
+### Listar apenas salas ativas
 GET {{baseUrl}}/configuracoes/estrutura/salas/ativas
 Authorization: Bearer {{token}}
 
@@ -221,79 +35,68 @@ Authorization: Bearer {{token}}
 # Status: 200 OK
 # {
 #   "total": 50,
-#   "porStatus": {
-#     "disponivel": 38,
-#     "ocupada": 8,
-#     "manutencao": 3,
-#     "inativa": 1
-#   },
-#   "porTipo": {
-#     "coleta": 5,
-#     "atendimento": 15,
-#     "exame": 10,
-#     "laboratorio": 8,
-#     "administrativo": 6,
-#     "espera": 3,
-#     "almoxarifado": 2,
-#     "expurgo": 1
-#   },
-#   "areaTotal": 850.5,
-#   "capacidadeTotal": 245,
-#   "comArCondicionado": 42,
-#   "comExaustor": 12,
-#   "porNivelBiosseguranca": {
-#     "NB1": 20,
-#     "NB2": 18,
-#     "NB3": 2
-#   }
+#   "ativas": 47,
+#   "inativas": 3
 # }
 
 ###
 
-### Listar com paginacao - Pagina 1
-GET {{baseUrl}}/configuracoes/estrutura/salas?page=1&limit=10
+### Listar por tipo - Salas de coleta
+GET {{baseUrl}}/configuracoes/estrutura/salas/tipo/coleta
 Authorization: Bearer {{token}}
 
 ###
 
-### Listar com paginacao - Pagina 2
-GET {{baseUrl}}/configuracoes/estrutura/salas?page=2&limit=10
+### Listar por tipo - Salas de analise
+GET {{baseUrl}}/configuracoes/estrutura/salas/tipo/analise
 Authorization: Bearer {{token}}
 
 ###
 
-### Listar ordenando por nome
-GET {{baseUrl}}/configuracoes/estrutura/salas?sort=nome&order=asc
+### Listar por tipo - Salas de exame
+GET {{baseUrl}}/configuracoes/estrutura/salas/tipo/exame
 Authorization: Bearer {{token}}
 
 ###
 
-### Listar ordenando por capacidade (maior para menor)
-GET {{baseUrl}}/configuracoes/estrutura/salas?sort=capacidade&order=desc
+### Listar por tipo - Salas administrativas
+GET {{baseUrl}}/configuracoes/estrutura/salas/tipo/administrativa
 Authorization: Bearer {{token}}
 
 ###
 
-### Listar ordenando por area (maior para menor)
-GET {{baseUrl}}/configuracoes/estrutura/salas?sort=area&order=desc
+### Listar por tipo - Salas de espera
+GET {{baseUrl}}/configuracoes/estrutura/salas/tipo/espera
 Authorization: Bearer {{token}}
 
 ###
 
-### Filtros combinados - Salas de coleta disponiveis no 1o andar
-GET {{baseUrl}}/configuracoes/estrutura/salas?tipo=coleta&status=disponivel&andar=1
+### Listar por tipo - Outros
+GET {{baseUrl}}/configuracoes/estrutura/salas/tipo/outros
 Authorization: Bearer {{token}}
 
 ###
 
-### Filtros combinados - Laboratorios com NB2 e ar condicionado
-GET {{baseUrl}}/configuracoes/estrutura/salas?tipo=laboratorio&nivelBiosseguranca=NB2&temArCondicionado=true
+### Listar por unidade
+GET {{baseUrl}}/configuracoes/estrutura/salas/unidade/{{unidadeId}}
 Authorization: Bearer {{token}}
 
 ###
 
-### Filtros combinados - Salas de exame disponiveis com capacidade de agendamento
-GET {{baseUrl}}/configuracoes/estrutura/salas?tipo=exame&status=disponivel&temAgendamento=true
+### Listar por setor
+GET {{baseUrl}}/configuracoes/estrutura/salas/setor/{{setorId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar sala por codigo
+GET {{baseUrl}}/configuracoes/estrutura/salas/codigo/SALA-COL-001
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar sala por codigo - Sala 2
+GET {{baseUrl}}/configuracoes/estrutura/salas/codigo/SALA-COL-002
 Authorization: Bearer {{token}}
 
 ###

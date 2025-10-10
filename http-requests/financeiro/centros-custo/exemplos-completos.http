@@ -1,0 +1,204 @@
+### Fluxo Completo - Gestão de Centros de Custo
+
+### 1. Login (obter token)
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "diegosoek@gmail.com",
+  "password": "Admin123!"
+}
+
+###
+
+### 2. Criar Centro de Custo - Administrativo
+POST {{baseUrl}}/financeiro/centros-custo
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo": "CC-ADM-001",
+  "nome": "Administrativo",
+  "descricao": "Centro de custo para despesas administrativas gerais"
+}
+
+###
+
+### 3. Criar Centro de Custo - Laboratório
+POST {{baseUrl}}/financeiro/centros-custo
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo": "CC-LAB-001",
+  "nome": "Laboratório de Análises Clínicas",
+  "descricao": "Centro de custo para despesas do laboratório (reagentes, equipamentos, etc)"
+}
+
+###
+
+### 4. Criar Centro de Custo - RH
+POST {{baseUrl}}/financeiro/centros-custo
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo": "CC-RH-001",
+  "nome": "Recursos Humanos",
+  "descricao": "Centro de custo para despesas com pessoal (salários, benefícios, treinamentos)"
+}
+
+###
+
+### 5. Criar Centro de Custo - Marketing
+POST {{baseUrl}}/financeiro/centros-custo
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo": "CC-MKT-001",
+  "nome": "Marketing e Vendas",
+  "descricao": "Centro de custo para ações de marketing e vendas"
+}
+
+###
+
+### 6. Criar Centro de Custo - TI
+POST {{baseUrl}}/financeiro/centros-custo
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo": "CC-TI-001",
+  "nome": "Tecnologia da Informação",
+  "descricao": "Centro de custo para infraestrutura de TI, sistemas e software"
+}
+
+###
+
+### 7. Listar todos os centros de custo criados
+GET {{baseUrl}}/financeiro/centros-custo
+Authorization: Bearer {{token}}
+
+###
+
+### 8. Listar apenas os ativos
+GET {{baseUrl}}/financeiro/centros-custo/ativos
+Authorization: Bearer {{token}}
+
+###
+
+### 9. Buscar centro específico (usar ID retornado na criação)
+@centroCustoId = [SUBSTITUIR_COM_ID_REAL]
+GET {{baseUrl}}/financeiro/centros-custo/{{centroCustoId}}
+Authorization: Bearer {{token}}
+
+###
+
+### 10. Atualizar nome e descrição
+PATCH {{baseUrl}}/financeiro/centros-custo/{{centroCustoId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Administrativo e Financeiro",
+  "descricao": "Centro de custo unificado para despesas administrativas e financeiras"
+}
+
+###
+
+### 11. Desativar centro de custo (toggle status)
+PATCH {{baseUrl}}/financeiro/centros-custo/{{centroCustoId}}/toggle-status
+Authorization: Bearer {{token}}
+
+###
+
+### 12. Listar ativos novamente (deve ter um a menos)
+GET {{baseUrl}}/financeiro/centros-custo/ativos
+Authorization: Bearer {{token}}
+
+###
+
+### 13. Reativar centro de custo (toggle novamente)
+PATCH {{baseUrl}}/financeiro/centros-custo/{{centroCustoId}}/toggle-status
+Authorization: Bearer {{token}}
+
+###
+
+### 14. Remover centro de custo (hard delete)
+DELETE {{baseUrl}}/financeiro/centros-custo/{{centroCustoId}}
+Authorization: Bearer {{token}}
+
+###
+
+### 15. Confirmar remoção (deve retornar 404)
+GET {{baseUrl}}/financeiro/centros-custo/{{centroCustoId}}
+Authorization: Bearer {{token}}
+
+###
+
+### 16. Listar todos novamente (deve ter um a menos)
+GET {{baseUrl}}/financeiro/centros-custo
+Authorization: Bearer {{token}}
+
+###
+
+### ========================================
+### CENÁRIOS DE ERRO
+### ========================================
+
+### Erro 1: Criar com código duplicado
+POST {{baseUrl}}/financeiro/centros-custo
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo": "CC-ADM-001",
+  "nome": "Duplicado"
+}
+
+### Expected: 409 Conflict
+
+###
+
+### Erro 2: Criar sem campos obrigatórios
+POST {{baseUrl}}/financeiro/centros-custo
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "descricao": "Apenas descrição"
+}
+
+### Expected: 400 Bad Request
+
+###
+
+### Erro 3: Buscar com UUID inválido
+GET {{baseUrl}}/financeiro/centros-custo/invalid-uuid
+Authorization: Bearer {{token}}
+
+### Expected: 400 Bad Request
+
+###
+
+### Erro 4: Buscar ID inexistente
+GET {{baseUrl}}/financeiro/centros-custo/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{token}}
+
+### Expected: 404 Not Found
+
+###
+
+### Erro 5: Atualizar com código existente
+PATCH {{baseUrl}}/financeiro/centros-custo/{{centroCustoId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo": "CC-LAB-001"
+}
+
+### Expected: 409 Conflict
+
+###

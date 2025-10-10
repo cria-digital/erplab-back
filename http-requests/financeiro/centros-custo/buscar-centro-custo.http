@@ -1,0 +1,51 @@
+### Buscar centro de custo por ID
+GET {{baseUrl}}/financeiro/centros-custo/{{centroCustoId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "codigo": "CC-ADM-001",
+#   "nome": "Administrativo",
+#   "descricao": "Centro de custo para despesas administrativas",
+#   "unidadeId": "uuid",
+#   "ativo": true,
+#   "createdAt": "2025-10-10T...",
+#   "updatedAt": "2025-10-10T...",
+#   "unidade": {
+#     "id": "uuid",
+#     "nome": "Unidade Central",
+#     "cnpj": "12.345.678/0001-90"
+#   }
+# }
+
+###
+
+### Buscar por ID inexistente (deve retornar 404)
+GET {{baseUrl}}/financeiro/centros-custo/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Centro de custo com ID 00000000-0000-0000-0000-000000000000 não encontrado",
+#   "error": "Not Found"
+# }
+
+###
+
+### Buscar com UUID inválido (deve retornar 400)
+GET {{baseUrl}}/financeiro/centros-custo/invalid-uuid
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Validation failed (uuid is expected)",
+#   "error": "Bad Request"
+# }
+
+###

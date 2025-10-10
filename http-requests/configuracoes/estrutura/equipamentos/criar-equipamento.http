@@ -4,38 +4,32 @@ Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "codigoEquipamento": "EQ-AH-001",
+  "patrimonio": "PAT-2024-001",
   "nome": "Analisador Hematologico BC-6800",
-  "tipo": "analisador",
   "marca": "Mindray",
   "modelo": "BC-6800",
   "numeroSerie": "BC6800-2024-001",
-  "patrimonio": "PAT-2024-001",
   "setorId": "{{setorId}}",
+  "salaId": "{{salaId}}",
+  "fornecedorId": "{{fornecedorId}}",
+  "unidadeId": "{{unidadeId}}",
   "dataAquisicao": "2024-01-15",
   "valorAquisicao": 185000.00,
-  "fornecedorId": "{{fornecedorId}}",
-  "status": "operante",
-  "ultimaManutencao": "2024-09-15",
-  "proximaManutencao": "2025-03-15",
-  "ultimaCalibracao": "2024-10-01",
-  "proximaCalibracao": "2025-04-01",
-  "observacoes": "Equipamento de alta performance para análises hematológicas completas",
-  "manuais": [
-    "https://storage.lab.com/manuais/bc6800-manual-pt.pdf",
-    "https://storage.lab.com/manuais/bc6800-calibracao.pdf"
-  ]
+  "situacao": "ativo",
+  "dataUltimaManutencao": "2024-09-15",
+  "dataProximaManutencao": "2025-03-15",
+  "periodicidadeManutencaoDias": 180,
+  "observacoes": "Equipamento de alta performance para análises hematológicas completas"
 }
 
 ### Expected Response
 # Status: 201 Created
 # {
 #   "id": "uuid-do-equipamento",
-#   "codigoEquipamento": "EQ-AH-001",
+#   "patrimonio": "PAT-2024-001",
 #   "nome": "Analisador Hematologico BC-6800",
-#   "tipo": "analisador",
-#   "status": "operante",
-#   "createdAt": "2025-10-09T10:00:00.000Z"
+#   "situacao": "ativo",
+#   "criadoEm": "2025-10-09T10:00:00.000Z"
 # }
 
 ###
@@ -46,25 +40,22 @@ Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "codigoEquipamento": "EQ-CF-001",
+  "patrimonio": "PAT-2024-002",
   "nome": "Centrifuga Refrigerada CR-3000",
-  "tipo": "centrifuga",
   "marca": "Eppendorf",
   "modelo": "5810R",
   "numeroSerie": "EP5810R-2024-005",
-  "patrimonio": "PAT-2024-002",
   "setorId": "{{setorId}}",
   "salaId": "{{salaId}}",
+  "fornecedorId": "{{fornecedorId}}",
+  "unidadeId": "{{unidadeId}}",
   "dataAquisicao": "2024-02-20",
   "valorAquisicao": 32000.00,
-  "fornecedorId": "{{fornecedorId}}",
-  "status": "operante",
-  "ultimaManutencao": "2024-10-01",
-  "proximaManutencao": "2025-04-01",
-  "observacoes": "Centrifuga refrigerada com capacidade para 4x250ml, velocidade maxima 14.000 RPM",
-  "manuais": [
-    "https://storage.lab.com/manuais/eppendorf-5810r-manual.pdf"
-  ]
+  "situacao": "ativo",
+  "dataUltimaManutencao": "2024-10-01",
+  "dataProximaManutencao": "2025-04-01",
+  "periodicidadeManutencaoDias": 180,
+  "observacoes": "Centrifuga refrigerada com capacidade para 4x250ml, velocidade maxima 14.000 RPM"
 }
 
 ###
@@ -75,24 +66,21 @@ Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "codigoEquipamento": "EQ-MC-001",
+  "patrimonio": "PAT-2024-003",
   "nome": "Microscopio Optico Binocular",
-  "tipo": "microscopio",
   "marca": "Olympus",
   "modelo": "CX23",
   "numeroSerie": "OLY-CX23-2024-010",
-  "patrimonio": "PAT-2024-003",
   "setorId": "{{setorId}}",
   "salaId": "{{salaId}}",
+  "unidadeId": "{{unidadeId}}",
   "dataAquisicao": "2024-03-10",
   "valorAquisicao": 8500.00,
-  "status": "operante",
-  "ultimaManutencao": "2024-09-10",
-  "proximaManutencao": "2025-03-10",
-  "observacoes": "Microscopio binocular com iluminacao LED, objetivas 4x, 10x, 40x e 100x",
-  "manuais": [
-    "https://storage.lab.com/manuais/olympus-cx23-manual.pdf"
-  ]
+  "situacao": "ativo",
+  "dataUltimaManutencao": "2024-09-10",
+  "dataProximaManutencao": "2025-03-10",
+  "periodicidadeManutencaoDias": 180,
+  "observacoes": "Microscopio binocular com iluminacao LED, objetivas 4x, 10x, 40x e 100x"
 }
 
 ###
@@ -103,144 +91,22 @@ Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "codigoEquipamento": "EQ-AT-001",
+  "patrimonio": "PAT-2024-004",
   "nome": "Autoclave Vertical 75L",
-  "tipo": "autoclave",
   "marca": "Phoenix",
   "modelo": "AV-75",
   "numeroSerie": "PHX-AV75-2024-003",
-  "patrimonio": "PAT-2024-004",
   "setorId": "{{setorId}}",
   "salaId": "{{salaId}}",
+  "fornecedorId": "{{fornecedorId}}",
+  "unidadeId": "{{unidadeId}}",
   "dataAquisicao": "2024-01-25",
   "valorAquisicao": 12500.00,
-  "fornecedorId": "{{fornecedorId}}",
-  "status": "operante",
-  "ultimaManutencao": "2024-10-05",
-  "proximaManutencao": "2025-01-05",
-  "ultimaCalibracao": "2024-10-05",
-  "proximaCalibracao": "2025-01-05",
-  "observacoes": "Autoclave vertical com capacidade de 75 litros, temperatura ate 134C, com controle digital",
-  "manuais": [
-    "https://storage.lab.com/manuais/phoenix-av75-manual.pdf",
-    "https://storage.lab.com/manuais/phoenix-av75-validacao.pdf"
-  ]
-}
-
-###
-
-### Criar Freezer
-POST {{baseUrl}}/configuracoes/estrutura/equipamentos
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-  "codigoEquipamento": "EQ-FR-001",
-  "nome": "Freezer Vertical -20C",
-  "tipo": "freezer",
-  "marca": "Metalfrio",
-  "modelo": "VF43",
-  "numeroSerie": "MTF-VF43-2024-007",
-  "patrimonio": "PAT-2024-005",
-  "setorId": "{{setorId}}",
-  "salaId": "{{salaId}}",
-  "dataAquisicao": "2024-02-01",
-  "valorAquisicao": 7800.00,
-  "fornecedorId": "{{fornecedorId}}",
-  "status": "operante",
-  "ultimaManutencao": "2024-09-20",
-  "proximaManutencao": "2024-12-20",
-  "observacoes": "Freezer vertical 410 litros, temperatura -20C, com alarme de temperatura e backup de energia",
-  "manuais": [
-    "https://storage.lab.com/manuais/metalfrio-vf43-manual.pdf"
-  ]
-}
-
-###
-
-### Criar Balanca de Precisao
-POST {{baseUrl}}/configuracoes/estrutura/equipamentos
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-  "codigoEquipamento": "EQ-BL-001",
-  "nome": "Balanca Analitica de Precisao",
-  "tipo": "balanca",
-  "marca": "Shimadzu",
-  "modelo": "AUW220D",
-  "numeroSerie": "SHM-AUW220-2024-002",
-  "patrimonio": "PAT-2024-006",
-  "setorId": "{{setorId}}",
-  "salaId": "{{salaId}}",
-  "dataAquisicao": "2024-03-15",
-  "valorAquisicao": 15200.00,
-  "status": "operante",
-  "ultimaCalibracao": "2024-10-01",
-  "proximaCalibracao": "2025-01-01",
-  "observacoes": "Balanca analitica com precisao de 0.1mg, capacidade maxima 220g, com certificado de calibracao INMETRO",
-  "manuais": [
-    "https://storage.lab.com/manuais/shimadzu-auw220d-manual.pdf"
-  ]
-}
-
-###
-
-### Criar Estufa Bacteriologica
-POST {{baseUrl}}/configuracoes/estrutura/equipamentos
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-  "codigoEquipamento": "EQ-ES-001",
-  "nome": "Estufa Bacteriologica 150L",
-  "tipo": "estufa",
-  "marca": "Quimis",
-  "modelo": "Q316M",
-  "numeroSerie": "QUI-Q316M-2024-004",
-  "patrimonio": "PAT-2024-007",
-  "setorId": "{{setorId}}",
-  "salaId": "{{salaId}}",
-  "dataAquisicao": "2024-01-30",
-  "valorAquisicao": 9500.00,
-  "fornecedorId": "{{fornecedorId}}",
-  "status": "operante",
-  "ultimaManutencao": "2024-08-30",
-  "proximaManutencao": "2025-02-28",
-  "ultimaCalibracao": "2024-09-15",
-  "proximaCalibracao": "2025-03-15",
-  "observacoes": "Estufa bacteriologica com controle digital de temperatura (5C a 60C), capacidade 150 litros",
-  "manuais": [
-    "https://storage.lab.com/manuais/quimis-q316m-manual.pdf"
-  ]
-}
-
-###
-
-### Criar Agitador Vortex
-POST {{baseUrl}}/configuracoes/estrutura/equipamentos
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-  "codigoEquipamento": "EQ-AG-001",
-  "nome": "Agitador Tipo Vortex",
-  "tipo": "agitador",
-  "marca": "IKA",
-  "modelo": "MS3",
-  "numeroSerie": "IKA-MS3-2024-012",
-  "patrimonio": "PAT-2024-008",
-  "setorId": "{{setorId}}",
-  "salaId": "{{salaId}}",
-  "dataAquisicao": "2024-04-05",
-  "valorAquisicao": 2800.00,
-  "status": "operante",
-  "ultimaManutencao": "2024-10-05",
-  "proximaManutencao": "2025-04-05",
-  "observacoes": "Agitador tipo vortex com velocidade variavel 0-3000 RPM, acionamento automatico",
-  "manuais": [
-    "https://storage.lab.com/manuais/ika-ms3-manual.pdf"
-  ]
+  "situacao": "ativo",
+  "dataUltimaManutencao": "2024-10-05",
+  "dataProximaManutencao": "2025-01-05",
+  "periodicidadeManutencaoDias": 90,
+  "observacoes": "Autoclave vertical com capacidade de 75 litros, temperatura ate 134C, com controle digital"
 }
 
 ###
@@ -251,49 +117,60 @@ Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "codigoEquipamento": "EQ-AH-002",
+  "patrimonio": "PAT-2023-025",
   "nome": "Analisador Bioquimico BS-200",
-  "tipo": "analisador",
   "marca": "Mindray",
   "modelo": "BS-200",
   "numeroSerie": "BS200-2023-015",
-  "patrimonio": "PAT-2023-025",
   "setorId": "{{setorId}}",
+  "unidadeId": "{{unidadeId}}",
   "dataAquisicao": "2023-06-10",
   "valorAquisicao": 95000.00,
-  "status": "manutencao",
-  "ultimaManutencao": "2024-10-01",
-  "observacoes": "Equipamento em manutencao corretiva - problema no sistema de reagentes",
-  "manuais": [
-    "https://storage.lab.com/manuais/bs200-manual.pdf"
-  ]
+  "situacao": "manutencao",
+  "dataUltimaManutencao": "2024-10-01",
+  "observacoes": "Equipamento em manutencao corretiva - problema no sistema de reagentes"
 }
 
 ###
 
-### Criar equipamento em calibracao
+### Criar equipamento inativo
 POST {{baseUrl}}/configuracoes/estrutura/equipamentos
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "codigoEquipamento": "EQ-MC-002",
-  "nome": "Microscopio Fluorescencia",
-  "tipo": "microscopio",
-  "marca": "Nikon",
-  "modelo": "Eclipse Ni-U",
-  "numeroSerie": "NIK-ECL-2023-008",
-  "patrimonio": "PAT-2023-018",
+  "patrimonio": "PAT-2022-018",
+  "nome": "Centrifuga Antiga CF-100",
+  "marca": "Fanem",
+  "modelo": "CF-100",
+  "numeroSerie": "FAM-CF100-2022-001",
   "setorId": "{{setorId}}",
-  "salaId": "{{salaId}}",
-  "dataAquisicao": "2023-09-20",
-  "valorAquisicao": 42000.00,
-  "status": "calibracao",
-  "ultimaCalibracao": "2024-03-20",
-  "observacoes": "Microscopio em processo de calibracao periodica semestral",
-  "manuais": [
-    "https://storage.lab.com/manuais/nikon-eclipse-manual.pdf"
-  ]
+  "unidadeId": "{{unidadeId}}",
+  "dataAquisicao": "2022-03-10",
+  "valorAquisicao": 8000.00,
+  "situacao": "inativo",
+  "observacoes": "Equipamento desativado - substituido por modelo mais moderno"
+}
+
+###
+
+### Criar equipamento descartado
+POST {{baseUrl}}/configuracoes/estrutura/equipamentos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "patrimonio": "PAT-2020-005",
+  "nome": "Microscopio Antigo",
+  "marca": "Zeiss",
+  "modelo": "Standard",
+  "numeroSerie": "ZEI-STD-2020-003",
+  "setorId": "{{setorId}}",
+  "unidadeId": "{{unidadeId}}",
+  "dataAquisicao": "2020-01-10",
+  "valorAquisicao": 5000.00,
+  "situacao": "descartado",
+  "observacoes": "Equipamento descartado por obsolescencia"
 }
 
 ###

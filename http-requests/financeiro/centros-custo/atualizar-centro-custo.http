@@ -1,0 +1,96 @@
+### Atualizar centro de custo completo
+PATCH {{baseUrl}}/financeiro/centros-custo/{{centroCustoId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo": "CC-ADM-002",
+  "nome": "Administrativo e Financeiro",
+  "descricao": "Centro de custo unificado para administrativo e financeiro",
+  "unidadeId": "{{unidadeId}}"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "codigo": "CC-ADM-002",
+#   "nome": "Administrativo e Financeiro",
+#   "descricao": "Centro de custo unificado para administrativo e financeiro",
+#   "unidadeId": "uuid",
+#   "ativo": true,
+#   "updatedAt": "2025-10-10T..."
+# }
+
+###
+
+### Atualizar apenas o nome
+PATCH {{baseUrl}}/financeiro/centros-custo/{{centroCustoId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Administrativo Atualizado"
+}
+
+###
+
+### Atualizar apenas a descrição
+PATCH {{baseUrl}}/financeiro/centros-custo/{{centroCustoId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "descricao": "Nova descrição mais detalhada do centro de custo"
+}
+
+###
+
+### Alternar status ativo/inativo
+PATCH {{baseUrl}}/financeiro/centros-custo/{{centroCustoId}}/toggle-status
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "codigo": "CC-ADM-001",
+#   "nome": "Administrativo",
+#   "ativo": false,  // <-- Status foi alternado
+#   "updatedAt": "2025-10-10T..."
+# }
+
+###
+
+### Atualizar com código duplicado (deve falhar)
+PATCH {{baseUrl}}/financeiro/centros-custo/{{centroCustoId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo": "CC-LAB-001"
+}
+
+### Expected Response
+# Status: 409 Conflict
+# {
+#   "statusCode": 409,
+#   "message": "Já existe um centro de custo com este código",
+#   "error": "Conflict"
+# }
+
+###
+
+### Atualizar ID inexistente (deve retornar 404)
+PATCH {{baseUrl}}/financeiro/centros-custo/00000000-0000-0000-0000-000000000000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Teste"
+}
+
+### Expected Response
+# Status: 404 Not Found
+
+###

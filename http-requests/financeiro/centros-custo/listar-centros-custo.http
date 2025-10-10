@@ -1,0 +1,49 @@
+### Listar todos os centros de custo
+GET {{baseUrl}}/financeiro/centros-custo
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid",
+#     "codigo": "CC-ADM-001",
+#     "nome": "Administrativo",
+#     "descricao": "Centro de custo para despesas administrativas",
+#     "unidadeId": "uuid",
+#     "ativo": true,
+#     "createdAt": "2025-10-10T...",
+#     "updatedAt": "2025-10-10T...",
+#     "unidade": {
+#       "id": "uuid",
+#       "nome": "Unidade Central"
+#     }
+#   }
+# ]
+
+###
+
+### Listar apenas centros de custo ativos
+GET {{baseUrl}}/financeiro/centros-custo/ativos
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid",
+#     "codigo": "CC-ADM-001",
+#     "nome": "Administrativo",
+#     "ativo": true
+#   }
+# ]
+
+###
+
+### Listar sem autenticação (deve falhar)
+GET {{baseUrl}}/financeiro/centros-custo
+
+### Expected Response
+# Status: 401 Unauthorized
+
+###
