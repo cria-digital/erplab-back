@@ -12,6 +12,57 @@ import {
 import { Formulario } from './formulario.entity';
 import { AlternativaCampo } from './alternativa-campo.entity';
 
+// Enum para campos padrão do sistema (identificadores estáticos)
+export enum CamposPadraoSistema {
+  // Unidades de Medida e Quantidades
+  UNIDADE_MEDIDA = 'UNIDADE_MEDIDA',
+  TIPO_UNIDADE = 'TIPO_UNIDADE',
+
+  // Dados do Paciente
+  TIPO_SANGUE = 'TIPO_SANGUE',
+  GENERO = 'GENERO',
+  COR_RACA = 'COR_RACA',
+  ESTADO_CIVIL = 'ESTADO_CIVIL',
+  ESCOLARIDADE = 'ESCOLARIDADE',
+  PROFISSAO = 'PROFISSAO',
+
+  // Dados de Exame/Amostra
+  TIPO_AMOSTRA = 'TIPO_AMOSTRA',
+  METODO_COLETA = 'METODO_COLETA',
+  TIPO_RECIPIENTE = 'TIPO_RECIPIENTE',
+  CONDICAO_JEJUM = 'CONDICAO_JEJUM',
+  PREPARO_PACIENTE = 'PREPARO_PACIENTE',
+
+  // Dados Clínicos
+  SINTOMAS = 'SINTOMAS',
+  MEDICAMENTOS_USO = 'MEDICAMENTOS_USO',
+  ALERGIAS = 'ALERGIAS',
+  HISTORICO_FAMILIAR = 'HISTORICO_FAMILIAR',
+  COMORBIDADES = 'COMORBIDADES',
+
+  // Resultados e Interpretações
+  RESULTADO_QUALITATIVO = 'RESULTADO_QUALITATIVO',
+  INTERPRETACAO = 'INTERPRETACAO',
+  OBSERVACOES_TECNICAS = 'OBSERVACOES_TECNICAS',
+  CONCLUSAO_LAUDO = 'CONCLUSAO_LAUDO',
+
+  // Controles e Status
+  STATUS_EXAME = 'STATUS_EXAME',
+  PRIORIDADE = 'PRIORIDADE',
+  URGENCIA = 'URGENCIA',
+
+  // Outros
+  SIM_NAO = 'SIM_NAO',
+  PRESENCA_AUSENCIA = 'PRESENCA_AUSENCIA',
+  POSITIVO_NEGATIVO = 'POSITIVO_NEGATIVO',
+}
+
+// Tipo do campo (sistema ou customizado)
+export enum TipoCampoPadrao {
+  SISTEMA = 'sistema', // Campo padrão do sistema (código fixo)
+  CUSTOMIZADO = 'customizado', // Campo criado pelo usuário
+}
+
 export enum TipoCampo {
   // Campos de texto
   TEXTO = 'texto',
@@ -91,6 +142,15 @@ export class CampoFormulario {
   })
   @JoinColumn({ name: 'formulario_id' })
   formulario: Formulario;
+
+  // Tipo do campo (sistema ou customizado)
+  @Column({
+    type: 'enum',
+    enum: TipoCampoPadrao,
+    name: 'tipo_campo_padrao',
+    default: TipoCampoPadrao.CUSTOMIZADO,
+  })
+  tipoCampoPadrao: TipoCampoPadrao;
 
   @Column({
     type: 'varchar',

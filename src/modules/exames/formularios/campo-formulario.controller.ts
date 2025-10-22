@@ -21,7 +21,11 @@ import {
 import { CampoFormularioService } from './campo-formulario.service';
 import { CreateCampoFormularioDto } from './dto/create-campo-formulario.dto';
 import { UpdateCampoFormularioDto } from './dto/update-campo-formulario.dto';
-import { TipoCampo, StatusCampo } from './entities/campo-formulario.entity';
+import {
+  TipoCampo,
+  StatusCampo,
+  CamposPadraoSistema,
+} from './entities/campo-formulario.entity';
 import { JwtAuthGuard } from '../../autenticacao/auth/guards/jwt-auth.guard';
 
 @ApiTags('Campos de Formulário')
@@ -32,6 +36,109 @@ export class CampoFormularioController {
   constructor(
     private readonly campoFormularioService: CampoFormularioService,
   ) {}
+
+  // ========== ENDPOINTS PARA CAMPOS PADRÃO DO SISTEMA ==========
+
+  @Get('campos-padrao')
+  @ApiOperation({
+    summary: 'Listar todos os campos padrão do sistema',
+    description:
+      'Retorna lista de campos padrão (UNIDADE_MEDIDA, TIPO_SANGUE, etc) que podem ser usados em formulários',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de campos padrão do sistema',
+    schema: {
+      example: {
+        campos: [
+          {
+            codigo: 'UNIDADE_MEDIDA',
+            nome: 'Unidade de Medida',
+            descricao: 'Usado nos formulários de exames',
+            categoria: 'Unidades de Medida e Quantidades',
+          },
+          {
+            codigo: 'TIPO_SANGUE',
+            nome: 'Tipo Sanguíneo',
+            descricao: 'Tipo sanguíneo do paciente (A+, B-, O+, etc)',
+            categoria: 'Dados do Paciente',
+          },
+        ],
+        total: 27,
+      },
+    },
+  })
+  getCamposPadrao() {
+    return this.campoFormularioService.getCamposPadrao();
+  }
+
+  @Get('campos-padrao/:codigo')
+  @ApiOperation({
+    summary: 'Buscar informações de um campo padrão específico',
+    description:
+      'Retorna detalhes sobre um campo padrão do sistema pelo código',
+  })
+  @ApiParam({
+    name: 'codigo',
+    description: 'Código do campo padrão',
+    enum: CamposPadraoSistema,
+  })
+  @ApiResponse({ status: 200, description: 'Informações do campo padrão' })
+  @ApiResponse({ status: 404, description: 'Campo padrão não encontrado' })
+  getCampoPadraoByCodigo(@Param('codigo') codigo: CamposPadraoSistema) {
+    return this.campoFormularioService.getCampoPadraoByCodigo(codigo);
+  }
+
+  @Get('tipos-campo')
+  @ApiOperation({
+    summary: 'Listar todos os tipos de campo disponíveis',
+    description:
+      'Retorna lista de tipos de campo (SELECT, RADIO, TEXTO, etc) que podem ser usados ao criar campos',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de tipos de campo',
+    schema: {
+      example: {
+        tipos: [
+          {
+            valor: 'select',
+            label: 'Seleção (Dropdown)',
+            categoria: 'Campos de seleção',
+            permiteAlternativas: true,
+          },
+          {
+            valor: 'texto',
+            label: 'Texto Curto',
+            categoria: 'Campos de texto',
+            permiteAlternativas: false,
+          },
+        ],
+        total: 39,
+      },
+    },
+  })
+  getTiposCampo() {
+    return this.campoFormularioService.getTiposCampo();
+  }
+
+  @Get('campos-padrao/categoria/:categoria')
+  @ApiOperation({
+    summary: 'Listar campos padrão por categoria',
+    description:
+      'Retorna campos padrão filtrados por categoria (ex: "Dados do Paciente", "Resultados")',
+  })
+  @ApiParam({
+    name: 'categoria',
+    description: 'Categoria dos campos',
+    example: 'Dados do Paciente',
+  })
+  @ApiResponse({ status: 200, description: 'Lista de campos da categoria' })
+  getCamposPadraoPorCategoria(@Param('categoria') categoria: string) {
+    return this.campoFormularioService.getCamposPadraoPorCategoria(categoria);
+  }
+
+  // ========== ENDPOINTS CRUD NORMAIS ==========
 
   @Post()
   @ApiOperation({ summary: 'Criar novo campo de formulário' })

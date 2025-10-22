@@ -17,6 +17,7 @@ describe('CampoFormularioService', () => {
   const mockCampo: CampoFormulario = {
     id: 'campo-uuid-1',
     formularioId: 'formulario-uuid-1',
+    tipoCampoPadrao: 'customizado' as any,
     codigoCampo: 'CAMPO001',
     nomeCampo: 'Nome do Paciente',
     descricao: 'Campo para nome completo',
