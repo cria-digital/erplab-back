@@ -75,7 +75,7 @@ export class CreateDadoBancarioDto {
   @ApiPropertyOptional({ example: '001', description: 'Código do banco' })
   @IsOptional()
   @IsString()
-  @Length(1, 10)
+  @Length(1, 100)
   codigoBanco?: string;
 
   @ApiProperty({ example: '1234', description: 'Número da agência' })
