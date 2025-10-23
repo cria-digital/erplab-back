@@ -8,6 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { UnidadeSaude } from './unidade-saude.entity';
+import { Banco } from '../../../financeiro/core/entities/banco.entity';
 
 @Entity('dados_bancarios')
 export class DadoBancario {
@@ -17,11 +18,8 @@ export class DadoBancario {
   @Column({ name: 'unidade_saude_id', type: 'uuid' })
   unidadeSaudeId: string;
 
-  @Column({ type: 'varchar', length: 100 })
-  banco: string;
-
-  @Column({ name: 'codigo_banco', type: 'varchar', length: 10, nullable: true })
-  codigoBanco: string;
+  @Column({ name: 'banco_id', type: 'uuid' })
+  bancoId: string;
 
   @Column({ type: 'varchar', length: 20 })
   agencia: string;
@@ -69,4 +67,8 @@ export class DadoBancario {
   })
   @JoinColumn({ name: 'unidade_saude_id' })
   unidadeSaude: UnidadeSaude;
+
+  @ManyToOne(() => Banco, { eager: true })
+  @JoinColumn({ name: 'banco_id' })
+  banco: Banco;
 }

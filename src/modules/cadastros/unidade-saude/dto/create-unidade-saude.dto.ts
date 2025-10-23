@@ -66,17 +66,13 @@ export class CreateHorarioAtendimentoDto {
 }
 
 export class CreateDadoBancarioDto {
-  @ApiProperty({ example: 'Banco do Brasil', description: 'Nome do banco' })
+  @ApiProperty({
+    example: 'uuid-do-banco',
+    description: 'ID do banco',
+  })
   @IsString()
   @IsNotEmpty()
-  @Length(1, 100)
-  banco: string;
-
-  @ApiPropertyOptional({ example: '001', description: 'Código do banco' })
-  @IsOptional()
-  @IsString()
-  @Length(1, 100)
-  codigoBanco?: string;
+  bancoId: string;
 
   @ApiProperty({ example: '1234', description: 'Número da agência' })
   @IsString()

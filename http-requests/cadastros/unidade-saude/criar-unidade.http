@@ -1,7 +1,11 @@
 ### Criar Nova Unidade de Saúde
-# IMPORTANTE: Os campos cnaePrincipalId e cnaeId agora usam UUIDs da tabela cnaes
-# Para buscar CNAEs disponíveis: GET {{baseUrl}}/cnae
-# Exemplo de CNAE 86402 (Lab. Clínico): f0bb0d8e-39cb-4d35-ac49-3479a71f6d99
+# IMPORTANTE:
+# - Os campos cnaePrincipalId e cnaeId usam UUIDs da tabela cnaes
+#   Para buscar CNAEs disponíveis: GET {{baseUrl}}/cnae
+#   Exemplo de CNAE 86402 (Lab. Clínico): f0bb0d8e-39cb-4d35-ac49-3479a71f6d99
+# - O campo bancoId usa UUID da tabela bancos
+#   Para buscar Bancos disponíveis: GET {{baseUrl}}/financeiro/bancos
+#   Você precisa substituir os bancoId abaixo pelos IDs reais do seu banco
 POST {{baseUrl}}/cadastros/unidades-saude
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
@@ -19,7 +23,7 @@ Authorization: Bearer {{token}}
   "email": "contato@labsr.com.br",
   "codigoServicoPrincipal": "001",
   "codigoServicoSecundario": ["002", "003", "004"],
-  "cnaePrincipalId": "f0bb0d8e-39cb-4d35-ac49-3479a71f6d99",
+  "cnaePrincipalId": "29d3b071-9a5d-450e-b0c0-5e0a2289c434",
   "cep": "18130000",
   "rua": "Rua São Paulo",
   "numero": "123",
@@ -95,34 +99,19 @@ Authorization: Bearer {{token}}
   ],
   "dadosBancarios": [
     {
-      "banco": "Banco do Brasil",
-      "codigoBanco": "001",
+      "bancoId": "2eccbdb8-5bf4-4c70-b5ce-9d94a0611137",
       "agencia": "1234",
       "digitoAgencia": "5",
       "contaCorrente": "12345",
       "digitoConta": "6",
       "tipoConta": "CORRENTE",
       "principal": true,
-      "observacoes": "Conta principal para recebimentos"
-    },
-    {
-      "banco": "Santander",
-      "codigoBanco": "033",
-      "agencia": "4567",
-      "digitoAgencia": "0",
-      "contaCorrente": "67890",
-      "digitoConta": "1",
-      "tipoConta": "CORRENTE",
-      "principal": false,
-      "observacoes": "Conta secundária"
+      "observacoes": "Conta principal para recebimentos (Banco do Brasil - 001)"
     }
   ],
   "cnaeSecundarios": [
     {
-      "cnaeId": "958195aa-b078-4ff3-8e1b-67800481fb5e"
-    },
-    {
-      "cnaeId": "8cf37945-af29-4f10-a20b-95cde3635701"
+      "cnaeId": "29d3b071-9a5d-450e-b0c0-5e0a2289c434"
     }
   ]
 }

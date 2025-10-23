@@ -6,6 +6,7 @@ import { UnidadeSaude } from './entities/unidade-saude.entity';
 import { HorarioAtendimento } from './entities/horario-atendimento.entity';
 import { DadoBancario } from './entities/dado-bancario.entity';
 import { CnaeSecundario } from './entities/cnae-secundario.entity';
+import { Banco } from '../../financeiro/core/entities/banco.entity';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { CnaeSecundario } from './entities/cnae-secundario.entity';
       HorarioAtendimento,
       DadoBancario,
       CnaeSecundario,
+      Banco,
     ]),
   ],
   controllers: [UnidadeSaudeController],

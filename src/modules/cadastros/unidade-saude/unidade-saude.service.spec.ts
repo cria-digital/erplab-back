@@ -8,6 +8,7 @@ import { UnidadeSaude } from './entities/unidade-saude.entity';
 import { HorarioAtendimento } from './entities/horario-atendimento.entity';
 import { DadoBancario } from './entities/dado-bancario.entity';
 import { CnaeSecundario } from './entities/cnae-secundario.entity';
+import { Banco } from '../../financeiro/core/entities/banco.entity';
 import { CreateUnidadeSaudeDto } from './dto/create-unidade-saude.dto';
 import { UpdateUnidadeSaudeDto } from './dto/update-unidade-saude.dto';
 
@@ -46,8 +47,7 @@ describe('UnidadeSaudeService', () => {
   const mockDadoBancario = {
     id: 'banco-uuid-1',
     unidadeSaudeId: 'unidade-uuid-1',
-    banco: 'Banco do Brasil',
-    codigoBanco: '001',
+    bancoId: 'banco-uuid-1',
     agencia: '1234',
     digitoAgencia: '5',
     contaCorrente: '567890',
@@ -59,6 +59,11 @@ describe('UnidadeSaudeService', () => {
     createdAt: new Date(),
     updatedAt: new Date(),
     unidadeSaude: null,
+    banco: {
+      id: 'banco-uuid-1',
+      codigo: '001',
+      nome: 'Banco do Brasil',
+    } as Banco,
   } as DadoBancario;
 
   const mockQueryRunner = {
@@ -103,6 +108,10 @@ describe('UnidadeSaudeService', () => {
     save: jest.fn(),
   };
 
+  const mockBancoRepository = {
+    findOne: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -122,6 +131,10 @@ describe('UnidadeSaudeService', () => {
         {
           provide: getRepositoryToken(CnaeSecundario),
           useValue: mockCnaeSecundarioRepository,
+        },
+        {
+          provide: getRepositoryToken(Banco),
+          useValue: mockBancoRepository,
         },
         {
           provide: DataSource,
@@ -174,7 +187,7 @@ describe('UnidadeSaudeService', () => {
       ],
       dadosBancarios: [
         {
-          banco: 'Banco do Brasil',
+          bancoId: 'banco-uuid-1',
           agencia: '1234',
           contaCorrente: '567890',
           principal: true,
@@ -199,6 +212,11 @@ describe('UnidadeSaudeService', () => {
         mockHorarioAtendimento,
       );
       mockDadoBancarioRepository.create.mockReturnValue(mockDadoBancario);
+      mockBancoRepository.findOne.mockResolvedValue({
+        id: 'banco-uuid-1',
+        codigo: '001',
+        nome: 'Banco do Brasil',
+      });
 
       const result = await service.create(createUnidadeSaudeDto);
 
@@ -225,7 +243,7 @@ describe('UnidadeSaudeService', () => {
         ...createUnidadeSaudeDto,
         dadosBancarios: [
           {
-            banco: 'Banco do Brasil',
+            bancoId: 'banco-uuid-1',
             agencia: '1234',
             contaCorrente: '567890',
             principal: false,
@@ -236,6 +254,11 @@ describe('UnidadeSaudeService', () => {
       mockUnidadeSaudeRepository.findOne.mockResolvedValue(null);
       mockUnidadeSaudeRepository.create.mockReturnValue(mockUnidadeSaude);
       mockQueryRunner.manager.save.mockResolvedValue(mockUnidadeSaude);
+      mockBancoRepository.findOne.mockResolvedValue({
+        id: 'banco-uuid-1',
+        codigo: '001',
+        nome: 'Banco do Brasil',
+      });
 
       await service.create(dtoSemPrincipal);
 
@@ -500,7 +523,7 @@ describe('UnidadeSaudeService', () => {
       const updateDto = {
         dadosBancarios: [
           {
-            banco: 'Bradesco',
+            bancoId: 'banco-uuid-2',
             agencia: '5678',
             contaCorrente: '123456',
             principal: true,
@@ -650,13 +673,13 @@ describe('UnidadeSaudeService', () => {
       const updateDto = {
         dadosBancarios: [
           {
-            banco: '001',
+            bancoId: 'banco-uuid-1',
             agencia: '1234',
             contaCorrente: '12345',
             principal: false,
           },
           {
-            banco: '237',
+            bancoId: 'banco-uuid-2',
             agencia: '5678',
             contaCorrente: '67890',
             principal: false,
@@ -688,6 +711,7 @@ describe('UnidadeSaudeService', () => {
         mockHorarioAtendimentoRepository as any,
         mockDadoBancarioRepository as any,
         mockCnaeSecundarioRepository as any,
+        mockBancoRepository as any,
         mockDataSource as any,
       );
 
@@ -702,6 +726,7 @@ describe('UnidadeSaudeService', () => {
         mockHorarioAtendimentoRepository as any,
         mockDadoBancarioRepository as any,
         mockCnaeSecundarioRepository as any,
+        mockBancoRepository as any,
         mockDataSource as any,
       );
 
@@ -715,6 +740,7 @@ describe('UnidadeSaudeService', () => {
         mockHorarioAtendimentoRepository as any,
         mockDadoBancarioRepository as any,
         mockCnaeSecundarioRepository as any,
+        mockBancoRepository as any,
         mockDataSource as any,
       );
 
@@ -728,6 +754,7 @@ describe('UnidadeSaudeService', () => {
         mockHorarioAtendimentoRepository as any,
         mockDadoBancarioRepository as any,
         mockCnaeSecundarioRepository as any,
+        mockBancoRepository as any,
         mockDataSource as any,
       );
 
@@ -741,6 +768,7 @@ describe('UnidadeSaudeService', () => {
         mockHorarioAtendimentoRepository as any,
         mockDadoBancarioRepository as any,
         mockCnaeSecundarioRepository as any,
+        mockBancoRepository as any,
         mockDataSource as any,
       );
 
@@ -755,6 +783,7 @@ describe('UnidadeSaudeService', () => {
         mockHorarioAtendimentoRepository as any,
         mockDadoBancarioRepository as any,
         mockCnaeSecundarioRepository as any,
+        mockBancoRepository as any,
         mockDataSource as any,
       );
 
@@ -836,13 +865,19 @@ describe('UnidadeSaudeService', () => {
         ...createDto,
         dadosBancarios: [
           {
-            banco: 'Banco Teste',
+            bancoId: 'banco-uuid-1',
             agencia: '1234',
             contaCorrente: '567890',
             principal: true,
           },
         ],
       };
+
+      mockBancoRepository.findOne.mockResolvedValue({
+        id: 'banco-uuid-1',
+        codigo: '001',
+        nome: 'Banco Teste',
+      });
 
       mockUnidadeSaudeRepository.findOne.mockResolvedValue(null);
       mockUnidadeSaudeRepository.create.mockReturnValue(mockUnidadeSaude);
@@ -1415,6 +1450,7 @@ describe('UnidadeSaudeService', () => {
         mockHorarioAtendimentoRepository as any,
         mockDadoBancarioRepository as any,
         mockCnaeSecundarioRepository as any,
+        mockBancoRepository as any,
         mockDataSource as any,
       );
     });

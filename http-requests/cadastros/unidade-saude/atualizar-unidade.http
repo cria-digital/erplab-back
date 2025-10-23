@@ -50,6 +50,8 @@ Authorization: Bearer {{token}}
 ###
 
 ### Atualizar Dados Bancários
+# IMPORTANTE: O campo bancoId usa UUID da tabela bancos
+# Para buscar Bancos disponíveis: GET {{baseUrl}}/financeiro/bancos
 PATCH {{baseUrl}}/cadastros/unidades-saude/123e4567-e89b-12d3-a456-426614174000
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
@@ -57,15 +59,14 @@ Authorization: Bearer {{token}}
 {
   "dadosBancarios": [
     {
-      "banco": "Bradesco",
-      "codigoBanco": "237",
+      "bancoId": "SUBSTITUA-PELO-UUID-DO-BANCO-237",
       "agencia": "3456",
       "digitoAgencia": "7",
       "contaCorrente": "98765",
       "digitoConta": "4",
       "tipoConta": "CORRENTE",
       "principal": true,
-      "observacoes": "Nova conta principal"
+      "observacoes": "Nova conta principal (Bradesco - 237)"
     }
   ]
 }

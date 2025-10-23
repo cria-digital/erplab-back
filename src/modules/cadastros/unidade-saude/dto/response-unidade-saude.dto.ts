@@ -35,6 +35,20 @@ export class HorarioAtendimentoResponseDto {
   ativo: boolean;
 }
 
+export class BancoResponseDto {
+  @ApiProperty()
+  @Expose()
+  id: string;
+
+  @ApiProperty()
+  @Expose()
+  codigo: string;
+
+  @ApiProperty()
+  @Expose()
+  nome: string;
+}
+
 export class DadoBancarioResponseDto {
   @ApiProperty()
   @Expose()
@@ -42,11 +56,12 @@ export class DadoBancarioResponseDto {
 
   @ApiProperty()
   @Expose()
-  banco: string;
+  bancoId: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({ type: BancoResponseDto })
   @Expose()
-  codigoBanco?: string;
+  @Type(() => BancoResponseDto)
+  banco: BancoResponseDto;
 
   @ApiProperty()
   @Expose()

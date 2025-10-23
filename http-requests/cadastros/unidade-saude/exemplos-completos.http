@@ -1,4 +1,7 @@
 ### ===== CENÁRIO COMPLETO: CRIAR MÚLTIPLAS UNIDADES =====
+# IMPORTANTE: O campo bancoId usa UUID da tabela bancos
+# Para buscar Bancos disponíveis: GET {{baseUrl}}/financeiro/bancos
+# Substitua "SUBSTITUA-PELO-UUID-DO-BANCO" pelos IDs reais
 
 ### 1. Criar Unidade São Roque
 POST {{baseUrl}}/cadastros/unidades-saude
@@ -35,8 +38,7 @@ Content-Type: {{contentType}}
   ],
   "dadosBancarios": [
     {
-      "banco": "Santander",
-      "codigoBanco": "033",
+      "bancoId": "SUBSTITUA-PELO-UUID-DO-BANCO-033",
       "agencia": "1234",
       "contaCorrente": "11111",
       "principal": true

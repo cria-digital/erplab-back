@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   ConflictException,
+  BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource, FindManyOptions, ILike } from 'typeorm';
@@ -9,6 +10,7 @@ import { UnidadeSaude } from './entities/unidade-saude.entity';
 import { HorarioAtendimento } from './entities/horario-atendimento.entity';
 import { DadoBancario } from './entities/dado-bancario.entity';
 import { CnaeSecundario } from './entities/cnae-secundario.entity';
+import { Banco } from '../../financeiro/core/entities/banco.entity';
 import { CreateUnidadeSaudeDto } from './dto/create-unidade-saude.dto';
 import { UpdateUnidadeSaudeDto } from './dto/update-unidade-saude.dto';
 
@@ -40,6 +42,8 @@ export class UnidadeSaudeService {
     private readonly dadoBancarioRepository: Repository<DadoBancario>,
     @InjectRepository(CnaeSecundario)
     private readonly cnaeSecundarioRepository: Repository<CnaeSecundario>,
+    @InjectRepository(Banco)
+    private readonly bancoRepository: Repository<Banco>,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -94,6 +98,19 @@ export class UnidadeSaudeService {
 
       // Salva os dados bancários
       if (dadosBancarios?.length > 0) {
+        // Valida se todos os bancos existem
+        for (const dadoBancario of dadosBancarios) {
+          const banco = await this.bancoRepository.findOne({
+            where: { id: dadoBancario.bancoId },
+          });
+
+          if (!banco) {
+            throw new BadRequestException(
+              `Banco com ID ${dadoBancario.bancoId} não encontrado`,
+            );
+          }
+        }
+
         // Garante que apenas um seja principal
         const hasPrincipal = dadosBancarios.some((d) => d.principal);
         if (!hasPrincipal && dadosBancarios.length > 0) {
