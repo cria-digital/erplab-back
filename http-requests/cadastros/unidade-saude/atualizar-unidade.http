@@ -89,7 +89,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Atualizar Endereço Completo
-PATCH {{baseUrl}}/cadastros/unidades-saude/123e4567-e89b-12d3-a456-426614174000
+PATCH {{baseUrl}}/cadastros/unidades-saude/0523e48a-750a-4c23-bbcf-6ec50ee509b7
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -99,6 +99,6 @@ Authorization: Bearer {{token}}
   "numero": "500",
   "bairro": "Vila Nova",
   "complemento": "Prédio B, 2º andar",
-  "cidade": "São Roque",
+  "cidade": "São Roque 2",
   "estado": "SP"
 }

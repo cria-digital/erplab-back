@@ -13,7 +13,7 @@ Authorization: Bearer {{token}}
 {
   "nomeUnidade": "Laboratório Central São Roque",
   "codigoInterno": "LAB001",
-  "cnpj": "12345678000190",
+  "cnpj": "12345678000191",
   "razaoSocial": "Laboratório São Roque LTDA",
   "nomeFantasia": "LabSR Central",
   "inscricaoMunicipal": "123456",
@@ -30,7 +30,7 @@ Authorization: Bearer {{token}}
   "bairro": "Centro",
   "complemento": "Sala 10",
   "estado": "SP",
-  "cidade": "São Roque",
+  "cidade": "São Roque SPE",
   "nomeResponsavel": "Dr. João Silva",
   "contatoResponsavel": "(11) 98765-4321",
   "emailResponsavel": "dr.joao@labsr.com.br",
