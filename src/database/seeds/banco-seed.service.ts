@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import {
   Banco,
   StatusBanco,
@@ -11,19 +11,31 @@ export class BancoSeedService {
   constructor(
     @InjectRepository(Banco)
     private readonly bancoRepository: Repository<Banco>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async seed(): Promise<void> {
+    // Primeiro, sempre verificar e migrar vínculos do Banco Padrão (000)
+    await this.migrarBancoPadrao();
+
     const count = await this.bancoRepository.count();
 
-    if (count > 0) {
+    // Verificar se há pelo menos 200 bancos (mínimo esperado)
+    // Isso permite que a migration crie banco(s) padrão sem bloquear o seeder
+    if (count >= 200) {
       console.log(
         `Bancos já foram importados (${count} registros). Pulando seed...`,
       );
       return;
     }
 
-    console.log('Iniciando importação de Bancos...');
+    if (count > 0) {
+      console.log(
+        `Encontrados ${count} banco(s) existente(s). Complementando importação...`,
+      );
+    } else {
+      console.log('Iniciando importação de Bancos...');
+    }
 
     // Lista completa de bancos do Banco Central do Brasil
     const bancos = [
@@ -1179,6 +1191,83 @@ export class BancoSeedService {
     } catch (error) {
       console.error('❌ Erro ao importar bancos:', error);
       throw error;
+    }
+  }
+
+  /**
+   * Migra todos os vínculos do Banco Padrão (código 000) para o Banco do Brasil (código 001)
+   * e remove o Banco Padrão da base de dados
+   */
+  private async migrarBancoPadrao(): Promise<void> {
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      // Buscar Banco Padrão (000) e Banco do Brasil (001)
+      const bancoPadrao = await this.bancoRepository.findOne({
+        where: { codigo: '000' },
+      });
+
+      const bancoBrasil = await this.bancoRepository.findOne({
+        where: { codigo: '001' },
+      });
+
+      // Se não existe banco padrão, não há nada a fazer
+      if (!bancoPadrao) {
+        console.log(
+          'ℹ️  Banco Padrão (000) não encontrado, nenhuma migração necessária.',
+        );
+        await queryRunner.commitTransaction();
+        return;
+      }
+
+      // Se não existe Banco do Brasil, não podemos migrar
+      if (!bancoBrasil) {
+        console.warn(
+          '⚠️  Banco do Brasil (001) não encontrado, mantendo Banco Padrão.',
+        );
+        await queryRunner.commitTransaction();
+        return;
+      }
+
+      console.log(
+        '🔄 Migrando vínculos do Banco Padrão (000) para Banco do Brasil (001)...',
+      );
+
+      // Migrar contas_bancarias
+      const contasAtualizadas = await queryRunner.query(
+        `UPDATE contas_bancarias SET banco_id = $1 WHERE banco_id = $2`,
+        [bancoBrasil.id, bancoPadrao.id],
+      );
+
+      console.log(
+        `   → ${contasAtualizadas[1] || 0} contas bancárias migradas`,
+      );
+
+      // Migrar dados_bancarios
+      const dadosAtualizados = await queryRunner.query(
+        `UPDATE dados_bancarios SET banco_id = $1 WHERE banco_id = $2`,
+        [bancoBrasil.id, bancoPadrao.id],
+      );
+
+      console.log(`   → ${dadosAtualizados[1] || 0} dados bancários migrados`);
+
+      // Remover Banco Padrão
+      await queryRunner.query(`DELETE FROM bancos WHERE id = $1`, [
+        bancoPadrao.id,
+      ]);
+
+      console.log('✅ Banco Padrão removido com sucesso!');
+
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      console.error('❌ Erro ao migrar Banco Padrão:', error);
+      throw error;
+    } finally {
+      await queryRunner.release();
     }
   }
 }

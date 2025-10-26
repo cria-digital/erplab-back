@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { BancoSeedService } from './banco-seed.service';
 import {
   Banco,
@@ -10,6 +10,7 @@ import {
 describe('BancoSeedService', () => {
   let service: BancoSeedService;
   let mockRepository: Partial<Repository<Banco>>;
+  let mockDataSource: Partial<DataSource>;
 
   beforeEach(async () => {
     mockRepository = {
@@ -17,6 +18,20 @@ describe('BancoSeedService', () => {
       save: jest.fn(),
       create: jest.fn(),
       find: jest.fn(),
+      findOne: jest.fn(),
+    };
+
+    const mockQueryRunner = {
+      connect: jest.fn(),
+      startTransaction: jest.fn(),
+      commitTransaction: jest.fn(),
+      rollbackTransaction: jest.fn(),
+      release: jest.fn(),
+      query: jest.fn().mockResolvedValue([null, 0]),
+    };
+
+    mockDataSource = {
+      createQueryRunner: jest.fn().mockReturnValue(mockQueryRunner),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -25,6 +40,10 @@ describe('BancoSeedService', () => {
         {
           provide: getRepositoryToken(Banco),
           useValue: mockRepository,
+        },
+        {
+          provide: DataSource,
+          useValue: mockDataSource,
         },
       ],
     }).compile();
@@ -43,14 +62,15 @@ describe('BancoSeedService', () => {
   describe('seed', () => {
     it('deve pular seed quando já existem bancos', async () => {
       // Simula que já existem bancos
-      mockRepository.count = jest.fn().mockResolvedValue(10);
+      mockRepository.count = jest.fn().mockResolvedValue(250);
+      mockRepository.findOne = jest.fn().mockResolvedValue(null);
       const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
 
       await service.seed();
 
       expect(mockRepository.count).toHaveBeenCalled();
       expect(consoleSpy).toHaveBeenCalledWith(
-        'Bancos já foram importados (10 registros). Pulando seed...',
+        'Bancos já foram importados (250 registros). Pulando seed...',
       );
       expect(mockRepository.save).not.toHaveBeenCalled();
 
@@ -60,6 +80,7 @@ describe('BancoSeedService', () => {
     it('deve criar bancos quando não existem registros', async () => {
       // Simula que não existem bancos
       mockRepository.count = jest.fn().mockResolvedValue(0);
+      mockRepository.findOne = jest.fn().mockResolvedValue(null);
 
       const mockBanco = {
         id: 'banco-uuid-1',
@@ -95,6 +116,7 @@ describe('BancoSeedService', () => {
 
     it('deve tratar erros durante o seed', async () => {
       mockRepository.count = jest.fn().mockResolvedValue(0);
+      mockRepository.findOne = jest.fn().mockResolvedValue(null);
       mockRepository.create = jest.fn().mockImplementation(() => {
         throw new Error('Erro de teste');
       });
@@ -113,6 +135,7 @@ describe('BancoSeedService', () => {
 
     it('deve importar todos os bancos predefinidos', async () => {
       mockRepository.count = jest.fn().mockResolvedValue(0);
+      mockRepository.findOne = jest.fn().mockResolvedValue(null);
 
       const mockBanco = {
         id: 'banco-uuid-1',

@@ -1279,6 +1279,290 @@ Seguindo a ordem:
 
 1. Salas → 2. Setores → 3. Equipamentos → 4. Imobilizados → 5. Etiquetas
 
+## Deploy e Infraestrutura (Outubro 2025)
+
+### 🚀 Sistema de Deploy Configurado
+
+**Status:** ✅ COMPLETAMENTE FUNCIONAL
+
+#### Métodos de Deploy
+
+1. **Deploy Manual via Script** ✅ (Método Atual)
+   - Script: `./deploy.sh`
+   - Usa GitHub CLI (`gh`) para autenticação
+   - Faz push para GitHub Container Registry (ghcr.io)
+   - Dispara pipeline do repositório infra
+
+2. **Deploy Automático via GitHub Actions** ⚠️ (Desativado)
+   - Arquivo renomeado: `.github/workflows/deploy.yml.disabled`
+   - Pode ser reativado removendo `.disabled`
+
+#### Arquitetura de Deploy
+
+```
+[Backend Repo]
+    ↓
+1. Build Docker Image
+    ↓
+2. Push → ghcr.io/diegosoek/erplab-backend:latest
+    ↓
+3. Trigger → Repository Dispatch
+    ↓
+[Infra Repo: diegosoek/infra]
+    ↓
+4. SSH → Contabo VPS
+    ↓
+5. Pull Image + Restart Container
+```
+
+### 🐳 Docker e Entrypoint
+
+**Arquivo:** `docker-entrypoint.sh`
+
+**Sequência de inicialização:**
+
+1. ⏳ Aguarda banco de dados (max 30 tentativas, 2s cada)
+2. 🔄 Executa migrations (`npm run migration:run`)
+3. 🌱 **Executa seeders** (`npm run seed`) - ADICIONADO OUT/2025
+4. ✅ Inicia aplicação
+
+**Seeders com proteção contra duplicação:**
+
+- ✅ CNAE Seeder: Verifica `count > 0` antes de inserir
+- ✅ Banco Seeder: Verifica `count > 0` antes de inserir
+- **Seguro executar múltiplas vezes** - não duplica dados
+
+### 📦 Configuração de Deploy em Outro Computador
+
+#### Pré-requisitos
+
+1. **Docker instalado e rodando**
+
+   ```bash
+   docker --version
+   docker ps
+   ```
+
+2. **GitHub CLI instalado e autenticado**
+
+   ```bash
+   # Instalar gh CLI
+   # Fedora: sudo dnf install gh
+   # Ubuntu: sudo apt install gh
+   # Mac: brew install gh
+
+   # Autenticar
+   gh auth login
+
+   # Adicionar permissões de packages
+   gh auth refresh -h github.com -s write:packages,read:packages
+   ```
+
+3. **Repositório clonado**
+   ```bash
+   git clone https://github.com/cria-digital/erplab-back.git
+   cd erplab-back
+   ```
+
+#### Configuração
+
+**Passo 1:** Criar `.env.local` a partir do exemplo:
+
+```bash
+cp .env.local.example .env.local
+```
+
+**Passo 2:** Editar `.env.local` com credenciais:
+
+```bash
+nano .env.local
+```
+
+Conteúdo necessário:
+
+```bash
+# GitHub Token (obtido automaticamente do gh CLI)
+GITHUB_TOKEN=$(gh auth token)
+
+# Servidor Contabo (apenas se usar opção 3 - deploy SSH)
+CONTABO_HOST=ip_do_servidor
+CONTABO_USER=root
+CONTABO_PASSWORD=senha_ssh
+```
+
+**Passo 3:** Executar deploy:
+
+```bash
+./deploy.sh
+```
+
+Opções disponíveis:
+
+- **1)** 🏗️ Build da imagem Docker (apenas local)
+- **2)** 📦 Build + Push para registry (recomendado)
+- **3)** 🚀 Deploy no servidor (build + push + ssh)
+- **4)** 🧪 Testar imagem localmente
+- **5)** 📊 Ver logs do servidor
+
+#### Fluxo Recomendado
+
+**Para deploy rápido (sem SSH):**
+
+```bash
+./deploy.sh
+# Escolha: 2 (Build + Push)
+```
+
+Isso faz:
+
+1. Build da imagem
+2. Login automático no ghcr.io (usando `gh auth token`)
+3. Push da imagem
+4. Pipeline do infra detecta nova imagem e faz deploy automaticamente
+
+**Para deploy completo (com SSH):**
+
+```bash
+# Configure CONTABO_HOST e CONTABO_PASSWORD no .env.local
+./deploy.sh
+# Escolha: 3 (Deploy completo)
+```
+
+### 🔐 Segurança - Tokens e Credenciais
+
+**IMPORTANTE:** Consulte `SECURITY.md` para práticas de segurança.
+
+**Resumo:**
+
+- ❌ NUNCA commite `.env.local`
+- ❌ NUNCA exponha tokens em código ou issues
+- ✅ Use `gh auth token` para obter token automaticamente
+- ✅ Revogue tokens expostos imediatamente
+- ✅ Rotacione tokens a cada 90 dias
+
+### ⚠️ IMPORTANTE: Como Disparar Deploy Corretamente
+
+**NUNCA use `gh workflow run` para disparar deploy!** Isso usa `workflow_dispatch` que procura pelo diretório errado (`apps/erplab-backend` ao invés de `apps/erplab`).
+
+**✅ MÉTODO CORRETO - Via Repository Dispatch:**
+
+```bash
+# SEMPRE usar repository_dispatch com event_type=deploy-app
+source .env.local && gh api repos/diegosoek/infra/dispatches \
+  -X POST \
+  -f event_type=deploy-app \
+  -f client_payload[app_name]=erplab \
+  -f client_payload[image_url]=ghcr.io/diegosoek/erplab-backend:latest
+```
+
+**❌ MÉTODO INCORRETO (NÃO USAR):**
+
+```bash
+# ❌ Isso usa workflow_dispatch e FALHA!
+gh workflow run deploy-app.yml --repo diegosoek/infra --ref main \
+  -f app_name=erplab-backend \
+  -f image_url=ghcr.io/diegosoek/erplab-backend:latest
+```
+
+**Diferença entre os métodos:**
+
+- `repository_dispatch` com `event_type=deploy-app`: Usa `apps/erplab` ✅
+- `workflow_dispatch`: Usa `apps/erplab-backend` ❌ (diretório não existe)
+
+### 📊 Monitoramento de Deploy
+
+**Ver status da pipeline do infra:**
+
+```bash
+gh run list --repo diegosoek/infra --limit 5
+```
+
+**Acompanhar deploy em tempo real:**
+
+```bash
+gh run watch --repo diegosoek/infra <run-id>
+```
+
+**Ver logs do container no servidor:**
+
+```bash
+./deploy.sh
+# Escolha: 5 (Ver logs)
+```
+
+### 🌐 URLs de Produção
+
+- **API:** https://erplab.paclabs.com.br
+- **Docs:** https://erplab.paclabs.com.br/api/docs
+- **Health:** https://erplab.paclabs.com.br/api/v1/health
+
+### 🚨 Lições Aprendidas - Erros Comuns de Deploy
+
+#### ❌ Erro: "no such service: erplab-backend-backend"
+
+**Causa:** Uso de `workflow_dispatch` ao invés de `repository_dispatch`
+
+**O que aconteceu:**
+
+- `workflow_dispatch` procura pelo diretório `apps/erplab-backend` (que não existe)
+- `repository_dispatch` procura pelo diretório correto `apps/erplab`
+- O script de deploy tenta executar `docker-compose up -d erplab-backend-backend`
+- Docker Compose não encontra o serviço e falha
+
+**Solução:**
+
+- SEMPRE usar `repository_dispatch` com `event_type=deploy-app`
+- NUNCA usar `gh workflow run` para disparar deploy
+- Ver seção "Como Disparar Deploy Corretamente" acima
+
+**Data do Erro:** 2025-10-26
+**Runs Afetados:** 18820138517, 18820246840
+
+#### ✅ Deploy Bem-Sucedido
+
+**Exemplo de deploy correto:**
+
+- Run ID: 18820490651
+- Evento: `repository_dispatch` com tipo `deploy-app`
+- Parâmetros: `app_name=erplab`, `image_url=ghcr.io/diegosoek/erplab-backend:latest`
+- Container criado: `erplab-backend` (nome correto)
+- Status: ✅ Sucesso
+
+### 📝 Arquivos de Configuração
+
+- **`.env.deploy`** - Configurações públicas (commitado)
+- **`.env.local`** - Credenciais locais (ignorado pelo git)
+- **`.env.local.example`** - Template para `.env.local`
+- **`deploy.sh`** - Script de deploy manual
+- **`DEPLOY.md`** - Documentação detalhada de deploy
+- **`SECURITY.md`** - Guia de segurança completo
+
+### 🔄 Migrations e Seeders Recentes (Outubro 2025)
+
+#### Migration: Refatoração de Dados Bancários
+
+- `1761231229920-RefactorDadosBancariosToUseBancoId.ts`
+- **Correção:** Migração de dados existentes antes de tornar `banco_id` NOT NULL
+- **Estratégia:** Adiciona coluna nullable → migra dados → torna NOT NULL
+- **Resultado:** Migration executada com sucesso no deploy
+
+#### Seeder: Bancos (270 bancos do BACEN)
+
+- **Arquivo:** `src/database/seeds/banco-seed.service.ts`
+- **Total:** 270 bancos oficiais do Banco Central do Brasil
+- **Proteção:** Executa apenas se houver menos de 200 bancos (`count < 200`)
+- **Migração Automática do Banco Padrão:**
+  - Ao executar, SEMPRE verifica se existe Banco Padrão (código 000)
+  - Se encontrar banco 000 E banco 001 (Banco do Brasil):
+    1. Migra todos os vínculos de `contas_bancarias` onde `banco_id = 000` → `001`
+    2. Migra todos os vínculos de `dados_bancarios` onde `banco_id = 000` → `001`
+    3. Remove o Banco Padrão (código 000) do banco de dados
+  - Usa transações para garantir atomicidade
+  - Logs detalhados de quantos registros foram migrados
+- **Execução:** Automática ao iniciar container (via `docker-entrypoint.sh`)
+- **Comando manual:** `npm run seed`
+- **Resultado:** 269 bancos ativos em produção (270 - 1 banco padrão removido)
+
 ## Próximos Passos Sugeridos
 
 ### Módulos em Implementação (Alta Prioridade)
@@ -1294,17 +1578,17 @@ Seguindo a ordem:
 
 ### Tarefas Técnicas
 
-4. Criar seeders para:
+4. ✅ Criar seeders para CNAEs e Bancos (executam automaticamente)
+5. Criar seeders para:
    - Matrizes padrão (Audiometria, Hemograma, etc)
    - Amostras comuns (Sangue EDTA, Urina, etc)
    - Preferências de usuários existentes
-5. Criar testes unitários para módulos Matrizes e Amostras
-6. Testar endpoints com arquivos `.http`
-7. Criar testes para o módulo de laboratórios
-8. Implementar sistema de permissões granulares
-9. Adicionar rate limiting nos endpoints
-10. Implementar cache com Redis
-11. Adicionar testes E2E
-12. Configurar CI/CD pipeline
+6. Criar testes unitários para módulos Matrizes e Amostras
+7. Testar endpoints com arquivos `.http`
+8. Criar testes para o módulo de laboratórios
+9. Implementar sistema de permissões granulares
+10. Adicionar rate limiting nos endpoints
+11. Implementar cache com Redis
+12. Adicionar testes E2E
 13. Implementar websockets para notificações real-time
 14. Adicionar sistema de filas para processamento assíncrono
