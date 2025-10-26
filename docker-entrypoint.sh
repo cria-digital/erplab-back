@@ -54,6 +54,16 @@ else
     echo "⚠️  Migration failed, but continuing (may be already applied)"
 fi
 
+# Run seeders
+echo "🌱 Running database seeders..."
+npm run seed
+
+if [ $? -eq 0 ]; then
+    echo "✅ Seeders completed successfully"
+else
+    echo "⚠️  Seeder failed, but continuing"
+fi
+
 echo "========================================"
 echo "✅ Starting application on port ${PORT:-10016}"
 echo "========================================"

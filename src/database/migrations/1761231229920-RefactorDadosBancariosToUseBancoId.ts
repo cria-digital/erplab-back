@@ -18,12 +18,60 @@ export class RefactorDadosBancariosToUseBancoId1761231229920
     await queryRunner.query(
       `DROP INDEX "public"."IDX_1c7842a1c9b419f3d5cc463e28"`,
     );
+
+    // Passo 1: Adicionar banco_id como nullable
+    await queryRunner.query(
+      `ALTER TABLE "dados_bancarios" ADD "banco_id" uuid`,
+    );
+
+    // Passo 2: Migrar dados existentes
+    // Para cada dados_bancarios com codigo_banco, criar/buscar banco e vincular
+    await queryRunner.query(`
+      INSERT INTO bancos (id, codigo, codigo_interno, nome, status)
+      SELECT
+        uuid_generate_v4(),
+        COALESCE(codigo_banco, '000'),
+        COALESCE(codigo_banco, '000') || '-' || COALESCE(banco, 'Banco Padrão'),
+        COALESCE(banco, 'Banco Padrão'),
+        'ativo'::bancos_status_enum
+      FROM dados_bancarios
+      WHERE codigo_banco IS NOT NULL
+        AND banco IS NOT NULL
+        AND NOT EXISTS (
+          SELECT 1 FROM bancos b
+          WHERE b.codigo = dados_bancarios.codigo_banco
+        )
+      GROUP BY codigo_banco, banco
+    `);
+
+    // Passo 3: Criar um banco padrão para registros sem código_banco
+    await queryRunner.query(`
+      INSERT INTO bancos (id, codigo, codigo_interno, nome, status)
+      SELECT
+        uuid_generate_v4(),
+        '000',
+        '000-banco-padrao',
+        'Banco Padrão',
+        'ativo'::bancos_status_enum
+      WHERE NOT EXISTS (SELECT 1 FROM bancos WHERE codigo = '000')
+    `);
+
+    // Passo 4: Vincular dados_bancarios aos bancos
+    await queryRunner.query(`
+      UPDATE dados_bancarios db
+      SET banco_id = b.id
+      FROM bancos b
+      WHERE b.codigo = COALESCE(db.codigo_banco, '000')
+    `);
+
+    // Passo 5: Agora podemos remover as colunas antigas
     await queryRunner.query(
       `ALTER TABLE "dados_bancarios" DROP COLUMN "banco"`,
     );
     await queryRunner.query(
       `ALTER TABLE "dados_bancarios" DROP COLUMN "codigo_banco"`,
     );
+
     await queryRunner.query(
       `ALTER TABLE "convenios" DROP COLUMN "observacoes_convenio"`,
     );
@@ -57,9 +105,12 @@ export class RefactorDadosBancariosToUseBancoId1761231229920
     await queryRunner.query(
       `ALTER TABLE "convenios" DROP COLUMN "razao_social"`,
     );
+
+    // Passo 6: Tornar banco_id NOT NULL agora que todos os dados foram migrados
     await queryRunner.query(
-      `ALTER TABLE "dados_bancarios" ADD "banco_id" uuid NOT NULL`,
+      `ALTER TABLE "dados_bancarios" ALTER COLUMN "banco_id" SET NOT NULL`,
     );
+
     await queryRunner.query(
       `ALTER TABLE "convenios" ADD "codigo" character varying(20) NOT NULL`,
     );

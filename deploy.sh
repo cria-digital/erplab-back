@@ -1,159 +1,242 @@
 #!/bin/bash
 
-# ERPLab Backend Deploy Script
+# ==============================================
+# 🚀 ERPLab Backend - Script de Deploy Manual
+# ==============================================
+# Carrega configurações do .env.deploy
+# ==============================================
+
 set -e
 
-# Cores para output
+# Cores
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+NC='\033[0m'
 
-# Configurações
-APP_NAME="erplab-back"
-GITHUB_USER="diegosoek" # Ajuste com seu usuário do GitHub
-REGISTRY="ghcr.io"
-IMAGE_NAME="${REGISTRY}/${GITHUB_USER}/${APP_NAME}"
+echo -e "${BLUE}"
+echo "=========================================="
+echo "🚀 ERPLab Backend - Deploy Manual"
+echo "=========================================="
+echo -e "${NC}"
 
-# Função para log colorido
-log_info() {
-    echo -e "${BLUE}ℹ️  $1${NC}"
-}
+# Carregar .env.deploy
+if [ ! -f .env.deploy ]; then
+    echo -e "${RED}❌ Arquivo .env.deploy não encontrado!${NC}"
+    exit 1
+fi
 
-log_success() {
-    echo -e "${GREEN}✅ $1${NC}"
-}
+echo -e "${YELLOW}📋 Carregando .env.deploy...${NC}"
+source .env.deploy
 
-log_warning() {
-    echo -e "${YELLOW}⚠️  $1${NC}"
-}
+# Carregar credenciais locais (se existir)
+if [ -f .env.local ]; then
+    echo -e "${YELLOW}🔐 Carregando .env.local...${NC}"
+    source .env.local
+else
+    echo -e "${YELLOW}⚠️  .env.local não encontrado (credenciais serão solicitadas)${NC}"
+fi
 
-log_error() {
-    echo -e "${RED}❌ $1${NC}"
-}
+# Construir URL da imagem
+FULL_IMAGE_URL="${IMAGE_NAME}:${IMAGE_TAG}"
 
-# Verifica se está logado no GitHub Container Registry
-check_registry_login() {
-    log_info "Verificando login no GitHub Container Registry..."
-    if ! docker info 2>/dev/null | grep -q "${REGISTRY}"; then
-        log_warning "Você não está logado no GitHub Container Registry"
-        echo ""
-        echo "Para fazer login, execute:"
-        echo "  echo \$GITHUB_TOKEN | docker login ghcr.io -u ${GITHUB_USER} --password-stdin"
-        echo ""
-        echo "Crie um token em: https://github.com/settings/tokens"
-        echo "Permissões necessárias: write:packages, read:packages"
-        exit 1
-    fi
-    log_success "Login verificado"
-}
+# Menu
+echo ""
+echo "Escolha uma opção:"
+echo "1) 🏗️  Build da imagem Docker"
+echo "2) 📦 Build + Push para registry"
+echo "3) 🚀 Deploy no servidor (build + push + ssh)"
+echo "4) 🧪 Testar imagem localmente"
+echo "5) 📊 Ver logs do servidor"
+echo "0) ❌ Sair"
+echo ""
+read -p "Opção: " OPTION
 
-# Obtém a versão do Git
-get_version() {
-    # Tenta obter a tag, se não existir usa o commit hash
-    VERSION=$(git describe --tags --always 2>/dev/null || echo "latest")
-    echo "$VERSION"
-}
+case $OPTION in
+    1)
+        echo -e "${BLUE}🏗️ Building imagem...${NC}"
+        docker build -t "${FULL_IMAGE_URL}" .
+        echo -e "${GREEN}✅ Build concluído!${NC}"
+        echo -e "Imagem: ${FULL_IMAGE_URL}"
+        ;;
 
-# Executa testes antes do deploy
-run_tests() {
-    log_info "Executando testes..."
-    npm run build
-    if ! npm run lint; then
-        log_error "Lint falhou!"
-        exit 1
-    fi
-    log_success "Testes passaram"
-}
+    2)
+        # Build
+        echo -e "${BLUE}🏗️ Building imagem...${NC}"
+        docker build -t "${FULL_IMAGE_URL}" .
 
-# Build da imagem Docker
-build_image() {
-    VERSION=$1
-    log_info "Fazendo build da imagem Docker..."
-    log_info "Versão: ${VERSION}"
+        # Login
+        echo -e "${BLUE}🔐 Login no registry...${NC}"
+        if [ -z "$GITHUB_TOKEN" ]; then
+            echo -e "${YELLOW}Digite o GITHUB_TOKEN:${NC}"
+            read -sp "Token: " GITHUB_TOKEN
+            echo ""
+        fi
+        echo "$GITHUB_TOKEN" | docker login ${REGISTRY} -u ${REGISTRY_USER} --password-stdin
 
-    docker build \
-        -t "${IMAGE_NAME}:${VERSION}" \
-        -t "${IMAGE_NAME}:latest" \
-        -f Dockerfile \
-        .
+        # Push
+        echo -e "${BLUE}📤 Pushing para registry...${NC}"
+        docker push "${FULL_IMAGE_URL}"
 
-    log_success "Build concluído"
-}
+        echo -e "${GREEN}✅ Push concluído!${NC}"
+        echo -e "Imagem disponível em: ${FULL_IMAGE_URL}"
+        ;;
 
-# Push da imagem para o registry
-push_image() {
-    VERSION=$1
-    log_info "Enviando imagem para o registry..."
+    3)
+        # Build + Push
+        echo -e "${BLUE}1/3 🏗️ Building...${NC}"
+        docker build -t "${FULL_IMAGE_URL}" .
 
-    docker push "${IMAGE_NAME}:${VERSION}"
-    docker push "${IMAGE_NAME}:latest"
+        if [ -z "$GITHUB_TOKEN" ]; then
+            echo -e "${YELLOW}Digite o GITHUB_TOKEN:${NC}"
+            read -sp "Token: " GITHUB_TOKEN
+            echo ""
+        fi
 
-    log_success "Imagem enviada com sucesso"
-    log_info "Imagem disponível em: ${IMAGE_NAME}:${VERSION}"
-}
+        echo -e "${BLUE}🔐 Login no registry...${NC}"
+        echo "$GITHUB_TOKEN" | docker login ${REGISTRY} -u ${REGISTRY_USER} --password-stdin
 
-# Deploy no servidor (SSH)
-deploy_to_server() {
-    SERVER_HOST=$1
+        echo -e "${BLUE}2/3 📤 Pushing...${NC}"
+        docker push "${FULL_IMAGE_URL}"
 
-    if [ -z "$SERVER_HOST" ]; then
-        log_warning "Servidor não especificado, pulando deploy remoto"
-        return
-    fi
+        # Deploy via SSH
+        echo -e "${BLUE}3/3 🚀 Deploying no servidor...${NC}"
 
-    log_info "Fazendo deploy no servidor ${SERVER_HOST}..."
+        if [ -z "$CONTABO_HOST" ]; then
+            read -p "Server IP: " CONTABO_HOST
+        fi
+        if [ -z "$CONTABO_USER" ]; then
+            read -p "Server User: " CONTABO_USER
+        fi
+        if [ -z "$CONTABO_PASSWORD" ]; then
+            read -sp "Server Password: " CONTABO_PASSWORD
+            echo ""
+        fi
 
-    ssh "$SERVER_HOST" << 'EOF'
-        cd ~/infra/apps/erplab-back
-        docker-compose pull
-        docker-compose up -d
-        docker-compose logs -f --tail=50
+        # Verificar se sshpass está instalado
+        if ! command -v sshpass &> /dev/null; then
+            echo -e "${RED}❌ sshpass não instalado. Instale com: sudo dnf install sshpass${NC}"
+            exit 1
+        fi
+
+        sshpass -p "$CONTABO_PASSWORD" ssh -o StrictHostKeyChecking=no \
+            ${CONTABO_USER}@${CONTABO_HOST} << EOF
+            set -e
+            echo "🔄 Atualizando ${APP_NAME}..."
+
+            cd /opt/infra
+            git pull origin main || true
+
+            cd apps/${APP_NAME}
+
+            # Login no registry
+            echo "${GITHUB_TOKEN}" | docker login ${REGISTRY} -u ${REGISTRY_USER} --password-stdin
+
+            # Pull nova imagem
+            docker pull ${FULL_IMAGE_URL}
+
+            # Atualizar .env com nova imagem
+            sed -i "s|^IMAGE_URL=.*|IMAGE_URL=${FULL_IMAGE_URL}|" .env
+
+            # Restart container
+            docker-compose down
+            docker-compose up -d
+
+            # Aguardar
+            echo "⏳ Aguardando container inicializar..."
+            sleep 15
+
+            # Status
+            echo ""
+            echo "📊 Status do container:"
+            docker ps | grep ${APP_NAME}
+
+            echo ""
+            echo "📋 Últimos logs:"
+            docker logs --tail 20 ${APP_NAME}-backend
 EOF
 
-    log_success "Deploy no servidor concluído"
-}
+        echo -e "${GREEN}✅ Deploy concluído!${NC}"
+        echo -e "🌐 URL: https://${APP_DOMAIN}"
+        echo -e "📖 Docs: https://${APP_DOMAIN}${API_DOCS_ENDPOINT}"
+        echo -e "💚 Health: https://${APP_DOMAIN}${HEALTH_ENDPOINT}"
+        ;;
 
-# Script principal
-main() {
-    echo ""
-    log_info "🚀 Iniciando deploy do ERPLab Backend..."
-    echo ""
+    4)
+        echo -e "${BLUE}🧪 Testando imagem localmente...${NC}"
 
-    # Verifica argumentos
-    SKIP_TESTS=${1:-false}
-    SERVER_HOST=${2:-""}
+        # Criar .env.test se não existir
+        if [ ! -f .env.test ]; then
+            cat > .env.test << ENVEOF
+NODE_ENV=development
+PORT=${APP_PORT}
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=postgres
+DB_PASSWORD=postgres
+DB_DATABASE=erplab_dev
+JWT_SECRET=test-secret-key-change-in-production
+CORS_ORIGIN=http://localhost:3000
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USER=test@example.com
+MAIL_PASSWORD=test
+MAIL_FROM=test@example.com
+FRONTEND_URL=http://localhost:3000
+ENVEOF
+            echo -e "${GREEN}✅ Criado .env.test${NC}"
+        fi
 
-    # Executa steps
-    check_registry_login
+        docker run -d \
+            --name ${APP_NAME}-test \
+            -p ${APP_PORT}:${APP_PORT} \
+            --env-file .env.test \
+            "${FULL_IMAGE_URL}"
 
-    if [ "$SKIP_TESTS" != "skip-tests" ]; then
-        run_tests
-    else
-        log_warning "Pulando testes (modo rápido)"
-    fi
+        echo -e "${GREEN}✅ Container de teste iniciado!${NC}"
+        echo -e "🌐 URL: http://localhost:${APP_PORT}"
+        echo -e "💚 Health: http://localhost:${APP_PORT}${HEALTH_ENDPOINT}"
+        echo -e "📖 Docs: http://localhost:${APP_PORT}${API_DOCS_ENDPOINT}"
+        echo ""
+        echo "📋 Ver logs: docker logs -f ${APP_NAME}-test"
+        echo "🛑 Parar: docker stop ${APP_NAME}-test && docker rm ${APP_NAME}-test"
+        ;;
 
-    VERSION=$(get_version)
-    build_image "$VERSION"
-    push_image "$VERSION"
+    5)
+        echo -e "${BLUE}📊 Logs do servidor...${NC}"
 
-    if [ -n "$SERVER_HOST" ]; then
-        deploy_to_server "$SERVER_HOST"
-    fi
+        if [ -z "$CONTABO_HOST" ]; then
+            read -p "Server IP: " CONTABO_HOST
+        fi
+        if [ -z "$CONTABO_USER" ]; then
+            read -p "Server User: " CONTABO_USER
+        fi
+        if [ -z "$CONTABO_PASSWORD" ]; then
+            read -sp "Server Password: " CONTABO_PASSWORD
+            echo ""
+        fi
 
-    echo ""
-    log_success "🎉 Deploy concluído com sucesso!"
-    echo ""
-    echo "📦 Imagem: ${IMAGE_NAME}:${VERSION}"
-    echo ""
+        sshpass -p "$CONTABO_PASSWORD" ssh -o StrictHostKeyChecking=no \
+            ${CONTABO_USER}@${CONTABO_HOST} << EOF
+            echo "🐳 Containers rodando:"
+            docker ps | grep ${APP_NAME} || echo "❌ Container não encontrado"
+            echo ""
+            echo "📋 Logs (últimas 100 linhas):"
+            docker logs --tail 100 ${APP_NAME}-backend 2>/dev/null || echo "❌ Container não encontrado"
+EOF
+        ;;
 
-    if [ -z "$SERVER_HOST" ]; then
-        log_info "Para fazer deploy no servidor, execute:"
-        echo "  ssh your-server 'cd ~/infra/apps/erplab-back && docker-compose pull && docker-compose up -d'"
-    fi
-    echo ""
-}
+    0)
+        echo -e "${BLUE}👋 Saindo...${NC}"
+        exit 0
+        ;;
 
-# Executa o script
-main "$@"
+    *)
+        echo -e "${RED}❌ Opção inválida!${NC}"
+        exit 1
+        ;;
+esac
+
+echo ""
+echo -e "${GREEN}✅ Operação concluída!${NC}"

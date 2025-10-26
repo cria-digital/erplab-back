@@ -1,168 +1,121 @@
-# 🚀 Deploy do ERPLab Backend
+# 🚀 ERPLab Backend - Guia de Deploy
 
-## Pré-requisitos
+## 📋 Visão Geral
 
-1. **Docker instalado e rodando**
-2. **Login no GitHub Container Registry**
+Este projeto suporta dois métodos de deploy:
 
-### Fazer login no GitHub Container Registry
+1. **Deploy Automático** via GitHub Actions (recomendado)
+2. **Deploy Manual** via script local
 
-Primeiro, crie um Personal Access Token no GitHub:
+## 🔧 Pré-requisitos
 
-- Acesse: https://github.com/settings/tokens
-- Crie um token com permissões: `write:packages`, `read:packages`
+### Para Deploy Automático
 
-Depois faça login:
+- GitHub Personal Access Token com permissões `read:packages` e `write:packages`
+- Secrets configurados no GitHub
 
-```bash
-echo $GITHUB_TOKEN | docker login ghcr.io -u SEU_USUARIO --password-stdin
-```
+### Para Deploy Manual
 
-## 📦 Uso do Script
+- Docker instalado localmente
+- sshpass instalado (`sudo dnf install sshpass` no Fedora)
+- Acesso SSH ao servidor
+- GitHub Personal Access Token
 
-### Deploy básico (com testes)
+## 🤖 Deploy Automático (GitHub Actions)
+
+### Configuração Inicial
+
+1. **Criar GitHub Personal Access Token:**
+   - Acesse: https://github.com/settings/tokens
+   - Gere um token com permissões: `read:packages`, `write:packages`
+   - Copie o token gerado
+
+2. **Configurar Secrets no Repositório Backend:**
+
+   ```
+   Settings > Secrets and variables > Actions > New repository secret
+   ```
+
+   Adicione:
+   - Nome: `INFRA_DEPLOY_TOKEN`
+   - Valor: `<seu_token_github>`
+
+3. **Secrets já configurados no Repositório Infra:**
+   - `CONTABO_HOST` - IP do servidor
+   - `CONTABO_USER` - Usuário SSH
+   - `CONTABO_PASSWORD` - Senha SSH
+   - `INFRA_DEPLOY_TOKEN` - Mesmo token acima
+
+### Como Funciona
+
+1. Você faz push para a branch `main` ou `master`
+2. GitHub Actions **no backend** é disparado
+3. Workflow faz build da imagem Docker
+4. Push da imagem para `ghcr.io/diegosoek/erplab-backend:latest`
+5. Dispara webhook no repositório `infra`
+6. GitHub Actions **no infra** recebe o trigger
+7. Conecta via SSH no servidor
+8. Faz pull da nova imagem
+9. Restart do container
+
+## 🛠️ Deploy Manual (Script Local)
+
+### Usando o Script
 
 ```bash
 ./deploy.sh
 ```
 
-### Deploy rápido (sem testes)
+**Opções disponíveis:**
+
+1. **Build da imagem Docker** - Apenas build local
+2. **Build + Push para registry** - Build e push para ghcr.io
+3. **Deploy no servidor** - Build + Push + SSH deploy
+4. **Testar imagem localmente** - Roda container local
+5. **Ver logs do servidor** - Conecta e mostra logs
+
+### Credenciais
+
+**Opção 1: Arquivo .env.local (Recomendado)**
 
 ```bash
-./deploy.sh skip-tests
+# Copie o exemplo
+cp .env.local.example .env.local
+
+# Edite com suas credenciais
+nano .env.local
+
+# O deploy.sh carrega automaticamente
 ```
 
-### Deploy com atualização automática no servidor
+**Opção 2: Input Interativo**
 
-```bash
-./deploy.sh skip-tests user@your-server.com
-```
+Se `.env.local` não existir, o script solicitará as credenciais manualmente.
 
-## 🔧 Configuração no Servidor
+## 🌐 URLs de Produção
 
-No servidor, você precisa ter um `docker-compose.yml` configurado em `~/infra/apps/erplab-back/`:
-
-```yaml
-version: '3.8'
-
-networks:
-  web:
-    external: true
-  internal:
-    external: true
-
-services:
-  erplab-back:
-    image: ghcr.io/SEU_USUARIO/erplab-back:latest
-    container_name: erplab-back
-    restart: unless-stopped
-    environment:
-      - NODE_ENV=production
-      - DB_HOST=host.docker.internal
-      - DB_PORT=5432
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_NAME=${DB_NAME}
-      - JWT_SECRET=${JWT_SECRET}
-      - PORT=10016
-    networks:
-      - web
-      - internal
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.erplab-back.rule=Host(\`api.erplab.yourdomain.com\`)"
-      - "traefik.http.routers.erplab-back.entrypoints=websecure"
-      - "traefik.http.routers.erplab-back.tls.certresolver=letsencrypt"
-      - "traefik.http.services.erplab-back.loadbalancer.server.port=10016"
-      - "traefik.docker.network=web"
-```
-
-E um arquivo `.env`:
-
-```bash
-DB_USER=erplab_user
-DB_PASSWORD=senha_segura_aqui
-DB_NAME=erplab_db
-JWT_SECRET=seu_jwt_secret_aqui
-```
-
-## 🔄 Workflow Completo
-
-1. **Desenvolvimento Local**
-
-   ```bash
-   git add .
-   git commit -m "feat: nova funcionalidade"
-   git push origin main
-   ```
-
-2. **Deploy da Imagem**
-
-   ```bash
-   ./deploy.sh
-   ```
-
-3. **Atualizar no Servidor**
-   ```bash
-   ssh user@server
-   cd ~/infra/apps/erplab-back
-   docker-compose pull
-   docker-compose up -d
-   docker-compose logs -f --tail=50
-   ```
-
-## 📝 Versionamento
-
-O script usa tags do Git para versionar as imagens:
-
-- Se houver uma tag: usa a tag (ex: `v1.0.0`)
-- Se não houver tag: usa o hash do commit (ex: `abc1234`)
-- Sempre cria também a tag `latest`
-
-Para criar uma release com versão:
-
-```bash
-git tag -a v1.0.0 -m "Release v1.0.0"
-git push origin v1.0.0
-./deploy.sh
-```
+- **API:** https://erplab.paclabs.com.br
+- **Docs:** https://erplab.paclabs.com.br/api/docs
+- **Health:** https://erplab.paclabs.com.br/api/v1/health
 
 ## 🐛 Troubleshooting
 
-### Erro de autenticação no registry
+### Erro: "sshpass: command not found"
 
 ```bash
-# Verifique se está logado
-docker info | grep ghcr.io
-
-# Se não estiver, faça login novamente
-echo $GITHUB_TOKEN | docker login ghcr.io -u SEU_USUARIO --password-stdin
+sudo dnf install sshpass
 ```
 
-### Imagem não atualiza no servidor
+### Container não inicia
 
 ```bash
-# No servidor, force o pull
-docker-compose pull --ignore-pull-failures
-docker-compose up -d --force-recreate
+./deploy.sh  # Opção 5 - Ver logs
+
+# Ou SSH direto
+ssh root@servidor
+docker logs --tail 100 erplab-backend
 ```
 
-### Ver logs da aplicação
+---
 
-```bash
-# No servidor
-docker-compose logs -f erplab-back
-```
-
-## 📊 Monitoramento
-
-Após o deploy, verifique o status:
-
-```bash
-# No servidor
-docker ps | grep erplab
-docker-compose ps
-curl http://localhost:10016/api/v1/health
-```
+**Última atualização:** Outubro 2025

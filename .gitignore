@@ -27,6 +27,9 @@ logs
 .env.development.local
 .env.test.local
 .env.production.local
+.env.test
+# Nota: .env.deploy é commitado (sem credenciais)
+# NUNCA commite .env.local - contém credenciais!
 
 # Build output
 dist/
