@@ -313,6 +313,36 @@ export class UnidadeSaudeResponseDto {
   updatedAt: Date;
 }
 
+export class CnaeResponseDto {
+  @ApiProperty()
+  @Expose()
+  id: string;
+
+  @ApiProperty()
+  @Expose()
+  codigo: string;
+
+  @ApiProperty()
+  @Expose()
+  descricao: string;
+
+  @ApiProperty({ required: false })
+  @Expose()
+  secao?: string;
+
+  @ApiProperty({ required: false })
+  @Expose()
+  descricaoSecao?: string;
+
+  @ApiProperty({ required: false })
+  @Expose()
+  divisao?: string;
+
+  @ApiProperty({ required: false })
+  @Expose()
+  descricaoDivisao?: string;
+}
+
 export class UnidadeSaudeListResponseDto {
   @ApiProperty()
   @Expose()
@@ -337,6 +367,15 @@ export class UnidadeSaudeListResponseDto {
   @ApiProperty({ required: false })
   @Expose()
   estado?: string;
+
+  @ApiProperty({ required: false })
+  @Expose()
+  cnaePrincipalId?: string;
+
+  @ApiProperty({ type: CnaeResponseDto, required: false })
+  @Expose()
+  @Type(() => CnaeResponseDto)
+  cnaePrincipal?: CnaeResponseDto;
 
   @ApiProperty()
   @Expose()
