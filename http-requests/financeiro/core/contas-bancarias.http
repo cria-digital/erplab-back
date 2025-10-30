@@ -63,8 +63,33 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Listar todas as contas bancárias
+### Listar todas as contas bancárias (sem paginação - padrão: página 1, 10 itens)
 GET {{baseUrl}}/financeiro/contas-bancarias
+Authorization: Bearer {{token}}
+
+### Expected Response
+# {
+#   "data": [...],
+#   "meta": {
+#     "page": 1,
+#     "limit": 10,
+#     "total": 50,
+#     "totalPages": 5,
+#     "hasPrevPage": false,
+#     "hasNextPage": true
+#   }
+# }
+
+###
+
+### Listar contas bancárias com paginação - Página 1, 10 itens
+GET {{baseUrl}}/financeiro/contas-bancarias?page=1&limit=10
+Authorization: Bearer {{token}}
+
+###
+
+### Listar contas bancárias com paginação - Página 2, 20 itens
+GET {{baseUrl}}/financeiro/contas-bancarias?page=2&limit=20
 Authorization: Bearer {{token}}
 
 ###

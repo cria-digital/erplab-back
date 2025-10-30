@@ -9,6 +9,7 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -16,6 +17,7 @@ import {
   ApiOperation,
   ApiResponse,
   ApiParam,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../autenticacao/auth/guards/jwt-auth.guard';
 import { ContaBancariaService } from './conta-bancaria.service';
@@ -50,8 +52,22 @@ export class ContaBancariaController {
     status: 200,
     description: 'Lista de contas bancárias retornada com sucesso',
   })
-  findAll() {
-    return this.service.findAll();
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'Número da página',
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Itens por página',
+    example: 10,
+  })
+  findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10) {
+    return this.service.findAll(Number(page), Number(limit));
   }
 
   @Get('ativas')

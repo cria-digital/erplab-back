@@ -12,6 +12,7 @@ import {
 } from './entities/conta-bancaria.entity';
 import { CreateContaBancariaDto } from './dto/create-conta-bancaria.dto';
 import { UpdateContaBancariaDto } from './dto/update-conta-bancaria.dto';
+import { PaginatedResultDto } from '../../infraestrutura/common/dto/pagination.dto';
 
 @Injectable()
 export class ContaBancariaService {
@@ -36,11 +37,20 @@ export class ContaBancariaService {
     return await this.contaBancariaRepository.save(conta);
   }
 
-  async findAll(): Promise<ContaBancaria[]> {
-    return await this.contaBancariaRepository.find({
+  async findAll(
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<PaginatedResultDto<ContaBancaria>> {
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await this.contaBancariaRepository.findAndCount({
       relations: ['banco', 'unidade_saude'],
       order: { created_at: 'DESC' },
+      skip,
+      take: limit,
     });
+
+    return new PaginatedResultDto(data, total, page, limit);
   }
 
   async findAtivas(): Promise<ContaBancaria[]> {
