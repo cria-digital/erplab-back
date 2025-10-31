@@ -111,9 +111,15 @@ describe('CampoFormularioService', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
-    // Restore the standard mocks after each test
+    // Reset all mock implementations
+    mockRepository.create.mockReset();
+    mockRepository.save.mockReset();
+    mockRepository.find.mockReset();
+    mockRepository.findOne.mockReset();
+    mockRepository.remove.mockReset();
+    mockRepository.count.mockReset();
+    mockRepository.createQueryBuilder.mockReset();
     mockRepository.createQueryBuilder.mockReturnValue(mockQueryBuilder);
-    mockRepository.findOne.mockResolvedValue(null);
   });
 
   it('should be defined', () => {
@@ -145,9 +151,6 @@ describe('CampoFormularioService', () => {
     });
 
     it('deve retornar erro quando código já existir no formulário', async () => {
-      // Clear any previous mocks and set up the specific mock for this test
-      jest.clearAllMocks();
-
       // Create a fresh mock object for this test
       const existingCampo = {
         id: 'campo-existing-uuid',
@@ -156,17 +159,8 @@ describe('CampoFormularioService', () => {
         nomeCampo: 'Campo Existente',
       };
 
-      // Restore mocks properly for this test
-      mockRepository.createQueryBuilder.mockReturnValue(mockQueryBuilder);
-
-      // Use mockImplementation to ensure the mock works correctly
-      mockRepository.findOne.mockImplementation(async (options: any) => {
-        // Check if this is the call to find existing by code
-        if (options.where?.codigoCampo && options.where?.formularioId) {
-          return existingCampo;
-        }
-        return null; // For other findOne calls
-      });
+      // Mock to return the existing campo when checking for duplicates
+      mockRepository.findOne.mockResolvedValue(existingCampo);
 
       await expect(service.create(createDto)).rejects.toThrow(
         BadRequestException,
@@ -180,9 +174,6 @@ describe('CampoFormularioService', () => {
     });
 
     it('deve gerar ordem automaticamente quando não fornecida', async () => {
-      // Clear any previous mocks
-      jest.clearAllMocks();
-
       const createDtoSemOrdem = {
         formularioId: 'formulario-uuid-2', // usar ID diferente
         codigoCampo: 'CAMPO002',
@@ -211,9 +202,6 @@ describe('CampoFormularioService', () => {
     });
 
     it('deve definir ordem como 1 quando não há campos existentes', async () => {
-      // Clear any previous mocks
-      jest.clearAllMocks();
-
       const createDtoSemOrdem = {
         ...createDto,
         codigoCampo: 'CAMPO003', // usar código diferente
@@ -354,9 +342,6 @@ describe('CampoFormularioService', () => {
 
   describe('findByCodigo', () => {
     it('deve retornar campo por código', async () => {
-      // Clear any previous mocks
-      jest.clearAllMocks();
-
       // Create a fresh mock object for this test
       const campoFound = {
         ...mockCampo,
@@ -364,21 +349,8 @@ describe('CampoFormularioService', () => {
         codigoCampo: 'CAMPO001',
       };
 
-      // Restore mocks properly for this test
-      mockRepository.createQueryBuilder.mockReturnValue(mockQueryBuilder);
-
-      // Use mockImplementation to ensure the mock works correctly
-      mockRepository.findOne.mockImplementation(async (options: any) => {
-        // Check if this is the findByCodigo call
-        if (
-          options.where?.formularioId &&
-          options.where?.codigoCampo &&
-          options.relations
-        ) {
-          return campoFound;
-        }
-        return null;
-      });
+      // Mock to return the campo
+      mockRepository.findOne.mockResolvedValue(campoFound);
 
       const result = await service.findByCodigo(
         'formulario-uuid-1',
@@ -439,8 +411,6 @@ describe('CampoFormularioService', () => {
 
   describe('findOne', () => {
     it('deve retornar campo por ID com relações', async () => {
-      // Clear any previous mocks
-      jest.clearAllMocks();
       mockRepository.findOne.mockResolvedValue(mockCampo);
 
       const result = await service.findOne('campo-uuid-1');
@@ -579,9 +549,6 @@ describe('CampoFormularioService', () => {
 
   describe('duplicar', () => {
     it('deve duplicar campo com novo código fornecido', async () => {
-      // Clear any previous mocks
-      jest.clearAllMocks();
-
       const novoCodigo = 'CAMPO001_COPY';
 
       // Create fresh objects for this test

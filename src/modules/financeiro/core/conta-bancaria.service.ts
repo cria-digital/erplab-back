@@ -22,14 +22,18 @@ export class ContaBancariaService {
   ) {}
 
   async create(createDto: CreateContaBancariaDto): Promise<ContaBancaria> {
-    // Verifica se já existe conta com o mesmo código interno
+    // Verifica se já existe conta com mesma combinação banco+agência+conta
     const existente = await this.contaBancariaRepository.findOne({
-      where: { codigo_interno: createDto.codigo_interno },
+      where: {
+        banco_id: createDto.banco_id,
+        agencia: createDto.agencia,
+        numero_conta: createDto.numero_conta,
+      },
     });
 
     if (existente) {
       throw new ConflictException(
-        `Já existe uma conta bancária com o código interno: ${createDto.codigo_interno}`,
+        `Já existe uma conta bancária com agência ${createDto.agencia} e conta ${createDto.numero_conta} para este banco`,
       );
     }
 
@@ -120,19 +124,14 @@ export class ContaBancariaService {
     });
   }
 
-  async findByCodigo(codigo: string): Promise<ContaBancaria> {
-    const conta = await this.contaBancariaRepository.findOne({
-      where: { codigo_interno: codigo },
-      relations: ['banco', 'unidade_saude'],
-    });
-
-    if (!conta) {
-      throw new NotFoundException(
-        `Conta bancária com código ${codigo} não encontrada`,
-      );
-    }
-
-    return conta;
+  /**
+   * @deprecated Use findOne() por ID ao invés de código interno
+   */
+  async findByCodigo(_codigo: string): Promise<ContaBancaria> {
+    // Código interno foi removido - retorna erro
+    throw new NotFoundException(
+      `O método findByCodigo foi descontinuado. Use findOne() com ID.`,
+    );
   }
 
   async findOne(id: string): Promise<ContaBancaria> {
@@ -159,18 +158,19 @@ export class ContaBancariaService {
   ): Promise<ContaBancaria> {
     const conta = await this.findOne(id);
 
-    // Se está alterando o código interno, verifica se não existe outro com o mesmo
-    if (
-      updateDto.codigo_interno &&
-      updateDto.codigo_interno !== conta.codigo_interno
-    ) {
+    // Se está alterando banco, agência ou conta, verifica se não existe outro com a mesma combinação
+    if (updateDto.banco_id || updateDto.agencia || updateDto.numero_conta) {
       const existente = await this.contaBancariaRepository.findOne({
-        where: { codigo_interno: updateDto.codigo_interno },
+        where: {
+          banco_id: updateDto.banco_id || conta.banco_id,
+          agencia: updateDto.agencia || conta.agencia,
+          numero_conta: updateDto.numero_conta || conta.numero_conta,
+        },
       });
 
-      if (existente) {
+      if (existente && existente.id !== id) {
         throw new ConflictException(
-          `Já existe uma conta bancária com o código interno: ${updateDto.codigo_interno}`,
+          `Já existe uma conta bancária com agência ${updateDto.agencia || conta.agencia} e conta ${updateDto.numero_conta || conta.numero_conta} para este banco`,
         );
       }
     }

@@ -33,12 +33,6 @@ export class ContaBancaria {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'varchar', length: 20, unique: true })
-  codigo_interno: string;
-
-  @Column({ type: 'varchar', length: 255 })
-  nome_conta: string;
-
   @Column({
     type: 'enum',
     enum: TipoConta,
@@ -57,12 +51,6 @@ export class ContaBancaria {
 
   @Column({ type: 'varchar', length: 2 })
   digito_conta: string;
-
-  @Column({ type: 'varchar', length: 255 })
-  titular: string;
-
-  @Column({ type: 'varchar', length: 20 })
-  cpf_cnpj_titular: string;
 
   @Column({ type: 'varchar', length: 20, nullable: true })
   pix_tipo: string;

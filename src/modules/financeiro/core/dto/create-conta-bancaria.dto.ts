@@ -14,26 +14,6 @@ import { TipoConta, StatusConta } from '../entities/conta-bancaria.entity';
 
 export class CreateContaBancariaDto {
   @ApiProperty({
-    description: 'Código interno único da conta bancária',
-    example: 'CC001',
-    maxLength: 20,
-  })
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(20)
-  codigo_interno: string;
-
-  @ApiProperty({
-    description: 'Nome/Apelido da conta',
-    example: 'Conta Corrente Principal',
-    maxLength: 255,
-  })
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(255)
-  nome_conta: string;
-
-  @ApiProperty({
     description: 'Tipo de conta bancária',
     enum: TipoConta,
     example: TipoConta.CORRENTE,
@@ -83,26 +63,6 @@ export class CreateContaBancariaDto {
   @IsNotEmpty()
   @MaxLength(2)
   digito_conta: string;
-
-  @ApiProperty({
-    description: 'Nome do titular da conta',
-    example: 'Clínica Saúde Total Ltda',
-    maxLength: 255,
-  })
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(255)
-  titular: string;
-
-  @ApiProperty({
-    description: 'CPF ou CNPJ do titular',
-    example: '12.345.678/0001-90',
-    maxLength: 20,
-  })
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(20)
-  cpf_cnpj_titular: string;
 
   @ApiProperty({
     description: 'Tipo de chave PIX',

@@ -74,24 +74,6 @@ export class CreateContaBancariaUnidadeDto {
   @IsNotEmpty()
   banco_id: string;
 
-  @ApiProperty({
-    example: 'CC-UNIDADE-001',
-    description: 'Código interno único da conta',
-  })
-  @IsString()
-  @IsNotEmpty()
-  @Length(1, 20)
-  codigo_interno: string;
-
-  @ApiProperty({
-    example: 'Conta Corrente Principal',
-    description: 'Nome/apelido da conta',
-  })
-  @IsString()
-  @IsNotEmpty()
-  @Length(1, 255)
-  nome_conta: string;
-
   @ApiProperty({ example: '1234', description: 'Número da agência' })
   @IsString()
   @IsNotEmpty()
@@ -115,24 +97,6 @@ export class CreateContaBancariaUnidadeDto {
   @IsNotEmpty()
   @Length(1, 2)
   digito_conta: string;
-
-  @ApiProperty({
-    example: 'Clínica XYZ Ltda',
-    description: 'Nome do titular da conta',
-  })
-  @IsString()
-  @IsNotEmpty()
-  @Length(1, 255)
-  titular: string;
-
-  @ApiProperty({
-    example: '12.345.678/0001-90',
-    description: 'CPF ou CNPJ do titular',
-  })
-  @IsString()
-  @IsNotEmpty()
-  @Length(1, 20)
-  cpf_cnpj_titular: string;
 
   @ApiPropertyOptional({
     example: 'corrente',

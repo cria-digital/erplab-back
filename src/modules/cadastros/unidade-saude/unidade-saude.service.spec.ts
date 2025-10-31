@@ -48,14 +48,10 @@ describe('UnidadeSaudeService', () => {
   const mockContaBancaria = {
     id: 'conta-uuid-1',
     banco_id: 'banco-uuid-1',
-    codigo_interno: 'CC-001',
-    nome_conta: 'Conta Principal',
     agencia: '1234',
     digito_agencia: '5',
     numero_conta: '567890',
     digito_conta: '1',
-    titular: 'Clínica Saúde Total Ltda',
-    cpf_cnpj_titular: '12345678000199',
     tipo_conta: 'corrente',
     pix_tipo: null,
     pix_chave: null,
@@ -215,13 +211,9 @@ describe('UnidadeSaudeService', () => {
       contas_bancarias: [
         {
           banco_id: 'banco-uuid-1',
-          codigo_interno: 'CC-001',
-          nome_conta: 'Conta Principal',
           agencia: '1234',
           numero_conta: '567890',
           digito_conta: '1',
-          titular: 'Unidade de Saúde Teste',
-          cpf_cnpj_titular: '12345678000190',
         },
       ],
       cnaeSecundarios: [
@@ -275,13 +267,9 @@ describe('UnidadeSaudeService', () => {
         contas_bancarias: [
           {
             banco_id: 'banco-uuid-1',
-            codigo_interno: 'CC-001',
-            nome_conta: 'Conta Principal',
             agencia: '1234',
             numero_conta: '567890',
             digito_conta: '1',
-            titular: 'Unidade de Saúde Teste',
-            cpf_cnpj_titular: '12345678000190',
           },
         ],
       };
@@ -602,13 +590,9 @@ describe('UnidadeSaudeService', () => {
         contas_bancarias: [
           {
             banco_id: 'banco-uuid-2',
-            codigo_interno: 'CC-002',
-            nome_conta: 'Conta Secundária',
             agencia: '5678',
             numero_conta: '123456',
             digito_conta: '2',
-            titular: 'Unidade de Saúde Teste',
-            cpf_cnpj_titular: '12345678000190',
           },
         ],
       };
@@ -765,23 +749,15 @@ describe('UnidadeSaudeService', () => {
         contas_bancarias: [
           {
             banco_id: 'banco-uuid-1',
-            codigo_interno: 'CC-001',
-            nome_conta: 'Conta 1',
             agencia: '1234',
             numero_conta: '12345',
             digito_conta: '1',
-            titular: 'Unidade de Saúde Teste',
-            cpf_cnpj_titular: '12345678000190',
           },
           {
             banco_id: 'banco-uuid-2',
-            codigo_interno: 'CC-002',
-            nome_conta: 'Conta 2',
             agencia: '5678',
             numero_conta: '67890',
             digito_conta: '2',
-            titular: 'Unidade de Saúde Teste',
-            cpf_cnpj_titular: '12345678000190',
           },
         ],
       };
@@ -970,13 +946,9 @@ describe('UnidadeSaudeService', () => {
         contas_bancarias: [
           {
             banco_id: 'banco-uuid-1',
-            codigo_interno: 'CC-001',
-            nome_conta: 'Conta Principal',
             agencia: '1234',
             numero_conta: '567890',
             digito_conta: '1',
-            titular: 'Unidade de Saúde Teste',
-            cpf_cnpj_titular: '12345678000190',
           },
         ],
       };

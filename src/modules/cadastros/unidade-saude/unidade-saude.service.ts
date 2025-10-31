@@ -116,47 +116,49 @@ export class UnidadeSaudeService {
               `Banco com ID ${conta.banco_id} não encontrado`,
             );
           }
-
-          // Verifica se o código interno já existe
-          const contaExistente = await this.contaBancariaRepository.findOne({
-            where: { codigo_interno: conta.codigo_interno },
-          });
-
-          if (contaExistente) {
-            throw new ConflictException(
-              `Já existe uma conta com o código ${conta.codigo_interno}`,
-            );
-          }
         }
 
         // Cria as contas bancárias
         for (const contaDto of contas_bancarias) {
-          const contaBancaria = this.contaBancariaRepository.create({
-            banco_id: contaDto.banco_id,
-            codigo_interno: contaDto.codigo_interno,
-            nome_conta: contaDto.nome_conta,
-            tipo_conta:
-              (contaDto.tipo_conta as TipoConta) || TipoConta.CORRENTE,
-            agencia: contaDto.agencia,
-            digito_agencia: contaDto.digito_agencia,
-            numero_conta: contaDto.numero_conta,
-            digito_conta: contaDto.digito_conta,
-            titular: contaDto.titular,
-            cpf_cnpj_titular: contaDto.cpf_cnpj_titular,
-            pix_tipo: contaDto.pix_tipo,
-            pix_chave: contaDto.pix_chave,
-            status: StatusConta.ATIVA,
-            saldo_inicial: contaDto.saldo_inicial || 0,
-            observacoes: contaDto.observacoes,
+          // Verifica se já existe conta com mesma agência e número para este banco
+          const contaExistente = await this.contaBancariaRepository.findOne({
+            where: {
+              banco_id: contaDto.banco_id,
+              agencia: contaDto.agencia,
+              numero_conta: contaDto.numero_conta,
+            },
           });
-          const contaSalva = (await queryRunner.manager.save(
-            ContaBancaria,
-            contaBancaria,
-          )) as ContaBancaria;
+
+          let conta: ContaBancaria;
+
+          if (contaExistente) {
+            // Reutiliza conta existente
+            conta = contaExistente;
+          } else {
+            // Cria nova conta
+            conta = this.contaBancariaRepository.create({
+              banco_id: contaDto.banco_id,
+              tipo_conta:
+                (contaDto.tipo_conta as TipoConta) || TipoConta.CORRENTE,
+              agencia: contaDto.agencia,
+              digito_agencia: contaDto.digito_agencia,
+              numero_conta: contaDto.numero_conta,
+              digito_conta: contaDto.digito_conta,
+              pix_tipo: contaDto.pix_tipo,
+              pix_chave: contaDto.pix_chave,
+              status: StatusConta.ATIVA,
+              saldo_inicial: contaDto.saldo_inicial || 0,
+              observacoes: contaDto.observacoes,
+            });
+            conta = (await queryRunner.manager.save(
+              ContaBancaria,
+              conta,
+            )) as ContaBancaria;
+          }
 
           // Vincula a conta à unidade
           const vinculo = this.contaBancariaUnidadeRepository.create({
-            conta_bancaria_id: contaSalva.id,
+            conta_bancaria_id: conta.id,
             unidade_saude_id: savedUnidade.id,
             ativo: true,
           });
@@ -371,25 +373,25 @@ export class UnidadeSaudeService {
         // Adiciona novas contas bancárias
         if (contas_bancarias.length > 0) {
           for (const contaDto of contas_bancarias) {
-            // Verifica se a conta já existe pelo código
+            // Verifica se já existe conta com mesma agência e número para este banco
             let conta = await this.contaBancariaRepository.findOne({
-              where: { codigo_interno: contaDto.codigo_interno },
+              where: {
+                banco_id: contaDto.banco_id,
+                agencia: contaDto.agencia,
+                numero_conta: contaDto.numero_conta,
+              },
             });
 
             // Se não existe, cria nova conta
             if (!conta) {
               conta = this.contaBancariaRepository.create({
                 banco_id: contaDto.banco_id,
-                codigo_interno: contaDto.codigo_interno,
-                nome_conta: contaDto.nome_conta,
                 tipo_conta:
                   (contaDto.tipo_conta as TipoConta) || TipoConta.CORRENTE,
                 agencia: contaDto.agencia,
                 digito_agencia: contaDto.digito_agencia,
                 numero_conta: contaDto.numero_conta,
                 digito_conta: contaDto.digito_conta,
-                titular: contaDto.titular,
-                cpf_cnpj_titular: contaDto.cpf_cnpj_titular,
                 pix_tipo: contaDto.pix_tipo,
                 pix_chave: contaDto.pix_chave,
                 status: StatusConta.ATIVA,
