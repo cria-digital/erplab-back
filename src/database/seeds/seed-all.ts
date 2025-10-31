@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../../app.module';
 import { CnaeSeedService } from './cnae-seed.service';
 import { BancoSeedService } from './banco-seed.service';
+import { ServicoSaudeSeedService } from './servico-saude-seed.service';
 
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
@@ -20,6 +21,11 @@ async function bootstrap() {
     const bancoSeedService = app.get(BancoSeedService);
     console.log('2. Importando Bancos...');
     await bancoSeedService.seed();
+
+    // Executar seed de Serviços de Saúde
+    const servicoSaudeSeedService = app.get(ServicoSaudeSeedService);
+    console.log('3. Importando Serviços de Saúde...');
+    await servicoSaudeSeedService.seed();
 
     console.log('\n==============================');
     console.log('Seed concluído com sucesso!');

@@ -1,0 +1,27 @@
+### Listar Todos os Serviços de Saúde (LC 116/2003 - Item 4)
+GET {{baseUrl}}/servicos-saude
+Content-Type: {{contentType}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid",
+#     "codigo": "4.01",
+#     "descricao": "Medicina e biomedicina.",
+#     "codigo_grupo": "4",
+#     "nome_grupo": "Serviços de saúde, assistência médica e congêneres",
+#     "ativo": true
+#   },
+#   ...
+# ]
+# Total: 23 serviços
+
+### Verificar quantidade de serviços retornados
+# @name listarServicos
+GET {{baseUrl}}/servicos-saude
+Content-Type: {{contentType}}
+
+### Buscar serviço específico por código (exemplo: 4.01)
+# Nota: Este endpoint ainda não foi implementado, apenas listagem completa está disponível
+# Para buscar por código específico, use o resultado da listagem acima e filtre no frontend
