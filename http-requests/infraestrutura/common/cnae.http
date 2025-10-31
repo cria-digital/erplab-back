@@ -61,6 +61,34 @@ Content-Type: {{contentType}}
 
 ###
 
+### Listar TODOS os CNAEs da área de Saúde (Seção Q + Divisão 86 - SEM DUPLICATAS)
+# Este endpoint agrupa CNAEs de:
+# - Seção Q: "Saúde humana e serviços sociais"
+# - Divisão 86: "Atividades de atenção à saúde humana"
+# Remove duplicatas automaticamente
+GET {{baseUrl}}/infraestrutura/cnae/saude
+Content-Type: {{contentType}}
+
+### Expected Response (exemplo de alguns CNAEs):
+# [
+#   {
+#     "id": "uuid",
+#     "codigo": "86101",
+#     "descricao": "ATIVIDADES DE ATENDIMENTO HOSPITALAR",
+#     "secao": "Q",
+#     "divisao": "86",
+#     "grupo": "861",
+#     "classe": "8610",
+#     "subclasse": "86101",
+#     "descricaoSecao": "SAÚDE HUMANA E SERVIÇOS SOCIAIS",
+#     "descricaoDivisao": "ATIVIDADES DE ATENÇÃO À SAÚDE HUMANA",
+#     "ativo": true
+#   },
+#   ... (mais CNAEs da área de saúde)
+# ]
+
+###
+
 ### Filtrar CNAEs - Saúde com paginação (página 1, 10 itens)
 GET {{baseUrl}}/infraestrutura/cnae?secao=Q&divisao=86&ativo=true&page=1&limit=10
 Content-Type: {{contentType}}

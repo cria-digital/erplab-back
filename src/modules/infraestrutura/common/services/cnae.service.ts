@@ -118,6 +118,40 @@ export class CnaeService {
     });
   }
 
+  async findSaude(): Promise<Cnae[]> {
+    // Busca CNAEs da área de saúde:
+    // - Seção Q (Saúde humana e serviços sociais)
+    // - Divisão 86 (Atividades de atenção à saúde humana)
+    const [secaoQ, divisao86] = await Promise.all([
+      this.cnaeRepository.find({
+        where: { secao: 'Q', ativo: true },
+        order: { codigo: 'ASC' },
+      }),
+      this.cnaeRepository.find({
+        where: { divisao: '86', ativo: true },
+        order: { codigo: 'ASC' },
+      }),
+    ]);
+
+    // Remove duplicatas (divisão 86 já está contida na seção Q)
+    const cnaesMap = new Map<string, Cnae>();
+
+    // Adiciona todos da seção Q
+    secaoQ.forEach((cnae) => cnaesMap.set(cnae.codigo, cnae));
+
+    // Adiciona divisão 86 (caso não esteja na seção Q)
+    divisao86.forEach((cnae) => {
+      if (!cnaesMap.has(cnae.codigo)) {
+        cnaesMap.set(cnae.codigo, cnae);
+      }
+    });
+
+    // Retorna array ordenado
+    return Array.from(cnaesMap.values()).sort((a, b) =>
+      a.codigo.localeCompare(b.codigo),
+    );
+  }
+
   async importBulk(cnaes: CreateCnaeDto[]): Promise<void> {
     const chunks = [];
     const chunkSize = 500;

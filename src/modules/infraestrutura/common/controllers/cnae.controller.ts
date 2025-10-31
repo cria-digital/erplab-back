@@ -151,6 +151,45 @@ export class CnaeController {
     return this.cnaeService.search(termo);
   }
 
+  @Get('saude')
+  @Public()
+  @ApiOperation({
+    summary: 'Listar CNAEs da área de saúde',
+    description:
+      'Retorna todos os CNAEs relacionados à área de saúde (Seção Q + Divisão 86). ' +
+      'Agrupa CNAEs de "Saúde humana e serviços sociais" (Seção Q) e ' +
+      '"Atividades de atenção à saúde humana" (Divisão 86), removendo duplicatas.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'CNAEs da área de saúde retornados com sucesso',
+    type: [Cnae],
+    schema: {
+      example: [
+        {
+          id: 'uuid',
+          codigo: '86101',
+          descricao: 'ATIVIDADES DE ATENDIMENTO HOSPITALAR',
+          secao: 'Q',
+          divisao: '86',
+          grupo: '861',
+          classe: '8610',
+          subclasse: '86101',
+          descricaoSecao: 'SAÚDE HUMANA E SERVIÇOS SOCIAIS',
+          descricaoDivisao: 'ATIVIDADES DE ATENÇÃO À SAÚDE HUMANA',
+          descricaoGrupo: 'ATIVIDADES DE ATENDIMENTO HOSPITALAR',
+          descricaoClasse: 'Atividades de atendimento hospitalar',
+          descricaoSubclasse:
+            'Atividades de atendimento hospitalar, exceto pronto-socorro e unidades para atendimento a urgências',
+          ativo: true,
+        },
+      ],
+    },
+  })
+  findSaude(): Promise<Cnae[]> {
+    return this.cnaeService.findSaude();
+  }
+
   @Get('codigo')
   @Public()
   @ApiOperation({
