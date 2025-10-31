@@ -36,12 +36,12 @@ Content-Type: {{contentType}}
       "intervaloFim": "13:00"
     }
   ],
-  "dadosBancarios": [
+  "contas_bancarias": [
     {
-      "bancoId": "SUBSTITUA-PELO-UUID-DO-BANCO-033",
+      "banco_id": "SUBSTITUA-PELO-UUID-DO-BANCO-033",
       "agencia": "1234",
-      "contaCorrente": "11111",
-      "principal": true
+      "numero_conta": "11111",
+      "observacoes": true
     }
   ]
 }

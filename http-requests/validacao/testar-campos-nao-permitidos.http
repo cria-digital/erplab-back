@@ -1,0 +1,93 @@
+### ========================================
+### 1. Campo Não Permitido (whitelist: true)
+### Deve retornar: "O campo 'dadosBancarios' não é permitido"
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "usuario@example.com",
+  "password": "123456",
+  "dadosBancarios": "valor-nao-permitido"
+}
+
+### Expected Response
+# {
+#   "statusCode": 400,
+#   "mensagem": "Erro de validação",
+#   "erros": [
+#     "O campo 'dadosBancarios' não é permitido"
+#   ]
+# }
+
+### ========================================
+### 2. Múltiplos Campos Não Permitidos
+### Deve retornar múltiplas mensagens em português
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "usuario@example.com",
+  "password": "123456",
+  "campoExtra1": "valor1",
+  "campoExtra2": "valor2",
+  "outroNaoPermitido": "valor3"
+}
+
+### Expected Response
+# {
+#   "statusCode": 400,
+#   "mensagem": "Erro de validação",
+#   "erros": [
+#     "O campo 'campoExtra1' não é permitido",
+#     "O campo 'campoExtra2' não é permitido",
+#     "O campo 'outroNaoPermitido' não é permitido"
+#   ]
+# }
+
+### ========================================
+### 3. Combinação: Campos Inválidos + Não Permitidos
+### Deve traduzir TODOS os erros
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "email-invalido",
+  "password": "12",
+  "campoExtra": "nao-permitido"
+}
+
+### Expected Response
+# {
+#   "statusCode": 400,
+#   "mensagem": "Erro de validação",
+#   "erros": [
+#     "O e-mail informado é inválido",
+#     "A senha deve ter no mínimo 6 caracteres",
+#     "O campo 'campoExtra' não é permitido"
+#   ]
+# }
+
+### ========================================
+### 4. Teste Real com Endpoint de Pacientes
+POST {{baseUrl}}/cadastros/pacientes
+Content-Type: application/json
+Authorization: Bearer SEU_TOKEN_AQUI
+
+{
+  "nome": "João Silva",
+  "sexo": "M",
+  "data_nascimento": "1990-01-15",
+  "campoInventado": "teste",
+  "outroCampoExtra": 123
+}
+
+### Expected Response
+# {
+#   "statusCode": 400,
+#   "mensagem": "Erro de validação",
+#   "erros": [
+#     "O campo 'campoInventado' não é permitido",
+#     "O campo 'outroCampoExtra' não é permitido",
+#     "... (outros erros de campos obrigatórios faltando)"
+#   ]
+# }

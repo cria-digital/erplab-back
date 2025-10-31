@@ -116,6 +116,7 @@ describe('UnidadeSaudeService', () => {
   const mockContaBancariaRepository = {
     create: jest.fn(),
     save: jest.fn(),
+    findOne: jest.fn(),
   };
 
   const mockContaBancariaUnidadeRepository = {
@@ -181,6 +182,8 @@ describe('UnidadeSaudeService', () => {
     mockQueryRunner.release.mockResolvedValue(undefined);
     mockQueryRunner.manager.save.mockResolvedValue(undefined);
     mockQueryRunner.manager.update.mockResolvedValue(undefined);
+    // Reset repository mocks
+    mockContaBancariaRepository.findOne.mockResolvedValue(null);
     mockQueryRunner.manager.delete.mockResolvedValue(undefined);
     mockQueryRunner.manager.findOne.mockResolvedValue(undefined);
   });
@@ -211,10 +214,14 @@ describe('UnidadeSaudeService', () => {
       ],
       contas_bancarias: [
         {
-          bancoId: 'banco-uuid-1',
+          banco_id: 'banco-uuid-1',
+          codigo_interno: 'CC-001',
+          nome_conta: 'Conta Principal',
           agencia: '1234',
-          contaCorrente: '567890',
-          principal: true,
+          numero_conta: '567890',
+          digito_conta: '1',
+          titular: 'Unidade de Saúde Teste',
+          cpf_cnpj_titular: '12345678000190',
         },
       ],
       cnaeSecundarios: [
@@ -267,10 +274,14 @@ describe('UnidadeSaudeService', () => {
         ...createUnidadeSaudeDto,
         contas_bancarias: [
           {
-            bancoId: 'banco-uuid-1',
+            banco_id: 'banco-uuid-1',
+            codigo_interno: 'CC-001',
+            nome_conta: 'Conta Principal',
             agencia: '1234',
-            contaCorrente: '567890',
-            principal: false,
+            numero_conta: '567890',
+            digito_conta: '1',
+            titular: 'Unidade de Saúde Teste',
+            cpf_cnpj_titular: '12345678000190',
           },
         ],
       };
@@ -286,7 +297,8 @@ describe('UnidadeSaudeService', () => {
 
       await service.create(dtoSemPrincipal);
 
-      expect(dtoSemPrincipal.contas_bancarias[0].principal).toBe(true);
+      // Verifica que a conta bancária foi criada corretamente
+      expect(mockQueryRunner.manager.save).toHaveBeenCalled();
     });
 
     it('deve fazer rollback em caso de erro', async () => {
@@ -353,6 +365,8 @@ describe('UnidadeSaudeService', () => {
         relations: [
           'horariosAtendimento',
           'contas_bancarias',
+          'contas_bancarias.conta_bancaria',
+          'contas_bancarias.unidade_saude',
           'cnaeSecundarios',
         ],
         order: { nomeUnidade: 'ASC' },
@@ -376,6 +390,8 @@ describe('UnidadeSaudeService', () => {
         relations: [
           'horariosAtendimento',
           'contas_bancarias',
+          'contas_bancarias.conta_bancaria',
+          'contas_bancarias.unidade_saude',
           'cnaeSecundarios',
         ],
         order: { nomeUnidade: 'ASC' },
@@ -394,6 +410,8 @@ describe('UnidadeSaudeService', () => {
         relations: [
           'horariosAtendimento',
           'contas_bancarias',
+          'contas_bancarias.conta_bancaria',
+          'contas_bancarias.unidade_saude',
           'cnaeSecundarios',
         ],
         order: { nomeUnidade: 'ASC' },
@@ -415,6 +433,8 @@ describe('UnidadeSaudeService', () => {
         relations: [
           'horariosAtendimento',
           'contas_bancarias',
+          'contas_bancarias.conta_bancaria',
+          'contas_bancarias.unidade_saude',
           'cnaeSecundarios',
         ],
         order: { nomeUnidade: 'ASC' },
@@ -433,6 +453,8 @@ describe('UnidadeSaudeService', () => {
         relations: [
           'horariosAtendimento',
           'contas_bancarias',
+          'contas_bancarias.conta_bancaria',
+          'contas_bancarias.unidade_saude',
           'cnaeSecundarios',
         ],
         order: { nomeUnidade: 'ASC' },
@@ -454,6 +476,8 @@ describe('UnidadeSaudeService', () => {
         relations: [
           'horariosAtendimento',
           'contas_bancarias',
+          'contas_bancarias.conta_bancaria',
+          'contas_bancarias.unidade_saude',
           'cnaeSecundarios',
         ],
       });
@@ -480,6 +504,8 @@ describe('UnidadeSaudeService', () => {
         relations: [
           'horariosAtendimento',
           'contas_bancarias',
+          'contas_bancarias.conta_bancaria',
+          'contas_bancarias.unidade_saude',
           'cnaeSecundarios',
         ],
       });
@@ -575,26 +601,39 @@ describe('UnidadeSaudeService', () => {
       const updateDto = {
         contas_bancarias: [
           {
-            bancoId: 'banco-uuid-2',
+            banco_id: 'banco-uuid-2',
+            codigo_interno: 'CC-002',
+            nome_conta: 'Conta Secundária',
             agencia: '5678',
-            contaCorrente: '123456',
-            principal: true,
+            numero_conta: '123456',
+            digito_conta: '2',
+            titular: 'Unidade de Saúde Teste',
+            cpf_cnpj_titular: '12345678000190',
           },
         ],
       };
 
+      // Mock findOne to return null (conta doesn't exist yet)
+      mockContaBancariaRepository.findOne.mockResolvedValue(null);
       mockContaBancariaRepository.create.mockReturnValue(mockContaBancaria);
+      mockQueryRunner.manager.save.mockResolvedValue(mockContaBancaria);
 
       await service.update('unidade-uuid-1', updateDto);
 
       expect(mockQueryRunner.manager.delete).toHaveBeenCalledWith(
-        ContaBancaria,
-        { unidadeSaudeId: 'unidade-uuid-1' },
+        ContaBancariaUnidade,
+        { unidade_saude_id: 'unidade-uuid-1' },
       );
+      // Verifica que ContaBancaria foi salva
       expect(mockQueryRunner.manager.save).toHaveBeenCalledWith(
         ContaBancaria,
-        expect.any(Array),
+        expect.any(Object),
       );
+      // Verifica que ContaBancariaUnidade foi salva (mas pode ser undefined no segundo save)
+      const saveCallsWithContaBancariaUnidade = (
+        mockQueryRunner.manager.save as jest.Mock
+      ).mock.calls.filter((call) => call[0] === ContaBancariaUnidade);
+      expect(saveCallsWithContaBancariaUnidade.length).toBeGreaterThan(0);
     });
 
     it('deve atualizar CNAEs secundários', async () => {
@@ -725,16 +764,24 @@ describe('UnidadeSaudeService', () => {
       const updateDto = {
         contas_bancarias: [
           {
-            bancoId: 'banco-uuid-1',
+            banco_id: 'banco-uuid-1',
+            codigo_interno: 'CC-001',
+            nome_conta: 'Conta 1',
             agencia: '1234',
-            contaCorrente: '12345',
-            principal: false,
+            numero_conta: '12345',
+            digito_conta: '1',
+            titular: 'Unidade de Saúde Teste',
+            cpf_cnpj_titular: '12345678000190',
           },
           {
-            bancoId: 'banco-uuid-2',
+            banco_id: 'banco-uuid-2',
+            codigo_interno: 'CC-002',
+            nome_conta: 'Conta 2',
             agencia: '5678',
-            contaCorrente: '67890',
-            principal: false,
+            numero_conta: '67890',
+            digito_conta: '2',
+            titular: 'Unidade de Saúde Teste',
+            cpf_cnpj_titular: '12345678000190',
           },
         ],
       };
@@ -750,9 +797,8 @@ describe('UnidadeSaudeService', () => {
 
       await service.update('uuid-123', updateDto);
 
-      // Verifica se o primeiro dado bancário foi marcado como principal
-      expect(updateDto.contas_bancarias[0].principal).toBe(true);
-      expect(updateDto.contas_bancarias[1].principal).toBe(false);
+      // Verifica que as contas bancárias foram processadas
+      expect(mockQueryRunner.manager.save).toHaveBeenCalled();
     });
   });
 
@@ -923,10 +969,14 @@ describe('UnidadeSaudeService', () => {
         ...createDto,
         contas_bancarias: [
           {
-            bancoId: 'banco-uuid-1',
+            banco_id: 'banco-uuid-1',
+            codigo_interno: 'CC-001',
+            nome_conta: 'Conta Principal',
             agencia: '1234',
-            contaCorrente: '567890',
-            principal: true,
+            numero_conta: '567890',
+            digito_conta: '1',
+            titular: 'Unidade de Saúde Teste',
+            cpf_cnpj_titular: '12345678000190',
           },
         ],
       };
@@ -1231,8 +1281,8 @@ describe('UnidadeSaudeService', () => {
 
       expect(result).toEqual(mockUnidadeSaude);
       expect(mockQueryRunner.manager.delete).toHaveBeenCalledWith(
-        ContaBancaria,
-        { unidadeSaudeId: 'unidade-uuid-1' },
+        ContaBancariaUnidade,
+        { unidade_saude_id: 'unidade-uuid-1' },
       );
       expect(mockQueryRunner.manager.save).not.toHaveBeenCalledWith(
         ContaBancaria,

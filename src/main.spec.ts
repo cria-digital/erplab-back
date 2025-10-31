@@ -28,6 +28,7 @@ describe('main.ts', () => {
 
     // Mock do app
     mockApp = {
+      useGlobalFilters: jest.fn(),
       useGlobalPipes: jest.fn(),
       enableCors: jest.fn(),
       setGlobalPrefix: jest.fn(),

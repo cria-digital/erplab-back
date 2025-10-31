@@ -49,23 +49,30 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Atualizar Dados Bancários
-# IMPORTANTE: O campo bancoId usa UUID da tabela bancos
+### Atualizar Contas Bancárias
+# IMPORTANTE: O campo banco_id usa UUID da tabela bancos
 # Para buscar Bancos disponíveis: GET {{baseUrl}}/financeiro/bancos
+# Esta operação substitui TODAS as contas bancárias da unidade
 PATCH {{baseUrl}}/cadastros/unidades-saude/123e4567-e89b-12d3-a456-426614174000
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "dadosBancarios": [
+  "contas_bancarias": [
     {
-      "bancoId": "SUBSTITUA-PELO-UUID-DO-BANCO-237",
+      "banco_id": "SUBSTITUA-PELO-UUID-DO-BANCO-237",
+      "codigo_interno": "CC-LAB001-BRAD-001",
+      "nome_conta": "Conta Corrente Bradesco",
       "agencia": "3456",
-      "digitoAgencia": "7",
-      "contaCorrente": "98765",
-      "digitoConta": "4",
-      "tipoConta": "CORRENTE",
-      "principal": true,
+      "digito_agencia": "7",
+      "numero_conta": "98765",
+      "digito_conta": "4",
+      "titular": "Nome da Unidade de Saúde LTDA",
+      "cpf_cnpj_titular": "12345678000191",
+      "tipo_conta": "corrente",
+      "pix_tipo": "cnpj",
+      "pix_chave": "12345678000191",
+      "saldo_inicial": 0,
       "observacoes": "Nova conta principal (Bradesco - 237)"
     }
   ]

@@ -1,0 +1,184 @@
+### Criar Unidade de Saúde com Múltiplas Contas Bancárias
+# Exemplo demonstrando suporte a múltiplas contas bancárias
+# IMPORTANTE:
+# - Substitua os UUIDs pelos IDs reais do seu sistema
+# - banco_id: UUID da tabela bancos
+# - cnaePrincipalId e cnaeId: UUIDs da tabela cnaes
+# - Cada conta deve ter um codigo_interno único
+
+POST {{baseUrl}}/cadastros/unidades-saude
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nomeUnidade": "Laboratório Multi-Contas",
+  "codigoInterno": "LAB-MC-001",
+  "cnpj": "98765432000199",
+  "razaoSocial": "Laboratório Multi-Contas LTDA",
+  "nomeFantasia": "LabMC",
+  "inscricaoMunicipal": "999888",
+  "inscricaoEstadual": "111222333",
+  "cnes": "9876543",
+  "contatosUnidade": "(11) 5555-6666",
+  "email": "contato@labmc.com.br",
+  "codigoServicoPrincipal": "001",
+  "codigoServicoSecundario": ["002"],
+  "cnaePrincipalId": "29d3b071-9a5d-450e-b0c0-5e0a2289c434",
+  "cep": "01310100",
+  "rua": "Avenida Paulista",
+  "numero": "1000",
+  "bairro": "Bela Vista",
+  "complemento": "Andar 5",
+  "estado": "SP",
+  "cidade": "São Paulo",
+  "nomeResponsavel": "Dra. Maria Santos",
+  "contatoResponsavel": "(11) 99999-8888",
+  "emailResponsavel": "dra.maria@labmc.com.br",
+  "irrfPercentual": 1.5,
+  "pisPercentual": 0.65,
+  "cofinsPercentual": 3,
+  "csllPercentual": 1,
+  "issPercentual": 5,
+  "ibsPercentual": 0,
+  "cbsPercentual": 0,
+  "reterIss": false,
+  "reterIr": false,
+  "reterPcc": false,
+  "reterIbs": false,
+  "reterCbs": false,
+  "optanteSimplesNacional": false,
+  "certificadoDigitalVinculado": false,
+  "ativo": true,
+  "horariosAtendimento": [
+    {
+      "diaSemana": "SEGUNDA",
+      "horarioInicio": "08:00",
+      "horarioFim": "17:00",
+      "semIntervalo": true
+    },
+    {
+      "diaSemana": "TERCA",
+      "horarioInicio": "08:00",
+      "horarioFim": "17:00",
+      "semIntervalo": true
+    }
+  ],
+  "contas_bancarias": [
+    {
+      "banco_id": "2eccbdb8-5bf4-4c70-b5ce-9d94a0611137",
+      "codigo_interno": "CC-MC-BB-001",
+      "nome_conta": "Conta Principal - Banco do Brasil",
+      "agencia": "1234",
+      "digito_agencia": "5",
+      "numero_conta": "98765",
+      "digito_conta": "4",
+      "titular": "Laboratório Multi-Contas LTDA",
+      "cpf_cnpj_titular": "98765432000199",
+      "tipo_conta": "corrente",
+      "pix_tipo": "cnpj",
+      "pix_chave": "98765432000199",
+      "saldo_inicial": 5000.00,
+      "observacoes": "Conta principal para recebimentos"
+    },
+    {
+      "banco_id": "SUBSTITUA-PELO-UUID-DO-BRADESCO",
+      "codigo_interno": "CC-MC-BRAD-002",
+      "nome_conta": "Conta Secundária - Bradesco",
+      "agencia": "5678",
+      "digito_agencia": "9",
+      "numero_conta": "11111",
+      "digito_conta": "2",
+      "titular": "Laboratório Multi-Contas LTDA",
+      "cpf_cnpj_titular": "98765432000199",
+      "tipo_conta": "corrente",
+      "pix_tipo": "email",
+      "pix_chave": "financeiro@labmc.com.br",
+      "saldo_inicial": 0,
+      "observacoes": "Conta para pagamento de fornecedores"
+    },
+    {
+      "banco_id": "SUBSTITUA-PELO-UUID-DA-CAIXA",
+      "codigo_interno": "CP-MC-CAIXA-003",
+      "nome_conta": "Conta Poupança - Caixa",
+      "agencia": "9999",
+      "numero_conta": "22222",
+      "digito_conta": "8",
+      "titular": "Laboratório Multi-Contas LTDA",
+      "cpf_cnpj_titular": "98765432000199",
+      "tipo_conta": "poupanca",
+      "pix_tipo": "telefone",
+      "pix_chave": "+5511999998888",
+      "saldo_inicial": 10000.00,
+      "observacoes": "Conta reserva/poupança"
+    }
+  ],
+  "cnaeSecundarios": [
+    {
+      "cnaeId": "29d3b071-9a5d-450e-b0c0-5e0a2289c434"
+    }
+  ]
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "id": "uuid-gerado",
+#   "nomeUnidade": "Laboratório Multi-Contas",
+#   "cnpj": "98765432000199",
+#   "contas_bancarias": [
+#     {
+#       "id": "uuid-conta-1",
+#       "codigo_interno": "CC-MC-BB-001",
+#       "nome_conta": "Conta Principal - Banco do Brasil",
+#       "banco": { "codigo": "001", "nome": "Banco do Brasil" }
+#     },
+#     {
+#       "id": "uuid-conta-2",
+#       "codigo_interno": "CC-MC-BRAD-002",
+#       "nome_conta": "Conta Secundária - Bradesco"
+#     },
+#     {
+#       "id": "uuid-conta-3",
+#       "codigo_interno": "CP-MC-CAIXA-003",
+#       "nome_conta": "Conta Poupança - Caixa"
+#     }
+#   ]
+# }
+
+### ========================================
+### Observações sobre Múltiplas Contas
+#
+# 1. Cada conta DEVE ter um codigo_interno único
+#    Sugestão de padrão: [TIPO]-[UNIDADE]-[BANCO]-[SEQUENCIAL]
+#    Exemplos: CC-LAB001-BB-001, CP-LAB001-CAIXA-002
+#
+# 2. Campos obrigatórios em cada conta:
+#    - banco_id (UUID do banco)
+#    - codigo_interno (único)
+#    - nome_conta
+#    - agencia
+#    - numero_conta
+#    - digito_conta
+#    - titular
+#    - cpf_cnpj_titular
+#
+# 3. Campos opcionais:
+#    - digito_agencia
+#    - tipo_conta (padrão: "corrente")
+#    - pix_tipo e pix_chave
+#    - saldo_inicial (padrão: 0)
+#    - observacoes
+#
+# 4. Tipos de conta suportados:
+#    - corrente
+#    - poupanca
+#    - pagamento
+#    - salario
+#    - investimento
+#
+# 5. Tipos de chave PIX:
+#    - cpf
+#    - cnpj
+#    - email
+#    - telefone
+#    - chave_aleatoria

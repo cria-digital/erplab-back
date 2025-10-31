@@ -3,9 +3,12 @@
 # - Os campos cnaePrincipalId e cnaeId usam UUIDs da tabela cnaes
 #   Para buscar CNAEs disponíveis: GET {{baseUrl}}/cnae
 #   Exemplo de CNAE 86402 (Lab. Clínico): f0bb0d8e-39cb-4d35-ac49-3479a71f6d99
-# - O campo bancoId usa UUID da tabela bancos
+# - O campo banco_id usa UUID da tabela bancos
 #   Para buscar Bancos disponíveis: GET {{baseUrl}}/financeiro/bancos
-#   Você precisa substituir os bancoId abaixo pelos IDs reais do seu banco
+#   Você precisa substituir os banco_id abaixo pelos IDs reais do seu banco
+# - contas_bancarias: Array de contas bancárias (suporta múltiplas contas)
+#   Campos obrigatórios: banco_id, codigo_interno, nome_conta, agencia,
+#   numero_conta, digito_conta, titular, cpf_cnpj_titular
 POST {{baseUrl}}/cadastros/unidades-saude
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
@@ -97,15 +100,21 @@ Authorization: Bearer {{token}}
       "semIntervalo": true
     }
   ],
-  "dadosBancarios": [
+  "contas_bancarias": [
     {
-      "bancoId": "2eccbdb8-5bf4-4c70-b5ce-9d94a0611137",
+      "banco_id": "2eccbdb8-5bf4-4c70-b5ce-9d94a0611137",
+      "codigo_interno": "CC-LAB001-001",
+      "nome_conta": "Conta Corrente Principal",
       "agencia": "1234",
-      "digitoAgencia": "5",
-      "contaCorrente": "12345",
-      "digitoConta": "6",
-      "tipoConta": "CORRENTE",
-      "principal": true,
+      "digito_agencia": "5",
+      "numero_conta": "12345",
+      "digito_conta": "6",
+      "titular": "Laboratório São Roque LTDA",
+      "cpf_cnpj_titular": "12345678000191",
+      "tipo_conta": "corrente",
+      "pix_tipo": "cnpj",
+      "pix_chave": "12345678000191",
+      "saldo_inicial": 0,
       "observacoes": "Conta principal para recebimentos (Banco do Brasil - 001)"
     }
   ],

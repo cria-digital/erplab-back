@@ -1,0 +1,310 @@
+### ========================================
+### 1. Login - Email Inválido
+### Deve retornar: "O e-mail informado é inválido"
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "email-invalido",
+  "password": "123456"
+}
+
+### Expected Response
+# {
+#   "statusCode": 400,
+#   "mensagem": "Erro de validação",
+#   "erros": [
+#     "O e-mail informado é inválido"
+#   ]
+# }
+
+### ========================================
+### 2. Login - Senha Muito Curta
+### Deve retornar: "A senha deve ter no mínimo 6 caracteres"
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "usuario@example.com",
+  "password": "123"
+}
+
+### Expected Response
+# {
+#   "statusCode": 400,
+#   "mensagem": "Erro de validação",
+#   "erros": [
+#     "A senha deve ter no mínimo 6 caracteres"
+#   ]
+# }
+
+### ========================================
+### 3. Login - Email e Senha Vazios
+### Deve retornar: "O e-mail é obrigatório" e "A senha é obrigatória"
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "",
+  "password": ""
+}
+
+### Expected Response
+# {
+#   "statusCode": 400,
+#   "mensagem": "Erro de validação",
+#   "erros": [
+#     "O e-mail é obrigatório",
+#     "A senha é obrigatória"
+#   ]
+# }
+
+### ========================================
+### 4. Login - Múltiplos Erros
+### Deve retornar múltiplas mensagens de erro
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "email-sem-arroba",
+  "password": "12"
+}
+
+### Expected Response
+# {
+#   "statusCode": 400,
+#   "mensagem": "Erro de validação",
+#   "erros": [
+#     "O e-mail informado é inválido",
+#     "A senha deve ter no mínimo 6 caracteres"
+#   ]
+# }
+
+### ========================================
+### 5. Criar Paciente - CPF Inválido
+### Deve retornar: "O CPF informado é inválido"
+POST {{baseUrl}}/cadastros/pacientes
+Content-Type: application/json
+
+{
+  "nome": "João Silva",
+  "sexo": "M",
+  "data_nascimento": "1990-01-15",
+  "nome_mae": "Maria Silva",
+  "rg": "123456789",
+  "cpf": "123",
+  "estado_civil": "Solteiro",
+  "email": "joao@example.com",
+  "contatos": "11999999999",
+  "profissao": "Engenheiro",
+  "cep": "01310100",
+  "numero": "100",
+  "bairro": "Bela Vista",
+  "cidade": "São Paulo",
+  "estado": "SP",
+  "empresa_id": "uuid-da-empresa"
+}
+
+### Expected Response
+# {
+#   "statusCode": 400,
+#   "mensagem": "Erro de validação",
+#   "erros": [
+#     "O CPF informado é inválido"
+#   ]
+# }
+
+### ========================================
+### 6. Criar Paciente - CEP Inválido
+### Deve retornar: "O CEP informado é inválido (formato: 00000-000)"
+POST {{baseUrl}}/cadastros/pacientes
+Content-Type: application/json
+
+{
+  "nome": "João Silva",
+  "sexo": "M",
+  "data_nascimento": "1990-01-15",
+  "nome_mae": "Maria Silva",
+  "rg": "123456789",
+  "cpf": "12345678901",
+  "estado_civil": "Solteiro",
+  "email": "joao@example.com",
+  "contatos": "11999999999",
+  "profissao": "Engenheiro",
+  "cep": "123",
+  "numero": "100",
+  "bairro": "Bela Vista",
+  "cidade": "São Paulo",
+  "estado": "SP",
+  "empresa_id": "uuid-da-empresa"
+}
+
+### Expected Response
+# {
+#   "statusCode": 400,
+#   "mensagem": "Erro de validação",
+#   "erros": [
+#     "O CEP informado é inválido (formato: 00000-000)"
+#   ]
+# }
+
+### ========================================
+### 7. Criar Paciente - Data Nascimento Inválida
+### Deve retornar: "A data de nascimento é inválida"
+POST {{baseUrl}}/cadastros/pacientes
+Content-Type: application/json
+
+{
+  "nome": "João Silva",
+  "sexo": "M",
+  "data_nascimento": "1990-13-45",
+  "nome_mae": "Maria Silva",
+  "rg": "123456789",
+  "cpf": "12345678901",
+  "estado_civil": "Solteiro",
+  "email": "joao@example.com",
+  "contatos": "11999999999",
+  "profissao": "Engenheiro",
+  "cep": "01310100",
+  "numero": "100",
+  "bairro": "Bela Vista",
+  "cidade": "São Paulo",
+  "estado": "SP",
+  "empresa_id": "uuid-da-empresa"
+}
+
+### Expected Response
+# {
+#   "statusCode": 400,
+#   "mensagem": "Erro de validação",
+#   "erros": [
+#     "A data de nascimento é inválida"
+#   ]
+# }
+
+### ========================================
+### 8. Criar Paciente - Email Inválido
+### Deve retornar: "O e-mail informado é inválido"
+POST {{baseUrl}}/cadastros/pacientes
+Content-Type: application/json
+
+{
+  "nome": "João Silva",
+  "sexo": "M",
+  "data_nascimento": "1990-01-15",
+  "nome_mae": "Maria Silva",
+  "rg": "123456789",
+  "cpf": "12345678901",
+  "estado_civil": "Solteiro",
+  "email": "email-sem-arroba",
+  "contatos": "11999999999",
+  "profissao": "Engenheiro",
+  "cep": "01310100",
+  "numero": "100",
+  "bairro": "Bela Vista",
+  "cidade": "São Paulo",
+  "estado": "SP",
+  "empresa_id": "uuid-da-empresa"
+}
+
+### Expected Response
+# {
+#   "statusCode": 400,
+#   "mensagem": "Erro de validação",
+#   "erros": [
+#     "O e-mail informado é inválido"
+#   ]
+# }
+
+### ========================================
+### 9. Criar Paciente - Nome Muito Curto
+### Deve retornar: "O campo nome deve ter no mínimo 2 caracteres"
+POST {{baseUrl}}/cadastros/pacientes
+Content-Type: application/json
+
+{
+  "nome": "J",
+  "sexo": "M",
+  "data_nascimento": "1990-01-15",
+  "nome_mae": "Maria Silva",
+  "rg": "123456789",
+  "cpf": "12345678901",
+  "estado_civil": "Solteiro",
+  "email": "joao@example.com",
+  "contatos": "11999999999",
+  "profissao": "Engenheiro",
+  "cep": "01310100",
+  "numero": "100",
+  "bairro": "Bela Vista",
+  "cidade": "São Paulo",
+  "estado": "SP",
+  "empresa_id": "uuid-da-empresa"
+}
+
+### Expected Response
+# {
+#   "statusCode": 400,
+#   "mensagem": "Erro de validação",
+#   "erros": [
+#     "O campo nome deve ter no mínimo 2 caracteres"
+#   ]
+# }
+
+### ========================================
+### 10. Criar Paciente - Múltiplos Erros Combinados
+### Deve retornar TODAS as mensagens de erro
+POST {{baseUrl}}/cadastros/pacientes
+Content-Type: application/json
+
+{
+  "nome": "J",
+  "sexo": "M",
+  "data_nascimento": "1990-13-45",
+  "nome_mae": "Maria Silva",
+  "rg": "123456789",
+  "cpf": "123",
+  "estado_civil": "Solteiro",
+  "email": "email-invalido",
+  "contatos": "11999999999",
+  "profissao": "Engenheiro",
+  "cep": "123",
+  "numero": "100",
+  "bairro": "Bela Vista",
+  "cidade": "São Paulo",
+  "estado": "SP",
+  "empresa_id": "uuid-da-empresa"
+}
+
+### Expected Response
+# {
+#   "statusCode": 400,
+#   "mensagem": "Erro de validação",
+#   "erros": [
+#     "O campo nome deve ter no mínimo 2 caracteres",
+#     "A data de nascimento é inválida",
+#     "O CPF informado é inválido",
+#     "O e-mail informado é inválido",
+#     "O CEP informado é inválido (formato: 00000-000)"
+#   ]
+# }
+
+### ========================================
+### 11. Login Bem-Sucedido (Para Comparação)
+### Deve retornar token JWT
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "diegosoek@gmail.com",
+  "password": "Admin123!"
+}
+
+### Expected Response (Success)
+# {
+#   "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+#   "usuario": {
+#     "id": "uuid",
+#     "email": "diegosoek@gmail.com",
+#     "nome": "Diego Soek"
+#   }
+# }

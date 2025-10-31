@@ -10,6 +10,7 @@ import {
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { MensagensValidacao } from '../../../../comum/mensagens/validacao.mensagens';
 
 export class CreatePacienteDto {
   @ApiPropertyOptional({
@@ -28,9 +29,9 @@ export class CreatePacienteDto {
     example: 'João da Silva Santos',
     maxLength: 255,
   })
-  @IsNotEmpty({ message: 'Nome é obrigatório' })
+  @IsNotEmpty({ message: MensagensValidacao.CAMPO_OBRIGATORIO('nome') })
   @IsString()
-  @Length(2, 255, { message: 'Nome deve ter entre 2 e 255 caracteres' })
+  @Length(2, 255, { message: MensagensValidacao.STRING_MUITO_CURTA('nome', 2) })
   @Transform(({ value }) => value?.trim())
   nome: string;
 
@@ -71,11 +72,8 @@ export class CreatePacienteDto {
     description: 'Data de nascimento no formato YYYY-MM-DD',
     example: '1990-01-15',
   })
-  @IsNotEmpty({ message: 'Data de nascimento é obrigatória' })
-  @IsDateString(
-    {},
-    { message: 'Data de nascimento deve estar no formato YYYY-MM-DD' },
-  )
+  @IsNotEmpty({ message: MensagensValidacao.DATA_OBRIGATORIA })
+  @IsDateString({}, { message: MensagensValidacao.DATA_NASCIMENTO_INVALIDA })
   data_nascimento: string;
 
   @ApiProperty({
@@ -115,9 +113,9 @@ export class CreatePacienteDto {
     minLength: 11,
     maxLength: 11,
   })
-  @IsNotEmpty({ message: 'CPF é obrigatório' })
+  @IsNotEmpty({ message: MensagensValidacao.CPF_OBRIGATORIO })
   @IsString()
-  @Matches(/^\d{11}$/, { message: 'CPF deve conter exatamente 11 dígitos' })
+  @Matches(/^\d{11}$/, { message: MensagensValidacao.CPF_INVALIDO })
   @Transform(({ value }) => value?.replace(/\D/g, ''))
   cpf: string;
 
@@ -136,9 +134,11 @@ export class CreatePacienteDto {
     example: 'joao@email.com',
     maxLength: 255,
   })
-  @IsNotEmpty({ message: 'E-mail é obrigatório' })
-  @IsEmail({}, { message: 'E-mail deve ter um formato válido' })
-  @Length(5, 255, { message: 'E-mail deve ter entre 5 e 255 caracteres' })
+  @IsNotEmpty({ message: MensagensValidacao.EMAIL_OBRIGATORIO })
+  @IsEmail({}, { message: MensagensValidacao.EMAIL_INVALIDO })
+  @Length(5, 255, {
+    message: MensagensValidacao.STRING_MUITO_CURTA('e-mail', 5),
+  })
   @Transform(({ value }) => value?.toLowerCase().trim())
   email: string;
 
@@ -250,9 +250,9 @@ export class CreatePacienteDto {
     minLength: 8,
     maxLength: 8,
   })
-  @IsNotEmpty({ message: 'CEP é obrigatório' })
+  @IsNotEmpty({ message: MensagensValidacao.CEP_OBRIGATORIO })
   @IsString()
-  @Matches(/^\d{8}$/, { message: 'CEP deve conter exatamente 8 dígitos' })
+  @Matches(/^\d{8}$/, { message: MensagensValidacao.CEP_INVALIDO })
   @Transform(({ value }) => value?.replace(/\D/g, ''))
   cep: string;
 
