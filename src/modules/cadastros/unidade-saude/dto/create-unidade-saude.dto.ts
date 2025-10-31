@@ -65,53 +65,109 @@ export class CreateHorarioAtendimentoDto {
   semIntervalo?: boolean = false;
 }
 
-export class CreateDadoBancarioDto {
+export class CreateContaBancariaUnidadeDto {
   @ApiProperty({
     example: 'uuid-do-banco',
     description: 'ID do banco',
   })
   @IsString()
   @IsNotEmpty()
-  bancoId: string;
+  banco_id: string;
+
+  @ApiProperty({
+    example: 'CC-UNIDADE-001',
+    description: 'Código interno único da conta',
+  })
+  @IsString()
+  @IsNotEmpty()
+  @Length(1, 20)
+  codigo_interno: string;
+
+  @ApiProperty({
+    example: 'Conta Corrente Principal',
+    description: 'Nome/apelido da conta',
+  })
+  @IsString()
+  @IsNotEmpty()
+  @Length(1, 255)
+  nome_conta: string;
 
   @ApiProperty({ example: '1234', description: 'Número da agência' })
   @IsString()
   @IsNotEmpty()
-  @Length(1, 20)
+  @Length(1, 10)
   agencia: string;
 
   @ApiPropertyOptional({ example: '5', description: 'Dígito da agência' })
   @IsOptional()
   @IsString()
   @Length(1, 2)
-  digitoAgencia?: string;
+  digito_agencia?: string;
 
-  @ApiProperty({ example: '12345', description: 'Número da conta corrente' })
+  @ApiProperty({ example: '12345678', description: 'Número da conta' })
   @IsString()
   @IsNotEmpty()
   @Length(1, 20)
-  contaCorrente: string;
+  numero_conta: string;
 
-  @ApiPropertyOptional({ example: '6', description: 'Dígito da conta' })
-  @IsOptional()
+  @ApiProperty({ example: '9', description: 'Dígito verificador da conta' })
   @IsString()
+  @IsNotEmpty()
   @Length(1, 2)
-  digitoConta?: string;
+  digito_conta: string;
+
+  @ApiProperty({
+    example: 'Clínica XYZ Ltda',
+    description: 'Nome do titular da conta',
+  })
+  @IsString()
+  @IsNotEmpty()
+  @Length(1, 255)
+  titular: string;
+
+  @ApiProperty({
+    example: '12.345.678/0001-90',
+    description: 'CPF ou CNPJ do titular',
+  })
+  @IsString()
+  @IsNotEmpty()
+  @Length(1, 20)
+  cpf_cnpj_titular: string;
 
   @ApiPropertyOptional({
-    example: 'CORRENTE',
-    description: 'Tipo da conta',
-    default: 'CORRENTE',
+    example: 'corrente',
+    description: 'Tipo de conta',
+    enum: ['corrente', 'poupanca', 'pagamento', 'salario', 'investimento'],
   })
   @IsOptional()
   @IsString()
-  @IsEnum(['CORRENTE', 'POUPANCA'])
-  tipoConta?: string = 'CORRENTE';
+  tipo_conta?: string = 'corrente';
 
-  @ApiProperty({ default: false, description: 'Indica se é a conta principal' })
-  @IsBoolean()
+  @ApiPropertyOptional({
+    example: 'cnpj',
+    description: 'Tipo de chave PIX',
+  })
   @IsOptional()
-  principal?: boolean = false;
+  @IsString()
+  @Length(1, 20)
+  pix_tipo?: string;
+
+  @ApiPropertyOptional({
+    example: '12.345.678/0001-90',
+    description: 'Chave PIX',
+  })
+  @IsOptional()
+  @IsString()
+  @Length(1, 255)
+  pix_chave?: string;
+
+  @ApiPropertyOptional({
+    example: 1000.0,
+    description: 'Saldo inicial da conta',
+  })
+  @IsOptional()
+  @IsNumber()
+  saldo_inicial?: number = 0;
 
   @ApiPropertyOptional({ description: 'Observações sobre a conta bancária' })
   @IsOptional()
@@ -466,14 +522,14 @@ export class CreateUnidadeSaudeDto {
   horariosAtendimento?: CreateHorarioAtendimentoDto[];
 
   @ApiPropertyOptional({
-    type: [CreateDadoBancarioDto],
-    description: 'Dados bancários',
+    type: [CreateContaBancariaUnidadeDto],
+    description: 'Contas bancárias da unidade',
   })
   @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => CreateDadoBancarioDto)
-  dadosBancarios?: CreateDadoBancarioDto[];
+  @Type(() => CreateContaBancariaUnidadeDto)
+  contas_bancarias?: CreateContaBancariaUnidadeDto[];
 
   @ApiPropertyOptional({
     type: [CreateCnaeSecundarioDto],

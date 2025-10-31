@@ -6,9 +6,10 @@ import { ConflictException, NotFoundException } from '@nestjs/common';
 import { UnidadeSaudeService } from './unidade-saude.service';
 import { UnidadeSaude } from './entities/unidade-saude.entity';
 import { HorarioAtendimento } from './entities/horario-atendimento.entity';
-import { DadoBancario } from './entities/dado-bancario.entity';
 import { CnaeSecundario } from './entities/cnae-secundario.entity';
 import { Banco } from '../../financeiro/core/entities/banco.entity';
+import { ContaBancaria } from '../../financeiro/core/entities/conta-bancaria.entity';
+import { ContaBancariaUnidade } from '../../financeiro/core/entities/conta-bancaria-unidade.entity';
 import { CreateUnidadeSaudeDto } from './dto/create-unidade-saude.dto';
 import { UpdateUnidadeSaudeDto } from './dto/update-unidade-saude.dto';
 
@@ -25,7 +26,7 @@ describe('UnidadeSaudeService', () => {
     estado: 'DF',
     ativo: true,
     horariosAtendimento: [],
-    dadosBancarios: [],
+    contas_bancarias: [],
     cnaeSecundarios: [],
   } as UnidadeSaude;
 
@@ -44,27 +45,41 @@ describe('UnidadeSaudeService', () => {
     unidadeSaude: null,
   } as HorarioAtendimento;
 
-  const mockDadoBancario = {
-    id: 'banco-uuid-1',
-    unidadeSaudeId: 'unidade-uuid-1',
-    bancoId: 'banco-uuid-1',
+  const mockContaBancaria = {
+    id: 'conta-uuid-1',
+    banco_id: 'banco-uuid-1',
+    codigo_interno: 'CC-001',
+    nome_conta: 'Conta Principal',
     agencia: '1234',
-    digitoAgencia: '5',
-    contaCorrente: '567890',
-    digitoConta: '1',
-    tipoConta: 'CORRENTE',
-    principal: true,
-    ativo: true,
+    digito_agencia: '5',
+    numero_conta: '567890',
+    digito_conta: '1',
+    titular: 'Clínica Saúde Total Ltda',
+    cpf_cnpj_titular: '12345678000199',
+    tipo_conta: 'corrente',
+    pix_tipo: null,
+    pix_chave: null,
+    status: 'ativa',
+    saldo_inicial: 0,
     observacoes: null,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    unidadeSaude: null,
+    ativo: true,
+    created_at: new Date(),
+    updated_at: new Date(),
     banco: {
       id: 'banco-uuid-1',
       codigo: '001',
       nome: 'Banco do Brasil',
     } as Banco,
-  } as DadoBancario;
+  } as any as ContaBancaria;
+
+  const _mockContaBancariaUnidade = {
+    id: 'vinculo-uuid-1',
+    conta_bancaria_id: 'conta-uuid-1',
+    unidade_saude_id: 'unidade-uuid-1',
+    ativo: true,
+    created_at: new Date(),
+    conta_bancaria: mockContaBancaria,
+  } as ContaBancariaUnidade;
 
   const mockQueryRunner = {
     connect: jest.fn(),
@@ -98,7 +113,12 @@ describe('UnidadeSaudeService', () => {
     save: jest.fn(),
   };
 
-  const mockDadoBancarioRepository = {
+  const mockContaBancariaRepository = {
+    create: jest.fn(),
+    save: jest.fn(),
+  };
+
+  const mockContaBancariaUnidadeRepository = {
     create: jest.fn(),
     save: jest.fn(),
   };
@@ -125,16 +145,20 @@ describe('UnidadeSaudeService', () => {
           useValue: mockHorarioAtendimentoRepository,
         },
         {
-          provide: getRepositoryToken(DadoBancario),
-          useValue: mockDadoBancarioRepository,
-        },
-        {
           provide: getRepositoryToken(CnaeSecundario),
           useValue: mockCnaeSecundarioRepository,
         },
         {
           provide: getRepositoryToken(Banco),
           useValue: mockBancoRepository,
+        },
+        {
+          provide: getRepositoryToken(ContaBancaria),
+          useValue: mockContaBancariaRepository,
+        },
+        {
+          provide: getRepositoryToken(ContaBancariaUnidade),
+          useValue: mockContaBancariaUnidadeRepository,
         },
         {
           provide: DataSource,
@@ -185,7 +209,7 @@ describe('UnidadeSaudeService', () => {
           horarioFim: '18:00',
         },
       ],
-      dadosBancarios: [
+      contas_bancarias: [
         {
           bancoId: 'banco-uuid-1',
           agencia: '1234',
@@ -211,7 +235,7 @@ describe('UnidadeSaudeService', () => {
       mockHorarioAtendimentoRepository.create.mockReturnValue(
         mockHorarioAtendimento,
       );
-      mockDadoBancarioRepository.create.mockReturnValue(mockDadoBancario);
+      mockContaBancariaRepository.create.mockReturnValue(mockContaBancaria);
       mockBancoRepository.findOne.mockResolvedValue({
         id: 'banco-uuid-1',
         codigo: '001',
@@ -241,7 +265,7 @@ describe('UnidadeSaudeService', () => {
     it('deve definir primeiro dado bancário como principal quando nenhum for especificado', async () => {
       const dtoSemPrincipal = {
         ...createUnidadeSaudeDto,
-        dadosBancarios: [
+        contas_bancarias: [
           {
             bancoId: 'banco-uuid-1',
             agencia: '1234',
@@ -262,7 +286,7 @@ describe('UnidadeSaudeService', () => {
 
       await service.create(dtoSemPrincipal);
 
-      expect(dtoSemPrincipal.dadosBancarios[0].principal).toBe(true);
+      expect(dtoSemPrincipal.contas_bancarias[0].principal).toBe(true);
     });
 
     it('deve fazer rollback em caso de erro', async () => {
@@ -326,7 +350,11 @@ describe('UnidadeSaudeService', () => {
       expect(result).toEqual(paginatedResult);
       expect(mockUnidadeSaudeRepository.findAndCount).toHaveBeenCalledWith({
         where: {},
-        relations: ['horariosAtendimento', 'dadosBancarios', 'cnaeSecundarios'],
+        relations: [
+          'horariosAtendimento',
+          'contas_bancarias',
+          'cnaeSecundarios',
+        ],
         order: { nomeUnidade: 'ASC' },
         skip: 0,
         take: 10,
@@ -345,7 +373,11 @@ describe('UnidadeSaudeService', () => {
           { cnpj: expect.objectContaining({ _type: 'ilike' }) },
           { razaoSocial: expect.objectContaining({ _type: 'ilike' }) },
         ],
-        relations: ['horariosAtendimento', 'dadosBancarios', 'cnaeSecundarios'],
+        relations: [
+          'horariosAtendimento',
+          'contas_bancarias',
+          'cnaeSecundarios',
+        ],
         order: { nomeUnidade: 'ASC' },
         skip: 0,
         take: 10,
@@ -359,7 +391,11 @@ describe('UnidadeSaudeService', () => {
 
       expect(mockUnidadeSaudeRepository.findAndCount).toHaveBeenCalledWith({
         where: { ativo: true },
-        relations: ['horariosAtendimento', 'dadosBancarios', 'cnaeSecundarios'],
+        relations: [
+          'horariosAtendimento',
+          'contas_bancarias',
+          'cnaeSecundarios',
+        ],
         order: { nomeUnidade: 'ASC' },
         skip: 0,
         take: 10,
@@ -376,7 +412,11 @@ describe('UnidadeSaudeService', () => {
           cidade: expect.objectContaining({ _type: 'ilike' }),
           estado: 'DF',
         },
-        relations: ['horariosAtendimento', 'dadosBancarios', 'cnaeSecundarios'],
+        relations: [
+          'horariosAtendimento',
+          'contas_bancarias',
+          'cnaeSecundarios',
+        ],
         order: { nomeUnidade: 'ASC' },
         skip: 0,
         take: 10,
@@ -390,7 +430,11 @@ describe('UnidadeSaudeService', () => {
 
       expect(mockUnidadeSaudeRepository.findAndCount).toHaveBeenCalledWith({
         where: {},
-        relations: ['horariosAtendimento', 'dadosBancarios', 'cnaeSecundarios'],
+        relations: [
+          'horariosAtendimento',
+          'contas_bancarias',
+          'cnaeSecundarios',
+        ],
         order: { nomeUnidade: 'ASC' },
         skip: 40,
         take: 20,
@@ -407,7 +451,11 @@ describe('UnidadeSaudeService', () => {
       expect(result).toEqual(mockUnidadeSaude);
       expect(mockUnidadeSaudeRepository.findOne).toHaveBeenCalledWith({
         where: { id: 'unidade-uuid-1' },
-        relations: ['horariosAtendimento', 'dadosBancarios', 'cnaeSecundarios'],
+        relations: [
+          'horariosAtendimento',
+          'contas_bancarias',
+          'cnaeSecundarios',
+        ],
       });
     });
 
@@ -429,7 +477,11 @@ describe('UnidadeSaudeService', () => {
       expect(result).toEqual(mockUnidadeSaude);
       expect(mockUnidadeSaudeRepository.findOne).toHaveBeenCalledWith({
         where: { cnpj: '12345678000199' },
-        relations: ['horariosAtendimento', 'dadosBancarios', 'cnaeSecundarios'],
+        relations: [
+          'horariosAtendimento',
+          'contas_bancarias',
+          'cnaeSecundarios',
+        ],
       });
     });
 
@@ -521,7 +573,7 @@ describe('UnidadeSaudeService', () => {
 
     it('deve atualizar dados bancários', async () => {
       const updateDto = {
-        dadosBancarios: [
+        contas_bancarias: [
           {
             bancoId: 'banco-uuid-2',
             agencia: '5678',
@@ -531,16 +583,16 @@ describe('UnidadeSaudeService', () => {
         ],
       };
 
-      mockDadoBancarioRepository.create.mockReturnValue(mockDadoBancario);
+      mockContaBancariaRepository.create.mockReturnValue(mockContaBancaria);
 
       await service.update('unidade-uuid-1', updateDto);
 
       expect(mockQueryRunner.manager.delete).toHaveBeenCalledWith(
-        DadoBancario,
+        ContaBancaria,
         { unidadeSaudeId: 'unidade-uuid-1' },
       );
       expect(mockQueryRunner.manager.save).toHaveBeenCalledWith(
-        DadoBancario,
+        ContaBancaria,
         expect.any(Array),
       );
     });
@@ -671,7 +723,7 @@ describe('UnidadeSaudeService', () => {
   describe('update - casos adicionais de dados bancários', () => {
     it('deve definir primeiro dado bancário como principal quando nenhum é principal', async () => {
       const updateDto = {
-        dadosBancarios: [
+        contas_bancarias: [
           {
             bancoId: 'banco-uuid-1',
             agencia: '1234',
@@ -699,8 +751,8 @@ describe('UnidadeSaudeService', () => {
       await service.update('uuid-123', updateDto);
 
       // Verifica se o primeiro dado bancário foi marcado como principal
-      expect(updateDto.dadosBancarios[0].principal).toBe(true);
-      expect(updateDto.dadosBancarios[1].principal).toBe(false);
+      expect(updateDto.contas_bancarias[0].principal).toBe(true);
+      expect(updateDto.contas_bancarias[1].principal).toBe(false);
     });
   });
 
@@ -709,9 +761,10 @@ describe('UnidadeSaudeService', () => {
       const service = new UnidadeSaudeService(
         mockUnidadeSaudeRepository as any,
         mockHorarioAtendimentoRepository as any,
-        mockDadoBancarioRepository as any,
         mockCnaeSecundarioRepository as any,
         mockBancoRepository as any,
+        mockContaBancariaRepository as any,
+        mockContaBancariaUnidadeRepository as any,
         mockDataSource as any,
       );
 
@@ -724,9 +777,10 @@ describe('UnidadeSaudeService', () => {
       const service = new UnidadeSaudeService(
         mockUnidadeSaudeRepository as any,
         mockHorarioAtendimentoRepository as any,
-        mockDadoBancarioRepository as any,
         mockCnaeSecundarioRepository as any,
         mockBancoRepository as any,
+        mockContaBancariaRepository as any,
+        mockContaBancariaUnidadeRepository as any,
         mockDataSource as any,
       );
 
@@ -738,9 +792,10 @@ describe('UnidadeSaudeService', () => {
       const service = new UnidadeSaudeService(
         mockUnidadeSaudeRepository as any,
         mockHorarioAtendimentoRepository as any,
-        mockDadoBancarioRepository as any,
         mockCnaeSecundarioRepository as any,
         mockBancoRepository as any,
+        mockContaBancariaRepository as any,
+        mockContaBancariaUnidadeRepository as any,
         mockDataSource as any,
       );
 
@@ -752,9 +807,10 @@ describe('UnidadeSaudeService', () => {
       const service = new UnidadeSaudeService(
         mockUnidadeSaudeRepository as any,
         mockHorarioAtendimentoRepository as any,
-        mockDadoBancarioRepository as any,
         mockCnaeSecundarioRepository as any,
         mockBancoRepository as any,
+        mockContaBancariaRepository as any,
+        mockContaBancariaUnidadeRepository as any,
         mockDataSource as any,
       );
 
@@ -766,9 +822,10 @@ describe('UnidadeSaudeService', () => {
       const service = new UnidadeSaudeService(
         mockUnidadeSaudeRepository as any,
         mockHorarioAtendimentoRepository as any,
-        mockDadoBancarioRepository as any,
         mockCnaeSecundarioRepository as any,
         mockBancoRepository as any,
+        mockContaBancariaRepository as any,
+        mockContaBancariaUnidadeRepository as any,
         mockDataSource as any,
       );
 
@@ -781,9 +838,10 @@ describe('UnidadeSaudeService', () => {
       const service = new UnidadeSaudeService(
         mockUnidadeSaudeRepository as any,
         mockHorarioAtendimentoRepository as any,
-        mockDadoBancarioRepository as any,
         mockCnaeSecundarioRepository as any,
         mockBancoRepository as any,
+        mockContaBancariaRepository as any,
+        mockContaBancariaUnidadeRepository as any,
         mockDataSource as any,
       );
 
@@ -863,7 +921,7 @@ describe('UnidadeSaudeService', () => {
     it('deve fazer rollback quando falha ao salvar dados bancários', async () => {
       const dtoComDados = {
         ...createDto,
-        dadosBancarios: [
+        contas_bancarias: [
           {
             bancoId: 'banco-uuid-1',
             agencia: '1234',
@@ -970,7 +1028,7 @@ describe('UnidadeSaudeService', () => {
       const dtoComArraysVazios = {
         ...createDto,
         horariosAtendimento: [],
-        dadosBancarios: [],
+        contas_bancarias: [],
         cnaeSecundarios: [],
       };
 
@@ -1156,7 +1214,7 @@ describe('UnidadeSaudeService', () => {
 
     it('deve atualizar com dados bancários vazios', async () => {
       const updateDtoComDadosVazios = {
-        dadosBancarios: [],
+        contas_bancarias: [],
       };
 
       mockQueryRunner.manager.update.mockResolvedValue({ affected: 1 });
@@ -1173,11 +1231,11 @@ describe('UnidadeSaudeService', () => {
 
       expect(result).toEqual(mockUnidadeSaude);
       expect(mockQueryRunner.manager.delete).toHaveBeenCalledWith(
-        DadoBancario,
+        ContaBancaria,
         { unidadeSaudeId: 'unidade-uuid-1' },
       );
       expect(mockQueryRunner.manager.save).not.toHaveBeenCalledWith(
-        DadoBancario,
+        ContaBancaria,
         expect.any(Array),
       );
     });
@@ -1436,7 +1494,7 @@ describe('UnidadeSaudeService', () => {
 
       const call = mockUnidadeSaudeRepository.find.mock.calls[0][0];
       expect(call.relations).toEqual(['horariosAtendimento']);
-      expect(call.relations).not.toContain('dadosBancarios');
+      expect(call.relations).not.toContain('contas_bancarias');
       expect(call.relations).not.toContain('cnaeSecundarios');
     });
   });
@@ -1448,9 +1506,10 @@ describe('UnidadeSaudeService', () => {
       service = new UnidadeSaudeService(
         mockUnidadeSaudeRepository as any,
         mockHorarioAtendimentoRepository as any,
-        mockDadoBancarioRepository as any,
         mockCnaeSecundarioRepository as any,
         mockBancoRepository as any,
+        mockContaBancariaRepository as any,
+        mockContaBancariaUnidadeRepository as any,
         mockDataSource as any,
       );
     });

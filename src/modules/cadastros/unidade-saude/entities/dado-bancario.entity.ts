@@ -7,7 +7,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { UnidadeSaude } from './unidade-saude.entity';
+// import { UnidadeSaude } from './unidade-saude.entity'; // DEPRECATED
 import { Banco } from '../../../financeiro/core/entities/banco.entity';
 
 @Entity('dados_bancarios')
@@ -61,14 +61,16 @@ export class DadoBancario {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
-  // Relacionamentos
-  @ManyToOne(() => UnidadeSaude, (unidade) => unidade.dadosBancarios, {
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn({ name: 'unidade_saude_id' })
-  unidadeSaude: UnidadeSaude;
+  // Relacionamentos - DEPRECATED: Entidade será removida após migration
+  // @ManyToOne(() => UnidadeSaude, (unidade) => unidade.dadosBancarios, {
+  //   onDelete: 'CASCADE',
+  // })
+  // @JoinColumn({ name: 'unidade_saude_id' })
+  // unidadeSaude: UnidadeSaude;
 
   @ManyToOne(() => Banco, { eager: true })
   @JoinColumn({ name: 'banco_id' })
   banco: Banco;
 }
+
+// DEPRECATED: Esta entidade será removida. Use ContaBancaria + ContaBancariaUnidade

@@ -7,6 +7,8 @@ import {
   IsUUID,
   IsNumber,
   MaxLength,
+  IsArray,
+  ArrayMinSize,
 } from 'class-validator';
 import { TipoConta, StatusConta } from '../entities/conta-bancaria.entity';
 
@@ -161,10 +163,23 @@ export class CreateContaBancariaDto {
   banco_id: string;
 
   @ApiProperty({
-    description: 'ID da unidade de saúde',
+    description: 'ID da unidade de saúde (deprecated - use unidades_ids)',
     example: 'uuid',
+    required: false,
+    deprecated: true,
   })
   @IsUUID()
-  @IsNotEmpty()
-  unidade_saude_id: string;
+  @IsOptional()
+  unidade_saude_id?: string;
+
+  @ApiProperty({
+    description: 'IDs das unidades de saúde vinculadas (mínimo 1)',
+    example: ['uuid-1', 'uuid-2'],
+    type: [String],
+    isArray: true,
+  })
+  @IsArray()
+  @ArrayMinSize(1, { message: 'Pelo menos uma unidade deve ser informada' })
+  @IsUUID('4', { each: true })
+  unidades_ids: string[];
 }

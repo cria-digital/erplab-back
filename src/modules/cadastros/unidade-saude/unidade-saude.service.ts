@@ -8,9 +8,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource, FindManyOptions, ILike } from 'typeorm';
 import { UnidadeSaude } from './entities/unidade-saude.entity';
 import { HorarioAtendimento } from './entities/horario-atendimento.entity';
-import { DadoBancario } from './entities/dado-bancario.entity';
 import { CnaeSecundario } from './entities/cnae-secundario.entity';
 import { Banco } from '../../financeiro/core/entities/banco.entity';
+import {
+  ContaBancaria,
+  StatusConta,
+  TipoConta,
+} from '../../financeiro/core/entities/conta-bancaria.entity';
+import { ContaBancariaUnidade } from '../../financeiro/core/entities/conta-bancaria-unidade.entity';
 import { CreateUnidadeSaudeDto } from './dto/create-unidade-saude.dto';
 import { UpdateUnidadeSaudeDto } from './dto/update-unidade-saude.dto';
 
@@ -38,12 +43,14 @@ export class UnidadeSaudeService {
     private readonly unidadeSaudeRepository: Repository<UnidadeSaude>,
     @InjectRepository(HorarioAtendimento)
     private readonly horarioAtendimentoRepository: Repository<HorarioAtendimento>,
-    @InjectRepository(DadoBancario)
-    private readonly dadoBancarioRepository: Repository<DadoBancario>,
     @InjectRepository(CnaeSecundario)
     private readonly cnaeSecundarioRepository: Repository<CnaeSecundario>,
     @InjectRepository(Banco)
     private readonly bancoRepository: Repository<Banco>,
+    @InjectRepository(ContaBancaria)
+    private readonly contaBancariaRepository: Repository<ContaBancaria>,
+    @InjectRepository(ContaBancariaUnidade)
+    private readonly contaBancariaUnidadeRepository: Repository<ContaBancariaUnidade>,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -70,7 +77,7 @@ export class UnidadeSaudeService {
       // Cria a unidade principal
       const {
         horariosAtendimento,
-        dadosBancarios,
+        contas_bancarias,
         cnaeSecundarios,
         cnaePrincipalId,
         ...unidadeData
@@ -96,34 +103,65 @@ export class UnidadeSaudeService {
         await queryRunner.manager.save(HorarioAtendimento, horarios);
       }
 
-      // Salva os dados bancários
-      if (dadosBancarios?.length > 0) {
+      // Salva as contas bancárias
+      if (contas_bancarias?.length > 0) {
         // Valida se todos os bancos existem
-        for (const dadoBancario of dadosBancarios) {
+        for (const conta of contas_bancarias) {
           const banco = await this.bancoRepository.findOne({
-            where: { id: dadoBancario.bancoId },
+            where: { id: conta.banco_id },
           });
 
           if (!banco) {
             throw new BadRequestException(
-              `Banco com ID ${dadoBancario.bancoId} não encontrado`,
+              `Banco com ID ${conta.banco_id} não encontrado`,
+            );
+          }
+
+          // Verifica se o código interno já existe
+          const contaExistente = await this.contaBancariaRepository.findOne({
+            where: { codigo_interno: conta.codigo_interno },
+          });
+
+          if (contaExistente) {
+            throw new ConflictException(
+              `Já existe uma conta com o código ${conta.codigo_interno}`,
             );
           }
         }
 
-        // Garante que apenas um seja principal
-        const hasPrincipal = dadosBancarios.some((d) => d.principal);
-        if (!hasPrincipal && dadosBancarios.length > 0) {
-          dadosBancarios[0].principal = true;
-        }
+        // Cria as contas bancárias
+        for (const contaDto of contas_bancarias) {
+          const contaBancaria = this.contaBancariaRepository.create({
+            banco_id: contaDto.banco_id,
+            codigo_interno: contaDto.codigo_interno,
+            nome_conta: contaDto.nome_conta,
+            tipo_conta:
+              (contaDto.tipo_conta as TipoConta) || TipoConta.CORRENTE,
+            agencia: contaDto.agencia,
+            digito_agencia: contaDto.digito_agencia,
+            numero_conta: contaDto.numero_conta,
+            digito_conta: contaDto.digito_conta,
+            titular: contaDto.titular,
+            cpf_cnpj_titular: contaDto.cpf_cnpj_titular,
+            pix_tipo: contaDto.pix_tipo,
+            pix_chave: contaDto.pix_chave,
+            status: StatusConta.ATIVA,
+            saldo_inicial: contaDto.saldo_inicial || 0,
+            observacoes: contaDto.observacoes,
+          });
+          const contaSalva = (await queryRunner.manager.save(
+            ContaBancaria,
+            contaBancaria,
+          )) as ContaBancaria;
 
-        const dadosBancariosEntities = dadosBancarios.map((d) =>
-          this.dadoBancarioRepository.create({
-            ...d,
-            unidadeSaudeId: savedUnidade.id,
-          }),
-        );
-        await queryRunner.manager.save(DadoBancario, dadosBancariosEntities);
+          // Vincula a conta à unidade
+          const vinculo = this.contaBancariaUnidadeRepository.create({
+            conta_bancaria_id: contaSalva.id,
+            unidade_saude_id: savedUnidade.id,
+            ativo: true,
+          });
+          await queryRunner.manager.save(ContaBancariaUnidade, vinculo);
+        }
       }
 
       // Salva os CNAEs secundários
@@ -186,7 +224,13 @@ export class UnidadeSaudeService {
 
     const queryOptions: FindManyOptions<UnidadeSaude> = {
       where,
-      relations: ['horariosAtendimento', 'dadosBancarios', 'cnaeSecundarios'],
+      relations: [
+        'horariosAtendimento',
+        'contas_bancarias',
+        'contas_bancarias.conta_bancaria',
+        'contas_bancarias.unidade_saude',
+        'cnaeSecundarios',
+      ],
       order: { nomeUnidade: 'ASC' },
       skip,
       take: limit,
@@ -210,7 +254,13 @@ export class UnidadeSaudeService {
   async findOne(id: string): Promise<UnidadeSaude> {
     const unidade = await this.unidadeSaudeRepository.findOne({
       where: { id },
-      relations: ['horariosAtendimento', 'dadosBancarios', 'cnaeSecundarios'],
+      relations: [
+        'horariosAtendimento',
+        'contas_bancarias',
+        'contas_bancarias.conta_bancaria',
+        'contas_bancarias.unidade_saude',
+        'cnaeSecundarios',
+      ],
     });
 
     if (!unidade) {
@@ -228,7 +278,13 @@ export class UnidadeSaudeService {
   async findByCnpj(cnpj: string): Promise<UnidadeSaude> {
     const unidade = await this.unidadeSaudeRepository.findOne({
       where: { cnpj },
-      relations: ['horariosAtendimento', 'dadosBancarios', 'cnaeSecundarios'],
+      relations: [
+        'horariosAtendimento',
+        'contas_bancarias',
+        'contas_bancarias.conta_bancaria',
+        'contas_bancarias.unidade_saude',
+        'cnaeSecundarios',
+      ],
     });
 
     if (!unidade) {
@@ -271,7 +327,7 @@ export class UnidadeSaudeService {
       // Atualiza a unidade principal
       const {
         horariosAtendimento,
-        dadosBancarios,
+        contas_bancarias,
         cnaeSecundarios,
         cnaePrincipalId,
         ...updateData
@@ -305,26 +361,55 @@ export class UnidadeSaudeService {
         }
       }
 
-      // Atualiza dados bancários se fornecidos
-      if (dadosBancarios !== undefined) {
-        // Remove dados bancários existentes
-        await queryRunner.manager.delete(DadoBancario, { unidadeSaudeId: id });
+      // Atualiza contas bancárias se fornecidas
+      if (contas_bancarias !== undefined) {
+        // Remove vínculos existentes
+        await queryRunner.manager.delete(ContaBancariaUnidade, {
+          unidade_saude_id: id,
+        });
 
-        // Adiciona novos dados bancários
-        if (dadosBancarios.length > 0) {
-          // Garante que apenas um seja principal
-          const hasPrincipal = dadosBancarios.some((d) => d.principal);
-          if (!hasPrincipal) {
-            dadosBancarios[0].principal = true;
+        // Adiciona novas contas bancárias
+        if (contas_bancarias.length > 0) {
+          for (const contaDto of contas_bancarias) {
+            // Verifica se a conta já existe pelo código
+            let conta = await this.contaBancariaRepository.findOne({
+              where: { codigo_interno: contaDto.codigo_interno },
+            });
+
+            // Se não existe, cria nova conta
+            if (!conta) {
+              conta = this.contaBancariaRepository.create({
+                banco_id: contaDto.banco_id,
+                codigo_interno: contaDto.codigo_interno,
+                nome_conta: contaDto.nome_conta,
+                tipo_conta:
+                  (contaDto.tipo_conta as TipoConta) || TipoConta.CORRENTE,
+                agencia: contaDto.agencia,
+                digito_agencia: contaDto.digito_agencia,
+                numero_conta: contaDto.numero_conta,
+                digito_conta: contaDto.digito_conta,
+                titular: contaDto.titular,
+                cpf_cnpj_titular: contaDto.cpf_cnpj_titular,
+                pix_tipo: contaDto.pix_tipo,
+                pix_chave: contaDto.pix_chave,
+                status: StatusConta.ATIVA,
+                saldo_inicial: contaDto.saldo_inicial || 0,
+                observacoes: contaDto.observacoes,
+              });
+              conta = (await queryRunner.manager.save(
+                ContaBancaria,
+                conta,
+              )) as ContaBancaria;
+            }
+
+            // Vincula a conta à unidade
+            const vinculo = this.contaBancariaUnidadeRepository.create({
+              conta_bancaria_id: conta.id,
+              unidade_saude_id: id,
+              ativo: true,
+            });
+            await queryRunner.manager.save(ContaBancariaUnidade, vinculo);
           }
-
-          const dadosBancariosEntities = dadosBancarios.map((d) =>
-            this.dadoBancarioRepository.create({
-              ...d,
-              unidadeSaudeId: id,
-            }),
-          );
-          await queryRunner.manager.save(DadoBancario, dadosBancariosEntities);
         }
       }
 

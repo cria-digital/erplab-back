@@ -33,8 +33,38 @@ export class ContaBancariaService {
       );
     }
 
-    const conta = this.contaBancariaRepository.create(createDto);
-    return await this.contaBancariaRepository.save(conta);
+    // Extrai os IDs das unidades
+    const { unidades_ids, ...dadosConta } = createDto;
+
+    // Compatibilidade: se passar unidade_saude_id (deprecated), usa ele
+    if (createDto.unidade_saude_id && !unidades_ids) {
+      dadosConta.unidade_saude_id = createDto.unidade_saude_id;
+    }
+
+    // Cria a conta bancária
+    const conta = this.contaBancariaRepository.create(dadosConta);
+    const contaSalva = await this.contaBancariaRepository.save(conta);
+
+    // Vincula as unidades se fornecidas
+    if (unidades_ids && unidades_ids.length > 0) {
+      const vinculos = unidades_ids.map((unidadeId) => ({
+        conta_bancaria_id: contaSalva.id,
+        unidade_saude_id: unidadeId,
+        ativo: true,
+      }));
+
+      await this.contaBancariaRepository
+        .createQueryBuilder()
+        .insert()
+        .into('contas_bancarias_unidades')
+        .values(vinculos)
+        .execute();
+
+      // Atualiza para retornar com os vínculos
+      return await this.findOne(contaSalva.id);
+    }
+
+    return contaSalva;
   }
 
   async findAll(
@@ -44,7 +74,12 @@ export class ContaBancariaService {
     const skip = (page - 1) * limit;
 
     const [data, total] = await this.contaBancariaRepository.findAndCount({
-      relations: ['banco', 'unidade_saude'],
+      relations: [
+        'banco',
+        'unidade_saude',
+        'unidades_vinculadas',
+        'unidades_vinculadas.unidade_saude',
+      ],
       order: { created_at: 'DESC' },
       skip,
       take: limit,
@@ -103,7 +138,12 @@ export class ContaBancariaService {
   async findOne(id: string): Promise<ContaBancaria> {
     const conta = await this.contaBancariaRepository.findOne({
       where: { id },
-      relations: ['banco', 'unidade_saude'],
+      relations: [
+        'banco',
+        'unidade_saude',
+        'unidades_vinculadas',
+        'unidades_vinculadas.unidade_saude',
+      ],
     });
 
     if (!conta) {

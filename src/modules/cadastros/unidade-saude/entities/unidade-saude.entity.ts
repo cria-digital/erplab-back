@@ -9,9 +9,9 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { HorarioAtendimento } from './horario-atendimento.entity';
-import { DadoBancario } from './dado-bancario.entity';
 import { CnaeSecundario } from './cnae-secundario.entity';
 import { Cnae } from '../../../infraestrutura/common/entities/cnae.entity';
+import { ContaBancariaUnidade } from '../../../financeiro/core/entities/conta-bancaria-unidade.entity';
 
 @Entity('unidades_saude')
 export class UnidadeSaude {
@@ -278,10 +278,10 @@ export class UnidadeSaude {
   })
   horariosAtendimento: HorarioAtendimento[];
 
-  @OneToMany(() => DadoBancario, (dadoBancario) => dadoBancario.unidadeSaude, {
+  @OneToMany(() => ContaBancariaUnidade, (vinculo) => vinculo.unidade_saude, {
     cascade: true,
   })
-  dadosBancarios: DadoBancario[];
+  contas_bancarias: ContaBancariaUnidade[];
 
   @OneToMany(() => CnaeSecundario, (cnae) => cnae.unidadeSaude, {
     cascade: true,

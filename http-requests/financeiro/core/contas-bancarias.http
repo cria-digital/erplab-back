@@ -1,11 +1,11 @@
-### Criar conta bancária - Conta Corrente Principal
+### Criar conta bancária - Conta Corrente Principal (múltiplas unidades)
 POST {{baseUrl}}/financeiro/contas-bancarias
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
   "banco_id": "{{bancoId}}",
-  "unidade_saude_id": "{{unidadeId}}",
+  "unidades_ids": ["{{unidadeId}}"],
   "codigo_interno": "CC001",
   "nome_conta": "Conta Corrente Principal",
   "tipo_conta": "corrente",
@@ -20,6 +20,45 @@ Authorization: Bearer {{token}}
   "status": "ativa",
   "saldo_inicial": 1000.00,
   "observacoes": "Conta principal para recebimentos"
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "id": "uuid",
+#   "banco_id": "uuid",
+#   "unidades_vinculadas": [
+#     {
+#       "id": "uuid",
+#       "unidade_saude_id": "uuid",
+#       "unidade_saude": { ... },
+#       "ativo": true
+#     }
+#   ],
+#   ...
+# }
+
+###
+
+### Criar conta bancária - Compartilhada entre 2 unidades
+POST {{baseUrl}}/financeiro/contas-bancarias
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "banco_id": "{{bancoId}}",
+  "unidades_ids": ["{{unidadeId}}", "{{unidadeId2}}"],
+  "codigo_interno": "CC002",
+  "nome_conta": "Conta Compartilhada",
+  "tipo_conta": "corrente",
+  "agencia": "1234",
+  "numero_conta": "87654321",
+  "digito_conta": "0",
+  "titular": "Clínica Saúde Total Ltda",
+  "cpf_cnpj_titular": "12.345.678/0001-90",
+  "status": "ativa",
+  "saldo_inicial": 5000.00,
+  "observacoes": "Conta compartilhada entre matriz e filial"
 }
 
 ### Expected Response

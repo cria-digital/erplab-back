@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 // Entities
 import { Banco } from './entities/banco.entity';
 import { ContaBancaria } from './entities/conta-bancaria.entity';
+import { ContaBancariaUnidade } from './entities/conta-bancaria-unidade.entity';
 import { GatewayPagamento } from './entities/gateway-pagamento.entity';
 import { Adquirente } from './entities/adquirente.entity';
 import { RestricaoAdquirente } from './entities/restricao-adquirente.entity';
@@ -35,6 +36,7 @@ import { AuditoriaModule } from '../../infraestrutura/auditoria/auditoria.module
     TypeOrmModule.forFeature([
       Banco,
       ContaBancaria,
+      ContaBancariaUnidade,
       GatewayPagamento,
       Adquirente,
       RestricaoAdquirente,

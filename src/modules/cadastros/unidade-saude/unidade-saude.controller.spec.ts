@@ -34,9 +34,9 @@ describe('UnidadeSaudeController', () => {
     estado: 'DF',
     ativo: true,
     horariosAtendimento: [],
-    dadosBancarios: [],
+    contas_bancarias: [],
     cnaeSecundarios: [],
-  } as UnidadeSaude;
+  } as any as UnidadeSaude;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
