@@ -1,27 +1,109 @@
-### Listar Todos os Serviços de Saúde (LC 116/2003 - Item 4)
+###############################################################################
+# SERVIÇOS DE SAÚDE - LC 116/2003 (Item 4)
+# Endpoint público para listar códigos de serviços de saúde
+# Total de 23 serviços do Item 4 da Lei Complementar 116/2003
+###############################################################################
+
+### 1. Listar Todos os Serviços de Saúde
+# Retorna todos os 23 códigos de serviços de saúde (Item 4)
+# Endpoint público - não requer autenticação
 GET {{baseUrl}}/servicos-saude
 Content-Type: {{contentType}}
 
-### Expected Response
+### Expected Response:
 # Status: 200 OK
 # [
 #   {
-#     "id": "uuid",
+#     "id": "371ee3e1-5506-4371-aafa-d8355dc97716",
 #     "codigo": "4.01",
 #     "descricao": "Medicina e biomedicina.",
 #     "codigo_grupo": "4",
 #     "nome_grupo": "Serviços de saúde, assistência médica e congêneres",
 #     "ativo": true
 #   },
-#   ...
+#   {
+#     "id": "uuid",
+#     "codigo": "4.02",
+#     "descricao": "Análises clínicas, patologia, eletricidade médica, radioterapia, quimioterapia, ultra-sonografia, ressonância magnética, radiologia, tomografia e congêneres.",
+#     "codigo_grupo": "4",
+#     "nome_grupo": "Serviços de saúde, assistência médica e congêneres",
+#     "ativo": true
+#   },
+#   ... (mais 21 serviços)
 # ]
-# Total: 23 serviços
 
-### Verificar quantidade de serviços retornados
-# @name listarServicos
+###############################################################################
+# LISTA COMPLETA DE CÓDIGOS DISPONÍVEIS
+###############################################################################
+# 4.01 - Medicina e biomedicina
+# 4.02 - Análises clínicas, patologia, eletricidade médica...
+# 4.03 - Hospitais, clínicas, laboratórios, sanatórios...
+# 4.04 - Instrumentação cirúrgica
+# 4.05 - Acupuntura
+# 4.06 - Enfermagem, inclusive serviços auxiliares
+# 4.07 - Serviços farmacêuticos
+# 4.08 - Terapia ocupacional, fisioterapia e fonoaudiologia
+# 4.09 - Terapias de qualquer espécie destinadas ao tratamento físico...
+# 4.10 - Nutrição
+# 4.11 - Obstetrícia
+# 4.12 - Odontologia
+# 4.13 - Ortóptica
+# 4.14 - Próteses sob encomenda
+# 4.15 - Psicanálise
+# 4.16 - Psicologia
+# 4.17 - Casas de repouso e de recuperação, creches, asilos...
+# 4.18 - Inseminação artificial, fertilização in vitro...
+# 4.19 - Bancos de sangue, leite, pele, olhos, óvulos, sêmen...
+# 4.20 - Coleta de sangue, leite, tecidos, sêmen, órgãos...
+# 4.21 - Unidade de atendimento, assistência ou tratamento móvel...
+# 4.22 - Planos de medicina de grupo ou individual e convênios...
+# 4.23 - Outros planos de saúde que se cumpram através de serviços...
+
+###############################################################################
+# EXEMPLOS DE USO
+###############################################################################
+
+### 2. Buscar primeiro serviço (4.01)
+# Filtrar no frontend pelo código
+@listarServicos = {{baseUrl}}/servicos-saude
+
+GET {{listarServicos}}
+Content-Type: {{contentType}}
+
+### 3. Contar total de serviços
+# Usar .length no array retornado
+# Deve retornar 23 serviços
 GET {{baseUrl}}/servicos-saude
 Content-Type: {{contentType}}
 
-### Buscar serviço específico por código (exemplo: 4.01)
-# Nota: Este endpoint ainda não foi implementado, apenas listagem completa está disponível
-# Para buscar por código específico, use o resultado da listagem acima e filtre no frontend
+### 4. Usar em Select/Dropdown no Frontend
+# Exemplo React:
+# const { data: servicos } = useQuery('servicos-saude', () =>
+#   fetch('http://localhost:10016/api/v1/servicos-saude').then(r => r.json())
+# )
+#
+# <Select>
+#   {servicos?.map(s => (
+#     <Option key={s.id} value={s.codigo}>
+#       {s.codigo} - {s.descricao}
+#     </Option>
+#   ))}
+# </Select>
+
+###############################################################################
+# NOTAS TÉCNICAS
+###############################################################################
+# - Endpoint público: não requer token de autenticação
+# - Retorna apenas serviços ativos (ativo: true)
+# - Ordenação: por código (ASC)
+# - Total de registros: 23 serviços
+# - Referência: LC 116/2003 - Item 4 (Serviços de saúde)
+# - Fonte: http://sped.rfb.gov.br/pagina/show/1601
+#
+# Campos retornados:
+# - id: UUID do registro
+# - codigo: Código do serviço (ex: "4.01")
+# - descricao: Descrição completa do serviço
+# - codigo_grupo: Código do grupo ("4")
+# - nome_grupo: Nome do grupo ("Serviços de saúde...")
+# - ativo: Status do serviço (sempre true na listagem)
