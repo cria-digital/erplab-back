@@ -376,7 +376,7 @@ Essa validação deve ser feita IMEDIATAMENTE após criar cada arquivo de teste,
   - Retorna dados compatíveis com cadastro de unidades
   - Usa API ViaCEP como fonte de dados
 
-- **CNAE** (`/api/v1/cnae`)
+- **CNAE** (`/api/v1/infraestrutura/cnae`)
   - `GET /` - Listar CNAEs com filtros e paginação (público)
     - Parâmetros de paginação: `page` (padrão: 1), `limit` (padrão: 10, máx: 100)
     - Retorna estrutura paginada com `data` e `meta`
@@ -384,9 +384,24 @@ Essa validação deve ser feita IMEDIATAMENTE após criar cada arquivo de teste,
   - `GET /codigo?codigo={codigo}` - Buscar por código específico (público)
   - `GET /secao/{secao}` - Listar por seção (público)
   - `GET /divisao/{divisao}` - Listar por divisão (público)
+  - `GET /saude` - **NOVO** Listar CNAEs da área de saúde (Seção Q + Divisão 86, sem duplicatas) - **Implementado em 31/10/2025**
   - **IMPORTANTE**: Códigos CNAE estão armazenados sem formatação (ex: `86101` ao invés de `8610-1/01`)
   - **Total de CNAEs**: 1358 registros importados da base completa do IBGE
   - **Paginação**: Implementada com metadados (total, totalPages, hasPrevPage, hasNextPage)
+
+- **Serviços de Saúde** (`/api/v1/servicos-saude`) - **NOVO - Implementado em 31/10/2025**
+  - `GET /` - Listar todos os serviços de saúde LC 116/2003 Item 4 (público)
+  - **Total**: 23 serviços de saúde (códigos 4.01 a 4.23)
+  - **Referência Legal**: Lei Complementar 116/2003 - Item 4 (Serviços de saúde, assistência médica e congêneres)
+  - **Fonte**: http://sped.rfb.gov.br/pagina/show/1601 - Tabelas de Códigos
+  - **Características**:
+    - Endpoint público (sem autenticação)
+    - Retorna apenas serviços ativos
+    - Ordenação por código (ASC)
+    - Campos: id, codigo, descricao, codigo_grupo, nome_grupo, ativo
+  - **Entidade**: `ServicoSaude` em `src/modules/infraestrutura/common/entities/servico-saude.entity.ts`
+  - **Migration**: `CreateServicosSaudeTable` executada com sucesso
+  - **Seeder**: `ServicoSaudeSeedService` registrado em `seed-all.ts` (executa automaticamente)
 
 ### Módulo de Exames (26 endpoints)
 
@@ -490,6 +505,7 @@ curl -X GET http://localhost:10016/api/v1/usuarios \
 - ✅ **matrizes_exames** - Templates de exames padronizados (Audiometria, Hemograma, etc)
 - ✅ **campos_matriz** - Campos/parâmetros das matrizes de exames
 - ✅ **amostras** - Tipos de amostras biológicas (sangue, urina, etc)
+- ✅ **servicos_saude** - Códigos de serviços de saúde LC 116/2003 (23 serviços do Item 4) - **ADICIONADO em 31/10/2025**
 
 ### Migrations Executadas
 
@@ -503,6 +519,7 @@ curl -X GET http://localhost:10016/api/v1/usuarios \
 8. `CreatePerfilTables1759884401000`
 9. `CreateMatrizesExamesTable1728404000000`
 10. `CreateAmostrasTable1728405000000`
+11. `CreateServicosSaudeTable1761932669271` - **EXECUTADA em 31/10/2025**
 
 ## Estrutura de Entidades
 
@@ -1563,13 +1580,119 @@ gh run watch --repo diegosoek/infra <run-id>
 - **Comando manual:** `npm run seed`
 - **Resultado:** 269 bancos ativos em produção (270 - 1 banco padrão removido)
 
+## 🆕 Implementações Recentes (31/10/2025)
+
+### ✅ Módulo de Serviços de Saúde (LC 116/2003)
+
+**Objetivo**: Disponibilizar códigos de serviços de saúde para uso no cadastro de unidades de saúde.
+
+**Implementação Completa:**
+
+- ✅ Entidade `ServicoSaude` criada
+- ✅ Migration `CreateServicosSaudeTable1761932669271` executada
+- ✅ Seeder `ServicoSaudeSeedService` com 23 serviços (Item 4)
+- ✅ Controller com endpoint público `GET /api/v1/servicos-saude`
+- ✅ Service com métodos `findAll()` e `findByCodigo()`
+- ✅ Arquivo HTTP de testes criado em `/http-requests/servicos-saude/`
+- ✅ Seeder registrado em `seed-all.ts` (execução automática)
+
+**Estrutura da Tabela:**
+
+```sql
+servicos_saude
+├── id (uuid)
+├── codigo (varchar 10, UNIQUE) -- Ex: "4.01"
+├── descricao (text)
+├── codigo_grupo (varchar 10) -- "4"
+├── nome_grupo (varchar 100)
+└── ativo (boolean, default: true)
+```
+
+**Dados Importados:**
+
+- Total: 23 serviços de saúde (códigos 4.01 a 4.23)
+- Fonte: http://sped.rfb.gov.br/pagina/show/1601
+- Referência: LC 116/2003 - Item 4 (Serviços de saúde, assistência médica e congêneres)
+
+**Endpoint:**
+
+- URL: `GET /api/v1/servicos-saude`
+- Público: Sim (não requer autenticação)
+- Retorno: Array com 23 serviços ordenados por código
+
+**Arquivos Criados:**
+
+- `src/modules/infraestrutura/common/entities/servico-saude.entity.ts`
+- `src/modules/infraestrutura/common/dto/create-servico-saude.dto.ts`
+- `src/modules/infraestrutura/common/dto/update-servico-saude.dto.ts`
+- `src/modules/infraestrutura/common/servico-saude.service.ts`
+- `src/modules/infraestrutura/common/servico-saude.controller.ts`
+- `src/database/migrations/1761932669271-CreateServicosSaudeTable.ts`
+- `src/database/seeds/servico-saude-seed.service.ts`
+- `http-requests/servicos-saude/listar-servicos-saude.http`
+
+**Validações:**
+
+- ✅ ESLint: 0 erros
+- ✅ Build: 0 erros TypeScript
+- ✅ Endpoint testado: Retorna 23 serviços corretamente
+
+---
+
+### ✅ Endpoint CNAEs da Área de Saúde
+
+**Objetivo**: Criar endpoint único que agrupa CNAEs de saúde (Seção Q + Divisão 86) sem duplicatas.
+
+**Implementação Completa:**
+
+- ✅ Método `findSaude()` adicionado ao `CnaeService`
+- ✅ Endpoint `GET /api/v1/infraestrutura/cnae/saude` criado
+- ✅ Lógica de remoção de duplicatas implementada
+- ✅ Arquivo HTTP atualizado com exemplos
+
+**Funcionalidade:**
+
+- Busca paralela de Seção Q e Divisão 86
+- Remove duplicatas usando Map (divisão 86 está contida na seção Q)
+- Retorna array ordenado por código (ASC)
+- Total: 13 CNAEs únicos da área de saúde
+
+**Endpoint:**
+
+- URL: `GET /api/v1/infraestrutura/cnae/saude`
+- Público: Sim (não requer autenticação)
+- Retorno: Array com CNAEs únicos de saúde
+
+**Diferencial:**
+
+- `/secao/Q` → Apenas seção Q (~13 CNAEs)
+- `/divisao/86` → Apenas divisão 86 (~5 CNAEs)
+- `/saude` → **Seção Q + Divisão 86 sem duplicatas (13 CNAEs)** ← Recomendado
+
+**Arquivos Modificados:**
+
+- `src/modules/infraestrutura/common/services/cnae.service.ts`
+- `src/modules/infraestrutura/common/controllers/cnae.controller.ts`
+- `http-requests/infraestrutura/common/cnae.http`
+
+**Validações:**
+
+- ✅ ESLint: 0 erros
+- ✅ Build: 0 erros TypeScript
+- ✅ Endpoint testado: Retorna 13 CNAEs corretamente
+- ✅ Sem duplicatas: Validado
+
+---
+
 ## Próximos Passos Sugeridos
 
 ### Módulos em Implementação (Alta Prioridade)
 
 1. ✅ **Matrizes de Exames** - Concluído
 2. ✅ **Amostras** - Concluído
-3. ⏳ **Estrutura Física** - Em andamento
+3. ✅ **Serviços de Saúde LC 116/2003** - Concluído (31/10/2025)
+4. ✅ **CNAEs da Área de Saúde** - Concluído (31/10/2025)
+5. ⏳ **Estrutura Física** - Em andamento
    - ⏳ Salas (entidade criada, falta migration/DTO/service/controller)
    - ⏳ Setores
    - ⏳ Equipamentos
@@ -1578,17 +1701,17 @@ gh run watch --repo diegosoek/infra <run-id>
 
 ### Tarefas Técnicas
 
-4. ✅ Criar seeders para CNAEs e Bancos (executam automaticamente)
-5. Criar seeders para:
+6. ✅ Criar seeders para CNAEs, Bancos e Serviços de Saúde (executam automaticamente)
+7. Criar seeders para:
    - Matrizes padrão (Audiometria, Hemograma, etc)
    - Amostras comuns (Sangue EDTA, Urina, etc)
    - Preferências de usuários existentes
-6. Criar testes unitários para módulos Matrizes e Amostras
-7. Testar endpoints com arquivos `.http`
-8. Criar testes para o módulo de laboratórios
-9. Implementar sistema de permissões granulares
-10. Adicionar rate limiting nos endpoints
-11. Implementar cache com Redis
-12. Adicionar testes E2E
-13. Implementar websockets para notificações real-time
-14. Adicionar sistema de filas para processamento assíncrono
+8. Criar testes unitários para módulos Matrizes e Amostras
+9. Testar endpoints com arquivos `.http`
+10. Criar testes para o módulo de laboratórios
+11. Implementar sistema de permissões granulares
+12. Adicionar rate limiting nos endpoints
+13. Implementar cache com Redis
+14. Adicionar testes E2E
+15. Implementar websockets para notificações real-time
+16. Adicionar sistema de filas para processamento assíncrono
