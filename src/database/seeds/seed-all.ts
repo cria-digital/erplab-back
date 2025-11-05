@@ -3,6 +3,7 @@ import { AppModule } from '../../app.module';
 import { CnaeSeedService } from './cnae-seed.service';
 import { BancoSeedService } from './banco-seed.service';
 import { ServicoSaudeSeedService } from './servico-saude-seed.service';
+import { CampoFormularioSeedService } from './campo-formulario-seed.service';
 
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
@@ -26,6 +27,11 @@ async function bootstrap() {
     const servicoSaudeSeedService = app.get(ServicoSaudeSeedService);
     console.log('3. Importando Serviços de Saúde...');
     await servicoSaudeSeedService.seed();
+
+    // Executar seed de Campos de Formulário
+    const campoFormularioSeedService = app.get(CampoFormularioSeedService);
+    console.log('4. Importando Campos de Formulário...');
+    await campoFormularioSeedService.seed();
 
     console.log('\n==============================');
     console.log('Seed concluído com sucesso!');

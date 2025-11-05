@@ -1,0 +1,237 @@
+### ========================================
+### Campos de Formulário - Exemplos Completos
+### ========================================
+### Fluxo completo: criar campo → adicionar alternativas → consultar
+### ========================================
+
+### EXEMPLO 1: Unidade de Medida
+
+### 1.1. Criar campo Unidade de Medida
+POST {{baseUrl}}/infraestrutura/campos-formulario
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nomeCampo": "unidade_medida",
+  "descricao": "Unidades de medida para resultados de exames laboratoriais"
+}
+
+### Guarde o ID retornado e substitua 'unidade-medida-uuid' abaixo
+
+### 1.2. Adicionar alternativas
+POST {{baseUrl}}/infraestrutura/campos-formulario/unidade-medida-uuid/alternativas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "textoAlternativa": "mg/dL",
+  "ordem": 1
+}
+
+###
+
+POST {{baseUrl}}/infraestrutura/campos-formulario/unidade-medida-uuid/alternativas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "textoAlternativa": "g/dL",
+  "ordem": 2
+}
+
+###
+
+POST {{baseUrl}}/infraestrutura/campos-formulario/unidade-medida-uuid/alternativas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "textoAlternativa": "UI/L",
+  "ordem": 3
+}
+
+### 1.3. Consultar campo com todas as alternativas
+GET {{baseUrl}}/infraestrutura/campos-formulario/unidade-medida-uuid
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+### 1.4. Buscar pelo nome do campo (ENUM)
+GET {{baseUrl}}/infraestrutura/campos-formulario/nome/unidade_medida
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+### ========================================
+### EXEMPLO 2: Tipo de Exames
+### ========================================
+
+### 2.1. Criar campo Tipo de Exames
+POST {{baseUrl}}/infraestrutura/campos-formulario
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nomeCampo": "tipo_exames",
+  "descricao": "Classificação dos tipos de exames disponíveis"
+}
+
+### Guarde o ID retornado e substitua 'tipo-exames-uuid' abaixo
+
+### 2.2. Adicionar alternativas
+POST {{baseUrl}}/infraestrutura/campos-formulario/tipo-exames-uuid/alternativas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "textoAlternativa": "Laboratorial",
+  "ordem": 1
+}
+
+###
+
+POST {{baseUrl}}/infraestrutura/campos-formulario/tipo-exames-uuid/alternativas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "textoAlternativa": "Imagem",
+  "ordem": 2
+}
+
+###
+
+POST {{baseUrl}}/infraestrutura/campos-formulario/tipo-exames-uuid/alternativas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "textoAlternativa": "Funcional",
+  "ordem": 3
+}
+
+###
+
+POST {{baseUrl}}/infraestrutura/campos-formulario/tipo-exames-uuid/alternativas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "textoAlternativa": "Procedimento",
+  "ordem": 4
+}
+
+### 2.3. Consultar campo completo
+GET {{baseUrl}}/infraestrutura/campos-formulario/nome/tipo_exames
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+### ========================================
+### EXEMPLO 3: Amostra
+### ========================================
+
+### 3.1. Criar campo Amostra
+POST {{baseUrl}}/infraestrutura/campos-formulario
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nomeCampo": "amostra",
+  "descricao": "Tipo de amostra biológica necessária para o exame"
+}
+
+### Guarde o ID retornado e substitua 'amostra-uuid' abaixo
+
+### 3.2. Adicionar alternativas comuns
+POST {{baseUrl}}/infraestrutura/campos-formulario/amostra-uuid/alternativas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "textoAlternativa": "Sangue Total",
+  "ordem": 1
+}
+
+###
+
+POST {{baseUrl}}/infraestrutura/campos-formulario/amostra-uuid/alternativas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "textoAlternativa": "Soro",
+  "ordem": 2
+}
+
+###
+
+POST {{baseUrl}}/infraestrutura/campos-formulario/amostra-uuid/alternativas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "textoAlternativa": "Plasma",
+  "ordem": 3
+}
+
+###
+
+POST {{baseUrl}}/infraestrutura/campos-formulario/amostra-uuid/alternativas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "textoAlternativa": "Urina",
+  "ordem": 4
+}
+
+### ========================================
+### CONSULTAS GERAIS
+### ========================================
+
+### Listar todos os campos criados
+GET {{baseUrl}}/infraestrutura/campos-formulario
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+### Listar apenas campos ativos
+GET {{baseUrl}}/infraestrutura/campos-formulario/ativos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+### ========================================
+### GESTÃO DE CAMPOS
+### ========================================
+
+### Desativar campo temporariamente (substitua o UUID)
+PATCH {{baseUrl}}/infraestrutura/campos-formulario/unidade-medida-uuid/toggle-status
+Authorization: Bearer {{token}}
+
+### Reativar campo
+PATCH {{baseUrl}}/infraestrutura/campos-formulario/unidade-medida-uuid/toggle-status
+Authorization: Bearer {{token}}
+
+### Atualizar descrição
+PATCH {{baseUrl}}/infraestrutura/campos-formulario/unidade-medida-uuid
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "descricao": "Unidades de medida atualizadas para resultados de exames laboratoriais e análises clínicas"
+}
+
+### ========================================
+### LISTA DE CAMPOS DISPONÍVEIS (ENUM)
+### ========================================
+#
+# 1. tipo_exames       - Classificação do tipo de exame
+# 2. especialidade     - Especialidade médica relacionada
+# 3. grupo             - Grupo de exames (categoria principal)
+# 4. subgrupo          - Subgrupo de exames (subcategoria)
+# 5. setor             - Setor responsável pela execução
+# 6. metodologia       - Metodologia utilizada
+# 7. unidade_medida    - Unidade de medida do resultado
+# 8. amostra           - Tipo de amostra biológica
+# 9. regiao_coleta     - Região anatômica para coleta
+# 10. volume_minimo    - Volume mínimo de amostra necessário
+# 11. estabilidade     - Estabilidade da amostra
+#
+### ========================================

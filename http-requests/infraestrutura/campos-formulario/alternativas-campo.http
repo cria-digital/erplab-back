@@ -1,0 +1,200 @@
+### ========================================
+### Alternativas de Campo - CRUD Completo
+### ========================================
+
+### IMPORTANTE: Preencha estas variáveis com IDs reais
+### Execute primeiro: GET {{baseUrl}}/infraestrutura/campos-formulario/nome/unidade_medida
+### Copie o "id" da resposta e cole abaixo:
+
+@campoId = COLE-O-ID-DO-CAMPO-AQUI
+@alternativaId = COLE-O-ID-DA-ALTERNATIVA-AQUI
+
+### ========================================
+
+### 1. Criar Alternativa para um Campo
+POST {{baseUrl}}/infraestrutura/campos-formulario/{{campoId}}/alternativas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "textoAlternativa": "mg/dL",
+  "ordem": 1
+}
+
+### Expected Response:
+# Status: 201 Created
+# {
+#   "id": "uuid",
+#   "campoFormularioId": "campo-uuid",
+#   "textoAlternativa": "mg/dL",
+#   "ordem": 1,
+#   "ativo": true,
+#   "createdAt": "2025-11-05T...",
+#   "updatedAt": "2025-11-05T..."
+# }
+
+### ========================================
+### 2. Criar Múltiplas Alternativas
+### ========================================
+POST {{baseUrl}}/infraestrutura/campos-formulario/{{campoId}}/alternativas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "textoAlternativa": "g/dL",
+  "ordem": 2
+}
+
+###
+
+POST {{baseUrl}}/infraestrutura/campos-formulario/{{campoId}}/alternativas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "textoAlternativa": "mEq/L",
+  "ordem": 3
+}
+
+###
+
+POST {{baseUrl}}/infraestrutura/campos-formulario/{{campoId}}/alternativas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "textoAlternativa": "%",
+  "ordem": 4
+}
+
+### ========================================
+### 3. Listar Todas as Alternativas de um Campo
+### ========================================
+GET {{baseUrl}}/infraestrutura/campos-formulario/{{campoId}}/alternativas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+### Expected Response:
+# Status: 200 OK
+# Array com todas as alternativas ordenadas por 'ordem'
+
+### ========================================
+### 4. Listar Apenas Alternativas Ativas
+### ========================================
+GET {{baseUrl}}/infraestrutura/campos-formulario/{{campoId}}/alternativas/ativas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+### Expected Response:
+# Status: 200 OK
+# Array com apenas alternativas ativas
+
+### ========================================
+### 5. Buscar Alternativa por ID
+### ========================================
+GET {{baseUrl}}/infraestrutura/campos-formulario/{{campoId}}/alternativas/{{alternativaId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+### Expected Response:
+# Status: 200 OK
+# Alternativa específica
+
+### ========================================
+### 6. Atualizar Alternativa
+### ========================================
+PATCH {{baseUrl}}/infraestrutura/campos-formulario/{{campoId}}/alternativas/{{alternativaId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "textoAlternativa": "mg/dL (miligramas por decilitro)",
+  "ordem": 1
+}
+
+### Expected Response:
+# Status: 200 OK
+# Alternativa atualizada
+
+### ========================================
+### 7. Alternar Status da Alternativa
+### ========================================
+PATCH {{baseUrl}}/infraestrutura/campos-formulario/{{campoId}}/alternativas/{{alternativaId}}/toggle-status
+Authorization: Bearer {{token}}
+
+### Expected Response:
+# Status: 200 OK
+# Alternativa com status alternado
+
+### ========================================
+### 8. Remover Alternativa
+### ========================================
+DELETE {{baseUrl}}/infraestrutura/campos-formulario/{{campoId}}/alternativas/{{alternativaId}}
+Authorization: Bearer {{token}}
+
+### Expected Response:
+# Status: 204 No Content
+# Alternativa removida
+
+### ========================================
+### Exemplos Práticos - Unidade de Medida
+### ========================================
+
+### Criar alternativas para Unidade de Medida
+POST {{baseUrl}}/infraestrutura/campos-formulario/{{campoId}}/alternativas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "textoAlternativa": "UI/L",
+  "ordem": 5
+}
+
+###
+
+POST {{baseUrl}}/infraestrutura/campos-formulario/{{campoId}}/alternativas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "textoAlternativa": "ng/mL",
+  "ordem": 6
+}
+
+###
+
+POST {{baseUrl}}/infraestrutura/campos-formulario/{{campoId}}/alternativas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "textoAlternativa": "pg/mL",
+  "ordem": 7
+}
+
+### ========================================
+### Testes de Erro
+### ========================================
+
+### Criar alternativa para campo inexistente
+POST {{baseUrl}}/infraestrutura/campos-formulario/00000000-0000-0000-0000-000000000000/alternativas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "textoAlternativa": "Teste",
+  "ordem": 1
+}
+
+### Expected Response:
+# Status: 404 Not Found
+# { "message": "Campo não encontrado" }
+
+### Buscar alternativa inexistente
+GET {{baseUrl}}/infraestrutura/campos-formulario/{{campoId}}/alternativas/00000000-0000-0000-0000-000000000000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+### Expected Response:
+# Status: 404 Not Found
+# { "message": "Alternativa não encontrada" }

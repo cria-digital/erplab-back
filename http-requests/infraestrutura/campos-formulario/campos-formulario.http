@@ -1,0 +1,164 @@
+### ========================================
+### Campos de Formulário - CRUD Completo
+### ========================================
+
+### IMPORTANTE: Preencha esta variável com ID real após criar/buscar um campo
+@campoId = COLE-O-ID-DO-CAMPO-AQUI
+
+### ========================================
+
+### 1. Criar Campo de Formulário
+POST {{baseUrl}}/infraestrutura/campos-formulario
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nomeCampo": "unidade_medida",
+  "descricao": "Unidade de medida para resultados de exames"
+}
+
+### Expected Response:
+# Status: 201 Created
+# {
+#   "id": "uuid",
+#   "nomeCampo": "unidade_medida",
+#   "descricao": "Unidade de medida para resultados de exames",
+#   "ativo": true,
+#   "alternativas": [],
+#   "createdAt": "2025-11-05T...",
+#   "updatedAt": "2025-11-05T...",
+#   "createdBy": "user-id",
+#   "updatedBy": null
+# }
+
+### ========================================
+### 2. Listar Todos os Campos
+### ========================================
+GET {{baseUrl}}/infraestrutura/campos-formulario
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+### Expected Response:
+# Status: 200 OK
+# Array com todos os campos de formulário
+
+### ========================================
+### 3. Listar Apenas Campos Ativos
+### ========================================
+GET {{baseUrl}}/infraestrutura/campos-formulario/ativos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+### Expected Response:
+# Status: 200 OK
+# Array com campos ativos (ativo: true)
+
+### ========================================
+### 4. Buscar Campo por ID
+### ========================================
+GET {{baseUrl}}/infraestrutura/campos-formulario/{{campoId}}
+Authorization: Bearer {{token}}
+
+### Expected Response:
+# Status: 200 OK
+# Campo com suas alternativas
+
+### ========================================
+### 5. Buscar Campo por Nome (ENUM)
+### ========================================
+GET {{baseUrl}}/infraestrutura/campos-formulario/nome/unidade_medida
+Authorization: Bearer {{token}}
+
+### Expected Response:
+# Status: 200 OK
+# Campo específico com alternativas
+
+### ========================================
+### Valores Válidos para nomeCampo (ENUM):
+### ========================================
+# - tipo_exames
+# - especialidade
+# - grupo
+# - subgrupo
+# - setor
+# - metodologia
+# - unidade_medida
+# - amostra
+# - regiao_coleta
+# - volume_minimo
+# - estabilidade
+
+### ========================================
+### 6. Atualizar Campo
+### ========================================
+PATCH {{baseUrl}}/infraestrutura/campos-formulario/{{campoId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "descricao": "Descrição atualizada do campo"
+}
+
+### Expected Response:
+# Status: 200 OK
+# Campo atualizado com novo updatedBy
+
+### ========================================
+### 7. Alternar Status (Ativo/Inativo)
+### ========================================
+PATCH {{baseUrl}}/infraestrutura/campos-formulario/{{campoId}}/toggle-status
+Authorization: Bearer {{token}}
+
+### Expected Response:
+# Status: 200 OK
+# Campo com status alternado (ativo -> inativo ou inativo -> ativo)
+
+### ========================================
+### 8. Remover Campo (Soft Delete)
+### ========================================
+DELETE {{baseUrl}}/infraestrutura/campos-formulario/{{campoId}}
+Authorization: Bearer {{token}}
+
+### Expected Response:
+# Status: 204 No Content
+# Campo marcado como inativo (soft delete)
+
+### ========================================
+### Testes de Erro
+### ========================================
+
+### Criar campo duplicado (deve falhar)
+POST {{baseUrl}}/infraestrutura/campos-formulario
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nomeCampo": "unidade_medida",
+  "descricao": "Tentando criar campo duplicado"
+}
+
+### Expected Response:
+# Status: 409 Conflict
+# { "message": "Campo unidade_medida já está cadastrado" }
+
+### Buscar campo inexistente
+GET {{baseUrl}}/infraestrutura/campos-formulario/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{token}}
+
+### Expected Response:
+# Status: 404 Not Found
+# { "message": "Campo não encontrado" }
+
+### Criar campo com nome inválido
+POST {{baseUrl}}/infraestrutura/campos-formulario
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nomeCampo": "campo_invalido",
+  "descricao": "Testando campo com nome não existente no enum"
+}
+
+### Expected Response:
+# Status: 400 Bad Request
+# { "message": "Nome do campo inválido" }

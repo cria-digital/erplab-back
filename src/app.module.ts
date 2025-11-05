@@ -19,7 +19,6 @@ import { EmpresasModule } from './modules/cadastros/empresas/empresas.module';
 
 // Exames
 import { ExamesModule } from './modules/exames/exames/exames.module';
-import { FormulariosModule } from './modules/exames/formularios/formularios.module';
 import { KitsModule } from './modules/exames/kits/kits.module';
 import { MetodosModule } from './modules/exames/metodos/metodos.module';
 import { MatrizesModule } from './modules/exames/matrizes/matrizes.module';
@@ -52,6 +51,7 @@ import { EtiquetasAmostraModule } from './modules/configuracoes/estrutura/etique
 import { AuditoriaModule } from './modules/infraestrutura/auditoria/auditoria.module';
 import { CommonModule } from './modules/infraestrutura/common/common.module';
 import { EmailModule } from './modules/infraestrutura/email/email.module';
+import { CamposFormularioModule } from './modules/infraestrutura/campos-formulario/campos-formulario.module';
 
 // Seeds
 import { SeedModule } from './database/seeds/seed.module';
@@ -82,7 +82,6 @@ import { SeedModule } from './database/seeds/seed.module';
 
     // 3. Gestão de Exames
     ExamesModule,
-    FormulariosModule,
     KitsModule,
     MetodosModule,
     MatrizesModule,
@@ -115,6 +114,7 @@ import { SeedModule } from './database/seeds/seed.module';
     AuditoriaModule,
     CommonModule,
     EmailModule,
+    CamposFormularioModule,
 
     // Seeds
     SeedModule,
