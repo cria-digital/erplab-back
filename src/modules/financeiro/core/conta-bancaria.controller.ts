@@ -47,7 +47,11 @@ export class ContaBancariaController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Listar todas as contas bancárias' })
+  @ApiOperation({
+    summary: 'Listar todas as contas bancárias',
+    description:
+      'Lista contas bancárias com paginação e filtros opcionais (search, tipo, status, banco, unidade)',
+  })
   @ApiResponse({
     status: 200,
     description: 'Lista de contas bancárias retornada com sucesso',
@@ -56,18 +60,69 @@ export class ContaBancariaController {
     name: 'page',
     required: false,
     type: Number,
-    description: 'Número da página',
+    description: 'Número da página (default: 1)',
     example: 1,
   })
   @ApiQuery({
     name: 'limit',
     required: false,
     type: Number,
-    description: 'Itens por página',
+    description: 'Itens por página (default: 10)',
     example: 10,
   })
-  findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10) {
-    return this.service.findAll(Number(page), Number(limit));
+  @ApiQuery({
+    name: 'search',
+    required: false,
+    type: String,
+    description: 'Busca por nome, agência, conta ou banco',
+    example: 'conta1',
+  })
+  @ApiQuery({
+    name: 'tipo',
+    required: false,
+    enum: TipoConta,
+    description: 'Filtrar por tipo de conta',
+    example: 'corrente',
+  })
+  @ApiQuery({
+    name: 'status',
+    required: false,
+    type: String,
+    description: 'Filtrar por status (ativa, inativa, bloqueada)',
+    example: 'ativa',
+  })
+  @ApiQuery({
+    name: 'banco_id',
+    required: false,
+    type: String,
+    description: 'Filtrar por ID do banco',
+  })
+  @ApiQuery({
+    name: 'unidade_id',
+    required: false,
+    type: String,
+    description: 'Filtrar por ID da unidade de saúde',
+  })
+  findAll(
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+    @Query('search') search?: string,
+    @Query('tipo') tipo?: TipoConta,
+    @Query('status') status?: string,
+    @Query('banco_id') banco_id?: string,
+    @Query('unidade_id') unidade_id?: string,
+  ) {
+    const params = {
+      page: page ? Number(page) : 1,
+      limit: limit ? Number(limit) : 10,
+      search,
+      tipo,
+      status: status as any,
+      banco_id,
+      unidade_id,
+    };
+
+    return this.service.findAll(params);
   }
 
   @Get('ativas')

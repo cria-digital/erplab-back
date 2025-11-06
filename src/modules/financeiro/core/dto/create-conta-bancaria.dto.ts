@@ -133,7 +133,8 @@ export class CreateContaBancariaDto {
   unidade_saude_id?: string;
 
   @ApiProperty({
-    description: 'IDs das unidades de saúde vinculadas (mínimo 1)',
+    description:
+      'IDs das unidades de saúde vinculadas. Obrigatório na criação (mínimo 1). Na atualização, se fornecido, substitui completamente os vínculos anteriores.',
     example: ['uuid-1', 'uuid-2'],
     type: [String],
     isArray: true,

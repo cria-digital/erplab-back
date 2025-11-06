@@ -21,6 +21,7 @@ export enum NomeCampoFormulario {
   METODOLOGIA = 'metodologia',
   UNIDADE_MEDIDA = 'unidade_medida',
   AMOSTRA = 'amostra',
+  TIPO_RECIPIENTE = 'tipo_recipiente',
   REGIAO_COLETA = 'regiao_coleta',
   VOLUME_MINIMO = 'volume_minimo',
   ESTABILIDADE = 'estabilidade',

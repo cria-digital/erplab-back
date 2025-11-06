@@ -133,6 +133,68 @@ Authorization: Bearer {{token}}
 
 ###
 
+### FILTROS COMBINADOS
+
+### Buscar contas por texto (nome, agência, conta ou banco)
+GET {{baseUrl}}/financeiro/contas-bancarias?search=conta1
+Authorization: Bearer {{token}}
+
+###
+
+### Filtrar por tipo de conta
+GET {{baseUrl}}/financeiro/contas-bancarias?tipo=corrente
+Authorization: Bearer {{token}}
+
+###
+
+### Filtrar por status
+GET {{baseUrl}}/financeiro/contas-bancarias?status=ativa
+Authorization: Bearer {{token}}
+
+###
+
+### Filtrar por banco
+GET {{baseUrl}}/financeiro/contas-bancarias?banco_id={{bancoId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Filtrar por unidade
+GET {{baseUrl}}/financeiro/contas-bancarias?unidade_id={{unidadeId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Combinar múltiplos filtros - Exemplo 1: Contas correntes ativas
+GET {{baseUrl}}/financeiro/contas-bancarias?tipo=corrente&status=ativa
+Authorization: Bearer {{token}}
+
+###
+
+### Combinar múltiplos filtros - Exemplo 2: Buscar "conta1" nas contas correntes ativas
+GET {{baseUrl}}/financeiro/contas-bancarias?search=conta1&tipo=corrente&status=ativa
+Authorization: Bearer {{token}}
+
+###
+
+### Combinar múltiplos filtros - Exemplo 3: Todos os filtros + paginação
+GET {{baseUrl}}/financeiro/contas-bancarias?search=conta1&tipo=corrente&status=ativa&page=1&limit=10
+Authorization: Bearer {{token}}
+
+###
+
+### Combinar múltiplos filtros - Exemplo 4: Contas de um banco específico que estão ativas
+GET {{baseUrl}}/financeiro/contas-bancarias?banco_id={{bancoId}}&status=ativa
+Authorization: Bearer {{token}}
+
+###
+
+### Combinar múltiplos filtros - Exemplo 5: Contas de uma unidade que são poupança
+GET {{baseUrl}}/financeiro/contas-bancarias?unidade_id={{unidadeId}}&tipo=poupanca
+Authorization: Bearer {{token}}
+
+###
+
 ### Listar contas ativas
 GET {{baseUrl}}/financeiro/contas-bancarias/ativas
 Authorization: Bearer {{token}}
@@ -169,7 +231,7 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Atualizar conta bancária
+### Atualizar conta bancária - Alterar dados básicos
 PATCH {{baseUrl}}/financeiro/contas-bancarias/{{contaId}}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
@@ -178,6 +240,79 @@ Authorization: Bearer {{token}}
   "pix_tipo": "email",
   "pix_chave": "financeiro@clinicasaude.com.br",
   "observacoes": "Conta atualizada com nova chave PIX"
+}
+
+###
+
+### Atualizar conta bancária - Adicionar mais unidades vinculadas
+PATCH {{baseUrl}}/financeiro/contas-bancarias/{{contaId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "unidades_ids": ["{{unidadeId}}", "{{unidadeId2}}"]
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "banco_id": "uuid",
+#   "unidades_vinculadas": [
+#     {
+#       "id": "uuid",
+#       "conta_bancaria_id": "uuid",
+#       "unidade_saude_id": "uuid-1",
+#       "unidade_saude": { ... },
+#       "ativo": true
+#     },
+#     {
+#       "id": "uuid",
+#       "conta_bancaria_id": "uuid",
+#       "unidade_saude_id": "uuid-2",
+#       "unidade_saude": { ... },
+#       "ativo": true
+#     }
+#   ],
+#   ...
+# }
+
+###
+
+### Atualizar conta bancária - Remover unidades (deixar apenas uma)
+PATCH {{baseUrl}}/financeiro/contas-bancarias/{{contaId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "unidades_ids": ["{{unidadeId}}"]
+}
+
+###
+
+### Atualizar conta bancária - Trocar unidades vinculadas completamente
+PATCH {{baseUrl}}/financeiro/contas-bancarias/{{contaId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "unidades_ids": ["{{unidadeId2}}", "{{unidadeId3}}"]
+}
+
+### Expected Response
+# Os vínculos antigos são removidos e apenas as novas unidades ficam vinculadas
+
+###
+
+### Atualizar conta bancária - Alterar dados E unidades ao mesmo tempo
+PATCH {{baseUrl}}/financeiro/contas-bancarias/{{contaId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "observacoes": "Conta compartilhada entre 3 unidades - atualizada",
+  "saldo_inicial": 10000.00,
+  "unidades_ids": ["{{unidadeId}}", "{{unidadeId2}}", "{{unidadeId3}}"]
 }
 
 ###

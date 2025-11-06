@@ -121,15 +121,13 @@ export class CreateExameDto {
   setor_id?: string;
 
   @ApiProperty({
-    description: 'Metodologia utilizada no exame',
-    example: 'Citometria de fluxo',
+    description: 'ID da alternativa do campo metodologia',
+    example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
     required: false,
-    maxLength: 255,
   })
   @IsString()
   @IsOptional()
-  @MaxLength(255)
-  metodologia?: string;
+  metodologia_id?: string;
 
   @ApiProperty({
     description: 'Se precisa de especialidade médica específica',
@@ -141,26 +139,22 @@ export class CreateExameDto {
   especialidade_requerida?: string;
 
   @ApiProperty({
-    description: 'Especialidade médica requerida',
-    example: 'Hematologia',
+    description: 'ID da alternativa do campo especialidade',
+    example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
     required: false,
-    maxLength: 255,
   })
   @IsString()
   @IsOptional()
-  @MaxLength(255)
-  especialidade?: string;
+  especialidade_id?: string;
 
   @ApiProperty({
-    description: 'Grupo de exames relacionados',
-    example: 'Hemograma',
+    description: 'ID da alternativa do campo grupo',
+    example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
     required: false,
-    maxLength: 100,
   })
   @IsString()
   @IsOptional()
-  @MaxLength(100)
-  grupo?: string;
+  grupo_id?: string;
 
   @ApiProperty({
     description: 'Peso/prioridade para ordenação',
@@ -190,37 +184,49 @@ export class CreateExameDto {
   volume_ideal?: number;
 
   @ApiProperty({
-    description: 'Unidade de medida do resultado',
-    example: 'mg/dL',
+    description: 'ID da alternativa do campo unidade_medida',
+    example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
     required: false,
-    maxLength: 50,
   })
   @IsString()
   @IsOptional()
-  @MaxLength(50)
-  unidade_medida?: string;
+  unidade_medida_id?: string;
 
   @ApiProperty({
-    description: 'Tipo de amostra biológica necessária',
-    example: 'Sangue total EDTA',
+    description: 'ID da alternativa do campo amostra',
+    example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
     required: false,
-    maxLength: 100,
   })
   @IsString()
   @IsOptional()
-  @MaxLength(100)
-  amostra_biologica?: string;
+  amostra_id?: string;
 
   @ApiProperty({
-    description: 'Tipo de recipiente para coleta',
-    example: 'Tubo roxo EDTA',
+    description: 'ID da alternativa do campo tipo_recipiente',
+    example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
     required: false,
-    maxLength: 100,
   })
   @IsString()
   @IsOptional()
-  @MaxLength(100)
-  tipo_recipiente?: string;
+  tipo_recipiente_id?: string;
+
+  @ApiProperty({
+    description: 'ID da alternativa do campo regiao_coleta',
+    example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  regiao_coleta_id?: string;
+
+  @ApiProperty({
+    description: 'ID da alternativa do campo estabilidade',
+    example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  estabilidade_id?: string;
 
   @ApiProperty({
     description: 'Se necessita preparo especial',
@@ -259,15 +265,22 @@ export class CreateExameDto {
   laboratorio_apoio_id?: string;
 
   @ApiProperty({
-    description: 'Destino do exame no sistema externo',
-    example: 'DB_HEMOGRAMA',
+    description: 'ID da telemedicina (quando tipo_realizacao = telemedicina)',
+    example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
     required: false,
-    maxLength: 100,
   })
   @IsString()
   @IsOptional()
-  @MaxLength(100)
-  destino_exame?: string;
+  telemedicina_id?: string;
+
+  @ApiProperty({
+    description: 'ID da unidade de saúde de destino',
+    example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  unidade_destino_id?: string;
 
   @ApiProperty({
     description: 'Se envia automaticamente para laboratório de apoio',
@@ -337,6 +350,15 @@ export class CreateExameDto {
   distribuicao?: string;
 
   @ApiProperty({
+    description: 'Critérios de rejeição da amostra',
+    example: 'Amostra hemolisada, lipêmica ou com coágulos',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  rejeicao?: string;
+
+  @ApiProperty({
     description: 'Processamento e entrega de laudos',
     example: 'Resultado liberado em até 2 dias úteis',
     required: false,
@@ -344,6 +366,15 @@ export class CreateExameDto {
   @IsString()
   @IsOptional()
   processamento_entrega?: string;
+
+  @ApiProperty({
+    description: 'Links úteis relacionados ao exame',
+    example: 'https://exemplo.com/manual-hemograma.pdf',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  links_uteis?: string;
 
   @ApiProperty({
     description: 'Requisitos da ANVISA/Normas técnicas',

@@ -1,7 +1,22 @@
-### Variáveis
-@baseUrl = http://localhost:10016/api/v1
-@contentType = application/json
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkNWI5MmEzMC1hMDNlLTRmOGUtYmJjNS0wZDEzY2FiYWQ3MjMiLCJlbWFpbCI6ImRpZWdvc29la0BnbWFpbC5jb20iLCJub21lIjoiRGllZ28gU29layIsImlhdCI6MTc1NzgxMDU5MiwiZXhwIjoxNzU3ODk2OTkyfQ.Nl106ykTeiqD3c37ElQhSPMOlxkoINhu_PKZNEHM6D4
+###
+### ⚠️ IMPORTANTE - Configuração de Variáveis
+###
+### Este arquivo usa variáveis definidas em http-client.env.json:
+### - {{baseUrl}} - URL base da API
+### - {{contentType}} - application/json
+### - {{token}} - Token JWT de autenticação
+### - {{tipoExameId}} - UUID do tipo de exame (para buscar/atualizar/deletar)
+###
+### Estrutura do http-client.env.json:
+### {
+###   "development": {
+###     "baseUrl": "http://localhost:10016/api/v1",
+###     "contentType": "application/json",
+###     "token": "seu-token-jwt-aqui",
+###     "tipoExameId": "uuid-do-tipo-exame"
+###   }
+### }
+###
 
 ### Criar tipo de exame
 POST {{baseUrl}}/exames/tipos-exame
@@ -31,7 +46,7 @@ Authorization: Bearer {{token}}
 #   "success": true,
 #   "message": "Tipo de exame criado com sucesso",
 #   "data": {
-#     "id": 1,
+#     "id": "uuid-gerado",
 #     "codigo": "LAB001",
 #     "nome": "Exames Laboratoriais",
 #     ...
@@ -108,7 +123,7 @@ GET {{baseUrl}}/exames/tipos-exame/domiciliares
 Authorization: Bearer {{token}}
 
 ### Buscar tipo por ID
-GET {{baseUrl}}/exames/tipos-exame/1
+GET {{baseUrl}}/exames/tipos-exame/{{tipoExameId}}
 Authorization: Bearer {{token}}
 
 ### Buscar tipo por código
@@ -116,7 +131,7 @@ GET {{baseUrl}}/exames/tipos-exame/codigo/LAB001
 Authorization: Bearer {{token}}
 
 ### Atualizar tipo de exame
-PATCH {{baseUrl}}/exames/tipos-exame/1
+PATCH {{baseUrl}}/exames/tipos-exame/{{tipoExameId}}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -137,13 +152,13 @@ Authorization: Bearer {{token}}
 #   "success": true,
 #   "message": "Tipo de exame atualizado com sucesso",
 #   "data": {
-#     "id": 1,
+#     "id": "uuid",
 #     ...
 #   }
 # }
 
-### Desativar tipo de exame
-DELETE {{baseUrl}}/exames/tipos-exame/1
+### Desativar tipo de exame (soft delete)
+DELETE {{baseUrl}}/exames/tipos-exame/{{tipoExameId}}
 Authorization: Bearer {{token}}
 
 ### Expected Response

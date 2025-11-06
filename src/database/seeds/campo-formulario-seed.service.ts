@@ -30,14 +30,8 @@ export class CampoFormularioSeedService {
   async seed(): Promise<void> {
     this.logger.log('🌱 Iniciando seeder de Campos de Formulário...');
 
-    // Verificar se já existem campos cadastrados
     const count = await this.campoRepository.count();
-    if (count > 0) {
-      this.logger.log(
-        `ℹ️  Já existem ${count} campos cadastrados. Pulando seeder.`,
-      );
-      return;
-    }
+    this.logger.log(`ℹ️  Encontrados ${count} campo(s) existente(s).`);
 
     const campos: CampoData[] = [
       {
@@ -157,6 +151,24 @@ export class CampoFormularioSeedService {
         ],
       },
       {
+        nomeCampo: NomeCampoFormulario.TIPO_RECIPIENTE,
+        descricao: 'Tipo de recipiente/tubo para coleta de amostra',
+        alternativas: [
+          { texto: 'Tubo EDTA (tampa roxa)', ordem: 1 },
+          { texto: 'Tubo Citrato (tampa azul)', ordem: 2 },
+          { texto: 'Tubo Seco (tampa vermelha)', ordem: 3 },
+          { texto: 'Tubo com Gel Separador (tampa amarela)', ordem: 4 },
+          { texto: 'Tubo Heparina (tampa verde)', ordem: 5 },
+          { texto: 'Tubo Fluoreto (tampa cinza)', ordem: 6 },
+          { texto: 'Frasco Estéril', ordem: 7 },
+          { texto: 'Frasco Urina', ordem: 8 },
+          { texto: 'Pote Fezes', ordem: 9 },
+          { texto: 'Swab Estéril', ordem: 10 },
+          { texto: 'Seringa', ordem: 11 },
+          { texto: 'Microtainer', ordem: 12 },
+        ],
+      },
+      {
         nomeCampo: NomeCampoFormulario.REGIAO_COLETA,
         descricao: 'Região anatômica para coleta da amostra',
         alternativas: [
@@ -201,48 +213,76 @@ export class CampoFormularioSeedService {
       },
     ];
 
-    let totalCampos = 0;
-    let totalAlternativas = 0;
+    let totalCamposNovos = 0;
+    let totalAlternativasNovas = 0;
 
-    // Inserir campos com suas alternativas
+    // Inserir campos com suas alternativas (incremental)
     for (const campoData of campos) {
       try {
-        // Criar o campo
-        const campo = this.campoRepository.create({
-          nomeCampo: campoData.nomeCampo,
-          descricao: campoData.descricao,
-          ativo: true,
-          createdBy: 'sistema',
+        // Verifica se o campo já existe
+        const campoExistente = await this.campoRepository.findOne({
+          where: { nomeCampo: campoData.nomeCampo },
+          relations: ['alternativas'],
         });
 
-        const campoSalvo = await this.campoRepository.save(campo);
-        totalCampos++;
+        let campoSalvo: any;
 
-        // Criar as alternativas
-        for (const altData of campoData.alternativas) {
-          const alternativa = this.alternativaRepository.create({
-            campoFormularioId: campoSalvo.id,
-            textoAlternativa: altData.texto,
-            ordem: altData.ordem,
+        if (!campoExistente) {
+          // Campo não existe - criar novo
+          const campo = this.campoRepository.create({
+            nomeCampo: campoData.nomeCampo,
+            descricao: campoData.descricao,
             ativo: true,
+            createdBy: 'sistema',
           });
 
-          await this.alternativaRepository.save(alternativa);
-          totalAlternativas++;
+          campoSalvo = await this.campoRepository.save(campo);
+          totalCamposNovos++;
+          this.logger.log(`➕ Campo "${campoData.nomeCampo}" criado`);
+        } else {
+          // Campo já existe - usar o existente
+          campoSalvo = campoExistente;
+          this.logger.log(`✓ Campo "${campoData.nomeCampo}" já existe`);
         }
 
-        this.logger.log(
-          `✅ Campo "${campoData.nomeCampo}" criado com ${campoData.alternativas.length} alternativas`,
+        // Verificar e inserir alternativas faltantes
+        const alternativasExistentes = campoExistente?.alternativas || [];
+        const textosExistentes = alternativasExistentes.map(
+          (alt) => alt.textoAlternativa,
         );
+
+        for (const altData of campoData.alternativas) {
+          // Verifica se a alternativa já existe (por texto)
+          if (!textosExistentes.includes(altData.texto)) {
+            const alternativa = this.alternativaRepository.create({
+              campoFormularioId: campoSalvo.id,
+              textoAlternativa: altData.texto,
+              ordem: altData.ordem,
+              ativo: true,
+            });
+
+            await this.alternativaRepository.save(alternativa);
+            totalAlternativasNovas++;
+            this.logger.log(
+              `  ➕ Alternativa "${altData.texto}" adicionada ao campo "${campoData.nomeCampo}"`,
+            );
+          }
+        }
       } catch (error) {
         this.logger.error(
-          `❌ Erro ao criar campo "${campoData.nomeCampo}": ${error.message}`,
+          `❌ Erro ao processar campo "${campoData.nomeCampo}": ${error.message}`,
         );
       }
     }
 
-    this.logger.log(
-      `✨ Seeder concluído: ${totalCampos} campos e ${totalAlternativas} alternativas criados`,
-    );
+    if (totalCamposNovos > 0 || totalAlternativasNovas > 0) {
+      this.logger.log(
+        `✨ Seeder concluído: ${totalCamposNovos} campo(s) novo(s) e ${totalAlternativasNovas} alternativa(s) nova(s) adicionadas`,
+      );
+    } else {
+      this.logger.log(
+        `✓ Todos os campos e alternativas já estão atualizados. Nenhuma alteração necessária.`,
+      );
+    }
   }
 }

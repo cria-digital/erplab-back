@@ -15,6 +15,9 @@ import { ResultadoExame } from './resultado-exame.entity';
 import { SubgrupoExame } from './subgrupo-exame.entity';
 import { SetorExame } from './setor-exame.entity';
 import { LaboratorioApoio } from './laboratorio-apoio.entity';
+import { AlternativaCampoFormulario } from '../../../infraestrutura/campos-formulario/entities/alternativa-campo-formulario.entity';
+import { Telemedicina } from '../../../relacionamento/telemedicina/entities/telemedicina.entity';
+import { UnidadeSaude } from '../../../cadastros/unidade-saude/entities/unidade-saude.entity';
 
 @Entity('exames')
 @Index(['codigo_interno'])
@@ -107,12 +110,10 @@ export class Exame {
   setor_id: string;
 
   @Column({
-    type: 'varchar',
-    length: 255,
     nullable: true,
-    comment: 'Metodologia utilizada no exame',
+    comment: 'FK para alternativa do campo metodologia',
   })
-  metodologia: string;
+  metodologia_id: string;
 
   // Especificidades e controles
   @Column({
@@ -124,20 +125,16 @@ export class Exame {
   especialidade_requerida: string;
 
   @Column({
-    type: 'varchar',
-    length: 255,
     nullable: true,
-    comment: 'Especialidade médica requerida',
+    comment: 'FK para alternativa do campo especialidade',
   })
-  especialidade: string;
+  especialidade_id: string;
 
   @Column({
-    type: 'varchar',
-    length: 100,
     nullable: true,
-    comment: 'Grupo de exames relacionados',
+    comment: 'FK para alternativa do campo grupo',
   })
-  grupo: string;
+  grupo_id: string;
 
   @Column({
     type: 'int',
@@ -184,29 +181,35 @@ export class Exame {
 
   // Unidades de medida
   @Column({
-    type: 'varchar',
-    length: 50,
     nullable: true,
-    comment: 'Unidade de medida do resultado',
+    comment: 'FK para alternativa do campo unidade_medida',
   })
-  unidade_medida: string;
+  unidade_medida_id: string;
 
   // Material e preparo
   @Column({
-    type: 'varchar',
-    length: 100,
     nullable: true,
-    comment: 'Tipo de amostra biológica necessária',
+    comment: 'FK para alternativa do campo amostra',
   })
-  amostra_biologica: string;
+  amostra_id: string;
 
   @Column({
-    type: 'varchar',
-    length: 100,
     nullable: true,
-    comment: 'Tipo de recipiente para coleta',
+    comment: 'FK para alternativa do campo tipo_recipiente',
   })
-  tipo_recipiente: string;
+  tipo_recipiente_id: string;
+
+  @Column({
+    nullable: true,
+    comment: 'FK para alternativa do campo regiao_coleta',
+  })
+  regiao_coleta_id: string;
+
+  @Column({
+    nullable: true,
+    comment: 'FK para alternativa do campo estabilidade',
+  })
+  estabilidade_id: string;
 
   @Column({
     type: 'enum',
@@ -239,12 +242,16 @@ export class Exame {
   laboratorio_apoio_id: string;
 
   @Column({
-    type: 'varchar',
-    length: 100,
     nullable: true,
-    comment: 'Destino do exame no sistema externo',
+    comment: 'FK para telemedicina (quando tipo_realizacao = telemedicina)',
   })
-  destino_exame: string;
+  telemedicina_id: string;
+
+  @Column({
+    nullable: true,
+    comment: 'FK para unidade de saúde de destino',
+  })
+  unidade_destino_id: string;
 
   @Column({
     type: 'enum',
@@ -303,9 +310,23 @@ export class Exame {
   @Column({
     type: 'text',
     nullable: true,
+    comment: 'Critérios de rejeição da amostra',
+  })
+  rejeicao: string;
+
+  @Column({
+    type: 'text',
+    nullable: true,
     comment: 'Processamento e entrega de laudos',
   })
   processamento_entrega: string;
+
+  @Column({
+    type: 'text',
+    nullable: true,
+    comment: 'Links úteis relacionados ao exame',
+  })
+  links_uteis: string;
 
   // Requisitos técnicos
   @Column({
@@ -397,6 +418,48 @@ export class Exame {
   @JoinColumn({ name: 'laboratorio_apoio_id' })
   laboratorioApoio?: LaboratorioApoio;
 
+  // Relacionamentos com campos de formulário
+  @ManyToOne(() => AlternativaCampoFormulario, { eager: false })
+  @JoinColumn({ name: 'especialidade_id' })
+  especialidadeAlternativa?: AlternativaCampoFormulario;
+
+  @ManyToOne(() => AlternativaCampoFormulario, { eager: false })
+  @JoinColumn({ name: 'grupo_id' })
+  grupoAlternativa?: AlternativaCampoFormulario;
+
+  @ManyToOne(() => AlternativaCampoFormulario, { eager: false })
+  @JoinColumn({ name: 'metodologia_id' })
+  metodologiaAlternativa?: AlternativaCampoFormulario;
+
+  @ManyToOne(() => AlternativaCampoFormulario, { eager: false })
+  @JoinColumn({ name: 'unidade_medida_id' })
+  unidadeMedidaAlternativa?: AlternativaCampoFormulario;
+
+  @ManyToOne(() => AlternativaCampoFormulario, { eager: false })
+  @JoinColumn({ name: 'amostra_id' })
+  amostraAlternativa?: AlternativaCampoFormulario;
+
+  @ManyToOne(() => AlternativaCampoFormulario, { eager: false })
+  @JoinColumn({ name: 'tipo_recipiente_id' })
+  tipoRecipienteAlternativa?: AlternativaCampoFormulario;
+
+  @ManyToOne(() => AlternativaCampoFormulario, { eager: false })
+  @JoinColumn({ name: 'regiao_coleta_id' })
+  regiaoColetaAlternativa?: AlternativaCampoFormulario;
+
+  @ManyToOne(() => AlternativaCampoFormulario, { eager: false })
+  @JoinColumn({ name: 'estabilidade_id' })
+  estabilidadeAlternativa?: AlternativaCampoFormulario;
+
+  // Relacionamentos de integração
+  @ManyToOne(() => Telemedicina, { eager: false })
+  @JoinColumn({ name: 'telemedicina_id' })
+  telemedicina?: Telemedicina;
+
+  @ManyToOne(() => UnidadeSaude, { eager: false })
+  @JoinColumn({ name: 'unidade_destino_id' })
+  unidadeDestino?: UnidadeSaude;
+
   @OneToMany(() => OrdemServicoExame, (osExame) => osExame.exame)
   ordensServico?: OrdemServicoExame[];
 
@@ -413,8 +476,8 @@ export class Exame {
     if (this.sinonimos) {
       partes.push(`(${this.sinonimos})`);
     }
-    if (this.metodologia) {
-      partes.push(`- ${this.metodologia}`);
+    if (this.metodologiaAlternativa?.textoAlternativa) {
+      partes.push(`- ${this.metodologiaAlternativa.textoAlternativa}`);
     }
     return partes.join(' ');
   }

@@ -14,6 +14,16 @@ import { CreateContaBancariaDto } from './dto/create-conta-bancaria.dto';
 import { UpdateContaBancariaDto } from './dto/update-conta-bancaria.dto';
 import { PaginatedResultDto } from '../../infraestrutura/common/dto/pagination.dto';
 
+export interface PaginationParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  tipo?: TipoConta;
+  status?: StatusConta;
+  banco_id?: string;
+  unidade_id?: string;
+}
+
 @Injectable()
 export class ContaBancariaService {
   constructor(
@@ -72,22 +82,60 @@ export class ContaBancariaService {
   }
 
   async findAll(
-    page: number = 1,
-    limit: number = 10,
+    params: PaginationParams,
   ): Promise<PaginatedResultDto<ContaBancaria>> {
+    const page = params.page || 1;
+    const limit = params.limit || 10;
     const skip = (page - 1) * limit;
 
-    const [data, total] = await this.contaBancariaRepository.findAndCount({
-      relations: [
-        'banco',
-        'unidade_saude',
-        'unidades_vinculadas',
+    const queryBuilder = this.contaBancariaRepository
+      .createQueryBuilder('conta')
+      .leftJoinAndSelect('conta.banco', 'banco')
+      .leftJoinAndSelect('conta.unidade_saude', 'unidade_saude')
+      .leftJoinAndSelect('conta.unidades_vinculadas', 'unidades_vinculadas')
+      .leftJoinAndSelect(
         'unidades_vinculadas.unidade_saude',
-      ],
-      order: { created_at: 'DESC' },
-      skip,
-      take: limit,
-    });
+        'vinculo_unidade',
+      );
+
+    // Filtro de busca textual (nome, agência, conta)
+    if (params.search) {
+      queryBuilder.andWhere(
+        '(conta.nome ILIKE :search OR conta.agencia ILIKE :search OR conta.numero_conta ILIKE :search OR banco.nome ILIKE :search)',
+        { search: `%${params.search}%` },
+      );
+    }
+
+    // Filtro por tipo de conta
+    if (params.tipo) {
+      queryBuilder.andWhere('conta.tipo_conta = :tipo', { tipo: params.tipo });
+    }
+
+    // Filtro por status
+    if (params.status) {
+      queryBuilder.andWhere('conta.status = :status', {
+        status: params.status,
+      });
+    }
+
+    // Filtro por banco
+    if (params.banco_id) {
+      queryBuilder.andWhere('conta.banco_id = :banco_id', {
+        banco_id: params.banco_id,
+      });
+    }
+
+    // Filtro por unidade
+    if (params.unidade_id) {
+      queryBuilder.andWhere('conta.unidade_saude_id = :unidade_id', {
+        unidade_id: params.unidade_id,
+      });
+    }
+
+    // Ordenação e paginação
+    queryBuilder.orderBy('conta.created_at', 'DESC').skip(skip).take(limit);
+
+    const [data, total] = await queryBuilder.getManyAndCount();
 
     return new PaginatedResultDto(data, total, page, limit);
   }
@@ -175,8 +223,44 @@ export class ContaBancariaService {
       }
     }
 
-    Object.assign(conta, updateDto);
-    return await this.contaBancariaRepository.save(conta);
+    // Extrai unidades_ids para processar separadamente
+    const { unidades_ids, ...dadosConta } = updateDto;
+
+    // Atualiza os dados básicos da conta
+    Object.assign(conta, dadosConta);
+    const contaAtualizada = await this.contaBancariaRepository.save(conta);
+
+    // Se unidades_ids foi fornecido, atualiza os vínculos
+    if (unidades_ids !== undefined) {
+      // Remove todos os vínculos antigos
+      await this.contaBancariaRepository
+        .createQueryBuilder()
+        .delete()
+        .from('contas_bancarias_unidades')
+        .where('conta_bancaria_id = :contaId', { contaId: id })
+        .execute();
+
+      // Adiciona os novos vínculos
+      if (unidades_ids.length > 0) {
+        const vinculos = unidades_ids.map((unidadeId) => ({
+          conta_bancaria_id: id,
+          unidade_saude_id: unidadeId,
+          ativo: true,
+        }));
+
+        await this.contaBancariaRepository
+          .createQueryBuilder()
+          .insert()
+          .into('contas_bancarias_unidades')
+          .values(vinculos)
+          .execute();
+      }
+
+      // Retorna a conta atualizada com os novos vínculos
+      return await this.findOne(id);
+    }
+
+    return contaAtualizada;
   }
 
   async toggleStatus(id: string): Promise<ContaBancaria> {

@@ -1,3 +1,41 @@
+###
+### ⚠️ IMPORTANTE - Estrutura Refatorada (Novembro 2025)
+###
+### Após refatoração, os seguintes campos agora são FKs (foreign keys):
+### - metodologia_id (antes: metodologia VARCHAR)
+### - grupo_id (antes: grupo VARCHAR)
+### - unidade_medida_id (antes: unidade_medida VARCHAR)
+### - amostra_id (antes: amostra_biologica VARCHAR)
+### - tipo_recipiente_id (antes: tipo_recipiente VARCHAR)
+### - especialidade_id (antes: especialidade VARCHAR)
+###
+### Novos campos adicionados:
+### - regiao_coleta_id (UUID, opcional)
+### - estabilidade_id (UUID, opcional)
+### - rejeicao (TEXT, opcional)
+### - links_uteis (TEXT, opcional)
+###
+### Para usar estes requests, primeiro obtenha os IDs das tabelas de campos de formulário:
+### GET /api/v1/infraestrutura/campos-formulario
+###
+### Ou crie variáveis no http-client.env.json:
+### {
+###   "development": {
+###     "tipoExameId": "uuid-do-tipo-exame",
+###     "metodologiaId": "uuid-da-metodologia",
+###     "grupoId": "uuid-do-grupo",
+###     "unidadeMedidaId": "uuid-da-unidade-medida",
+###     "amostraId": "uuid-da-amostra",
+###     "tipoRecipienteId": "uuid-do-tipo-recipiente",
+###     "regiaoColetaId": "uuid-da-regiao-coleta",
+###     "estabilidadeId": "uuid-da-estabilidade",
+###     "subgrupoId": "uuid-do-subgrupo",
+###     "setorId": "uuid-do-setor",
+###     "empresaId": "uuid-da-empresa"
+###   }
+### }
+###
+
 ### Criar um novo exame - Hemograma Completo
 POST {{baseUrl}}/exames/exames
 Content-Type: {{contentType}}
@@ -10,19 +48,21 @@ Authorization: Bearer {{token}}
   "codigo_tuss": "40304361",
   "codigo_amb": "28.01.001-2",
   "codigo_sus": "0202010503",
-  "tipo_exame_id": 1,
+  "tipo_exame_id": "{{tipoExameId}}",
   "categoria": "laboratorio",
-  "subgrupo_id": 1,
-  "setor_id": 1,
-  "metodologia": "Citometria de fluxo",
+  "subgrupo_id": "{{subgrupoId}}",
+  "setor_id": "{{setorId}}",
+  "metodologia_id": "{{metodologiaId}}",
   "especialidade_requerida": "nao",
-  "grupo": "Hematologia",
+  "grupo_id": "{{grupoId}}",
   "peso": 100,
   "volume_min": 2.5,
   "volume_ideal": 5.0,
-  "unidade_medida": "células/mm³",
-  "amostra_biologica": "Sangue total EDTA",
-  "tipo_recipiente": "Tubo roxo EDTA",
+  "unidade_medida_id": "{{unidadeMedidaId}}",
+  "amostra_id": "{{amostraId}}",
+  "tipo_recipiente_id": "{{tipoRecipienteId}}",
+  "regiao_coleta_id": "{{regiaoColetaId}}",
+  "estabilidade_id": "{{estabilidadeId}}",
   "necessita_preparo": "sim",
   "requisitos": "Jejum de 4 horas",
   "tipo_realizacao": "interno",
@@ -40,6 +80,8 @@ Authorization: Bearer {{token}}
     }
   },
   "tecnica_coleta": "Punção venosa periférica",
+  "rejeicao": "Hemólise, coágulos, volume insuficiente",
+  "links_uteis": "https://www.fleury.com.br/manual-de-exames/hemograma",
   "preparo_coleta": {
     "geral": "Jejum de 4 horas",
     "feminino": "Informar se está menstruada",
@@ -51,7 +93,7 @@ Authorization: Bearer {{token}}
     "ordem_servico": "Coletar em tubo EDTA (roxo)"
   },
   "status": "ativo",
-  "empresa_id": 1
+  "empresa_id": "{{empresaId}}"
 }
 
 ### Expected Response
@@ -78,19 +120,21 @@ Authorization: Bearer {{token}}
   "nome": "Radiografia de Tórax PA e Perfil",
   "sinonimos": "Raio-X Tórax, RX Tórax",
   "codigo_tuss": "41001010",
-  "tipo_exame_id": 2,
+  "tipo_exame_id": "{{tipoExameImagemId}}",
   "categoria": "imagem",
-  "metodologia": "Radiografia digital",
+  "metodologia_id": "{{metodologiaRadiologiaId}}",
   "especialidade_requerida": "sim",
-  "especialidade": "Radiologia",
+  "especialidade_id": "{{especialidadeRadiologiaId}}",
   "necessita_preparo": "nao",
   "tipo_realizacao": "interno",
   "prazo_entrega_dias": 1,
   "formato_prazo": "24 horas",
+  "rejeicao": "Imagem borrada, paciente em movimento",
+  "links_uteis": "https://www.fleury.com.br/manual-de-exames/raio-x-torax",
   "preparo_coleta": {
     "geral": "Retirar objetos metálicos",
     "feminino": "Informar possibilidade de gravidez"
   },
   "status": "ativo",
-  "empresa_id": 1
+  "empresa_id": "{{empresaId}}"
 }

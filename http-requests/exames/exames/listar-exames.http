@@ -1,3 +1,14 @@
+###
+### ⚠️ IMPORTANTE - Configuração de Variáveis
+###
+### Este arquivo usa variáveis definidas em http-client.env.json:
+### - {{baseUrl}} - URL base da API
+### - {{token}} - Token JWT de autenticação
+### - {{exameId}} - UUID do exame (para buscar por ID)
+### - {{tipoExameId}} - UUID do tipo de exame (para filtrar)
+### - {{laboratorioId}} - UUID do laboratório (para filtrar)
+###
+
 ### Listar todos os exames com paginação
 GET {{baseUrl}}/exames/exames?page=1&limit=10
 Authorization: Bearer {{token}}
@@ -32,13 +43,13 @@ Authorization: Bearer {{token}}
 ###
 
 ### Buscar exames por tipo
-GET {{baseUrl}}/exames/exames/tipo/1
+GET {{baseUrl}}/exames/exames/tipo/{{tipoExameId}}
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar exames por laboratório de apoio
-GET {{baseUrl}}/exames/exames/laboratorio/1
+GET {{baseUrl}}/exames/exames/laboratorio/{{laboratorioId}}
 Authorization: Bearer {{token}}
 
 ###
@@ -74,7 +85,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Buscar exame por ID
-GET {{baseUrl}}/exames/exames/1
+GET {{baseUrl}}/exames/exames/{{exameId}}
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -82,7 +93,7 @@ Authorization: Bearer {{token}}
 # {
 #   "message": "Exame encontrado com sucesso",
 #   "data": {
-#     "id": 1,
+#     "id": "uuid",
 #     "codigo_interno": "HEMOG001",
 #     "nome": "Hemograma Completo",
 #     "categoria": "laboratorio",
