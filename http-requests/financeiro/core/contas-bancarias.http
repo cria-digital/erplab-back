@@ -135,9 +135,14 @@ Authorization: Bearer {{token}}
 
 ### FILTROS COMBINADOS
 
-### Buscar contas por texto (nome, agência, conta ou banco)
-GET {{baseUrl}}/financeiro/contas-bancarias?search=conta1
+### Buscar contas por texto (agência, número da conta ou nome do banco)
+GET {{baseUrl}}/financeiro/contas-bancarias?search=1234
 Authorization: Bearer {{token}}
+
+### Exemplos de busca:
+# - search=1234 → Busca por agência "1234"
+# - search=12345678 → Busca por número de conta "12345678"
+# - search=Brasil → Busca por banco "Banco do Brasil"
 
 ###
 
@@ -171,14 +176,14 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Combinar múltiplos filtros - Exemplo 2: Buscar "conta1" nas contas correntes ativas
-GET {{baseUrl}}/financeiro/contas-bancarias?search=conta1&tipo=corrente&status=ativa
+### Combinar múltiplos filtros - Exemplo 2: Buscar por agência "1234" nas contas correntes ativas
+GET {{baseUrl}}/financeiro/contas-bancarias?search=1234&tipo=corrente&status=ativa
 Authorization: Bearer {{token}}
 
 ###
 
 ### Combinar múltiplos filtros - Exemplo 3: Todos os filtros + paginação
-GET {{baseUrl}}/financeiro/contas-bancarias?search=conta1&tipo=corrente&status=ativa&page=1&limit=10
+GET {{baseUrl}}/financeiro/contas-bancarias?search=1234&tipo=corrente&status=ativa&page=1&limit=10
 Authorization: Bearer {{token}}
 
 ###

@@ -11,6 +11,7 @@ import {
 } from '../entities/campo-formulario.entity';
 import { CreateCampoFormularioDto } from '../dto/create-campo-formulario.dto';
 import { UpdateCampoFormularioDto } from '../dto/update-campo-formulario.dto';
+import { SearchCampoFormularioDto } from '../dto/search-campo-formulario.dto';
 
 @Injectable()
 export class CampoFormularioService {
@@ -106,6 +107,43 @@ export class CampoFormularioService {
     }
 
     return campo;
+  }
+
+  /**
+   * Buscar campos com filtros
+   */
+  async search(
+    searchDto: SearchCampoFormularioDto,
+  ): Promise<CampoFormulario[]> {
+    const query = this.campoRepository
+      .createQueryBuilder('campo')
+      .leftJoinAndSelect('campo.alternativas', 'alternativas')
+      .orderBy('campo.nomeCampo', 'ASC')
+      .addOrderBy('alternativas.ordem', 'ASC');
+
+    // Filtro por termo (busca na descrição e no nome do campo)
+    // Importante: nomeCampo é ENUM, precisa fazer cast para text antes de usar LOWER()
+    // Usar aspas duplas para referenciar o nome da coluna no banco (nome_campo)
+    if (searchDto.termo) {
+      query.andWhere(
+        'LOWER(campo.descricao) LIKE LOWER(:termo) OR LOWER("campo"."nome_campo"::text) LIKE LOWER(:termo)',
+        { termo: `%${searchDto.termo}%` },
+      );
+    }
+
+    // Filtro por nome específico do campo
+    if (searchDto.nomeCampo) {
+      query.andWhere('campo.nomeCampo = :nomeCampo', {
+        nomeCampo: searchDto.nomeCampo,
+      });
+    }
+
+    // Filtro por status ativo/inativo
+    if (searchDto.ativo !== undefined) {
+      query.andWhere('campo.ativo = :ativo', { ativo: searchDto.ativo });
+    }
+
+    return query.getMany();
   }
 
   /**

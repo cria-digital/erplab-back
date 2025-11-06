@@ -98,10 +98,10 @@ export class ContaBancariaService {
         'vinculo_unidade',
       );
 
-    // Filtro de busca textual (nome, agência, conta)
+    // Filtro de busca textual (agência, conta, banco)
     if (params.search) {
       queryBuilder.andWhere(
-        '(conta.nome ILIKE :search OR conta.agencia ILIKE :search OR conta.numero_conta ILIKE :search OR banco.nome ILIKE :search)',
+        '(conta.agencia ILIKE :search OR conta.numero_conta ILIKE :search OR banco.nome ILIKE :search)',
         { search: `%${params.search}%` },
       );
     }

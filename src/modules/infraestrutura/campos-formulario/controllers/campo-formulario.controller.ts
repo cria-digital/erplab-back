@@ -10,6 +10,7 @@ import {
   Request,
   HttpCode,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -21,6 +22,7 @@ import {
 import { CampoFormularioService } from '../services/campo-formulario.service';
 import { CreateCampoFormularioDto } from '../dto/create-campo-formulario.dto';
 import { UpdateCampoFormularioDto } from '../dto/update-campo-formulario.dto';
+import { SearchCampoFormularioDto } from '../dto/search-campo-formulario.dto';
 import { NomeCampoFormulario } from '../entities/campo-formulario.entity';
 
 @ApiTags('Campos de Formulário')
@@ -50,6 +52,17 @@ export class CampoFormularioController {
   @ApiResponse({ status: 200, description: 'Lista de campos' })
   findAll() {
     return this.campoFormularioService.findAll();
+  }
+
+  @Get('search')
+  @ApiOperation({
+    summary: 'Buscar campos com filtros',
+    description:
+      'Busca campos de formulário com filtros opcionais (termo, nomeCampo, ativo)',
+  })
+  @ApiResponse({ status: 200, description: 'Lista de campos encontrados' })
+  search(@Query() searchDto: SearchCampoFormularioDto) {
+    return this.campoFormularioService.search(searchDto);
   }
 
   @Get('ativos')

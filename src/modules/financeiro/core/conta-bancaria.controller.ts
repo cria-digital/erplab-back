@@ -74,8 +74,8 @@ export class ContaBancariaController {
     name: 'search',
     required: false,
     type: String,
-    description: 'Busca por nome, agência, conta ou banco',
-    example: 'conta1',
+    description: 'Busca por agência, número da conta ou nome do banco',
+    example: '1234',
   })
   @ApiQuery({
     name: 'tipo',

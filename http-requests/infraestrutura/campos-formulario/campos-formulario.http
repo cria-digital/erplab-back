@@ -54,7 +54,59 @@ Authorization: Bearer {{token}}
 # Array com campos ativos (ativo: true)
 
 ### ========================================
-### 4. Buscar Campo por ID
+### 4. Buscar Campos com Filtros (NOVO)
+### ========================================
+
+### 4.1. Buscar por termo na descrição
+GET {{baseUrl}}/infraestrutura/campos-formulario/search?termo=medida
+Authorization: Bearer {{token}}
+
+### Expected Response:
+# Status: 200 OK
+# Array com campos que contêm "medida" na descrição ou no nome
+
+### 4.2. Buscar por nome específico do campo
+GET {{baseUrl}}/infraestrutura/campos-formulario/search?nomeCampo=unidade_medida
+Authorization: Bearer {{token}}
+
+### Expected Response:
+# Status: 200 OK
+# Array com o campo específico e suas alternativas
+
+### 4.3. Buscar apenas campos ativos
+GET {{baseUrl}}/infraestrutura/campos-formulario/search?ativo=true
+Authorization: Bearer {{token}}
+
+### Expected Response:
+# Status: 200 OK
+# Array com campos onde ativo = true
+
+### 4.4. Buscar apenas campos inativos
+GET {{baseUrl}}/infraestrutura/campos-formulario/search?ativo=false
+Authorization: Bearer {{token}}
+
+### Expected Response:
+# Status: 200 OK
+# Array com campos onde ativo = false
+
+### 4.5. Buscar com múltiplos filtros combinados
+GET {{baseUrl}}/infraestrutura/campos-formulario/search?termo=exame&ativo=true
+Authorization: Bearer {{token}}
+
+### Expected Response:
+# Status: 200 OK
+# Array com campos ativos que contêm "exame" na descrição ou nome
+
+### 4.6. Buscar sem filtros (retorna todos)
+GET {{baseUrl}}/infraestrutura/campos-formulario/search
+Authorization: Bearer {{token}}
+
+### Expected Response:
+# Status: 200 OK
+# Array com todos os campos (equivalente ao findAll)
+
+### ========================================
+### 5. Buscar Campo por ID
 ### ========================================
 GET {{baseUrl}}/infraestrutura/campos-formulario/{{campoId}}
 Authorization: Bearer {{token}}
@@ -64,7 +116,7 @@ Authorization: Bearer {{token}}
 # Campo com suas alternativas
 
 ### ========================================
-### 5. Buscar Campo por Nome (ENUM)
+### 6. Buscar Campo por Nome (ENUM)
 ### ========================================
 GET {{baseUrl}}/infraestrutura/campos-formulario/nome/unidade_medida
 Authorization: Bearer {{token}}
@@ -89,7 +141,7 @@ Authorization: Bearer {{token}}
 # - estabilidade
 
 ### ========================================
-### 6. Atualizar Campo
+### 7. Atualizar Campo
 ### ========================================
 PATCH {{baseUrl}}/infraestrutura/campos-formulario/{{campoId}}
 Content-Type: {{contentType}}
@@ -104,7 +156,7 @@ Authorization: Bearer {{token}}
 # Campo atualizado com novo updatedBy
 
 ### ========================================
-### 7. Alternar Status (Ativo/Inativo)
+### 8. Alternar Status (Ativo/Inativo)
 ### ========================================
 PATCH {{baseUrl}}/infraestrutura/campos-formulario/{{campoId}}/toggle-status
 Authorization: Bearer {{token}}
@@ -114,7 +166,7 @@ Authorization: Bearer {{token}}
 # Campo com status alternado (ativo -> inativo ou inativo -> ativo)
 
 ### ========================================
-### 8. Remover Campo (Soft Delete)
+### 9. Remover Campo (Soft Delete)
 ### ========================================
 DELETE {{baseUrl}}/infraestrutura/campos-formulario/{{campoId}}
 Authorization: Bearer {{token}}
