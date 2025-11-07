@@ -2,8 +2,9 @@ import { IsOptional, IsString, IsEnum, IsBoolean } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { NomeCampoFormulario } from '../entities/campo-formulario.entity';
+import { PaginationDto } from '../../common/dto/pagination.dto';
 
-export class SearchCampoFormularioDto {
+export class SearchCampoFormularioDto extends PaginationDto {
   @ApiPropertyOptional({
     description: 'Termo de busca (pesquisa na descrição do campo)',
     example: 'medida',

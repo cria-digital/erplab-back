@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -19,6 +20,7 @@ import {
 import { EmpresasService } from './empresas.service';
 import { CreateEmpresaDto } from './dto/create-empresa.dto';
 import { UpdateEmpresaDto } from './dto/update-empresa.dto';
+import { SearchEmpresaDto } from './dto/search-empresa.dto';
 import { JwtAuthGuard } from '../../autenticacao/auth/guards/jwt-auth.guard';
 import { Empresa } from './entities/empresa.entity';
 import { TipoEmpresaEnum } from './enums/empresas.enum';
@@ -58,6 +60,40 @@ export class EmpresasController {
   })
   findAll() {
     return this.empresasService.findAll();
+  }
+
+  @Get('search')
+  @ApiOperation({
+    summary: 'Buscar empresas com filtros e paginação',
+    description:
+      'Busca empresas com filtros opcionais (termo, tipoEmpresa, ativo) e paginação (page, limit)',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Lista paginada de empresas encontradas',
+    schema: {
+      type: 'object',
+      properties: {
+        data: {
+          type: 'array',
+          items: { type: 'object' },
+        },
+        meta: {
+          type: 'object',
+          properties: {
+            page: { type: 'number', example: 1 },
+            limit: { type: 'number', example: 10 },
+            total: { type: 'number', example: 50 },
+            totalPages: { type: 'number', example: 5 },
+            hasPrevPage: { type: 'boolean', example: false },
+            hasNextPage: { type: 'boolean', example: true },
+          },
+        },
+      },
+    },
+  })
+  search(@Query() searchDto: SearchEmpresaDto) {
+    return this.empresasService.search(searchDto);
   }
 
   @Get('tipo/:tipo')

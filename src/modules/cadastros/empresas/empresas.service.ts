@@ -8,6 +8,8 @@ import { Repository } from 'typeorm';
 import { Empresa } from './entities/empresa.entity';
 import { CreateEmpresaDto } from './dto/create-empresa.dto';
 import { UpdateEmpresaDto } from './dto/update-empresa.dto';
+import { SearchEmpresaDto } from './dto/search-empresa.dto';
+import { PaginatedResultDto } from '../../infraestrutura/common/dto/pagination.dto';
 
 @Injectable()
 export class EmpresasService {
@@ -36,6 +38,45 @@ export class EmpresasService {
         nomeFantasia: 'ASC',
       },
     });
+  }
+
+  async search(
+    searchDto: SearchEmpresaDto,
+  ): Promise<PaginatedResultDto<Empresa>> {
+    const { page = 1, limit = 10, termo, tipoEmpresa, ativo } = searchDto;
+
+    const query = this.empresaRepository
+      .createQueryBuilder('empresa')
+      .orderBy('empresa.nomeFantasia', 'ASC');
+
+    // Filtro por termo (busca em razão social, nome fantasia e CNPJ)
+    if (termo) {
+      query.andWhere(
+        'LOWER(empresa.razaoSocial) LIKE LOWER(:termo) OR LOWER(empresa.nomeFantasia) LIKE LOWER(:termo) OR empresa.cnpj LIKE :termo',
+        { termo: `%${termo}%` },
+      );
+    }
+
+    // Filtro por tipo de empresa
+    if (tipoEmpresa) {
+      query.andWhere('empresa.tipoEmpresa = :tipoEmpresa', { tipoEmpresa });
+    }
+
+    // Filtro por status ativo/inativo
+    if (ativo !== undefined) {
+      query.andWhere('empresa.ativo = :ativo', { ativo });
+    }
+
+    // Contar total de registros
+    const total = await query.getCount();
+
+    // Aplicar paginação
+    query.skip((page - 1) * limit).take(limit);
+
+    // Buscar dados
+    const data = await query.getMany();
+
+    return new PaginatedResultDto(data, total, page, limit);
   }
 
   async findOne(id: string): Promise<Empresa> {

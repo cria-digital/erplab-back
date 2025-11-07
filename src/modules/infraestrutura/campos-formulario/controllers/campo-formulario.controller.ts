@@ -56,11 +56,34 @@ export class CampoFormularioController {
 
   @Get('search')
   @ApiOperation({
-    summary: 'Buscar campos com filtros',
+    summary: 'Buscar campos com filtros e paginação',
     description:
-      'Busca campos de formulário com filtros opcionais (termo, nomeCampo, ativo)',
+      'Busca campos de formulário com filtros opcionais (termo, nomeCampo, ativo) e paginação (page, limit)',
   })
-  @ApiResponse({ status: 200, description: 'Lista de campos encontrados' })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista paginada de campos encontrados',
+    schema: {
+      type: 'object',
+      properties: {
+        data: {
+          type: 'array',
+          items: { type: 'object' },
+        },
+        meta: {
+          type: 'object',
+          properties: {
+            page: { type: 'number', example: 1 },
+            limit: { type: 'number', example: 10 },
+            total: { type: 'number', example: 50 },
+            totalPages: { type: 'number', example: 5 },
+            hasPrevPage: { type: 'boolean', example: false },
+            hasNextPage: { type: 'boolean', example: true },
+          },
+        },
+      },
+    },
+  })
   search(@Query() searchDto: SearchCampoFormularioDto) {
     return this.campoFormularioService.search(searchDto);
   }

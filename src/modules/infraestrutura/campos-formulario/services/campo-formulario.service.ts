@@ -12,6 +12,7 @@ import {
 import { CreateCampoFormularioDto } from '../dto/create-campo-formulario.dto';
 import { UpdateCampoFormularioDto } from '../dto/update-campo-formulario.dto';
 import { SearchCampoFormularioDto } from '../dto/search-campo-formulario.dto';
+import { PaginatedResultDto } from '../../common/dto/pagination.dto';
 
 @Injectable()
 export class CampoFormularioService {
@@ -110,11 +111,13 @@ export class CampoFormularioService {
   }
 
   /**
-   * Buscar campos com filtros
+   * Buscar campos com filtros e paginação
    */
   async search(
     searchDto: SearchCampoFormularioDto,
-  ): Promise<CampoFormulario[]> {
+  ): Promise<PaginatedResultDto<CampoFormulario>> {
+    const { page = 1, limit = 10, termo, nomeCampo, ativo } = searchDto;
+
     const query = this.campoRepository
       .createQueryBuilder('campo')
       .leftJoinAndSelect('campo.alternativas', 'alternativas')
@@ -124,26 +127,35 @@ export class CampoFormularioService {
     // Filtro por termo (busca na descrição e no nome do campo)
     // Importante: nomeCampo é ENUM, precisa fazer cast para text antes de usar LOWER()
     // Usar aspas duplas para referenciar o nome da coluna no banco (nome_campo)
-    if (searchDto.termo) {
+    if (termo) {
       query.andWhere(
         'LOWER(campo.descricao) LIKE LOWER(:termo) OR LOWER("campo"."nome_campo"::text) LIKE LOWER(:termo)',
-        { termo: `%${searchDto.termo}%` },
+        { termo: `%${termo}%` },
       );
     }
 
     // Filtro por nome específico do campo
-    if (searchDto.nomeCampo) {
+    if (nomeCampo) {
       query.andWhere('campo.nomeCampo = :nomeCampo', {
-        nomeCampo: searchDto.nomeCampo,
+        nomeCampo: nomeCampo,
       });
     }
 
     // Filtro por status ativo/inativo
-    if (searchDto.ativo !== undefined) {
-      query.andWhere('campo.ativo = :ativo', { ativo: searchDto.ativo });
+    if (ativo !== undefined) {
+      query.andWhere('campo.ativo = :ativo', { ativo: ativo });
     }
 
-    return query.getMany();
+    // Contar total de registros
+    const total = await query.getCount();
+
+    // Aplicar paginação
+    query.skip((page - 1) * limit).take(limit);
+
+    // Buscar dados
+    const data = await query.getMany();
+
+    return new PaginatedResultDto(data, total, page, limit);
   }
 
   /**

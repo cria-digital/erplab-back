@@ -1,4 +1,4 @@
-### Listar todas as empresas
+### Listar todas as empresas (sem paginação)
 GET {{baseUrl}}/cadastros/empresas
 Authorization: Bearer {{token}}
 
@@ -17,6 +17,49 @@ Authorization: Bearer {{token}}
 #     "atualizadoEm": "2024-01-15T10:00:00.000Z"
 #   }
 # ]
+
+###
+
+### Buscar empresas com paginação - Página 1
+GET {{baseUrl}}/cadastros/empresas/search?page=1&limit=10
+Authorization: Bearer {{token}}
+
+### Expected Response
+# {
+#   "data": [...],
+#   "meta": {
+#     "page": 1,
+#     "limit": 10,
+#     "total": 50,
+#     "totalPages": 5,
+#     "hasPrevPage": false,
+#     "hasNextPage": true
+#   }
+# }
+
+###
+
+### Buscar empresas por termo (razão social, nome fantasia ou CNPJ)
+GET {{baseUrl}}/cadastros/empresas/search?termo=saúde&page=1&limit=10
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar empresas ativas com paginação
+GET {{baseUrl}}/cadastros/empresas/search?ativo=true&page=1&limit=10
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar empresas por tipo com paginação
+GET {{baseUrl}}/cadastros/empresas/search?tipoEmpresa=CONVENIOS&page=1&limit=10
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar com múltiplos filtros
+GET {{baseUrl}}/cadastros/empresas/search?termo=lab&tipoEmpresa=LABORATORIO_APOIO&ativo=true&page=1&limit=5
+Authorization: Bearer {{token}}
 
 ###
 
