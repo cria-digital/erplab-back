@@ -118,17 +118,17 @@ export class CampoFormularioService {
   ): Promise<PaginatedResultDto<CampoFormulario>> {
     const { page = 1, limit = 10, termo, nomeCampo, ativo } = searchDto;
 
-    const query = this.campoRepository
+    // Primeira query: buscar IDs dos campos com filtros e paginação (sem JOIN)
+    const queryIds = this.campoRepository
       .createQueryBuilder('campo')
-      .leftJoinAndSelect('campo.alternativas', 'alternativas')
-      .orderBy('campo.nomeCampo', 'ASC')
-      .addOrderBy('alternativas.ordem', 'ASC');
+      .select('campo.id')
+      .orderBy('campo.nomeCampo', 'ASC');
 
     // Filtro por termo (busca na descrição e no nome do campo)
     // Importante: nomeCampo é ENUM, precisa fazer cast para text antes de usar LOWER()
     // Usar aspas duplas para referenciar o nome da coluna no banco (nome_campo)
     if (termo) {
-      query.andWhere(
+      queryIds.andWhere(
         'LOWER(campo.descricao) LIKE LOWER(:termo) OR LOWER("campo"."nome_campo"::text) LIKE LOWER(:termo)',
         { termo: `%${termo}%` },
       );
@@ -136,24 +136,39 @@ export class CampoFormularioService {
 
     // Filtro por nome específico do campo
     if (nomeCampo) {
-      query.andWhere('campo.nomeCampo = :nomeCampo', {
+      queryIds.andWhere('campo.nomeCampo = :nomeCampo', {
         nomeCampo: nomeCampo,
       });
     }
 
     // Filtro por status ativo/inativo
     if (ativo !== undefined) {
-      query.andWhere('campo.ativo = :ativo', { ativo: ativo });
+      queryIds.andWhere('campo.ativo = :ativo', { ativo: ativo });
     }
 
     // Contar total de registros
-    const total = await query.getCount();
+    const total = await queryIds.getCount();
 
     // Aplicar paginação
-    query.skip((page - 1) * limit).take(limit);
+    queryIds.skip((page - 1) * limit).take(limit);
 
-    // Buscar dados
-    const data = await query.getMany();
+    // Buscar IDs
+    const idsResult = await queryIds.getRawMany();
+    const ids = idsResult.map((row) => row.campo_id);
+
+    // Se não houver resultados, retornar vazio
+    if (ids.length === 0) {
+      return new PaginatedResultDto([], total, page, limit);
+    }
+
+    // Segunda query: buscar campos completos com alternativas usando os IDs
+    const data = await this.campoRepository
+      .createQueryBuilder('campo')
+      .leftJoinAndSelect('campo.alternativas', 'alternativas')
+      .whereInIds(ids)
+      .orderBy('campo.nomeCampo', 'ASC')
+      .addOrderBy('alternativas.ordem', 'ASC')
+      .getMany();
 
     return new PaginatedResultDto(data, total, page, limit);
   }
