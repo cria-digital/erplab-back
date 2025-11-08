@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsInt, IsOptional, MaxLength, Min } from 'class-validator';
+import {
+  IsString,
+  IsInt,
+  IsOptional,
+  IsBoolean,
+  MaxLength,
+  Min,
+} from 'class-validator';
 
 export class CreateAlternativaCampoDto {
   @ApiProperty({
@@ -20,4 +27,14 @@ export class CreateAlternativaCampoDto {
   @IsInt()
   @Min(0)
   ordem?: number;
+
+  @ApiProperty({
+    description: 'Status da alternativa (ativo/inativo)',
+    example: true,
+    required: false,
+    default: true,
+  })
+  @IsOptional()
+  @IsBoolean()
+  ativo?: boolean;
 }

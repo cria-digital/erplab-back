@@ -36,7 +36,7 @@ export class CampoFormularioSeedService {
     const campos: CampoData[] = [
       {
         nomeCampo: NomeCampoFormulario.TIPO_EXAMES,
-        descricao: 'Classificação do tipo de exame',
+        descricao: '',
         alternativas: [
           { texto: 'Laboratorial', ordem: 1 },
           { texto: 'Imagem', ordem: 2 },
@@ -47,7 +47,7 @@ export class CampoFormularioSeedService {
       },
       {
         nomeCampo: NomeCampoFormulario.ESPECIALIDADE,
-        descricao: 'Especialidade médica relacionada ao exame',
+        descricao: '',
         alternativas: [
           { texto: 'Cardiologia', ordem: 1 },
           { texto: 'Neurologia', ordem: 2 },
@@ -63,7 +63,7 @@ export class CampoFormularioSeedService {
       },
       {
         nomeCampo: NomeCampoFormulario.GRUPO,
-        descricao: 'Grupo de exames (categoria principal)',
+        descricao: '',
         alternativas: [
           { texto: 'Bioquímica', ordem: 1 },
           { texto: 'Hematologia', ordem: 2 },
@@ -76,7 +76,7 @@ export class CampoFormularioSeedService {
       },
       {
         nomeCampo: NomeCampoFormulario.SUBGRUPO,
-        descricao: 'Subgrupo de exames (subcategoria)',
+        descricao: '',
         alternativas: [
           { texto: 'Glicemia', ordem: 1 },
           { texto: 'Lipidograma', ordem: 2 },
@@ -89,7 +89,7 @@ export class CampoFormularioSeedService {
       },
       {
         nomeCampo: NomeCampoFormulario.SETOR,
-        descricao: 'Setor responsável pela execução do exame',
+        descricao: '',
         alternativas: [
           { texto: 'Bioquímica', ordem: 1 },
           { texto: 'Hematologia', ordem: 2 },
@@ -103,7 +103,7 @@ export class CampoFormularioSeedService {
       },
       {
         nomeCampo: NomeCampoFormulario.METODOLOGIA,
-        descricao: 'Metodologia utilizada para executar o exame',
+        descricao: '',
         alternativas: [
           { texto: 'Automação', ordem: 1 },
           { texto: 'Enzimático', ordem: 2 },
@@ -118,7 +118,7 @@ export class CampoFormularioSeedService {
       },
       {
         nomeCampo: NomeCampoFormulario.UNIDADE_MEDIDA,
-        descricao: 'Unidade de medida do resultado',
+        descricao: '',
         alternativas: [
           { texto: 'mg/dL', ordem: 1 },
           { texto: 'g/dL', ordem: 2 },
@@ -136,7 +136,7 @@ export class CampoFormularioSeedService {
       },
       {
         nomeCampo: NomeCampoFormulario.AMOSTRA,
-        descricao: 'Tipo de amostra biológica necessária',
+        descricao: '',
         alternativas: [
           { texto: 'Sangue Total', ordem: 1 },
           { texto: 'Soro', ordem: 2 },
@@ -152,7 +152,7 @@ export class CampoFormularioSeedService {
       },
       {
         nomeCampo: NomeCampoFormulario.TIPO_RECIPIENTE,
-        descricao: 'Tipo de recipiente/tubo para coleta de amostra',
+        descricao: '',
         alternativas: [
           { texto: 'Tubo EDTA (tampa roxa)', ordem: 1 },
           { texto: 'Tubo Citrato (tampa azul)', ordem: 2 },
@@ -170,7 +170,7 @@ export class CampoFormularioSeedService {
       },
       {
         nomeCampo: NomeCampoFormulario.REGIAO_COLETA,
-        descricao: 'Região anatômica para coleta da amostra',
+        descricao: '',
         alternativas: [
           { texto: 'Veia do antebraço', ordem: 1 },
           { texto: 'Veia dorsal da mão', ordem: 2 },
@@ -184,7 +184,7 @@ export class CampoFormularioSeedService {
       },
       {
         nomeCampo: NomeCampoFormulario.VOLUME_MINIMO,
-        descricao: 'Volume mínimo de amostra necessário',
+        descricao: '',
         alternativas: [
           { texto: '1 mL', ordem: 1 },
           { texto: '2 mL', ordem: 2 },
@@ -198,7 +198,7 @@ export class CampoFormularioSeedService {
       },
       {
         nomeCampo: NomeCampoFormulario.ESTABILIDADE,
-        descricao: 'Estabilidade da amostra e condições de armazenamento',
+        descricao: '',
         alternativas: [
           { texto: '2h temperatura ambiente', ordem: 1 },
           { texto: '4h temperatura ambiente', ordem: 2 },

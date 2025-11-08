@@ -48,18 +48,21 @@ export class CampoFormularioService {
   }
 
   /**
-   * Listar todos os campos
+   * Listar todos os campos SEM alternativas
    */
   async findAll(): Promise<CampoFormulario[]> {
-    return this.campoRepository.find({
+    // Buscar todos os campos com suas alternativas
+    const campos = await this.campoRepository.find({
       relations: ['alternativas'],
       order: {
         nomeCampo: 'ASC',
-        alternativas: {
-          ordem: 'ASC',
-        },
       },
     });
+
+    // Filtrar apenas os campos que NÃO têm alternativas
+    return campos.filter(
+      (campo) => !campo.alternativas || campo.alternativas.length === 0,
+    );
   }
 
   /**
@@ -112,16 +115,21 @@ export class CampoFormularioService {
 
   /**
    * Buscar campos com filtros e paginação
+   * IMPORTANTE: Retorna apenas campos que TÊM alternativas
    */
   async search(
     searchDto: SearchCampoFormularioDto,
   ): Promise<PaginatedResultDto<CampoFormulario>> {
     const { page = 1, limit = 10, termo, nomeCampo, ativo } = searchDto;
 
-    // Primeira query: buscar IDs dos campos com filtros e paginação (sem JOIN)
+    // Query para buscar campos que TÊM alternativas
     const queryIds = this.campoRepository
       .createQueryBuilder('campo')
       .select('campo.id')
+      // JOIN com alternativas para garantir que só pegamos campos com alternativas
+      .innerJoin('campo.alternativas', 'alt')
+      // Agrupar para evitar duplicatas (um campo pode ter várias alternativas)
+      .groupBy('campo.id')
       .orderBy('campo.nomeCampo', 'ASC');
 
     // Filtro por termo (busca na descrição e no nome do campo)
@@ -146,7 +154,7 @@ export class CampoFormularioService {
       queryIds.andWhere('campo.ativo = :ativo', { ativo: ativo });
     }
 
-    // Contar total de registros
+    // Contar total de registros (campos com alternativas)
     const total = await queryIds.getCount();
 
     // Aplicar paginação
