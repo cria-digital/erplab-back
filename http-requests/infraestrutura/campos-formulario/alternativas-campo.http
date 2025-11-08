@@ -18,7 +18,8 @@ Authorization: Bearer {{token}}
 
 {
   "textoAlternativa": "mg/dL",
-  "ordem": 1
+  "ordem": 1,
+  "ativo": true
 }
 
 ### Expected Response:
@@ -42,7 +43,8 @@ Authorization: Bearer {{token}}
 
 {
   "textoAlternativa": "g/dL",
-  "ordem": 2
+  "ordem": 2,
+  "ativo": true
 }
 
 ###
@@ -53,7 +55,8 @@ Authorization: Bearer {{token}}
 
 {
   "textoAlternativa": "mEq/L",
-  "ordem": 3
+  "ordem": 3,
+  "ativo": true
 }
 
 ###
@@ -64,7 +67,8 @@ Authorization: Bearer {{token}}
 
 {
   "textoAlternativa": "%",
-  "ordem": 4
+  "ordem": 4,
+  "ativo": false
 }
 
 ### ========================================
@@ -109,7 +113,8 @@ Authorization: Bearer {{token}}
 
 {
   "textoAlternativa": "mg/dL (miligramas por decilitro)",
-  "ordem": 1
+  "ordem": 1,
+  "ativo": true
 }
 
 ### Expected Response:
@@ -147,7 +152,8 @@ Authorization: Bearer {{token}}
 
 {
   "textoAlternativa": "UI/L",
-  "ordem": 5
+  "ordem": 5,
+  "ativo": true
 }
 
 ###
@@ -158,7 +164,8 @@ Authorization: Bearer {{token}}
 
 {
   "textoAlternativa": "ng/mL",
-  "ordem": 6
+  "ordem": 6,
+  "ativo": true
 }
 
 ###
@@ -169,8 +176,27 @@ Authorization: Bearer {{token}}
 
 {
   "textoAlternativa": "pg/mL",
-  "ordem": 7
+  "ordem": 7,
+  "ativo": true
 }
+
+### ========================================
+### 9. Criar Alternativa Inativa
+### ========================================
+### Exemplo: Criar alternativa desativada desde o início
+POST {{baseUrl}}/infraestrutura/campos-formulario/{{campoId}}/alternativas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "textoAlternativa": "µg/L (obsoleto)",
+  "ordem": 10,
+  "ativo": false
+}
+
+### Expected Response:
+# Status: 201 Created
+# Alternativa criada com ativo=false
 
 ### ========================================
 ### Testes de Erro
@@ -183,7 +209,8 @@ Authorization: Bearer {{token}}
 
 {
   "textoAlternativa": "Teste",
-  "ordem": 1
+  "ordem": 1,
+  "ativo": true
 }
 
 ### Expected Response:
