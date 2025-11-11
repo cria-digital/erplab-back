@@ -113,20 +113,77 @@ export class EmpresasController {
   }
 
   @Get('cnpj/:cnpj')
-  @ApiOperation({ summary: 'Buscar empresa por CNPJ' })
+  @ApiOperation({
+    summary: 'Buscar empresa por CNPJ',
+    description:
+      'Busca empresa por CNPJ. Se não encontrar no banco de dados local, consulta automaticamente a API da Receita Federal (CNPJA) e retorna os dados. Resposta pode incluir flag "isExternal: true" quando os dados vierem da API externa.',
+  })
   @ApiParam({
     name: 'cnpj',
-    description: 'CNPJ da empresa',
-    example: '00.000.000/0001-00',
+    description:
+      'CNPJ da empresa (com ou sem formatação). Exemplo: 07526557011659 ou 07.526.557/0116-59',
+    example: '07526557011659',
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Empresa encontrada',
-    type: Empresa,
+    description:
+      'Empresa encontrada (no banco local ou na API CNPJA). Quando vindo da API, inclui campo "isExternal: true" e dados adicionais como sócios, atividades secundárias, registros estaduais, etc.',
+    schema: {
+      oneOf: [
+        {
+          type: 'object',
+          description: 'Empresa do banco local',
+          properties: {
+            id: { type: 'string' },
+            cnpj: { type: 'string' },
+            razaoSocial: { type: 'string' },
+            nomeFantasia: { type: 'string' },
+          },
+        },
+        {
+          type: 'object',
+          description: 'Empresa da API CNPJA',
+          properties: {
+            isExternal: { type: 'boolean', example: true },
+            externalSource: { type: 'string', example: 'CNPJA' },
+            cnpj: { type: 'string' },
+            razaoSocial: { type: 'string' },
+            nomeFantasia: { type: 'string' },
+            mainActivity: {
+              type: 'object',
+              properties: {
+                code: { type: 'number' },
+                description: { type: 'string' },
+              },
+            },
+            members: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  name: { type: 'string' },
+                  role: { type: 'string' },
+                  since: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+      ],
+    },
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
-    description: 'Empresa não encontrada',
+    description:
+      'Empresa não encontrada no banco local nem na API da Receita Federal',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_GATEWAY,
+    description: 'Erro ao consultar API CNPJA',
+  })
+  @ApiResponse({
+    status: HttpStatus.SERVICE_UNAVAILABLE,
+    description: 'Serviço da Receita Federal indisponível',
   })
   findByCnpj(@Param('cnpj') cnpj: string) {
     return this.empresasService.findByCnpj(cnpj);

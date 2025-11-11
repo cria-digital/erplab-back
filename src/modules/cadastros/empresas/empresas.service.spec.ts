@@ -219,21 +219,107 @@ describe('EmpresasService', () => {
   });
 
   describe('findByCnpj', () => {
-    it('deve retornar empresa por CNPJ', async () => {
+    it('deve retornar empresa por CNPJ quando encontrada no banco', async () => {
       mockRepository.findOne.mockResolvedValue(mockEmpresa);
 
       const result = await service.findByCnpj('12.345.678/0001-90');
 
       expect(result).toEqual(mockEmpresa);
       expect(mockRepository.findOne).toHaveBeenCalledWith({
-        where: { cnpj: '12.345.678/0001-90' },
+        where: { cnpj: '12345678000190' }, // CNPJ sem formatação
       });
     });
 
-    it('deve retornar erro quando CNPJ não for encontrado', async () => {
+    it('deve remover formatação do CNPJ antes de buscar', async () => {
+      mockRepository.findOne.mockResolvedValue(mockEmpresa);
+
+      await service.findByCnpj('12.345.678/0001-90');
+
+      expect(mockRepository.findOne).toHaveBeenCalledWith({
+        where: { cnpj: '12345678000190' },
+      });
+    });
+
+    it('deve buscar na API CNPJA quando não encontrar no banco', async () => {
       mockRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.findByCnpj('00.000.000/0000-00')).rejects.toThrow(
+      // Mock da API CNPJA
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          taxId: '07526557011659',
+          alias: 'Filial Manaus',
+          company: {
+            name: 'AMBEV S.A.',
+            equity: 58226035176.01,
+            nature: { text: 'Sociedade Anônima Aberta' },
+            size: { text: 'Demais' },
+            simples: { optant: false },
+            simei: { optant: false },
+            members: [],
+          },
+          status: { id: 2, text: 'Ativa' },
+          statusDate: '2023-07-31',
+          address: {
+            zip: '69058795',
+            street: 'Avenida Constantino Nery',
+            number: '2575',
+            district: 'Flores',
+            city: 'Manaus',
+            state: 'AM',
+            details: null,
+          },
+          phones: [{ type: 'LANDLINE', area: '19', number: '33135680' }],
+          emails: [
+            {
+              ownership: 'CORPORATE',
+              address: 'opobrigaces@ambev.com.br',
+            },
+          ],
+          mainActivity: {
+            id: 1113502,
+            text: 'Fabricação de cervejas e chopes',
+          },
+          sideActivities: [],
+          registrations: [],
+          founded: '2023-07-31',
+          head: false,
+        }),
+      });
+
+      const result = await service.findByCnpj('07526557011659');
+
+      expect(result.isExternal).toBe(true);
+      expect(result.externalSource).toBe('CNPJA');
+      expect(result.cnpj).toBe('07526557011659');
+      expect(result.razaoSocial).toBe('AMBEV S.A.');
+      expect(result.nomeFantasia).toBe('Filial Manaus');
+      expect(global.fetch).toHaveBeenCalledWith(
+        'https://open.cnpja.com/office/07526557011659',
+      );
+    });
+
+    it('deve retornar erro quando CNPJ não for encontrado no banco nem na API', async () => {
+      mockRepository.findOne.mockResolvedValue(null);
+
+      // Mock da API retornando 404
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: false,
+        status: 404,
+      });
+
+      await expect(service.findByCnpj('00000000000000')).rejects.toThrow(
+        NotFoundException,
+      );
+    });
+
+    it('deve retornar erro quando API CNPJA estiver indisponível', async () => {
+      mockRepository.findOne.mockResolvedValue(null);
+
+      // Mock da API com erro de rede
+      global.fetch = jest.fn().mockRejectedValue(new Error('Network error'));
+
+      await expect(service.findByCnpj('07526557011659')).rejects.toThrow(
         NotFoundException,
       );
     });
