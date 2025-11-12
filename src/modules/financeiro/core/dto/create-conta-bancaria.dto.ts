@@ -5,12 +5,11 @@ import {
   IsOptional,
   IsEnum,
   IsUUID,
-  IsNumber,
   MaxLength,
   IsArray,
   ArrayMinSize,
 } from 'class-validator';
-import { TipoConta, StatusConta } from '../entities/conta-bancaria.entity';
+import { TipoConta } from '../entities/conta-bancaria.entity';
 
 export class CreateContaBancariaDto {
   @ApiProperty({
@@ -63,47 +62,6 @@ export class CreateContaBancariaDto {
   @IsNotEmpty()
   @MaxLength(2)
   digito_conta: string;
-
-  @ApiProperty({
-    description: 'Tipo de chave PIX',
-    example: 'cnpj',
-    maxLength: 20,
-    required: false,
-  })
-  @IsString()
-  @IsOptional()
-  @MaxLength(20)
-  pix_tipo?: string;
-
-  @ApiProperty({
-    description: 'Chave PIX da conta',
-    example: '12.345.678/0001-90',
-    maxLength: 255,
-    required: false,
-  })
-  @IsString()
-  @IsOptional()
-  @MaxLength(255)
-  pix_chave?: string;
-
-  @ApiProperty({
-    description: 'Status da conta',
-    enum: StatusConta,
-    example: StatusConta.ATIVA,
-    default: StatusConta.ATIVA,
-  })
-  @IsEnum(StatusConta)
-  @IsOptional()
-  status?: StatusConta;
-
-  @ApiProperty({
-    description: 'Saldo inicial da conta',
-    example: 1000.0,
-    default: 0,
-  })
-  @IsNumber()
-  @IsOptional()
-  saldo_inicial?: number;
 
   @ApiProperty({
     description: 'Observações sobre a conta',

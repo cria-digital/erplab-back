@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ContaBancariaController } from './conta-bancaria.controller';
 import { ContaBancariaService } from './conta-bancaria.service';
 import { JwtAuthGuard } from '../../autenticacao/auth/guards/jwt-auth.guard';
-import { TipoConta, StatusConta } from './entities/conta-bancaria.entity';
+import { TipoConta } from './entities/conta-bancaria.entity';
 
 describe('ContaBancariaController', () => {
   let controller: ContaBancariaController;
@@ -16,11 +16,9 @@ describe('ContaBancariaController', () => {
     remove: jest.fn(),
     findByBanco: jest.fn(),
     findByUnidadeSaude: jest.fn(),
-    findByStatus: jest.fn(),
     findByTipoConta: jest.fn(),
     findContaPrincipal: jest.fn(),
     setContaPrincipal: jest.fn(),
-    toggleStatus: jest.fn(),
     validateChavePix: jest.fn(),
     findByChavePix: jest.fn(),
     generateRelatorioBancario: jest.fn(),
@@ -70,7 +68,6 @@ describe('ContaBancariaController', () => {
       tipo_conta: TipoConta.CORRENTE,
       chave_pix: '11999999999',
       descricao: 'Conta corrente principal',
-      status: StatusConta.ATIVA,
       conta_principal: true,
       banco_id: '456e7890-e89b-12d3-a456-426614174001',
       unidade_saude_id: '789e0123-e89b-12d3-a456-426614174002',
@@ -395,33 +392,6 @@ describe('ContaBancariaController', () => {
       });
     });
 
-    describe('findByStatus', () => {
-      it('deveria retornar contas por status', async () => {
-        const mockContas = [mockContaBancaria];
-        mockContaBancariaService.findByStatus.mockResolvedValue(mockContas);
-
-        // Skip test se método não existe no controller
-        if (!('findByStatus' in controller)) {
-          console.warn(
-            'Método findByStatus não implementado no controller ainda',
-          );
-          return;
-        }
-
-        const result = await (controller as any).findByStatus(
-          StatusConta.ATIVA,
-        );
-
-        expect(result).toEqual(mockContas);
-        // Skip test se método não existe no service
-        if (!('findByStatus' in service)) {
-          console.warn('Método findByStatus não implementado no service ainda');
-          return;
-        }
-        expect(service.findByStatus).toHaveBeenCalledWith(StatusConta.ATIVA);
-      });
-    });
-
     describe('findByTipoConta', () => {
       it('deveria retornar contas por tipo', async () => {
         const mockContas = [mockContaBancaria];
@@ -534,40 +504,6 @@ describe('ContaBancariaController', () => {
           return;
         }
         expect(service.setContaPrincipal).toHaveBeenCalledWith(
-          '123e4567-e89b-12d3-a456-426614174000',
-        );
-      });
-    });
-
-    describe('toggleStatus', () => {
-      it('deveria alternar status da conta', async () => {
-        const mockContaInativa = {
-          ...mockContaBancaria,
-          status: StatusConta.INATIVA,
-        };
-        mockContaBancariaService.toggleStatus.mockResolvedValue(
-          mockContaInativa,
-        );
-
-        // Skip test se método não existe no controller
-        if (!('toggleStatus' in controller)) {
-          console.warn(
-            'Método toggleStatus não implementado no controller ainda',
-          );
-          return;
-        }
-
-        const result = await (controller as any).toggleStatus(
-          '123e4567-e89b-12d3-a456-426614174000',
-        );
-
-        expect(result).toEqual(mockContaInativa);
-        // Skip test se método não existe no service
-        if (!('toggleStatus' in service)) {
-          console.warn('Método toggleStatus não implementado no service ainda');
-          return;
-        }
-        expect(service.toggleStatus).toHaveBeenCalledWith(
           '123e4567-e89b-12d3-a456-426614174000',
         );
       });

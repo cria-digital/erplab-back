@@ -50,7 +50,7 @@ export class ContaBancariaController {
   @ApiOperation({
     summary: 'Listar todas as contas bancárias',
     description:
-      'Lista contas bancárias com paginação e filtros opcionais (search, tipo, status, banco, unidade)',
+      'Lista contas bancárias com paginação e filtros opcionais (search, tipo, banco, unidade)',
   })
   @ApiResponse({
     status: 200,
@@ -85,13 +85,6 @@ export class ContaBancariaController {
     example: 'corrente',
   })
   @ApiQuery({
-    name: 'status',
-    required: false,
-    type: String,
-    description: 'Filtrar por status (ativa, inativa, bloqueada)',
-    example: 'ativa',
-  })
-  @ApiQuery({
     name: 'banco_id',
     required: false,
     type: String,
@@ -108,7 +101,6 @@ export class ContaBancariaController {
     @Query('limit') limit?: number,
     @Query('search') search?: string,
     @Query('tipo') tipo?: TipoConta,
-    @Query('status') status?: string,
     @Query('banco_id') banco_id?: string,
     @Query('unidade_id') unidade_id?: string,
   ) {
@@ -117,7 +109,6 @@ export class ContaBancariaController {
       limit: limit ? Number(limit) : 10,
       search,
       tipo,
-      status: status as any,
       banco_id,
       unidade_id,
     };
@@ -230,24 +221,6 @@ export class ContaBancariaController {
   })
   update(@Param('id') id: string, @Body() updateDto: UpdateContaBancariaDto) {
     return this.service.update(id, updateDto);
-  }
-
-  @Patch(':id/toggle-status')
-  @ApiOperation({ summary: 'Alternar status da conta (ativo/inativo)' })
-  @ApiParam({
-    name: 'id',
-    description: 'ID da conta bancária',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Status alterado com sucesso',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Conta não encontrada',
-  })
-  toggleStatus(@Param('id') id: string) {
-    return this.service.toggleStatus(id);
   }
 
   @Delete(':id')

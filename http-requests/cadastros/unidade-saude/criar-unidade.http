@@ -13,7 +13,6 @@
 #     - nome_conta: gerado como "Conta Principal - NomeFantasia"
 #     - titular: usa razaoSocial da unidade
 #     - cpf_cnpj_titular: usa CNPJ da unidade
-#     - saldo_inicial: padrão 0
 POST {{baseUrl}}/cadastros/unidades-saude
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
@@ -113,8 +112,6 @@ Authorization: Bearer {{token}}
       "numero_conta": "12345",
       "digito_conta": "6",
       "tipo_conta": "corrente",
-      "pix_tipo": "cnpj",
-      "pix_chave": "12345678000191",
       "observacoes": "Conta principal para recebimentos (Banco do Brasil - 001)"
     }
   ],

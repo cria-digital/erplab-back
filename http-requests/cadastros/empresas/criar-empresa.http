@@ -35,6 +35,7 @@ Authorization: Bearer {{token}}
   "reterIr": false,
   "reterPcc": true,
   "optanteSimplesNacional": false,
+  "formaPagamento": "Transferência Bancária",
   "ativo": true
 }
 
@@ -67,6 +68,7 @@ Authorization: Bearer {{token}}
   "contatoResponsavel": "(11) 98888-7777",
   "emailResponsavel": "maria@vidasaude.com.br",
   "optanteSimplesNacional": false,
+  "formaPagamento": "Boleto Bancário",
   "contasBancarias": [
     {
       "banco_id": "SUBSTITUIR_PELO_UUID_DO_BANCO",
@@ -75,10 +77,6 @@ Authorization: Bearer {{token}}
       "digito_agencia": "5",
       "numero_conta": "12345678",
       "digito_conta": "9",
-      "pix_tipo": "cnpj",
-      "pix_chave": "11.222.333/0001-44",
-      "status": "ativa",
-      "saldo_inicial": 50000.00,
       "observacoes": "Conta principal para recebimentos"
     },
     {
@@ -88,10 +86,6 @@ Authorization: Bearer {{token}}
       "digito_agencia": "0",
       "numero_conta": "87654321",
       "digito_conta": "0",
-      "pix_tipo": "email",
-      "pix_chave": "financeiro@vidasaude.com.br",
-      "status": "ativa",
-      "saldo_inicial": 0.00,
       "observacoes": "Conta secundária para pagamentos"
     }
   ],
@@ -130,6 +124,7 @@ Authorization: Bearer {{token}}
   "nomeResponsavel": "Dra. Maria Santos",
   "cargoResponsavel": "Diretora Técnica",
   "emailResponsavel": "maria.santos@labanalisa.com.br",
+  "formaPagamento": "PIX",
   "ativo": true
 }
 
@@ -156,6 +151,7 @@ Authorization: Bearer {{token}}
   "nomeResponsavel": "Dr. Paulo Santos",
   "cargoResponsavel": "Diretor Técnico",
   "emailResponsavel": "paulo@examerapido.com.br",
+  "formaPagamento": "Transferência Bancária",
   "contasBancarias": [
     {
       "banco_id": "SUBSTITUIR_PELO_UUID_DO_BANCO",
@@ -163,9 +159,6 @@ Authorization: Bearer {{token}}
       "agencia": "5678",
       "numero_conta": "98765432",
       "digito_conta": "1",
-      "pix_tipo": "telefone",
-      "pix_chave": "+5511333344444",
-      "status": "ativa",
       "observacoes": "Conta única do laboratório"
     }
   ],
@@ -197,6 +190,7 @@ Authorization: Bearer {{token}}
   "nomeResponsavel": "Carlos Oliveira",
   "cargoResponsavel": "Diretor de Operações",
   "emailResponsavel": "carlos@telemedonline.com.br",
+  "formaPagamento": "Boleto Bancário",
   "ativo": true
 }
 

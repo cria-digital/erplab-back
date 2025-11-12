@@ -12,7 +12,6 @@ import { CnaeSecundario } from './entities/cnae-secundario.entity';
 import { Banco } from '../../financeiro/core/entities/banco.entity';
 import {
   ContaBancaria,
-  StatusConta,
   TipoConta,
 } from '../../financeiro/core/entities/conta-bancaria.entity';
 import { ContaBancariaUnidade } from '../../financeiro/core/entities/conta-bancaria-unidade.entity';
@@ -144,10 +143,6 @@ export class UnidadeSaudeService {
               digito_agencia: contaDto.digito_agencia,
               numero_conta: contaDto.numero_conta,
               digito_conta: contaDto.digito_conta,
-              pix_tipo: contaDto.pix_tipo,
-              pix_chave: contaDto.pix_chave,
-              status: StatusConta.ATIVA,
-              saldo_inicial: contaDto.saldo_inicial || 0,
               observacoes: contaDto.observacoes,
             });
             conta = (await queryRunner.manager.save(
@@ -392,10 +387,6 @@ export class UnidadeSaudeService {
                 digito_agencia: contaDto.digito_agencia,
                 numero_conta: contaDto.numero_conta,
                 digito_conta: contaDto.digito_conta,
-                pix_tipo: contaDto.pix_tipo,
-                pix_chave: contaDto.pix_chave,
-                status: StatusConta.ATIVA,
-                saldo_inicial: contaDto.saldo_inicial || 0,
                 observacoes: contaDto.observacoes,
               });
               conta = (await queryRunner.manager.save(

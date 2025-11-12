@@ -5,11 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import {
-  ContaBancaria,
-  TipoConta,
-  StatusConta,
-} from './entities/conta-bancaria.entity';
+import { ContaBancaria, TipoConta } from './entities/conta-bancaria.entity';
 import { CreateContaBancariaDto } from './dto/create-conta-bancaria.dto';
 import { UpdateContaBancariaDto } from './dto/update-conta-bancaria.dto';
 import { PaginatedResultDto } from '../../infraestrutura/common/dto/pagination.dto';
@@ -19,7 +15,6 @@ export interface PaginationParams {
   limit?: number;
   search?: string;
   tipo?: TipoConta;
-  status?: StatusConta;
   banco_id?: string;
   unidade_id?: string;
 }
@@ -111,13 +106,6 @@ export class ContaBancariaService {
       queryBuilder.andWhere('conta.tipo_conta = :tipo', { tipo: params.tipo });
     }
 
-    // Filtro por status
-    if (params.status) {
-      queryBuilder.andWhere('conta.status = :status', {
-        status: params.status,
-      });
-    }
-
     // Filtro por banco
     if (params.banco_id) {
       queryBuilder.andWhere('conta.banco_id = :banco_id', {
@@ -142,7 +130,6 @@ export class ContaBancariaService {
 
   async findAtivas(): Promise<ContaBancaria[]> {
     return await this.contaBancariaRepository.find({
-      where: { status: StatusConta.ATIVA },
       relations: ['banco', 'unidade_saude'],
       order: { created_at: 'DESC' },
     });
@@ -261,17 +248,6 @@ export class ContaBancariaService {
     }
 
     return contaAtualizada;
-  }
-
-  async toggleStatus(id: string): Promise<ContaBancaria> {
-    const conta = await this.findOne(id);
-
-    conta.status =
-      conta.status === StatusConta.ATIVA
-        ? StatusConta.INATIVA
-        : StatusConta.ATIVA;
-
-    return await this.contaBancariaRepository.save(conta);
   }
 
   async remove(id: string): Promise<void> {

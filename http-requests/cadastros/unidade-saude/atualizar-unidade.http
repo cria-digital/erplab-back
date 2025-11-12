@@ -67,12 +67,7 @@ Authorization: Bearer {{token}}
       "digito_agencia": "7",
       "numero_conta": "98765",
       "digito_conta": "4",
-      "titular": "Nome da Unidade de Saúde LTDA",
-      "cpf_cnpj_titular": "12345678000191",
       "tipo_conta": "corrente",
-      "pix_tipo": "cnpj",
-      "pix_chave": "12345678000191",
-      "saldo_inicial": 0,
       "observacoes": "Nova conta principal (Bradesco - 237)"
     }
   ]

@@ -78,6 +78,17 @@ Authorization: Bearer {{token}}
 
 ###
 
+### Atualizar forma de pagamento
+PATCH {{baseUrl}}/cadastros/empresas/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "formaPagamento": "PIX"
+}
+
+###
+
 ### Atualizar CNPJ (verificação de duplicidade)
 PATCH {{baseUrl}}/cadastros/empresas/550e8400-e29b-41d4-a716-446655440000
 Content-Type: {{contentType}}
@@ -134,10 +145,6 @@ Authorization: Bearer {{token}}
       "digito_agencia": "5",
       "numero_conta": "12345678",
       "digito_conta": "9",
-      "pix_tipo": "cnpj",
-      "pix_chave": "11.222.333/0001-44",
-      "status": "ativa",
-      "saldo_inicial": 10000.00,
       "observacoes": "Conta principal atualizada"
     }
   ]
@@ -177,9 +184,6 @@ Authorization: Bearer {{token}}
       "agencia": "0001",
       "numero_conta": "11111111",
       "digito_conta": "1",
-      "pix_tipo": "cnpj",
-      "pix_chave": "11.222.333/0001-44",
-      "status": "ativa",
       "observacoes": "Conta principal - Banco do Brasil"
     },
     {
@@ -188,9 +192,6 @@ Authorization: Bearer {{token}}
       "agencia": "2345",
       "numero_conta": "22222222",
       "digito_conta": "2",
-      "pix_tipo": "email",
-      "pix_chave": "financeiro@empresa.com.br",
-      "status": "ativa",
       "observacoes": "Conta secundária - Caixa Econômica"
     },
     {
@@ -199,9 +200,6 @@ Authorization: Bearer {{token}}
       "agencia": "3456",
       "numero_conta": "33333333",
       "digito_conta": "3",
-      "pix_tipo": "telefone",
-      "pix_chave": "+5511999998888",
-      "status": "ativa",
       "observacoes": "Poupança - Bradesco"
     }
   ]

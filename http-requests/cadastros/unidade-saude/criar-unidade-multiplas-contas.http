@@ -75,9 +75,6 @@ Authorization: Bearer {{token}}
       "titular": "Laboratório Multi-Contas LTDA",
       "cpf_cnpj_titular": "98765432000199",
       "tipo_conta": "corrente",
-      "pix_tipo": "cnpj",
-      "pix_chave": "98765432000199",
-      "saldo_inicial": 5000.00,
       "observacoes": "Conta principal para recebimentos"
     },
     {
@@ -91,9 +88,6 @@ Authorization: Bearer {{token}}
       "titular": "Laboratório Multi-Contas LTDA",
       "cpf_cnpj_titular": "98765432000199",
       "tipo_conta": "corrente",
-      "pix_tipo": "email",
-      "pix_chave": "financeiro@labmc.com.br",
-      "saldo_inicial": 0,
       "observacoes": "Conta para pagamento de fornecedores"
     },
     {
@@ -106,9 +100,6 @@ Authorization: Bearer {{token}}
       "titular": "Laboratório Multi-Contas LTDA",
       "cpf_cnpj_titular": "98765432000199",
       "tipo_conta": "poupanca",
-      "pix_tipo": "telefone",
-      "pix_chave": "+5511999998888",
-      "saldo_inicial": 10000.00,
       "observacoes": "Conta reserva/poupança"
     }
   ],
@@ -165,8 +156,6 @@ Authorization: Bearer {{token}}
 # 3. Campos opcionais:
 #    - digito_agencia
 #    - tipo_conta (padrão: "corrente")
-#    - pix_tipo e pix_chave
-#    - saldo_inicial (padrão: 0)
 #    - observacoes
 #
 # 4. Tipos de conta suportados:
@@ -175,10 +164,3 @@ Authorization: Bearer {{token}}
 #    - pagamento
 #    - salario
 #    - investimento
-#
-# 5. Tipos de chave PIX:
-#    - cpf
-#    - cnpj
-#    - email
-#    - telefone
-#    - chave_aleatoria

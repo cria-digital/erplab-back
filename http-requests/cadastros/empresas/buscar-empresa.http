@@ -222,7 +222,6 @@ Authorization: Bearer {{token}}
 #       "agencia": "0001",
 #       "numero_conta": "12345678",
 #       "digito_conta": "9",
-#       "pix_chave": "...",
 #       "banco": {
 #         "id": "uuid",
 #         "codigo": "001",

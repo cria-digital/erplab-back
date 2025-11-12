@@ -13,12 +13,6 @@ Authorization: Bearer {{token}}
   "digito_agencia": "5",
   "numero_conta": "12345678",
   "digito_conta": "9",
-  "titular": "Clínica Saúde Total Ltda",
-  "cpf_cnpj_titular": "12.345.678/0001-90",
-  "pix_tipo": "cnpj",
-  "pix_chave": "12.345.678/0001-90",
-  "status": "ativa",
-  "saldo_inicial": 1000.00,
   "observacoes": "Conta principal para recebimentos"
 }
 
@@ -54,10 +48,6 @@ Authorization: Bearer {{token}}
   "agencia": "1234",
   "numero_conta": "87654321",
   "digito_conta": "0",
-  "titular": "Clínica Saúde Total Ltda",
-  "cpf_cnpj_titular": "12.345.678/0001-90",
-  "status": "ativa",
-  "saldo_inicial": 5000.00,
   "observacoes": "Conta compartilhada entre matriz e filial"
 }
 
@@ -74,7 +64,6 @@ Authorization: Bearer {{token}}
 #   "codigo_interno": "CC001",
 #   "nome_conta": "Conta Corrente Principal",
 #   "tipo_conta": "corrente",
-#   "status": "ativa",
 #   ...
 # }
 
@@ -93,11 +82,7 @@ Authorization: Bearer {{token}}
   "tipo_conta": "poupanca",
   "agencia": "1234",
   "numero_conta": "00012345",
-  "digito_conta": "8",
-  "titular": "Clínica Saúde Total Ltda",
-  "cpf_cnpj_titular": "12.345.678/0001-90",
-  "status": "ativa",
-  "saldo_inicial": 5000.00
+  "digito_conta": "8"
 }
 
 ###
@@ -152,12 +137,6 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Filtrar por status
-GET {{baseUrl}}/financeiro/contas-bancarias?status=ativa
-Authorization: Bearer {{token}}
-
-###
-
 ### Filtrar por banco
 GET {{baseUrl}}/financeiro/contas-bancarias?banco_id={{bancoId}}
 Authorization: Bearer {{token}}
@@ -170,26 +149,26 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Combinar múltiplos filtros - Exemplo 1: Contas correntes ativas
-GET {{baseUrl}}/financeiro/contas-bancarias?tipo=corrente&status=ativa
+### Combinar múltiplos filtros - Exemplo 1: Contas correntes
+GET {{baseUrl}}/financeiro/contas-bancarias?tipo=corrente
 Authorization: Bearer {{token}}
 
 ###
 
-### Combinar múltiplos filtros - Exemplo 2: Buscar por agência "1234" nas contas correntes ativas
-GET {{baseUrl}}/financeiro/contas-bancarias?search=1234&tipo=corrente&status=ativa
+### Combinar múltiplos filtros - Exemplo 2: Buscar por agência "1234" nas contas correntes
+GET {{baseUrl}}/financeiro/contas-bancarias?search=1234&tipo=corrente
 Authorization: Bearer {{token}}
 
 ###
 
 ### Combinar múltiplos filtros - Exemplo 3: Todos os filtros + paginação
-GET {{baseUrl}}/financeiro/contas-bancarias?search=1234&tipo=corrente&status=ativa&page=1&limit=10
+GET {{baseUrl}}/financeiro/contas-bancarias?search=1234&tipo=corrente&page=1&limit=10
 Authorization: Bearer {{token}}
 
 ###
 
-### Combinar múltiplos filtros - Exemplo 4: Contas de um banco específico que estão ativas
-GET {{baseUrl}}/financeiro/contas-bancarias?banco_id={{bancoId}}&status=ativa
+### Combinar múltiplos filtros - Exemplo 4: Contas de um banco específico
+GET {{baseUrl}}/financeiro/contas-bancarias?banco_id={{bancoId}}
 Authorization: Bearer {{token}}
 
 ###
@@ -242,9 +221,7 @@ Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "pix_tipo": "email",
-  "pix_chave": "financeiro@clinicasaude.com.br",
-  "observacoes": "Conta atualizada com nova chave PIX"
+  "observacoes": "Conta atualizada - observação modificada"
 }
 
 ###
@@ -316,15 +293,8 @@ Authorization: Bearer {{token}}
 
 {
   "observacoes": "Conta compartilhada entre 3 unidades - atualizada",
-  "saldo_inicial": 10000.00,
   "unidades_ids": ["{{unidadeId}}", "{{unidadeId2}}", "{{unidadeId3}}"]
 }
-
-###
-
-### Alternar status da conta
-PATCH {{baseUrl}}/financeiro/contas-bancarias/{{contaId}}/toggle-status
-Authorization: Bearer {{token}}
 
 ###
 
