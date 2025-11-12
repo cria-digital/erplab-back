@@ -1,4 +1,4 @@
-### Criar Empresa - Convênio
+### Criar Empresa - Convênio (SEM dados bancários)
 POST {{baseUrl}}/cadastros/empresas
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
@@ -35,10 +35,66 @@ Authorization: Bearer {{token}}
   "reterIr": false,
   "reterPcc": true,
   "optanteSimplesNacional": false,
-  "banco": "001",
-  "agencia": "1234",
-  "contaCorrente": "123456-7",
-  "formaPagamento": "Transferência Bancária",
+  "ativo": true
+}
+
+###
+
+### Criar Empresa - Convênio COM múltiplas contas bancárias
+POST {{baseUrl}}/cadastros/empresas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoEmpresa": "CONVENIOS",
+  "codigoInterno": "CONV002",
+  "cnpj": "11.222.333/0001-44",
+  "razaoSocial": "Convênio Vida Saúde S.A.",
+  "nomeFantasia": "Vida Saúde",
+  "inscricaoEstadual": "111222333",
+  "telefoneFixo": "(11) 4444-5555",
+  "celular": "(11) 97777-6666",
+  "emailComercial": "contato@vidasaude.com.br",
+  "siteEmpresa": "www.vidasaude.com.br",
+  "cep": "01310-200",
+  "rua": "Avenida Paulista",
+  "numero": "2000",
+  "bairro": "Bela Vista",
+  "estado": "SP",
+  "cidade": "São Paulo",
+  "nomeResponsavel": "Maria Oliveira",
+  "cargoResponsavel": "Gerente Financeiro",
+  "contatoResponsavel": "(11) 98888-7777",
+  "emailResponsavel": "maria@vidasaude.com.br",
+  "optanteSimplesNacional": false,
+  "contasBancarias": [
+    {
+      "banco_id": "SUBSTITUIR_PELO_UUID_DO_BANCO",
+      "tipo_conta": "corrente",
+      "agencia": "0001",
+      "digito_agencia": "5",
+      "numero_conta": "12345678",
+      "digito_conta": "9",
+      "pix_tipo": "cnpj",
+      "pix_chave": "11.222.333/0001-44",
+      "status": "ativa",
+      "saldo_inicial": 50000.00,
+      "observacoes": "Conta principal para recebimentos"
+    },
+    {
+      "banco_id": "SUBSTITUIR_PELO_UUID_DO_BANCO",
+      "tipo_conta": "corrente",
+      "agencia": "1234",
+      "digito_agencia": "0",
+      "numero_conta": "87654321",
+      "digito_conta": "0",
+      "pix_tipo": "email",
+      "pix_chave": "financeiro@vidasaude.com.br",
+      "status": "ativa",
+      "saldo_inicial": 0.00,
+      "observacoes": "Conta secundária para pagamentos"
+    }
+  ],
   "ativo": true
 }
 
@@ -53,7 +109,7 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Criar Empresa - Laboratório de Apoio
+### Criar Empresa - Laboratório de Apoio (SEM contas bancárias)
 POST {{baseUrl}}/cadastros/empresas
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
@@ -74,6 +130,45 @@ Authorization: Bearer {{token}}
   "nomeResponsavel": "Dra. Maria Santos",
   "cargoResponsavel": "Diretora Técnica",
   "emailResponsavel": "maria.santos@labanalisa.com.br",
+  "ativo": true
+}
+
+###
+
+### 🆕 Criar Laboratório COM conta bancária e PIX
+POST {{baseUrl}}/cadastros/empresas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoEmpresa": "LABORATORIO_APOIO",
+  "cnpj": "55.666.777/0001-88",
+  "razaoSocial": "Laboratório Exame Rápido Ltda",
+  "nomeFantasia": "Exame Rápido",
+  "telefoneFixo": "(11) 3333-4444",
+  "emailComercial": "contato@examerapido.com.br",
+  "cep": "04567-100",
+  "rua": "Rua dos Laboratórios",
+  "numero": "700",
+  "bairro": "Vila Mariana",
+  "estado": "SP",
+  "cidade": "São Paulo",
+  "nomeResponsavel": "Dr. Paulo Santos",
+  "cargoResponsavel": "Diretor Técnico",
+  "emailResponsavel": "paulo@examerapido.com.br",
+  "contasBancarias": [
+    {
+      "banco_id": "SUBSTITUIR_PELO_UUID_DO_BANCO",
+      "tipo_conta": "corrente",
+      "agencia": "5678",
+      "numero_conta": "98765432",
+      "digito_conta": "1",
+      "pix_tipo": "telefone",
+      "pix_chave": "+5511333344444",
+      "status": "ativa",
+      "observacoes": "Conta única do laboratório"
+    }
+  ],
   "ativo": true
 }
 

@@ -64,20 +64,6 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Atualizar dados bancários
-PATCH {{baseUrl}}/cadastros/empresas/550e8400-e29b-41d4-a716-446655440000
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-  "banco": "237",
-  "agencia": "3456",
-  "contaCorrente": "987654-3",
-  "formaPagamento": "PIX"
-}
-
-###
-
 ### Atualizar responsável
 PATCH {{baseUrl}}/cadastros/empresas/550e8400-e29b-41d4-a716-446655440000
 Content-Type: {{contentType}}
@@ -126,3 +112,159 @@ Authorization: Bearer {{token}}
 #   "message": "Empresa com ID 999e8400-e29b-41d4-a716-446655440999 não encontrada",
 #   "error": "Not Found"
 # }
+
+###
+
+### ================================
+### 🆕 ATUALIZAR COM CONTAS BANCÁRIAS
+### ================================
+
+### Adicionar/Substituir contas bancárias da empresa
+### ⚠️ ATENÇÃO: Substitui TODAS as contas existentes
+PATCH {{baseUrl}}/cadastros/empresas/SUBSTITUIR_PELO_ID
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "contasBancarias": [
+    {
+      "banco_id": "SUBSTITUIR_PELO_UUID_DO_BANCO",
+      "tipo_conta": "corrente",
+      "agencia": "1234",
+      "digito_agencia": "5",
+      "numero_conta": "12345678",
+      "digito_conta": "9",
+      "pix_tipo": "cnpj",
+      "pix_chave": "11.222.333/0001-44",
+      "status": "ativa",
+      "saldo_inicial": 10000.00,
+      "observacoes": "Conta principal atualizada"
+    }
+  ]
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "razaoSocial": "...",
+#   "contasBancarias": [
+#     {
+#       "id": "uuid",
+#       "banco_id": "uuid",
+#       "agencia": "1234",
+#       "numero_conta": "12345678",
+#       "banco": {
+#         "codigo": "001",
+#         "nome": "Banco do Brasil"
+#       }
+#     }
+#   ]
+# }
+
+###
+
+### Adicionar múltiplas contas bancárias
+PATCH {{baseUrl}}/cadastros/empresas/SUBSTITUIR_PELO_ID
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "contasBancarias": [
+    {
+      "banco_id": "SUBSTITUIR_PELO_UUID_DO_BANCO_1",
+      "tipo_conta": "corrente",
+      "agencia": "0001",
+      "numero_conta": "11111111",
+      "digito_conta": "1",
+      "pix_tipo": "cnpj",
+      "pix_chave": "11.222.333/0001-44",
+      "status": "ativa",
+      "observacoes": "Conta principal - Banco do Brasil"
+    },
+    {
+      "banco_id": "SUBSTITUIR_PELO_UUID_DO_BANCO_2",
+      "tipo_conta": "corrente",
+      "agencia": "2345",
+      "numero_conta": "22222222",
+      "digito_conta": "2",
+      "pix_tipo": "email",
+      "pix_chave": "financeiro@empresa.com.br",
+      "status": "ativa",
+      "observacoes": "Conta secundária - Caixa Econômica"
+    },
+    {
+      "banco_id": "SUBSTITUIR_PELO_UUID_DO_BANCO_3",
+      "tipo_conta": "poupanca",
+      "agencia": "3456",
+      "numero_conta": "33333333",
+      "digito_conta": "3",
+      "pix_tipo": "telefone",
+      "pix_chave": "+5511999998888",
+      "status": "ativa",
+      "observacoes": "Poupança - Bradesco"
+    }
+  ]
+}
+
+###
+
+### Remover todas as contas bancárias (passar array vazio)
+PATCH {{baseUrl}}/cadastros/empresas/SUBSTITUIR_PELO_ID
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "contasBancarias": []
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "contasBancarias": []  <- Todas removidas
+# }
+
+###
+
+### Atualizar dados da empresa SEM alterar contas
+### Não passar o campo contasBancarias mantém as contas existentes
+PATCH {{baseUrl}}/cadastros/empresas/SUBSTITUIR_PELO_ID
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nomeFantasia": "Novo Nome Fantasia",
+  "telefoneFixo": "(11) 4444-5555"
+}
+
+### Expected Response
+# Contas bancárias permanecem inalteradas
+
+###
+
+### ================================
+### 🆕 HELPERS - BUSCAR BANCOS
+### ================================
+
+### Obter UUID do Banco do Brasil
+GET {{baseUrl}}/financeiro/bancos/codigo/001
+Authorization: Bearer {{token}}
+
+###
+
+### Obter UUID da Caixa Econômica Federal
+GET {{baseUrl}}/financeiro/bancos/codigo/104
+Authorization: Bearer {{token}}
+
+###
+
+### Obter UUID do Bradesco
+GET {{baseUrl}}/financeiro/bancos/codigo/237
+Authorization: Bearer {{token}}
+
+###
+
+### Listar todos os bancos ativos (para escolher)
+GET {{baseUrl}}/financeiro/bancos/ativos?page=1&limit=50
+Authorization: Bearer {{token}}

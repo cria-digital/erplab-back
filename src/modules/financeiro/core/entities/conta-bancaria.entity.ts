@@ -12,6 +12,7 @@ import { Banco } from './banco.entity';
 import { GatewayPagamento } from './gateway-pagamento.entity';
 import { UnidadeSaude } from '../../../cadastros/unidade-saude/entities/unidade-saude.entity';
 import { ContaBancariaUnidade } from './conta-bancaria-unidade.entity';
+import { Empresa } from '../../../cadastros/empresas/entities/empresa.entity';
 
 export enum TipoConta {
   CORRENTE = 'corrente',
@@ -85,6 +86,14 @@ export class ContaBancaria {
   @ManyToOne(() => UnidadeSaude)
   @JoinColumn({ name: 'unidade_saude_id' })
   unidade_saude: UnidadeSaude;
+
+  // Relacionamento com Empresa (para convênios, laboratórios, fornecedores, etc)
+  @Column({ type: 'uuid', nullable: true })
+  empresa_id: string;
+
+  @ManyToOne(() => Empresa, (empresa) => empresa.contasBancarias)
+  @JoinColumn({ name: 'empresa_id' })
+  empresa: Empresa;
 
   // Novo relacionamento ManyToMany via tabela intermediária
   @OneToMany(() => ContaBancariaUnidade, (vinculo) => vinculo.conta_bancaria, {

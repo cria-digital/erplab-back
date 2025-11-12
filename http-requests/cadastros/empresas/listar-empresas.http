@@ -1,4 +1,8 @@
-### Listar todas as empresas (sem paginação)
+### ⚠️ IMPORTANTE: Listagem padrão retorna APENAS empresas ATIVAS
+### Para ver empresas inativas, use: /search?ativo=false
+
+### Listar todas as empresas ativas (sem paginação)
+### ✅ CORRIGIDO: Agora retorna apenas empresas com ativo = true
 GET {{baseUrl}}/cadastros/empresas
 Authorization: Bearer {{token}}
 
@@ -12,7 +16,18 @@ Authorization: Bearer {{token}}
 #     "razaoSocial": "Convênio Médico Saúde Total S.A.",
 #     "nomeFantasia": "Saúde Total",
 #     "emailComercial": "contato@saudetotal.com.br",
-#     "ativo": true,
+#     "ativo": true,  <- Todas com ativo = true
+#     "contasBancarias": [  <- Array de contas bancárias
+#       {
+#         "id": "uuid",
+#         "agencia": "1234",
+#         "numero_conta": "12345678",
+#         "banco": {
+#           "codigo": "001",
+#           "nome": "Banco do Brasil"
+#         }
+#       }
+#     ],
 #     "criadoEm": "2024-01-15T10:00:00.000Z",
 #     "atualizadoEm": "2024-01-15T10:00:00.000Z"
 #   }
@@ -45,9 +60,26 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Buscar empresas ativas com paginação
+### Buscar empresas ativas com paginação (redundante - padrão já é ativo=true)
 GET {{baseUrl}}/cadastros/empresas/search?ativo=true&page=1&limit=10
 Authorization: Bearer {{token}}
+
+###
+
+### 🆕 Buscar empresas INATIVAS com paginação
+GET {{baseUrl}}/cadastros/empresas/search?ativo=false&page=1&limit=10
+Authorization: Bearer {{token}}
+
+### Expected Response
+# {
+#   "data": [
+#     {
+#       "id": "uuid",
+#       "ativo": false,  <- Todas com ativo = false
+#       ...
+#     }
+#   ]
+# }
 
 ###
 

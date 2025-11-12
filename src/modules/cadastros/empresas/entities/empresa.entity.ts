@@ -4,8 +4,10 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { TipoEmpresaEnum } from '../enums/empresas.enum';
+import { ContaBancaria } from '../../../financeiro/core/entities/conta-bancaria.entity';
 
 @Entity('empresas')
 export class Empresa {
@@ -182,6 +184,10 @@ export class Empresa {
 
   @Column({ default: true })
   ativo: boolean;
+
+  // Relacionamentos
+  @OneToMany(() => ContaBancaria, (conta) => conta.empresa, { cascade: true })
+  contasBancarias: ContaBancaria[];
 
   @CreateDateColumn()
   criadoEm: Date;

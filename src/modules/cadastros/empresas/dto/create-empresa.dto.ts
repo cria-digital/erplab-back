@@ -8,8 +8,12 @@ import {
   Matches,
   IsNotEmpty,
   IsNumber,
+  IsArray,
+  ValidateNested,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 import { TipoEmpresaEnum } from '../enums/empresas.enum';
+import { CreateContaBancariaEmpresaDto } from './create-conta-bancaria-empresa.dto';
 
 export class CreateEmpresaDto {
   @ApiProperty({
@@ -219,6 +223,17 @@ export class CreateEmpresaDto {
   @IsOptional()
   @IsString()
   formaPagamento?: string;
+
+  @ApiPropertyOptional({
+    description: 'Contas bancárias da empresa',
+    type: [CreateContaBancariaEmpresaDto],
+    isArray: true,
+  })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateContaBancariaEmpresaDto)
+  contasBancarias?: CreateContaBancariaEmpresaDto[];
 
   @ApiPropertyOptional({
     default: true,

@@ -6,8 +6,9 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DataSource, Brackets } from 'typeorm';
 import { Empresa } from './entities/empresa.entity';
+import { ContaBancaria } from '../../financeiro/core/entities/conta-bancaria.entity';
 import { CreateEmpresaDto } from './dto/create-empresa.dto';
 import { UpdateEmpresaDto } from './dto/update-empresa.dto';
 import { SearchEmpresaDto } from './dto/search-empresa.dto';
@@ -18,6 +19,9 @@ export class EmpresasService {
   constructor(
     @InjectRepository(Empresa)
     private readonly empresaRepository: Repository<Empresa>,
+    @InjectRepository(ContaBancaria)
+    private readonly contaBancariaRepository: Repository<ContaBancaria>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async create(createEmpresaDto: CreateEmpresaDto): Promise<Empresa> {
@@ -30,12 +34,46 @@ export class EmpresasService {
       throw new ConflictException('CNPJ já cadastrado');
     }
 
-    const empresa = this.empresaRepository.create(createEmpresaDto);
-    return await this.empresaRepository.save(empresa);
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      // Extrai contas bancárias do DTO
+      const { contasBancarias, ...empresaData } = createEmpresaDto;
+
+      // Cria a empresa
+      const empresa = this.empresaRepository.create(empresaData);
+      const empresaSalva = await queryRunner.manager.save(empresa);
+
+      // Cria as contas bancárias se fornecidas
+      if (contasBancarias && contasBancarias.length > 0) {
+        const contas = contasBancarias.map((conta) => {
+          return this.contaBancariaRepository.create({
+            ...conta,
+            empresa_id: empresaSalva.id,
+          });
+        });
+
+        await queryRunner.manager.save(contas);
+      }
+
+      await queryRunner.commitTransaction();
+
+      // Retorna empresa com contas bancárias
+      return await this.findOne(empresaSalva.id);
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async findAll(): Promise<Empresa[]> {
     return await this.empresaRepository.find({
+      where: { ativo: true },
+      relations: ['contasBancarias', 'contasBancarias.banco'],
       order: {
         nomeFantasia: 'ASC',
       },
@@ -49,13 +87,22 @@ export class EmpresasService {
 
     const query = this.empresaRepository
       .createQueryBuilder('empresa')
+      .leftJoinAndSelect('empresa.contasBancarias', 'conta')
+      .leftJoinAndSelect('conta.banco', 'banco')
       .orderBy('empresa.nomeFantasia', 'ASC');
 
     // Filtro por termo (busca em razão social, nome fantasia e CNPJ)
     if (termo) {
       query.andWhere(
-        'LOWER(empresa.razaoSocial) LIKE LOWER(:termo) OR LOWER(empresa.nomeFantasia) LIKE LOWER(:termo) OR empresa.cnpj LIKE :termo',
-        { termo: `%${termo}%` },
+        new Brackets((qb) => {
+          qb.where('LOWER(empresa.razaoSocial) LIKE LOWER(:termo)', {
+            termo: `%${termo}%`,
+          })
+            .orWhere('LOWER(empresa.nomeFantasia) LIKE LOWER(:termo)', {
+              termo: `%${termo}%`,
+            })
+            .orWhere('empresa.cnpj LIKE :termo', { termo: `%${termo}%` });
+        }),
       );
     }
 
@@ -64,10 +111,9 @@ export class EmpresasService {
       query.andWhere('empresa.tipoEmpresa = :tipoEmpresa', { tipoEmpresa });
     }
 
-    // Filtro por status ativo/inativo
-    if (ativo !== undefined) {
-      query.andWhere('empresa.ativo = :ativo', { ativo });
-    }
+    // Filtro por status ativo/inativo (padrão: apenas ativas)
+    const ativoFiltro = ativo !== undefined ? ativo : true;
+    query.andWhere('empresa.ativo = :ativo', { ativo: ativoFiltro });
 
     // Contar total de registros
     const total = await query.getCount();
@@ -84,6 +130,7 @@ export class EmpresasService {
   async findOne(id: string): Promise<Empresa> {
     const empresa = await this.empresaRepository.findOne({
       where: { id },
+      relations: ['contasBancarias', 'contasBancarias.banco'],
     });
 
     if (!empresa) {
@@ -268,8 +315,57 @@ export class EmpresasService {
       }
     }
 
-    Object.assign(empresa, updateEmpresaDto);
-    return await this.empresaRepository.save(empresa);
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      // Extrai contas bancárias do DTO
+      const { contasBancarias, ...empresaData } = updateEmpresaDto;
+
+      // Atualiza dados da empresa
+      Object.assign(empresa, empresaData);
+      await queryRunner.manager.save(empresa);
+
+      // Se contasBancarias foi fornecido, substitui completamente as contas existentes
+      if (contasBancarias !== undefined) {
+        // Remove todas as contas existentes
+        await queryRunner.manager.delete(ContaBancaria, {
+          empresa_id: empresa.id,
+        });
+
+        // Cria as novas contas
+        if (contasBancarias.length > 0) {
+          const contas = contasBancarias.map((conta) => {
+            return this.contaBancariaRepository.create({
+              ...conta,
+              empresa_id: empresa.id,
+            });
+          });
+
+          await queryRunner.manager.save(contas);
+        }
+      }
+
+      await queryRunner.commitTransaction();
+
+      // Retorna empresa atualizada com contas bancárias
+      return await this.findOne(empresa.id);
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async findAllIncludingInactive(): Promise<Empresa[]> {
+    return await this.empresaRepository.find({
+      relations: ['contasBancarias', 'contasBancarias.banco'],
+      order: {
+        nomeFantasia: 'ASC',
+      },
+    });
   }
 
   async remove(id: string): Promise<void> {

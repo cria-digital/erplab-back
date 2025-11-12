@@ -112,6 +112,7 @@ describe('FornecedorService', () => {
     agencia: '1234-5',
     contaCorrente: '12345-6',
     formaPagamento: 'Transferência Bancária',
+    contasBancarias: [],
     ativo: true,
     criadoEm: new Date(),
     atualizadoEm: new Date(),

@@ -108,3 +108,126 @@ Authorization: Bearer {{token}}
 ### Buscar empresa por CNPJ - Prestador de Serviços
 GET {{baseUrl}}/cadastros/empresas/cnpj/34.567.890%2F0001-67
 Authorization: Bearer {{token}}
+
+###
+
+### ================================
+### 🆕 FILTROS CORRIGIDOS
+### ================================
+
+### Buscar empresas por TIPO (Filtro corrigido)
+### ✅ Agora retorna APENAS empresas do tipo especificado
+GET {{baseUrl}}/cadastros/empresas/search?tipoEmpresa=LABORATORIO_APOIO&page=1&limit=10
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [
+#     {
+#       "id": "uuid",
+#       "tipoEmpresa": "LABORATORIO_APOIO",  <- Apenas LABORATORIO_APOIO
+#       "razaoSocial": "...",
+#       "ativo": true,
+#       "contasBancarias": [...]
+#     }
+#   ],
+#   "meta": {
+#     "total": 5,
+#     "page": 1,
+#     "limit": 10
+#   }
+# }
+
+###
+
+### Buscar empresas por TERMO + TIPO (Filtro combinado corrigido)
+### ✅ Retorna apenas empresas do tipo especificado que atendem o termo
+GET {{baseUrl}}/cadastros/empresas/search?tipoEmpresa=CONVENIOS&termo=saude&page=1&limit=10
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar empresas por TERMO (busca em razão social, nome fantasia e CNPJ)
+GET {{baseUrl}}/cadastros/empresas/search?termo=laboratorio&page=1&limit=10
+Authorization: Bearer {{token}}
+
+###
+
+### ================================
+### 🆕 FILTROS ATIVO/INATIVO
+### ================================
+
+### Buscar empresas ATIVAS (padrão - não precisa passar ativo=true)
+### ✅ Retorna apenas empresas ativas por padrão
+GET {{baseUrl}}/cadastros/empresas/search?page=1&limit=10
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Apenas empresas com ativo = true
+
+###
+
+### Buscar empresas INATIVAS explicitamente
+### Para ver empresas inativas, passar ativo=false
+GET {{baseUrl}}/cadastros/empresas/search?ativo=false&page=1&limit=10
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Apenas empresas com ativo = false
+
+###
+
+### Buscar laboratórios ATIVOS (padrão)
+GET {{baseUrl}}/cadastros/empresas/search?tipoEmpresa=LABORATORIO_APOIO&page=1&limit=10
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar laboratórios INATIVOS
+GET {{baseUrl}}/cadastros/empresas/search?tipoEmpresa=LABORATORIO_APOIO&ativo=false&page=1&limit=10
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar convênios por termo + apenas ativos
+GET {{baseUrl}}/cadastros/empresas/search?tipoEmpresa=CONVENIOS&termo=saude&page=1&limit=10
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar fornecedores inativos
+GET {{baseUrl}}/cadastros/empresas/search?tipoEmpresa=FORNECEDORES&ativo=false
+Authorization: Bearer {{token}}
+
+###
+
+### ================================
+### 🆕 BUSCAR COM CONTAS BANCÁRIAS
+### ================================
+
+### Buscar empresa por ID (retorna com contas bancárias)
+GET {{baseUrl}}/cadastros/empresas/SUBSTITUIR_PELO_ID
+Authorization: Bearer {{token}}
+
+### Expected Response
+# {
+#   "id": "uuid",
+#   "tipoEmpresa": "CONVENIOS",
+#   "razaoSocial": "...",
+#   "contasBancarias": [
+#     {
+#       "id": "uuid",
+#       "tipo_conta": "corrente",
+#       "agencia": "0001",
+#       "numero_conta": "12345678",
+#       "digito_conta": "9",
+#       "pix_chave": "...",
+#       "banco": {
+#         "id": "uuid",
+#         "codigo": "001",
+#         "nome": "Banco do Brasil"
+#       }
+#     }
+#   ]
+# }

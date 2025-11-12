@@ -1,9 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ConflictException, NotFoundException } from '@nestjs/common';
+import { DataSource } from 'typeorm';
 
 import { EmpresasService } from './empresas.service';
 import { Empresa } from './entities/empresa.entity';
+import { ContaBancaria } from '../../financeiro/core/entities/conta-bancaria.entity';
 import { CreateEmpresaDto } from './dto/create-empresa.dto';
 import { UpdateEmpresaDto } from './dto/update-empresa.dto';
 import { TipoEmpresaEnum } from './enums/empresas.enum';
@@ -16,6 +18,28 @@ describe('EmpresasService', () => {
     save: jest.fn(),
     find: jest.fn(),
     findOne: jest.fn(),
+  };
+
+  const mockContaBancariaRepository = {
+    create: jest.fn(),
+    save: jest.fn(),
+    find: jest.fn(),
+    findOne: jest.fn(),
+  };
+
+  const mockQueryRunner = {
+    connect: jest.fn(),
+    startTransaction: jest.fn(),
+    commitTransaction: jest.fn(),
+    rollbackTransaction: jest.fn(),
+    release: jest.fn(),
+    manager: {
+      save: jest.fn(),
+    },
+  };
+
+  const mockDataSource = {
+    createQueryRunner: jest.fn(() => mockQueryRunner),
   };
 
   const mockEmpresa = {
@@ -59,6 +83,7 @@ describe('EmpresasService', () => {
     agencia: '1234',
     contaCorrente: '567890-1',
     formaPagamento: 'PIX',
+    contasBancarias: [],
     ativo: true,
     criadoEm: new Date(),
     atualizadoEm: new Date(),
@@ -71,6 +96,14 @@ describe('EmpresasService', () => {
         {
           provide: getRepositoryToken(Empresa),
           useValue: mockRepository,
+        },
+        {
+          provide: getRepositoryToken(ContaBancaria),
+          useValue: mockContaBancariaRepository,
+        },
+        {
+          provide: DataSource,
+          useValue: mockDataSource,
         },
       ],
     }).compile();
@@ -97,18 +130,18 @@ describe('EmpresasService', () => {
     };
 
     it('deve criar uma empresa com sucesso', async () => {
-      mockRepository.findOne.mockResolvedValue(null);
+      mockRepository.findOne
+        .mockResolvedValueOnce(null) // primeira chamada - verifica CNPJ
+        .mockResolvedValueOnce(mockEmpresa); // segunda chamada - findOne no final
       mockRepository.create.mockReturnValue(mockEmpresa);
-      mockRepository.save.mockResolvedValue(mockEmpresa);
+      mockQueryRunner.manager.save.mockResolvedValue(mockEmpresa);
 
       const result = await service.create(createEmpresaDto);
 
       expect(result).toEqual(mockEmpresa);
-      expect(mockRepository.findOne).toHaveBeenCalledWith({
-        where: { cnpj: createEmpresaDto.cnpj },
-      });
       expect(mockRepository.create).toHaveBeenCalledWith(createEmpresaDto);
-      expect(mockRepository.save).toHaveBeenCalledWith(mockEmpresa);
+      expect(mockQueryRunner.manager.save).toHaveBeenCalled();
+      expect(mockQueryRunner.commitTransaction).toHaveBeenCalled();
     });
 
     it('deve retornar erro quando CNPJ já existir', async () => {
@@ -136,9 +169,11 @@ describe('EmpresasService', () => {
 
       const empresaCompleta = { ...mockEmpresa, ...createDtoCompleto };
 
-      mockRepository.findOne.mockResolvedValue(null);
+      mockRepository.findOne
+        .mockResolvedValueOnce(null) // verifica CNPJ
+        .mockResolvedValueOnce(empresaCompleta); // findOne no final
       mockRepository.create.mockReturnValue(empresaCompleta);
-      mockRepository.save.mockResolvedValue(empresaCompleta);
+      mockQueryRunner.manager.save.mockResolvedValue(empresaCompleta);
 
       const result = await service.create(createDtoCompleto);
 
@@ -160,9 +195,11 @@ describe('EmpresasService', () => {
         cnpj: '98.765.432/0001-10',
       };
 
-      mockRepository.findOne.mockResolvedValue(null);
+      mockRepository.findOne
+        .mockResolvedValueOnce(null) // verifica CNPJ
+        .mockResolvedValueOnce(empresaLaboratorio); // findOne no final
       mockRepository.create.mockReturnValue(empresaLaboratorio);
-      mockRepository.save.mockResolvedValue(empresaLaboratorio);
+      mockQueryRunner.manager.save.mockResolvedValue(empresaLaboratorio);
 
       const result = await service.create(createLaboratorio);
 
@@ -179,6 +216,8 @@ describe('EmpresasService', () => {
 
       expect(result).toEqual(empresas);
       expect(mockRepository.find).toHaveBeenCalledWith({
+        where: { ativo: true },
+        relations: ['contasBancarias', 'contasBancarias.banco'],
         order: {
           nomeFantasia: 'ASC',
         },
@@ -203,6 +242,7 @@ describe('EmpresasService', () => {
       expect(result).toEqual(mockEmpresa);
       expect(mockRepository.findOne).toHaveBeenCalledWith({
         where: { id: 'empresa-uuid-1' },
+        relations: ['contasBancarias', 'contasBancarias.banco'],
       });
     });
 
@@ -214,6 +254,7 @@ describe('EmpresasService', () => {
       );
       expect(mockRepository.findOne).toHaveBeenCalledWith({
         where: { id: 'invalid-id' },
+        relations: ['contasBancarias', 'contasBancarias.banco'],
       });
     });
   });
@@ -362,13 +403,16 @@ describe('EmpresasService', () => {
         ...updateEmpresaDto,
       };
 
-      mockRepository.findOne.mockResolvedValue(mockEmpresa);
-      mockRepository.save.mockResolvedValue(empresaAtualizada);
+      mockRepository.findOne
+        .mockResolvedValueOnce(mockEmpresa) // primeira chamada - findOne no início
+        .mockResolvedValueOnce(empresaAtualizada); // segunda chamada - findOne no final
+      mockQueryRunner.manager.save.mockResolvedValue(empresaAtualizada);
 
       const result = await service.update('empresa-uuid-1', updateEmpresaDto);
 
       expect(result).toEqual(empresaAtualizada);
-      expect(mockRepository.save).toHaveBeenCalledWith(empresaAtualizada);
+      expect(mockQueryRunner.manager.save).toHaveBeenCalled();
+      expect(mockQueryRunner.commitTransaction).toHaveBeenCalled();
     });
 
     it('deve retornar erro quando empresa não for encontrada', async () => {
