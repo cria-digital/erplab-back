@@ -56,11 +56,46 @@ Authorization: Bearer {{token}}
   "cofinsPercentual": 3.5,
   "csllPercentual": 1.2,
   "issPercentual": 5.0,
+  "ibsPercentual": 0.0,
+  "cbsPercentual": 0.0,
   "reterIss": true,
   "reterIr": true,
   "reterPcc": true,
+  "reterIbs": false,
+  "reterCbs": false,
   "optanteSimplesNacional": false
 }
+
+###
+
+### 🆕 Atualizar para Reforma Tributária (IBS e CBS)
+### Migrar empresa para usar os novos impostos IBS e CBS
+PATCH {{baseUrl}}/cadastros/empresas/550e8400-e29b-41d4-a716-446655440000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "pisPercentual": 0.0,
+  "cofinsPercentual": 0.0,
+  "ibsPercentual": 12.5,
+  "cbsPercentual": 8.5,
+  "reterPcc": false,
+  "reterIbs": true,
+  "reterCbs": true
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "550e8400-e29b-41d4-a716-446655440000",
+#   "pisPercentual": 0.0,
+#   "cofinsPercentual": 0.0,
+#   "ibsPercentual": 12.5,
+#   "cbsPercentual": 8.5,
+#   "reterIbs": true,
+#   "reterCbs": true,
+#   ...
+# }
 
 ###
 

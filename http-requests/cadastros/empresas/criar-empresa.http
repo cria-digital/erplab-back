@@ -31,9 +31,13 @@ Authorization: Bearer {{token}}
   "cofinsPercentual": 3.0,
   "csllPercentual": 1.0,
   "issPercentual": 5.0,
+  "ibsPercentual": 0.0,
+  "cbsPercentual": 0.0,
   "reterIss": true,
   "reterIr": false,
   "reterPcc": true,
+  "reterIbs": false,
+  "reterCbs": false,
   "optanteSimplesNacional": false,
   "formaPagamento": "Transferência Bancária",
   "ativo": true
@@ -246,6 +250,64 @@ Authorization: Bearer {{token}}
   "optanteSimplesNacional": true,
   "ativo": true
 }
+
+###
+
+### 🆕 Criar Empresa - Com impostos IBS e CBS (Reforma Tributária)
+### Exemplo mostrando o uso dos novos impostos da reforma tributária
+POST {{baseUrl}}/cadastros/empresas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoEmpresa": "CONVENIOS",
+  "cnpj": "99.888.777/0001-66",
+  "razaoSocial": "Plano de Saúde Futuro S.A.",
+  "nomeFantasia": "Saúde Futuro",
+  "telefoneFixo": "(11) 9999-0000",
+  "emailComercial": "contato@saudefuturo.com.br",
+  "cep": "01311-000",
+  "rua": "Avenida Paulista",
+  "numero": "2500",
+  "bairro": "Bela Vista",
+  "estado": "SP",
+  "cidade": "São Paulo",
+  "nomeResponsavel": "Ana Costa",
+  "cargoResponsavel": "Diretora Financeira",
+  "emailResponsavel": "ana.costa@saudefuturo.com.br",
+  "irrfPercentual": 1.5,
+  "pisPercentual": 0.0,
+  "cofinsPercentual": 0.0,
+  "csllPercentual": 1.0,
+  "issPercentual": 5.0,
+  "ibsPercentual": 12.5,
+  "cbsPercentual": 8.5,
+  "reterIss": true,
+  "reterIr": false,
+  "reterPcc": false,
+  "reterIbs": true,
+  "reterCbs": true,
+  "optanteSimplesNacional": false,
+  "formaPagamento": "PIX",
+  "ativo": true
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "id": "uuid",
+#   "tipoEmpresa": "CONVENIOS",
+#   "cnpj": "99.888.777/0001-66",
+#   "razaoSocial": "Plano de Saúde Futuro S.A.",
+#   "nomeFantasia": "Saúde Futuro",
+#   "ibsPercentual": 12.5,
+#   "cbsPercentual": 8.5,
+#   "reterIbs": true,
+#   "reterCbs": true,
+#   ...
+# }
+
+###
 
 ### Error Response - CNPJ Duplicado
 # Status: 409 Conflict

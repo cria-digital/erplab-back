@@ -27,7 +27,7 @@ export class Empresa {
   @Column()
   razaoSocial: string;
 
-  @Column()
+  @Column({ nullable: true })
   nomeFantasia: string;
 
   @Column({ nullable: true })

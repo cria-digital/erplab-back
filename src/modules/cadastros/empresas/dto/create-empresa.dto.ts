@@ -42,10 +42,10 @@ export class CreateEmpresaDto {
   @IsNotEmpty()
   razaoSocial: string;
 
-  @ApiProperty({ description: 'Nome fantasia da empresa' })
+  @ApiPropertyOptional({ description: 'Nome fantasia da empresa' })
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  nomeFantasia: string;
+  nomeFantasia?: string;
 
   @ApiPropertyOptional({ description: 'Inscrição estadual' })
   @IsOptional()
