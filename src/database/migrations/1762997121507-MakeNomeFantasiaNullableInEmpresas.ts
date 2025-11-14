@@ -18,21 +18,60 @@ export class MakeNomeFantasiaNullableInEmpresas1762997121507
     await queryRunner.query(
       `DROP INDEX "public"."IDX_1c7842a1c9b419f3d5cc463e28"`,
     );
-    await queryRunner.query(
-      `ALTER TABLE "contas_bancarias" DROP COLUMN "status"`,
+
+    // Verificar e remover coluna status se existir
+    const hasStatusColumn = await queryRunner.hasColumn(
+      'contas_bancarias',
+      'status',
     );
-    await queryRunner.query(
-      `DROP TYPE "public"."contas_bancarias_status_enum"`,
+    if (hasStatusColumn) {
+      await queryRunner.query(
+        `ALTER TABLE "contas_bancarias" DROP COLUMN "status"`,
+      );
+    }
+
+    // Verificar e remover enum se existir
+    const hasStatusEnum = await queryRunner.query(
+      `SELECT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'contas_bancarias_status_enum')`,
     );
-    await queryRunner.query(
-      `ALTER TABLE "contas_bancarias" DROP COLUMN "pix_chave"`,
+    if (hasStatusEnum[0].exists) {
+      await queryRunner.query(
+        `DROP TYPE "public"."contas_bancarias_status_enum"`,
+      );
+    }
+
+    // Verificar e remover coluna pix_chave se existir
+    const hasPixChaveColumn = await queryRunner.hasColumn(
+      'contas_bancarias',
+      'pix_chave',
     );
-    await queryRunner.query(
-      `ALTER TABLE "contas_bancarias" DROP COLUMN "saldo_inicial"`,
+    if (hasPixChaveColumn) {
+      await queryRunner.query(
+        `ALTER TABLE "contas_bancarias" DROP COLUMN "pix_chave"`,
+      );
+    }
+
+    // Verificar e remover coluna saldo_inicial se existir
+    const hasSaldoInicialColumn = await queryRunner.hasColumn(
+      'contas_bancarias',
+      'saldo_inicial',
     );
-    await queryRunner.query(
-      `ALTER TABLE "contas_bancarias" DROP COLUMN "pix_tipo"`,
+    if (hasSaldoInicialColumn) {
+      await queryRunner.query(
+        `ALTER TABLE "contas_bancarias" DROP COLUMN "saldo_inicial"`,
+      );
+    }
+
+    // Verificar e remover coluna pix_tipo se existir
+    const hasPixTipoColumn = await queryRunner.hasColumn(
+      'contas_bancarias',
+      'pix_tipo',
     );
+    if (hasPixTipoColumn) {
+      await queryRunner.query(
+        `ALTER TABLE "contas_bancarias" DROP COLUMN "pix_tipo"`,
+      );
+    }
     await queryRunner.query(
       `ALTER TABLE "convenios" DROP COLUMN "aceita_atendimento_online"`,
     );
