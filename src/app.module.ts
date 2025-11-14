@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { databaseConfig } from './config/database.config';
 import { HealthController } from './health.controller';
+import { MetricsService } from './comum/services/metrics.service';
+import { PerformanceInterceptor } from './comum/interceptors/performance.interceptor';
 
 // Autenticação
 import { AuthModule } from './modules/autenticacao/auth/auth.module';
@@ -139,10 +141,18 @@ import { SeedModule } from './database/seeds/seed.module';
   ],
   controllers: [HealthController],
   providers: [
+    // Guards
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
     },
+    // Interceptors
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: PerformanceInterceptor,
+    },
+    // Services
+    MetricsService,
   ],
 })
 export class AppModule {}

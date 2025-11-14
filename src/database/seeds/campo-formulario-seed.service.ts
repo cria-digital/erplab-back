@@ -28,10 +28,12 @@ export class CampoFormularioSeedService {
   ) {}
 
   async seed(): Promise<void> {
-    this.logger.log('🌱 Iniciando seeder de Campos de Formulário...');
+    const startTime = Date.now();
+    this.logger.log('🌱 [SEEDER] Iniciando seeder de Campos de Formulário...');
+    this.logger.log(`🕒 [SEEDER] Timestamp: ${new Date().toISOString()}`);
 
     const count = await this.campoRepository.count();
-    this.logger.log(`ℹ️  Encontrados ${count} campo(s) existente(s).`);
+    this.logger.log(`ℹ️  [SEEDER] Encontrados ${count} campo(s) existente(s).`);
 
     const campos: CampoData[] = [
       {
@@ -275,14 +277,21 @@ export class CampoFormularioSeedService {
       }
     }
 
+    const duration = Date.now() - startTime;
+
     if (totalCamposNovos > 0 || totalAlternativasNovas > 0) {
       this.logger.log(
-        `✨ Seeder concluído: ${totalCamposNovos} campo(s) novo(s) e ${totalAlternativasNovas} alternativa(s) nova(s) adicionadas`,
+        `✨ [SEEDER] Concluído: ${totalCamposNovos} campo(s) novo(s) e ${totalAlternativasNovas} alternativa(s) nova(s) adicionadas`,
       );
     } else {
       this.logger.log(
-        `✓ Todos os campos e alternativas já estão atualizados. Nenhuma alteração necessária.`,
+        `✓ [SEEDER] Todos os campos e alternativas já estão atualizados. Nenhuma alteração necessária.`,
       );
     }
+
+    this.logger.log(
+      `⏱️  [SEEDER] Tempo de execução: ${duration}ms (${(duration / 1000).toFixed(2)}s)`,
+    );
+    this.logger.log(`🏁 [SEEDER] Finalizado em: ${new Date().toISOString()}`);
   }
 }

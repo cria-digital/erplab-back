@@ -6,11 +6,13 @@ import { ServicoSaudeSeedService } from './servico-saude-seed.service';
 import { CampoFormularioSeedService } from './campo-formulario-seed.service';
 
 async function bootstrap() {
+  const startTime = Date.now();
   const app = await NestFactory.createApplicationContext(AppModule);
 
   try {
     console.log('==============================');
-    console.log('Iniciando processo de seed...');
+    console.log('🌱 [SEED-ALL] Iniciando processo de seed...');
+    console.log(`🕒 [SEED-ALL] Timestamp: ${new Date().toISOString()}`);
     console.log('==============================\n');
 
     // Executar seed de CNAEs
@@ -33,8 +35,13 @@ async function bootstrap() {
     console.log('4. Importando Campos de Formulário...');
     await campoFormularioSeedService.seed();
 
+    const duration = Date.now() - startTime;
     console.log('\n==============================');
-    console.log('Seed concluído com sucesso!');
+    console.log('✅ [SEED-ALL] Seed concluído com sucesso!');
+    console.log(
+      `⏱️  [SEED-ALL] Tempo total: ${duration}ms (${(duration / 1000).toFixed(2)}s)`,
+    );
+    console.log(`🏁 [SEED-ALL] Finalizado em: ${new Date().toISOString()}`);
     console.log('==============================');
   } catch (error) {
     console.error('Erro durante o processo de seed:', error);

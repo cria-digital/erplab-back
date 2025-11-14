@@ -1,0 +1,67 @@
+### 1. Health Check Básico
+GET {{baseUrl}}/health
+Content-Type: {{contentType}}
+
+### 2. Métricas Detalhadas do Sistema
+# Retorna: CPU, memória, uptime, total de requests, requests lentos
+GET {{baseUrl}}/health/metrics
+Content-Type: {{contentType}}
+
+### 3. Requests Lentos (> 1000ms)
+# Lista os 50 requests mais lentos para identificar gargalos
+GET {{baseUrl}}/health/metrics/slow-requests
+Content-Type: {{contentType}}
+
+### 4. Endpoints Mais Lentos (agrupados)
+# Mostra os 10 endpoints com maior tempo médio de resposta
+GET {{baseUrl}}/health/metrics/slowest-endpoints
+Content-Type: {{contentType}}
+
+### 5. Endpoints Mais Chamados
+# Mostra os 10 endpoints com mais requisições
+GET {{baseUrl}}/health/metrics/most-called
+Content-Type: {{contentType}}
+
+### Expected Response - Métricas Detalhadas
+# {
+#   "cpu": {
+#     "usage": 1234.56,
+#     "loadAverage": [0.5, 0.3, 0.2]
+#   },
+#   "memory": {
+#     "used": 512,
+#     "total": 2048,
+#     "percentage": 25,
+#     "heapUsed": 120,
+#     "heapTotal": 256
+#   },
+#   "uptime": 3600,
+#   "requests": {
+#     "total": 1542,
+#     "avgDuration": 245,
+#     "slowRequests": 12,
+#     "recentRequests": [...]
+#   }
+# }
+
+### Expected Response - Requests Lentos
+# [
+#   {
+#     "method": "GET",
+#     "url": "/api/v1/cadastros/empresas/cnpj/12345678901234",
+#     "duration": 2543,
+#     "statusCode": 200,
+#     "ip": "192.168.1.10",
+#     "timestamp": "2025-11-13T12:34:56.789Z"
+#   }
+# ]
+
+### Expected Response - Endpoints Mais Lentos
+# [
+#   {
+#     "url": "/api/v1/cadastros/empresas/cnpj/:cnpj",
+#     "count": 45,
+#     "avgDuration": 1823,
+#     "maxDuration": 3241
+#   }
+# ]
