@@ -1,0 +1,19 @@
+### Listar todos os estados do Brasil
+GET {{baseUrl}}/infraestrutura/estados
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid",
+#     "nome": "São Paulo",
+#     "uf": "SP",
+#     "codigoIbge": "35",
+#     "regiao": "Sudeste",
+#     "createdAt": "2025-11-18T...",
+#     "updatedAt": "2025-11-18T..."
+#   },
+#   ...
+# ]

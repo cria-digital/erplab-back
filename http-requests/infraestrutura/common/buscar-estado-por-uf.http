@@ -1,0 +1,36 @@
+### Buscar estado por UF (São Paulo)
+GET {{baseUrl}}/infraestrutura/estados/uf/SP
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+### Buscar estado por UF (Rio de Janeiro)
+GET {{baseUrl}}/infraestrutura/estados/uf/RJ
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+### Buscar estado por UF (Minas Gerais)
+GET {{baseUrl}}/infraestrutura/estados/uf/MG
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "nome": "São Paulo",
+#   "uf": "SP",
+#   "codigoIbge": "35",
+#   "regiao": "Sudeste",
+#   "cidades": [
+#     {
+#       "id": "uuid",
+#       "nome": "São Paulo",
+#       "codigoIbge": "3550308",
+#       "estadoId": "uuid",
+#       ...
+#     },
+#     ...
+#   ],
+#   "createdAt": "2025-11-18T...",
+#   "updatedAt": "2025-11-18T..."
+# }
