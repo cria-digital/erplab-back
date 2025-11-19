@@ -1,0 +1,249 @@
+### Orizon TISS - Exemplos de Requisições
+### Base URL: http://localhost:10016/api/v1/integracoes/tiss/orizon
+
+### Variáveis
+@baseUrl = http://localhost:10016/api/v1
+@token = seu_token_jwt_aqui
+
+### ========================================
+### 1. ENVIAR LOTE DE GUIAS
+### ========================================
+
+POST {{baseUrl}}/integracoes/tiss/orizon/lote-guias
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "xmlLote": "<loteGuiasWS xmlns=\"http://www.ans.gov.br/padroes/tiss/schemas\"><cabecalho><identificacaoTransacao><tipoTransacao>ENVIO_LOTE_GUIAS</tipoTransacao><sequencialTransacao>1</sequencialTransacao><dataRegistroTransacao>2025-11-19T10:00:00</dataRegistroTransacao></identificacaoTransacao></cabecalho></loteGuiasWS>",
+  "codigoPrestador": "12345",
+  "metadados": {
+    "descricao": "Lote de teste",
+    "totalGuias": 5
+  }
+}
+
+### Expected Response
+# {
+#   "sucesso": true,
+#   "dados": {
+#     "numeroProtocolo": "202511190001",
+#     "dataRecebimento": "2025-11-19T10:00:00.000Z",
+#     "status": "RECEBIDO",
+#     "mensagem": "Lote recebido com sucesso"
+#   }
+# }
+
+### ========================================
+### 2. CONSULTAR STATUS DE PROTOCOLO (POST)
+### ========================================
+
+POST {{baseUrl}}/integracoes/tiss/orizon/status-protocolo
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "numeroProtocolo": "202511190001",
+  "codigoPrestador": "12345"
+}
+
+### Expected Response
+# {
+#   "sucesso": true,
+#   "dados": {
+#     "numeroProtocolo": "202511190001",
+#     "status": "PROCESSADO",
+#     "dataAtualizacao": "2025-11-19T11:00:00.000Z",
+#     "mensagem": "Lote processado com sucesso",
+#     "detalhes": {
+#       "totalGuias": 5,
+#       "guiasAceitas": 4,
+#       "guiasRejeitadas": 1
+#     }
+#   }
+# }
+
+### ========================================
+### 3. CONSULTAR STATUS DE PROTOCOLO (GET)
+### ========================================
+
+GET {{baseUrl}}/integracoes/tiss/orizon/status-protocolo/202511190001
+Authorization: Bearer {{token}}
+
+### ========================================
+### 4. GERAR PROTOCOLO EM PDF
+### ========================================
+
+POST {{baseUrl}}/integracoes/tiss/orizon/gerar-pdf
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "tipoRelatorio": "Protocolo",
+  "numeroProtocolo": "202511190001",
+  "codigoPrestador": "12345"
+}
+
+### Expected Response
+# {
+#   "sucesso": true,
+#   "dados": {
+#     "numeroProtocolo": "202511190001",
+#     "pdfBase64": "JVBERi0xLjQKJeLjz9M...",
+#     "status": 200,
+#     "mensagem": "PDF gerado com sucesso"
+#   }
+# }
+
+### ========================================
+### 5. CANCELAR GUIA
+### ========================================
+
+POST {{baseUrl}}/integracoes/tiss/orizon/cancelar-guia
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "xmlCancelamento": "<cancelaGuiaWS xmlns=\"http://www.ans.gov.br/padroes/tiss/schemas\"><numeroGuia>123456</numeroGuia><motivoCancelamento>Erro no cadastro</motivoCancelamento></cancelaGuiaWS>",
+  "codigoPrestador": "12345"
+}
+
+### Expected Response
+# {
+#   "sucesso": true,
+#   "dados": {
+#     "numeroRecibo": "CANC-202511190001",
+#     "dataCancelamento": "2025-11-19T12:00:00.000Z",
+#     "status": "CANCELADO",
+#     "mensagem": "Guia cancelada com sucesso",
+#     "guiasCanceladas": ["123456"]
+#   }
+# }
+
+### ========================================
+### 6. SOLICITAR DEMONSTRATIVO
+### ========================================
+
+POST {{baseUrl}}/integracoes/tiss/orizon/demonstrativo
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "dataInicio": "2025-01-01",
+  "dataFim": "2025-01-31",
+  "codigoPrestador": "12345"
+}
+
+### Expected Response
+# {
+#   "sucesso": true,
+#   "dados": {
+#     "numeroProtocolo": "DEMO-202511190001",
+#     "dataGeracao": "2025-11-19T13:00:00.000Z",
+#     "periodo": {
+#       "inicio": "2025-01-01T00:00:00.000Z",
+#       "fim": "2025-01-31T23:59:59.000Z"
+#     },
+#     "resumo": {
+#       "totalApresentado": 15000.00,
+#       "totalGlosas": 1200.00,
+#       "totalLiberado": 13800.00,
+#       "quantidadeGuias": 50
+#     }
+#   }
+# }
+
+### ========================================
+### 7. ENVIAR RECURSO DE GLOSA
+### ========================================
+
+POST {{baseUrl}}/integracoes/tiss/orizon/recurso-glosa
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "xmlRecurso": "<loteRecursoGlosaWS xmlns=\"http://www.ans.gov.br/padroes/tiss/schemas\"><numeroProtocoloGlosa>GLOSA-123</numeroProtocoloGlosa><justificativa>Contestação da glosa</justificativa></loteRecursoGlosaWS>",
+  "codigoPrestador": "12345"
+}
+
+### Expected Response
+# {
+#   "sucesso": true,
+#   "dados": {
+#     "numeroProtocolo": "REC-202511190001",
+#     "dataRecebimento": "2025-11-19T14:00:00.000Z",
+#     "status": "RECEBIDO",
+#     "mensagem": "Recurso recebido e em análise"
+#   }
+# }
+
+### ========================================
+### 8. CONSULTAR STATUS DE RECURSO (POST)
+### ========================================
+
+POST {{baseUrl}}/integracoes/tiss/orizon/status-recurso
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "numeroProtocolo": "REC-202511190001",
+  "codigoPrestador": "12345"
+}
+
+### Expected Response
+# {
+#   "sucesso": true,
+#   "dados": {
+#     "numeroProtocolo": "REC-202511190001",
+#     "status": "DEFERIDO",
+#     "dataAtualizacao": "2025-11-20T10:00:00.000Z",
+#     "mensagem": "Recurso deferido parcialmente",
+#     "detalhes": {
+#       "valorRecursado": 1200.00,
+#       "valorDeferido": 800.00,
+#       "valorIndeferido": 400.00,
+#       "justificativa": "Análise médica confirmou procedência parcial"
+#     }
+#   }
+# }
+
+### ========================================
+### 9. CONSULTAR STATUS DE RECURSO (GET)
+### ========================================
+
+GET {{baseUrl}}/integracoes/tiss/orizon/status-recurso/REC-202511190001
+Authorization: Bearer {{token}}
+
+### ========================================
+### 10. ENVIAR DOCUMENTOS
+### ========================================
+
+POST {{baseUrl}}/integracoes/tiss/orizon/documentos
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "xmlDocumentos": "<envioDocumentoWS xmlns=\"http://www.ans.gov.br/padroes/tiss/schemas\"><documento><tipo>LAUDO</tipo><arquivo>base64_do_arquivo</arquivo></documento></envioDocumentoWS>",
+  "codigoPrestador": "12345"
+}
+
+### Expected Response
+# {
+#   "sucesso": true,
+#   "dados": {
+#     "numeroRecibo": "DOC-202511190001",
+#     "dataRecebimento": "2025-11-19T15:00:00.000Z",
+#     "status": "RECEBIDO",
+#     "mensagem": "Documentos recebidos com sucesso",
+#     "documentosAceitos": ["LAUDO-123"]
+#   }
+# }
+
+### ========================================
+### NOTAS
+### ========================================
+
+# 1. Substitua {{token}} pelo seu token JWT válido
+# 2. Os XMLs acima são exemplos simplificados
+# 3. Consulte o padrão TISS v4.01.00 da ANS para XMLs completos
+# 4. Ambiente de homologação: https://wsp.hom.orizonbrasil.com.br
+# 5. Para produção, configure ORIZON_AMBIENTE=PRODUCAO no .env

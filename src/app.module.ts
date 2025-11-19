@@ -36,7 +36,10 @@ import { PrestadoresServicoModule } from './modules/relacionamento/prestadores-s
 // Atendimento
 import { AtendimentoModule } from './modules/atendimento/atendimento/atendimento.module';
 import { AgendasModule } from './modules/atendimento/agendas/agendas.module';
-import { IntegracoesModule } from './modules/atendimento/integracoes/integracoes.module';
+import { IntegracoesModule as IntegracoesAtendimentoModule } from './modules/atendimento/integracoes/integracoes.module';
+
+// Integrações TISS
+import { IntegracoesModule } from './modules/integracoes/integracoes.module';
 
 // Financeiro
 import { FinanceiroModule } from './modules/financeiro/core/financeiro.module';
@@ -99,6 +102,9 @@ import { SeedModule } from './database/seeds/seed.module';
     // 5. Atendimento e Agendamento
     AtendimentoModule,
     AgendasModule,
+    IntegracoesAtendimentoModule,
+
+    // 5.1 Integrações TISS (SOAP)
     IntegracoesModule,
 
     // 6. Financeiro
