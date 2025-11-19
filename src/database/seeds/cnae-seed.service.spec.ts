@@ -8,11 +8,21 @@ describe('CnaeSeedService', () => {
   let mockRepository: any;
 
   beforeEach(async () => {
+    const mockQueryBuilder = {
+      update: jest.fn().mockReturnThis(),
+      set: jest.fn().mockReturnThis(),
+      where: jest.fn().mockReturnThis(),
+      execute: jest.fn().mockResolvedValue({ affected: 0 }),
+    };
+
     mockRepository = {
       count: jest.fn(),
       save: jest.fn(),
       create: jest.fn(),
       find: jest.fn(),
+      findOne: jest.fn(),
+      update: jest.fn(),
+      createQueryBuilder: jest.fn().mockReturnValue(mockQueryBuilder),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -37,17 +47,51 @@ describe('CnaeSeedService', () => {
   });
 
   describe('seed', () => {
-    it('deve pular seed quando já existem CNAEs', async () => {
-      mockRepository.count = jest.fn().mockResolvedValue(100);
+    it('deve sincronizar CNAEs corretamente', async () => {
+      // Mock: findOne retorna null (CNAEs não existem ainda)
+      mockRepository.findOne = jest.fn().mockResolvedValue(null);
+      mockRepository.create = jest.fn((dto) => dto);
+      mockRepository.save = jest.fn((entity) => Promise.resolve(entity));
+
       const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
 
       await service.seed();
 
-      expect(mockRepository.count).toHaveBeenCalled();
+      // Verifica que desativou CNAEs não listados
+      expect(mockRepository.createQueryBuilder).toHaveBeenCalled();
+
+      // Verifica mensagens de log
       expect(consoleSpy).toHaveBeenCalledWith(
-        'CNAEs já foram importados (100 registros). Pulando seed...',
+        'Iniciando sincronização de CNAEs da área de saúde...',
       );
-      expect(mockRepository.save).not.toHaveBeenCalled();
+      expect(consoleSpy).toHaveBeenCalledWith(
+        '✅ CNAEs fora da lista de saúde foram marcados como inativos',
+      );
+
+      // Verifica que tentou inserir os 17 CNAEs
+      expect(mockRepository.findOne).toHaveBeenCalled();
+
+      consoleSpy.mockRestore();
+    });
+
+    it('deve atualizar CNAEs existentes', async () => {
+      const cnaeExistente = {
+        id: 'uuid-123',
+        codigo: '8640-2/02',
+        descricao: 'Descrição antiga',
+        ativo: false,
+      };
+
+      mockRepository.findOne = jest.fn().mockResolvedValue(cnaeExistente);
+      mockRepository.update = jest.fn().mockResolvedValue({ affected: 1 });
+
+      const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+
+      await service.seed();
+
+      // Verifica que atualizou CNAEs existentes
+      expect(mockRepository.update).toHaveBeenCalled();
+      expect(mockRepository.save).not.toHaveBeenCalled(); // Não insere quando já existe
 
       consoleSpy.mockRestore();
     });
