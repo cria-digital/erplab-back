@@ -1,0 +1,35 @@
+### Remover método sem vínculos
+DELETE {{baseUrl}}/exames/metodos/{{metodoId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 204 No Content
+# (corpo vazio)
+
+###
+
+### Remover método inexistente (deve falhar)
+DELETE {{baseUrl}}/exames/metodos/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Método com ID 00000000-0000-0000-0000-000000000000 não encontrado",
+#   "error": "Not Found"
+# }
+
+###
+
+### Remover método com vínculos a laboratórios (deve falhar)
+DELETE {{baseUrl}}/exames/metodos/{{metodoComVinculosId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Não é possível excluir um método que está vinculado a laboratórios",
+#   "error": "Bad Request"
+# }

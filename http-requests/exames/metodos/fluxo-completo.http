@@ -1,0 +1,135 @@
+### FLUXO COMPLETO: Criar laboratório → Criar método → Vincular → Validar → Remover
+
+### PASSO 1: Criar laboratório (necessário primeiro)
+# IMPORTANTE: Antes de executar este fluxo, crie um laboratório usando:
+# http-requests/relacionamento/laboratorios/criar-laboratorio.http
+# Copie o ID retornado e cole na variável {{laboratorioId}} do http-client.env.json
+
+###
+
+### PASSO 2: Criar primeiro método
+POST {{baseUrl}}/exames/metodos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "PCR - Reação em Cadeia da Polimerase",
+  "codigoInterno": "PCR001",
+  "descricao": "Método de amplificação de DNA para diagnóstico molecular",
+  "status": "em_validacao"
+}
+
+### Expected Response
+# Status: 201 Created
+# Copie o ID retornado e cole na variável {{metodoId}} do http-client.env.json
+
+###
+
+### PASSO 3: Criar segundo método (para testar vínculo)
+POST {{baseUrl}}/exames/metodos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "ELISA - Enzyme-Linked Immunosorbent Assay",
+  "codigoInterno": "ELISA001",
+  "descricao": "Método imunoenzimático para detecção de anticorpos",
+  "status": "ativo"
+}
+
+###
+
+### PASSO 4: Vincular laboratório ao primeiro método
+POST {{baseUrl}}/exames/laboratorios-metodos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "laboratorioId": "{{laboratorioId}}",
+  "metodoId": "{{metodoId}}",
+  "validado": false,
+  "observacoes": "Método em processo de validação no laboratório"
+}
+
+### Expected Response
+# Status: 201 Created
+# Copie o ID retornado e cole na variável {{vinculoId}} do http-client.env.json
+
+###
+
+### PASSO 5: Listar métodos do laboratório
+GET {{baseUrl}}/exames/laboratorios-metodos/laboratorio/{{laboratorioId}}
+Authorization: Bearer {{token}}
+
+###
+
+### PASSO 6: Validar o método no laboratório
+PATCH {{baseUrl}}/exames/laboratorios-metodos/{{vinculoId}}/validar
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "validado": true,
+#   "dataValidacao": "2024-01-15T10:30:00.000Z",
+#   ...
+# }
+
+###
+
+### PASSO 7: Validar o método (status em_validacao → ativo)
+PATCH {{baseUrl}}/exames/metodos/{{metodoId}}/validar
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "status": "ativo",
+#   ...
+# }
+
+###
+
+### PASSO 8: Tentar remover método com vínculo (deve falhar)
+DELETE {{baseUrl}}/exames/metodos/{{metodoId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Não é possível excluir um método que está vinculado a laboratórios",
+#   "error": "Bad Request"
+# }
+
+###
+
+### PASSO 9: Remover o vínculo primeiro
+DELETE {{baseUrl}}/exames/laboratorios-metodos/{{vinculoId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 204 No Content
+
+###
+
+### PASSO 10: Agora remover o método (sem vínculos)
+DELETE {{baseUrl}}/exames/metodos/{{metodoId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 204 No Content
+
+###
+
+### RESUMO DO FLUXO:
+# 1. Criar laboratório (em outro arquivo)
+# 2. Criar método 1 (PCR) com status em_validacao
+# 3. Criar método 2 (ELISA) com status ativo
+# 4. Vincular laboratório ao método 1
+# 5. Listar métodos do laboratório
+# 6. Validar vínculo (validado: false → true)
+# 7. Validar método (em_validacao → ativo)
+# 8. Tentar remover método (falha por ter vínculo)
+# 9. Remover vínculo
+# 10. Remover método (sucesso sem vínculos)
