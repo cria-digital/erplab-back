@@ -98,7 +98,7 @@ export class LaboratorioMetodoService {
       query.andWhere('laboratorioMetodo.validado = :validado', { validado });
     }
 
-    query.orderBy('laboratorioMetodo.created_at', 'DESC');
+    query.orderBy('laboratorioMetodo.createdAt', 'DESC');
 
     const [data, total] = await query
       .skip((page - 1) * limit)
@@ -205,7 +205,7 @@ export class LaboratorioMetodoService {
     }
 
     return await query
-      .orderBy('laboratorioMetodo.data_validacao', 'DESC')
+      .orderBy('laboratorioMetodo.dataValidacao', 'DESC')
       .getMany();
   }
 

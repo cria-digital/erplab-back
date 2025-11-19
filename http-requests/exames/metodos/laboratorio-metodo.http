@@ -4,8 +4,8 @@ Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "laboratorioId": "{{laboratorioId}}",
-  "metodoId": "{{metodoId}}",
+  "laboratorioId": "207f9847-5e29-4132-9ff4-14b66a740030",
+  "metodoId": "2ecb2a6a-d3bf-488c-8b8b-b9c6befb418c",
   "validado": false,
   "observacoes": "Laboratório em processo de certificação para este método"
 }

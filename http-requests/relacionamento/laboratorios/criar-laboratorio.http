@@ -1,45 +1,45 @@
 ### Criar Laboratório - Laboratório de Análises Clínicas
+# ATENÇÃO: Este endpoint cria EMPRESA + LABORATÓRIO em uma transação!
+# A empresa é criada automaticamente com tipoEmpresa = LABORATORIO_APOIO
 POST {{baseUrl}}/relacionamento/laboratorios
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "empresaData": {
-    "tipoEmpresa": "laboratorio",
-    "cnpj": "12345678000190",
-    "razaoSocial": "Laboratório São Lucas Análises Clínicas LTDA",
-    "nomeFantasia": "Lab São Lucas",
-    "inscricaoEstadual": "123456789",
-    "inscricaoMunicipal": "987654321",
-    "email": "contato@labsaolucas.com.br",
-    "telefone": "(11) 3456-7890",
-    "celular": "(11) 98765-4321",
-    "website": "https://www.labsaolucas.com.br",
-    "cep": "01310-100",
-    "logradouro": "Av. Paulista",
-    "numero": "1000",
-    "complemento": "Sala 501",
-    "bairro": "Bela Vista",
-    "cidade": "São Paulo",
-    "estado": "SP",
-    "observacoes": "Laboratório parceiro desde 2020"
-  },
-  "codigoLaboratorio": "LAB-SL-001",
-  "responsavelTecnico": "Dr. João Silva",
-  "conselhoResponsavel": "CRF",
-  "numeroConselho": "12345-SP",
-  "tipoIntegracao": "api",
-  "urlIntegracao": "https://api.labsaolucas.com.br/v1",
-  "tokenIntegracao": "token-secreto-aqui",
-  "metodosEnvioResultado": ["email", "portal", "sistema"],
-  "portalResultadosUrl": "https://portal.labsaolucas.com.br",
-  "prazoPadraoEntregaNormal": 3,
-  "prazoPadraoEntregaUrgente": 1,
-  "taxaUrgencia": 50.00,
-  "percentualRepasse": 65.00,
-  "aceitaUrgencia": true,
-  "enviaResultadoAutomatico": true,
-  "observacoes": "Laboratório com certificação PALC. Atende urgências 24h."
+  "codigo": "LAB-SL-001",
+  "razao_social": "Laboratório São Lucas Análises Clínicas LTDA",
+  "nome_fantasia": "Lab São Lucas",
+  "cnpj": "12345678000190",
+  "inscricao_estadual": "123456789",
+  "inscricao_municipal": "987654321",
+  "endereco": "Av. Paulista",
+  "numero": "1000",
+  "complemento": "Sala 501",
+  "bairro": "Bela Vista",
+  "cidade": "São Paulo",
+  "uf": "SP",
+  "cep": "01310100",
+  "telefone_principal": "(11) 3456-7890",
+  "telefone_secundario": "(11) 98765-4321",
+  "email_principal": "contato@labsaolucas.com.br",
+  "email_faturamento": "financeiro@labsaolucas.com.br",
+  "website": "https://www.labsaolucas.com.br",
+  "responsavel_tecnico": "Dr. João Silva",
+  "conselho_responsavel": "CRF",
+  "numero_conselho": "12345-SP",
+  "tipo_integracao": "api",
+  "url_integracao": "https://api.labsaolucas.com.br/v1",
+  "token_integracao": "token-secreto-aqui",
+  "metodos_envio_resultado": ["email", "portal"],
+  "portal_resultados_url": "https://portal.labsaolucas.com.br",
+  "prazo_entrega_normal": 3,
+  "prazo_entrega_urgente": 1,
+  "taxa_urgencia": 50.00,
+  "percentual_repasse": 65.00,
+  "aceita_urgencia": true,
+  "envia_resultado_automatico": true,
+  "observacoes": "Laboratório com certificação PALC. Atende urgências 24h.",
+  "ativo": true
 }
 
 ### Expected Response
@@ -251,3 +251,55 @@ Authorization: Bearer {{token}}
 #   "message": ["cnpj must be a valid CNPJ"],
 #   "error": "Bad Request"
 # }
+
+
+###############################################################################
+### FLUXO COMPLETO: Criar Laboratório → Vincular a Método
+###############################################################################
+
+### PASSO 1: Criar laboratório (empresa + laboratório em transação)
+POST {{baseUrl}}/relacionamento/laboratorios
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo": "LAB999",
+  "razao_social": "Lab Teste Fluxo LTDA",
+  "nome_fantasia": "Lab Teste",
+  "cnpj": "99988877000166",
+  "endereco": "Rua Teste",
+  "numero": "123",
+  "bairro": "Centro",
+  "cidade": "São Paulo",
+  "uf": "SP",
+  "cep": "01234567",
+  "telefone_principal": "(11) 9999-9999",
+  "email_principal": "teste@lab.com",
+  "responsavel_tecnico": "Dr. Teste",
+  "conselho_responsavel": "CRF",
+  "numero_conselho": "999-SP",
+  "tipo_integracao": "manual",
+  "aceita_urgencia": true,
+  "ativo": true
+}
+
+### Expected: Salvar o ID do laboratório retornado em {{laboratorioId}}
+
+### PASSO 2: Verificar laboratório criado
+GET {{baseUrl}}/relacionamento/laboratorios/{{laboratorioId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+### PASSO 3: Vincular laboratório a um método
+POST {{baseUrl}}/exames/laboratorios-metodos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "laboratorioId": "{{laboratorioId}}",
+  "metodoId": "{{metodoId}}",
+  "validado": false,
+  "observacoes": "Método em processo de validação"
+}
+
+### Expected: Vínculo criado com sucesso! ✅
