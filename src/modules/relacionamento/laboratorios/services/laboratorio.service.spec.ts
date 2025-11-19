@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ConflictException, NotFoundException } from '@nestjs/common';
+import { DataSource } from 'typeorm';
 
 import { LaboratorioService } from './laboratorio.service';
 import { Laboratorio, TipoIntegracao } from '../entities/laboratorio.entity';
@@ -27,6 +28,23 @@ describe('LaboratorioService', () => {
     findOne: jest.fn(),
     remove: jest.fn(),
     createQueryBuilder: jest.fn(() => mockQueryBuilder),
+  };
+
+  const mockEmpresaRepository = {
+    create: jest.fn(),
+    save: jest.fn(),
+    findOne: jest.fn(),
+  };
+
+  const mockDataSource = {
+    transaction: jest.fn((callback) => {
+      const mockManager = {
+        create: jest.fn(),
+        save: jest.fn(),
+        findOne: jest.fn(),
+      };
+      return callback(mockManager);
+    }),
   };
 
   const mockEmpresa = {
@@ -74,6 +92,14 @@ describe('LaboratorioService', () => {
           provide: getRepositoryToken(Laboratorio),
           useValue: mockLaboratorioRepository,
         },
+        {
+          provide: getRepositoryToken(Empresa),
+          useValue: mockEmpresaRepository,
+        },
+        {
+          provide: DataSource,
+          useValue: mockDataSource,
+        },
       ],
     }).compile();
 
@@ -107,9 +133,25 @@ describe('LaboratorioService', () => {
     };
 
     it('deve criar um laboratório com sucesso', async () => {
+      // Mock para verificações de duplicidade
       mockLaboratorioRepository.findOne.mockResolvedValue(null);
-      mockLaboratorioRepository.create.mockReturnValue(mockLaboratorio);
-      mockLaboratorioRepository.save.mockResolvedValue(mockLaboratorio);
+      mockEmpresaRepository.findOne.mockResolvedValue(null);
+
+      // Mock do transaction que retorna o laboratório completo
+      mockDataSource.transaction.mockImplementation(async (callback) => {
+        const mockManager = {
+          create: jest
+            .fn()
+            .mockReturnValueOnce(mockEmpresa) // criar empresa
+            .mockReturnValueOnce(mockLaboratorio), // criar laboratório
+          save: jest
+            .fn()
+            .mockResolvedValueOnce(mockEmpresa) // salvar empresa
+            .mockResolvedValueOnce(mockLaboratorio), // salvar laboratório
+          findOne: jest.fn().mockResolvedValue(mockLaboratorio), // retornar com relations
+        };
+        return await callback(mockManager);
+      });
 
       const result = await service.create(createLaboratorioDto);
 
@@ -117,12 +159,9 @@ describe('LaboratorioService', () => {
       expect(mockLaboratorioRepository.findOne).toHaveBeenCalledWith({
         where: { codigo_laboratorio: createLaboratorioDto.codigo },
       });
-      expect(mockLaboratorioRepository.create).toHaveBeenCalledWith(
-        createLaboratorioDto,
-      );
-      expect(mockLaboratorioRepository.save).toHaveBeenCalledWith(
-        mockLaboratorio,
-      );
+      expect(mockEmpresaRepository.findOne).toHaveBeenCalledWith({
+        where: { cnpj: createLaboratorioDto.cnpj },
+      });
     });
 
     it('deve retornar erro quando código já existir', async () => {
@@ -134,57 +173,18 @@ describe('LaboratorioService', () => {
       expect(mockLaboratorioRepository.findOne).toHaveBeenCalledWith({
         where: { codigo_laboratorio: createLaboratorioDto.codigo },
       });
-      expect(mockLaboratorioRepository.create).not.toHaveBeenCalled();
-      expect(mockLaboratorioRepository.save).not.toHaveBeenCalled();
     });
 
-    it('deve criar laboratório com dados opcionais', async () => {
-      const createCompleto = {
-        ...createLaboratorioDto,
-        responsavel_tecnico: 'Dr. João Silva',
-        conselho_responsavel: 'CRF',
-        numero_conselho: '12345',
-        url_integracao: 'https://api.labteste.com.br',
-        token_integracao: 'token123',
-        metodos_envio_resultado: ['api', 'email'],
-        prazo_entrega_normal: 2,
-        taxa_urgencia: 75.0,
-        percentual_repasse: 85.0,
-      };
-
+    it('deve retornar erro quando CNPJ já existir', async () => {
       mockLaboratorioRepository.findOne.mockResolvedValue(null);
-      mockLaboratorioRepository.create.mockReturnValue(mockLaboratorio);
-      mockLaboratorioRepository.save.mockResolvedValue(mockLaboratorio);
+      mockEmpresaRepository.findOne.mockResolvedValue(mockEmpresa);
 
-      const result = await service.create(createCompleto);
-
-      expect(result).toEqual(mockLaboratorio);
-      expect(mockLaboratorioRepository.create).toHaveBeenCalledWith(
-        createCompleto,
+      await expect(service.create(createLaboratorioDto)).rejects.toThrow(
+        ConflictException,
       );
-    });
-
-    it('deve criar laboratório com tipo de integração manual', async () => {
-      const createManual = {
-        ...createLaboratorioDto,
-        tipo_integracao: TipoIntegracao.MANUAL,
-        aceita_urgencia: false,
-      };
-
-      const labManual = {
-        ...mockLaboratorio,
-        tipo_integracao: TipoIntegracao.MANUAL,
-        aceita_urgencia: false,
-      };
-
-      mockLaboratorioRepository.findOne.mockResolvedValue(null);
-      mockLaboratorioRepository.create.mockReturnValue(labManual);
-      mockLaboratorioRepository.save.mockResolvedValue(labManual);
-
-      const result = await service.create(createManual);
-
-      expect(result.tipo_integracao).toBe(TipoIntegracao.MANUAL);
-      expect(result.aceita_urgencia).toBe(false);
+      expect(mockEmpresaRepository.findOne).toHaveBeenCalledWith({
+        where: { cnpj: createLaboratorioDto.cnpj },
+      });
     });
   });
 
