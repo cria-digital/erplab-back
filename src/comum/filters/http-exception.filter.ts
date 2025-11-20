@@ -59,11 +59,20 @@ export class HttpExceptionFilter implements ExceptionFilter {
         errosFormatados.push(mensagemTraduzida);
       } else if (erro.constraints) {
         // Extrai todas as mensagens de erro do campo
+        const campo = erro.property; // Nome do campo que falhou
         Object.values(erro.constraints).forEach((mensagem) => {
           const mensagemTraduzida = this.traduzirMensagemPadrao(
             mensagem as string,
           );
-          errosFormatados.push(mensagemTraduzida);
+          // Inclui o nome do campo na mensagem de erro
+          errosFormatados.push(`${campo}: ${mensagemTraduzida}`);
+        });
+      } else if (erro.children && erro.children.length > 0) {
+        // Erros aninhados (DTOs nested como contas_bancarias, horariosAtendimento)
+        const campo = erro.property; // Nome do array pai (ex: contas_bancarias)
+        const errosFilhos = this.formatarErrosDeValidacao(erro.children);
+        errosFilhos.forEach((erroFilho) => {
+          errosFormatados.push(`${campo}.${erroFilho}`);
         });
       }
     });
