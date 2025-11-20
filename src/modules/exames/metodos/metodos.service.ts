@@ -5,8 +5,9 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like, In } from 'typeorm';
+import { Repository, Like, In, DataSource } from 'typeorm';
 import { Metodo, StatusMetodo } from './entities/metodo.entity';
+import { LaboratorioMetodo } from './entities/laboratorio-metodo.entity';
 import { CreateMetodoDto } from './dto/create-metodo.dto';
 import { UpdateMetodoDto } from './dto/update-metodo.dto';
 
@@ -15,6 +16,9 @@ export class MetodosService {
   constructor(
     @InjectRepository(Metodo)
     private readonly metodoRepository: Repository<Metodo>,
+    @InjectRepository(LaboratorioMetodo)
+    private readonly laboratorioMetodoRepository: Repository<LaboratorioMetodo>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async create(createMetodoDto: CreateMetodoDto): Promise<Metodo> {
@@ -44,6 +48,10 @@ export class MetodosService {
     totalPages: number;
   }> {
     const query = this.metodoRepository.createQueryBuilder('metodo');
+
+    // Trazer os vínculos com laboratórios
+    query.leftJoinAndSelect('metodo.laboratorioMetodos', 'laboratorioMetodos');
+    query.leftJoinAndSelect('laboratorioMetodos.laboratorio', 'laboratorio');
 
     if (search) {
       query.where(
@@ -110,13 +118,16 @@ export class MetodosService {
   async remove(id: string): Promise<void> {
     const metodo = await this.findOne(id);
 
-    if (metodo.laboratorioMetodos && metodo.laboratorioMetodos.length > 0) {
-      throw new BadRequestException(
-        'Não é possível excluir um método que está vinculado a laboratórios',
-      );
-    }
+    // Usar transação para garantir atomicidade:
+    // 1. Remover todos os vínculos com laboratórios
+    // 2. Remover o método
+    await this.dataSource.transaction(async (manager) => {
+      // Remover todos os vínculos do método com laboratórios
+      await manager.delete(LaboratorioMetodo, { metodoId: id });
 
-    await this.metodoRepository.remove(metodo);
+      // Remover o método
+      await manager.remove(metodo);
+    });
   }
 
   async toggleStatus(id: string): Promise<Metodo> {

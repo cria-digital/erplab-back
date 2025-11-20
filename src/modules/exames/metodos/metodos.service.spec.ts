@@ -1,7 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 import { MetodosService } from './metodos.service';
 import { Metodo, StatusMetodo } from './entities/metodo.entity';
+import { LaboratorioMetodo } from './entities/laboratorio-metodo.entity';
 import {
   NotFoundException,
   ConflictException,
@@ -21,13 +23,24 @@ describe('MetodosService', () => {
     count: jest.fn(),
   };
 
+  const mockLaboratorioMetodoRepository = {
+    find: jest.fn(),
+    findOne: jest.fn(),
+    delete: jest.fn(),
+  };
+
   const mockQueryBuilder = {
     where: jest.fn().mockReturnThis(),
     andWhere: jest.fn().mockReturnThis(),
     orderBy: jest.fn().mockReturnThis(),
     skip: jest.fn().mockReturnThis(),
     take: jest.fn().mockReturnThis(),
+    leftJoinAndSelect: jest.fn().mockReturnThis(),
     getManyAndCount: jest.fn(),
+  };
+
+  const mockDataSource = {
+    transaction: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -37,6 +50,14 @@ describe('MetodosService', () => {
         {
           provide: getRepositoryToken(Metodo),
           useValue: mockRepository,
+        },
+        {
+          provide: getRepositoryToken(LaboratorioMetodo),
+          useValue: mockLaboratorioMetodoRepository,
+        },
+        {
+          provide: DataSource,
+          useValue: mockDataSource,
         },
       ],
     }).compile();
@@ -211,7 +232,7 @@ describe('MetodosService', () => {
   });
 
   describe('remove', () => {
-    it('deve remover um método sem vínculos', async () => {
+    it('deve remover um método e seus vínculos usando transação', async () => {
       const metodo = {
         id: 'uuid',
         nome: 'ELISA',
@@ -219,14 +240,22 @@ describe('MetodosService', () => {
       };
 
       mockRepository.findOne.mockResolvedValue(metodo);
-      mockRepository.remove.mockResolvedValue(metodo);
+
+      // Mock da transação
+      mockDataSource.transaction.mockImplementation(async (callback) => {
+        const mockManager = {
+          delete: jest.fn().mockResolvedValue({ affected: 0 }),
+          remove: jest.fn().mockResolvedValue(metodo),
+        };
+        return await callback(mockManager);
+      });
 
       await service.remove('uuid');
 
-      expect(mockRepository.remove).toHaveBeenCalledWith(metodo);
+      expect(mockDataSource.transaction).toHaveBeenCalled();
     });
 
-    it('deve lançar BadRequestException se método tem vínculos', async () => {
+    it('deve remover método com vínculos automaticamente', async () => {
       const metodo = {
         id: 'uuid',
         nome: 'ELISA',
@@ -235,7 +264,18 @@ describe('MetodosService', () => {
 
       mockRepository.findOne.mockResolvedValue(metodo);
 
-      await expect(service.remove('uuid')).rejects.toThrow(BadRequestException);
+      // Mock da transação
+      mockDataSource.transaction.mockImplementation(async (callback) => {
+        const mockManager = {
+          delete: jest.fn().mockResolvedValue({ affected: 1 }),
+          remove: jest.fn().mockResolvedValue(metodo),
+        };
+        return await callback(mockManager);
+      });
+
+      await service.remove('uuid');
+
+      expect(mockDataSource.transaction).toHaveBeenCalled();
     });
   });
 
