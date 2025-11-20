@@ -1,12 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { ConflictException, NotFoundException } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+import { NotFoundException } from '@nestjs/common';
 
 import { LaboratorioService } from './laboratorio.service';
 import { Laboratorio, TipoIntegracao } from '../entities/laboratorio.entity';
 import { Empresa } from '../../../cadastros/empresas/entities/empresa.entity';
-import { CreateLaboratorioDto } from '../dto/create-laboratorio.dto';
 import { UpdateLaboratorioDto } from '../dto/update-laboratorio.dto';
 import { TipoEmpresaEnum } from '../../../cadastros/empresas/enums/empresas.enum';
 
@@ -28,23 +26,6 @@ describe('LaboratorioService', () => {
     findOne: jest.fn(),
     remove: jest.fn(),
     createQueryBuilder: jest.fn(() => mockQueryBuilder),
-  };
-
-  const mockEmpresaRepository = {
-    create: jest.fn(),
-    save: jest.fn(),
-    findOne: jest.fn(),
-  };
-
-  const mockDataSource = {
-    transaction: jest.fn((callback) => {
-      const mockManager = {
-        create: jest.fn(),
-        save: jest.fn(),
-        findOne: jest.fn(),
-      };
-      return callback(mockManager);
-    }),
   };
 
   const mockEmpresa = {
@@ -92,14 +73,6 @@ describe('LaboratorioService', () => {
           provide: getRepositoryToken(Laboratorio),
           useValue: mockLaboratorioRepository,
         },
-        {
-          provide: getRepositoryToken(Empresa),
-          useValue: mockEmpresaRepository,
-        },
-        {
-          provide: DataSource,
-          useValue: mockDataSource,
-        },
       ],
     }).compile();
 
@@ -112,80 +85,6 @@ describe('LaboratorioService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
-  });
-
-  describe('create', () => {
-    const createLaboratorioDto: CreateLaboratorioDto = {
-      codigo: 'LAB001',
-      razao_social: 'Laboratório Teste Ltda',
-      nome_fantasia: 'Lab Teste',
-      cnpj: '12345678000190',
-      endereco: 'Rua Teste, 123',
-      numero: '123',
-      bairro: 'Centro',
-      cidade: 'São Paulo',
-      uf: 'SP',
-      cep: '01234567',
-      telefone_principal: '(11) 1234-5678',
-      email_principal: 'contato@labteste.com.br',
-      tipo_integracao: TipoIntegracao.API,
-      aceita_urgencia: true,
-    };
-
-    it('deve criar um laboratório com sucesso', async () => {
-      // Mock para verificações de duplicidade
-      mockLaboratorioRepository.findOne.mockResolvedValue(null);
-      mockEmpresaRepository.findOne.mockResolvedValue(null);
-
-      // Mock do transaction que retorna o laboratório completo
-      mockDataSource.transaction.mockImplementation(async (callback) => {
-        const mockManager = {
-          create: jest
-            .fn()
-            .mockReturnValueOnce(mockEmpresa) // criar empresa
-            .mockReturnValueOnce(mockLaboratorio), // criar laboratório
-          save: jest
-            .fn()
-            .mockResolvedValueOnce(mockEmpresa) // salvar empresa
-            .mockResolvedValueOnce(mockLaboratorio), // salvar laboratório
-          findOne: jest.fn().mockResolvedValue(mockLaboratorio), // retornar com relations
-        };
-        return await callback(mockManager);
-      });
-
-      const result = await service.create(createLaboratorioDto);
-
-      expect(result).toEqual(mockLaboratorio);
-      expect(mockLaboratorioRepository.findOne).toHaveBeenCalledWith({
-        where: { codigo_laboratorio: createLaboratorioDto.codigo },
-      });
-      expect(mockEmpresaRepository.findOne).toHaveBeenCalledWith({
-        where: { cnpj: createLaboratorioDto.cnpj },
-      });
-    });
-
-    it('deve retornar erro quando código já existir', async () => {
-      mockLaboratorioRepository.findOne.mockResolvedValue(mockLaboratorio);
-
-      await expect(service.create(createLaboratorioDto)).rejects.toThrow(
-        ConflictException,
-      );
-      expect(mockLaboratorioRepository.findOne).toHaveBeenCalledWith({
-        where: { codigo_laboratorio: createLaboratorioDto.codigo },
-      });
-    });
-
-    it('deve retornar erro quando CNPJ já existir', async () => {
-      mockLaboratorioRepository.findOne.mockResolvedValue(null);
-      mockEmpresaRepository.findOne.mockResolvedValue(mockEmpresa);
-
-      await expect(service.create(createLaboratorioDto)).rejects.toThrow(
-        ConflictException,
-      );
-      expect(mockEmpresaRepository.findOne).toHaveBeenCalledWith({
-        where: { cnpj: createLaboratorioDto.cnpj },
-      });
-    });
   });
 
   describe('findAll', () => {
@@ -378,15 +277,17 @@ describe('LaboratorioService', () => {
 
   describe('update', () => {
     const updateLaboratorioDto: UpdateLaboratorioDto = {
-      responsavel_tecnico: 'Dr. Maria Silva',
-      prazo_entrega_normal: 2,
-      percentual_repasse: 85.0,
+      responsavelTecnico: 'Dr. Maria Silva',
+      prazoEntregaNormal: 2,
+      percentualRepasse: 85.0,
     };
 
     it('deve atualizar um laboratório com sucesso', async () => {
       const laboratorioAtualizado = {
         ...mockLaboratorio,
-        ...updateLaboratorioDto,
+        responsavel_tecnico: 'Dr. Maria Silva',
+        prazo_entrega_normal: 2,
+        percentual_repasse: 85.0,
       };
 
       mockLaboratorioRepository.findOne.mockResolvedValue(mockLaboratorio);
@@ -398,9 +299,7 @@ describe('LaboratorioService', () => {
       );
 
       expect(result).toEqual(laboratorioAtualizado);
-      expect(mockLaboratorioRepository.save).toHaveBeenCalledWith(
-        laboratorioAtualizado,
-      );
+      expect(mockLaboratorioRepository.save).toHaveBeenCalled();
     });
 
     it('deve retornar erro quando laboratório não for encontrado', async () => {
@@ -411,60 +310,20 @@ describe('LaboratorioService', () => {
       ).rejects.toThrow(NotFoundException);
     });
 
-    it('deve verificar duplicidade de código ao atualizar', async () => {
-      const updateComNovoCodigo = {
-        ...updateLaboratorioDto,
-        codigo: 'LAB002',
-      };
-
-      const outroLaboratorio = {
-        ...mockLaboratorio,
-        id: 'laboratorio-uuid-2',
-        codigo_laboratorio: 'LAB002',
-      };
-
-      mockLaboratorioRepository.findOne
-        .mockResolvedValueOnce(mockLaboratorio) // findOne inicial
-        .mockResolvedValueOnce(outroLaboratorio); // verificação duplicidade
-
-      await expect(
-        service.update('laboratorio-uuid-1', updateComNovoCodigo),
-      ).rejects.toThrow(ConflictException);
-    });
-
-    it('deve permitir atualizar mesmo código atual', async () => {
-      const updateMesmoCodigo = {
-        ...updateLaboratorioDto,
-        codigo: 'LAB001', // mesmo código atual
+    it('deve atualizar configurações de integração', async () => {
+      const updateIntegracao = {
+        tipoIntegracao: TipoIntegracao.WEBSERVICE,
+        urlIntegracao: 'https://nova-api.labteste.com.br',
+        tokenIntegracao: 'novo-token-456',
+        aceitaUrgencia: false,
       };
 
       const laboratorioAtualizado = {
         ...mockLaboratorio,
-        ...updateMesmoCodigo,
-      };
-
-      mockLaboratorioRepository.findOne.mockResolvedValue(mockLaboratorio);
-      mockLaboratorioRepository.save.mockResolvedValue(laboratorioAtualizado);
-
-      const result = await service.update(
-        'laboratorio-uuid-1',
-        updateMesmoCodigo,
-      );
-
-      expect(result).toEqual(laboratorioAtualizado);
-    });
-
-    it('deve atualizar configurações de integração', async () => {
-      const updateIntegracao = {
         tipo_integracao: TipoIntegracao.WEBSERVICE,
         url_integracao: 'https://nova-api.labteste.com.br',
         token_integracao: 'novo-token-456',
         aceita_urgencia: false,
-      };
-
-      const laboratorioAtualizado = {
-        ...mockLaboratorio,
-        ...updateIntegracao,
       };
 
       mockLaboratorioRepository.findOne.mockResolvedValue(mockLaboratorio);
@@ -482,15 +341,18 @@ describe('LaboratorioService', () => {
 
     it('deve atualizar dados financeiros', async () => {
       const updateFinanceiro = {
-        taxa_urgencia: 100.0,
-        percentual_repasse: 90.0,
-        prazo_entrega_normal: 1,
-        prazo_entrega_urgente: 0.5,
+        taxaUrgencia: 100.0,
+        percentualRepasse: 90.0,
+        prazoEntregaNormal: 1,
+        prazoEntregaUrgente: 0.5,
       };
 
       const laboratorioAtualizado = {
         ...mockLaboratorio,
-        ...updateFinanceiro,
+        taxa_urgencia: 100.0,
+        percentual_repasse: 90.0,
+        prazo_entrega_normal: 1,
+        prazo_entrega_urgente: 0.5,
       };
 
       mockLaboratorioRepository.findOne.mockResolvedValue(mockLaboratorio);

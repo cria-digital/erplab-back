@@ -1,9 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 
 import { LaboratorioController } from './laboratorio.controller';
 import { LaboratorioService } from '../services/laboratorio.service';
-import { CreateLaboratorioDto } from '../dto/create-laboratorio.dto';
 import { UpdateLaboratorioDto } from '../dto/update-laboratorio.dto';
 import { TipoIntegracao } from '../entities/laboratorio.entity';
 
@@ -35,7 +34,6 @@ describe('LaboratorioController', () => {
   };
 
   const mockService = {
-    create: jest.fn(),
     findAll: jest.fn(),
     findAtivos: jest.fn(),
     findAceitamUrgencia: jest.fn(),
@@ -70,71 +68,6 @@ describe('LaboratorioController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
-  });
-
-  describe('create', () => {
-    const createLaboratorioDto: CreateLaboratorioDto = {
-      cnpj: '12345678000190',
-      razao_social: 'Laboratório Teste Ltda',
-      nome_fantasia: 'Lab Teste',
-      endereco: 'Rua Teste, 123',
-      numero: '123',
-      bairro: 'Centro',
-      cidade: 'São Paulo',
-      uf: 'SP',
-      cep: '01234567',
-      telefone_principal: '11987654321',
-      email_principal: 'contato@labteste.com.br',
-      codigo: 'LAB001',
-      responsavel_tecnico: 'Dr. João Silva',
-      conselho_responsavel: 'CRF',
-      numero_conselho: '12345',
-      tipo_integracao: TipoIntegracao.API,
-      ativo: true,
-    };
-
-    it('deve criar um laboratório com sucesso', async () => {
-      mockService.create.mockResolvedValue(mockLaboratorio);
-
-      const result = await controller.create(createLaboratorioDto);
-
-      expect(result).toEqual(mockLaboratorio);
-      expect(service.create).toHaveBeenCalledWith(createLaboratorioDto);
-      expect(service.create).toHaveBeenCalledTimes(1);
-    });
-
-    it('deve propagar erro de conflito do service', async () => {
-      const conflictError = new BadRequestException('Código já existente');
-      mockService.create.mockRejectedValue(conflictError);
-
-      await expect(controller.create(createLaboratorioDto)).rejects.toThrow(
-        BadRequestException,
-      );
-      expect(service.create).toHaveBeenCalledWith(createLaboratorioDto);
-    });
-
-    it('deve criar laboratório com dados de integração', async () => {
-      const createComIntegracao = {
-        ...createLaboratorioDto,
-        url_integracao: 'https://api.labteste.com.br',
-        token_integracao: 'token123',
-        usuario_integracao: 'usuario',
-        senha_integracao: 'senha123',
-      };
-
-      const laboratorioComIntegracao = {
-        ...mockLaboratorio,
-        url_integracao: 'https://api.labteste.com.br',
-        token_integracao: 'token123',
-      };
-
-      mockService.create.mockResolvedValue(laboratorioComIntegracao);
-
-      const result = await controller.create(createComIntegracao);
-
-      expect(result).toEqual(laboratorioComIntegracao);
-      expect(service.create).toHaveBeenCalledWith(createComIntegracao);
-    });
   });
 
   describe('findAll', () => {
@@ -355,9 +288,8 @@ describe('LaboratorioController', () => {
 
   describe('update', () => {
     const updateLaboratorioDto: UpdateLaboratorioDto = {
-      nome_fantasia: 'Lab Teste Atualizado',
-      responsavel_tecnico: 'Dr. Maria Silva',
-      aceita_urgencia: false,
+      responsavelTecnico: 'Dr. Maria Silva',
+      aceitaUrgencia: false,
     };
 
     it('deve atualizar laboratório com sucesso', async () => {
@@ -391,9 +323,9 @@ describe('LaboratorioController', () => {
 
     it('deve atualizar dados de integração', async () => {
       const updateIntegracao = {
-        tipo_integracao: TipoIntegracao.WEBSERVICE,
-        url_integracao: 'https://ws.novolab.com.br',
-        token_integracao: 'novotoken123',
+        tipoIntegracao: TipoIntegracao.WEBSERVICE,
+        urlIntegracao: 'https://ws.novolab.com.br',
+        tokenIntegracao: 'novotoken123',
       };
 
       const laboratorioComNovaIntegracao = {
@@ -414,14 +346,16 @@ describe('LaboratorioController', () => {
 
     it('deve atualizar prazos de entrega', async () => {
       const updatePrazos = {
-        prazo_entrega_normal: 5,
-        prazo_entrega_urgente: 2,
-        taxa_urgencia: 50.0,
+        prazoEntregaNormal: 5,
+        prazoEntregaUrgente: 2,
+        taxaUrgencia: 50.0,
       };
 
       const laboratorioComNovosPrazos = {
         ...mockLaboratorio,
-        ...updatePrazos,
+        prazo_entrega_normal: 5,
+        prazo_entrega_urgente: 2,
+        taxa_urgencia: 50.0,
       };
 
       mockService.update.mockResolvedValue(laboratorioComNovosPrazos);

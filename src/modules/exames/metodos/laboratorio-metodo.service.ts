@@ -34,10 +34,13 @@ export class LaboratorioMetodoService {
 
     if (!laboratorio) {
       throw new NotFoundException(
-        `Laboratório com ID ${laboratorioId} não encontrado. ` +
-          `Verifique se: 1) O ID é válido (UUID v4), ` +
-          `2) O laboratório foi criado na tabela 'laboratorios' (módulo relacionamento), ` +
-          `3) A variável {{laboratorioId}} está preenchida no http-client.env.json`,
+        `Laboratório com ID ${laboratorioId} não foi encontrado. ` +
+          `Soluções possíveis:\n` +
+          `1) Criar uma empresa com tipo LABORATORIO_APOIO: POST /api/v1/cadastros/empresas\n` +
+          `   (O registro de laboratório será criado automaticamente)\n` +
+          `2) Listar laboratórios disponíveis: GET /api/v1/relacionamento/laboratorios\n` +
+          `3) Verificar se o ID no http-client.env.json está correto\n` +
+          `4) Verificar se o laboratório está ativo (empresa.ativo = true)`,
       );
     }
 

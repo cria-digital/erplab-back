@@ -1,5 +1,4 @@
 ### Atualizar Informações Básicas do Laboratório
-# Substitua {id} pelo UUID do laboratório
 PATCH {{baseUrl}}/relacionamento/laboratorios/{id}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
@@ -10,16 +9,7 @@ Authorization: Bearer {{token}}
   "observacoes": "Laboratório parceiro desde 2020. Certificação PALC renovada."
 }
 
-### Expected Response
-# Status: 200 OK
-# {
-#   "id": "uuid",
-#   "responsavelTecnico": "Dr. João Silva Junior",
-#   "numeroConselho": "12345-SP",
-#   "observacoes": "Laboratório parceiro desde 2020. Certificação PALC renovada.",
-#   ...
-# }
-
+###
 
 ### Atualizar Configurações de Integração - API
 PATCH {{baseUrl}}/relacionamento/laboratorios/{id}
@@ -33,10 +23,7 @@ Authorization: Bearer {{token}}
   "configuracaoAdicional": "{\"timeout\": 30, \"retries\": 3, \"versao\": \"2.0\"}"
 }
 
-### Expected Response
-# Status: 200 OK
-# { ... laboratório atualizado ... }
-
+###
 
 ### Atualizar Configurações de Integração - WebService
 PATCH {{baseUrl}}/relacionamento/laboratorios/{id}
@@ -51,10 +38,7 @@ Authorization: Bearer {{token}}
   "configuracaoAdicional": "{\"wsdl\": \"https://ws.biotechlab.com.br/soap/v3?wsdl\", \"namespace\": \"http://biotech.com.br/ws/v3\"}"
 }
 
-### Expected Response
-# Status: 200 OK
-# { ... laboratório atualizado ... }
-
+###
 
 ### Atualizar Prazos de Entrega
 PATCH {{baseUrl}}/relacionamento/laboratorios/{id}
@@ -62,15 +46,12 @@ Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "prazoPadraoEntregaNormal": 4,
-  "prazoPadraoEntregaUrgente": 1,
+  "prazoEntregaNormal": 4,
+  "prazoEntregaUrgente": 1,
   "taxaUrgencia": 60.00
 }
 
-### Expected Response
-# Status: 200 OK
-# { ... laboratório atualizado ... }
-
+###
 
 ### Atualizar Valores e Repasse
 PATCH {{baseUrl}}/relacionamento/laboratorios/{id}
@@ -82,10 +63,7 @@ Authorization: Bearer {{token}}
   "taxaUrgencia": 55.00
 }
 
-### Expected Response
-# Status: 200 OK
-# { ... laboratório atualizado ... }
-
+###
 
 ### Atualizar Métodos de Envio de Resultado
 PATCH {{baseUrl}}/relacionamento/laboratorios/{id}
@@ -98,12 +76,9 @@ Authorization: Bearer {{token}}
   "enviaResultadoAutomatico": true
 }
 
-### Expected Response
-# Status: 200 OK
-# { ... laboratório atualizado ... }
+###
 
-
-### Habilitar/Desabilitar Urgência
+### Habilitar Urgência
 PATCH {{baseUrl}}/relacionamento/laboratorios/{id}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
@@ -111,13 +86,10 @@ Authorization: Bearer {{token}}
 {
   "aceitaUrgencia": true,
   "taxaUrgencia": 50.00,
-  "prazoPadraoEntregaUrgente": 1
+  "prazoEntregaUrgente": 1
 }
 
-### Expected Response
-# Status: 200 OK
-# { ... laboratório atualizado ... }
-
+###
 
 ### Desabilitar Urgência
 PATCH {{baseUrl}}/relacionamento/laboratorios/{id}
@@ -128,10 +100,7 @@ Authorization: Bearer {{token}}
   "aceitaUrgencia": false
 }
 
-### Expected Response
-# Status: 200 OK
-# { ... laboratório atualizado com urgência desabilitada ... }
-
+###
 
 ### Atualizar Responsável Técnico
 PATCH {{baseUrl}}/relacionamento/laboratorios/{id}
@@ -144,99 +113,13 @@ Authorization: Bearer {{token}}
   "numeroConselho": "98765-SP"
 }
 
-### Expected Response
-# Status: 200 OK
-# { ... laboratório atualizado ... }
+###
 
-
-### Atualizar Dados da Empresa (através do laboratório)
-PATCH {{baseUrl}}/relacionamento/laboratorios/{id}/empresa
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-  "nomeFantasia": "Lab São Lucas - Unidade Centro",
-  "telefone": "(11) 3456-7899",
-  "celular": "(11) 98765-4322",
-  "email": "contato.centro@labsaolucas.com.br",
-  "website": "https://www.labsaolucas.com.br"
-}
-
-### Expected Response
-# Status: 200 OK
-# {
-#   "message": "Dados da empresa atualizados com sucesso",
-#   "empresa": { ... }
-# }
-
-
-### Alternar Status do Laboratório (Ativar/Desativar)
+### Alternar Status do Laboratório
 PATCH {{baseUrl}}/relacionamento/laboratorios/{id}/toggle-status
 Authorization: Bearer {{token}}
 
-### Expected Response
-# Status: 200 OK
-# {
-#   "id": "uuid",
-#   "ativo": false,
-#   "message": "Laboratório desativado com sucesso"
-# }
-
-
-### Erro - Validação: Percentual de Repasse Inválido
-PATCH {{baseUrl}}/relacionamento/laboratorios/{id}
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-  "percentualRepasse": 150.00
-}
-
-### Expected Response
-# Status: 400 Bad Request
-# {
-#   "statusCode": 400,
-#   "message": ["percentualRepasse must not be greater than 100"],
-#   "error": "Bad Request"
-# }
-
-
-### Erro - Validação: Taxa de Urgência Negativa
-PATCH {{baseUrl}}/relacionamento/laboratorios/{id}
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-  "taxaUrgencia": -10.00
-}
-
-### Expected Response
-# Status: 400 Bad Request
-# {
-#   "statusCode": 400,
-#   "message": ["taxaUrgencia must not be less than 0"],
-#   "error": "Bad Request"
-# }
-
-
-### Erro - Validação: Prazo de Entrega Inválido
-PATCH {{baseUrl}}/relacionamento/laboratorios/{id}
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-  "prazoPadraoEntregaNormal": 0,
-  "prazoPadraoEntregaUrgente": -1
-}
-
-### Expected Response
-# Status: 400 Bad Request
-# {
-#   "statusCode": 400,
-#   "message": ["prazoPadraoEntregaNormal must not be less than 1", "prazoPadraoEntregaUrgente must not be less than 1"],
-#   "error": "Bad Request"
-# }
-
+###
 
 ### Erro - Laboratório Não Encontrado
 PATCH {{baseUrl}}/relacionamento/laboratorios/00000000-0000-0000-0000-000000000000
@@ -246,11 +129,3 @@ Authorization: Bearer {{token}}
 {
   "responsavelTecnico": "Dr. Teste"
 }
-
-### Expected Response
-# Status: 404 Not Found
-# {
-#   "statusCode": 404,
-#   "message": "Laboratório não encontrado",
-#   "error": "Not Found"
-# }

@@ -1,0 +1,291 @@
+### ========================================
+### 🧬 HERMES PARDINI - Webservices SOAP
+### ========================================
+### Operações disponíveis via webservice SOAP
+
+### PRÉ-REQUISITO: Criar integração primeiro (ver hermes-pardini.http)
+
+###
+### 1. TESTAR CONEXÃO
+###
+POST {{baseUrl}}/atendimento/integracoes/hermes-pardini/testar-conexao
+Authorization: Bearer {{token}}
+
+### Expected Response (200)
+# {
+#   "sucesso": true,
+#   "mensagem": "Conexão com Hermes Pardini estabelecida com sucesso",
+#   "detalhes": {
+#     "url": "https://www.hermespardini.com.br/b2b/HPWS.XMLServer.cls",
+#     "usuario": "15665",
+#     "ambiente": "producao"
+#   }
+# }
+
+###
+
+###
+### 2. RECEBE ATENDIMENTO (Enviar requisição de exame)
+###
+POST {{baseUrl}}/atendimento/integracoes/hermes-pardini/recebe-atendimento
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "numeroRequisicao": "REQ-2025-001",
+  "dataRequisicao": "2025-11-20",
+  "codigoPaciente": "PAC001",
+  "nomePaciente": "João Silva",
+  "dataNascimento": "1990-01-15",
+  "sexo": "M",
+  "exames": [
+    {
+      "codigoExame": "HEMO",
+      "material": "Sangue EDTA"
+    },
+    {
+      "codigoExame": "GLICO",
+      "material": "Sangue com Fluoreto"
+    }
+  ]
+}
+
+### Expected Response (201)
+# {
+#   "sucesso": true,
+#   "mensagem": "Requisição enviada com sucesso",
+#   "numeroProtocolo": "REQ-2025-001"
+# }
+
+###
+
+###
+### 3. ENVIA LAUDO (Buscar laudo individual)
+###
+POST {{baseUrl}}/atendimento/integracoes/hermes-pardini/envia-laudo
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "numeroRequisicao": "REQ-2025-001"
+}
+
+### Expected Response (200)
+# {
+#   "sucesso": true,
+#   "mensagem": "Laudo recuperado com sucesso",
+#   "laudo": {
+#     "numeroRequisicao": "REQ-2025-001",
+#     "dataResultado": "2025-11-22",
+#     "exames": [ ... ]
+#   }
+# }
+
+###
+
+###
+### 4. ENVIA LAUDO LISTA (Buscar múltiplos laudos)
+###
+POST {{baseUrl}}/atendimento/integracoes/hermes-pardini/envia-laudo-lista
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "numerosRequisicao": [
+    "REQ-2025-001",
+    "REQ-2025-002",
+    "REQ-2025-003"
+  ]
+}
+
+### Expected Response (200)
+# {
+#   "sucesso": true,
+#   "mensagem": "Laudos recuperados com sucesso",
+#   "laudos": [ ... ]
+# }
+
+###
+
+###
+### 5. ENVIA LAUDO PERÍODO (Buscar laudos por data)
+###
+POST {{baseUrl}}/atendimento/integracoes/hermes-pardini/envia-laudo-periodo
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "dataInicio": "2025-11-01",
+  "dataFim": "2025-11-20"
+}
+
+### Expected Response (200)
+# {
+#   "sucesso": true,
+#   "mensagem": "Laudos do período recuperados com sucesso",
+#   "laudos": [ ... ]
+# }
+
+###
+
+###
+### 6. CONSULTA STATUS (Verificar status de requisição)
+###
+GET {{baseUrl}}/atendimento/integracoes/hermes-pardini/consulta-status?numeroRequisicao=REQ-2025-001
+Authorization: Bearer {{token}}
+
+### Expected Response (200)
+# {
+#   "sucesso": true,
+#   "mensagem": "Status consultado com sucesso",
+#   "status": "FINALIZADO"
+# }
+
+###
+
+###
+### 7. LISTA PROCEDIMENTOS PENDENTES
+###
+GET {{baseUrl}}/atendimento/integracoes/hermes-pardini/lista-procedimentos-pendentes
+Authorization: Bearer {{token}}
+
+### Expected Response (200)
+# {
+#   "sucesso": true,
+#   "mensagem": "Procedimentos pendentes listados com sucesso",
+#   "procedimentos": [
+#     {
+#       "numeroRequisicao": "REQ-2025-005",
+#       "codigoExame": "HEMO",
+#       "status": "EM_ANALISE"
+#     }
+#   ]
+# }
+
+###
+
+###
+### 8. CANCELA EXAME
+###
+POST {{baseUrl}}/atendimento/integracoes/hermes-pardini/cancela-exame
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "numeroRequisicao": "REQ-2025-001",
+  "codigoExame": "HEMO",
+  "motivo": "Solicitação do médico - exame já realizado em outro local"
+}
+
+### Expected Response (200)
+# {
+#   "sucesso": true,
+#   "mensagem": "Exame cancelado com sucesso"
+# }
+
+###
+
+###
+### 9. ENVIA RESULTADO BASE64 (PDF do laudo)
+###
+GET {{baseUrl}}/atendimento/integracoes/hermes-pardini/envia-resultado-base64?numeroRequisicao=REQ-2025-001
+Authorization: Bearer {{token}}
+
+### Expected Response (200)
+# {
+#   "sucesso": true,
+#   "mensagem": "Resultado Base64 recuperado com sucesso",
+#   "base64": "JVBERi0xLjQKJeLjz9MKMSAwIG9iago8PC9UeXBlL0..."
+# }
+
+###
+
+###
+### 10. RELATÓRIO REQUISIÇÕES (Período)
+###
+POST {{baseUrl}}/atendimento/integracoes/hermes-pardini/relatorio-requisicoes
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "dataInicio": "2025-11-01",
+  "dataFim": "2025-11-20"
+}
+
+### Expected Response (200)
+# {
+#   "sucesso": true,
+#   "mensagem": "Relatório gerado com sucesso",
+#   "relatorio": {
+#     "total": 50,
+#     "finalizados": 45,
+#     "pendentes": 5,
+#     "cancelados": 0
+#   }
+# }
+
+###
+
+###
+### 11. CONSULTA RASTREABILIDADE (Rastreamento de amostra)
+###
+GET {{baseUrl}}/atendimento/integracoes/hermes-pardini/consulta-rastreabilidade?numeroRequisicao=REQ-2025-001
+Authorization: Bearer {{token}}
+
+### Expected Response (200)
+# {
+#   "sucesso": true,
+#   "mensagem": "Rastreamento consultado com sucesso",
+#   "rastreamento": {
+#     "numeroRequisicao": "REQ-2025-001",
+#     "status": "FINALIZADO",
+#     "etapas": [
+#       { "data": "2025-11-20 10:00", "acao": "RECEBIDO" },
+#       { "data": "2025-11-20 14:30", "acao": "EM_ANALISE" },
+#       { "data": "2025-11-22 09:00", "acao": "FINALIZADO" }
+#     ]
+#   }
+# }
+
+###
+
+### ========================================
+### 📊 ENDPOINTS DISPONÍVEIS
+### ========================================
+
+# POST   /hermes-pardini/testar-conexao                 - Testar conexão
+# POST   /hermes-pardini/recebe-atendimento              - Enviar requisição
+# POST   /hermes-pardini/envia-laudo                     - Buscar laudo
+# POST   /hermes-pardini/envia-laudo-lista               - Laudos (múltiplos)
+# POST   /hermes-pardini/envia-laudo-periodo             - Laudos (período)
+# GET    /hermes-pardini/consulta-status                 - Status requisição
+# GET    /hermes-pardini/lista-procedimentos-pendentes   - Pendentes
+# POST   /hermes-pardini/cancela-exame                   - Cancelar exame
+# GET    /hermes-pardini/envia-resultado-base64          - PDF Base64
+# POST   /hermes-pardini/relatorio-requisicoes           - Relatório
+# GET    /hermes-pardini/consulta-rastreabilidade        - Rastreamento
+
+###
+
+### ========================================
+### 🔧 TROUBLESHOOTING
+### ========================================
+
+### ❌ Erro: "Integração com Hermes Pardini não encontrada"
+# Solução: Criar integração primeiro
+# POST /api/v1/atendimento/integracoes (ver hermes-pardini.http)
+
+### ❌ Erro: "Falha ao conectar com Hermes Pardini"
+# Causas possíveis:
+# 1. Credenciais incorretas (usuario/senha)
+# 2. URL do webservice inválida
+# 3. Firewall bloqueando acesso
+# 4. Timeout (aumentar timeoutSegundos na integração)
+
+### ❌ Erro: "Requisição não encontrada"
+# Causas possíveis:
+# 1. Número de requisição inexistente
+# 2. Formato da data incorreto (usar YYYY-MM-DD)
+# 3. Delay no processamento (tentar novamente)
+
+###

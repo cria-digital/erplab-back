@@ -9,10 +9,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource, Brackets } from 'typeorm';
 import { Empresa } from './entities/empresa.entity';
 import { ContaBancaria } from '../../financeiro/core/entities/conta-bancaria.entity';
+import { Laboratorio } from '../../relacionamento/laboratorios/entities/laboratorio.entity';
 import { CreateEmpresaDto } from './dto/create-empresa.dto';
 import { UpdateEmpresaDto } from './dto/update-empresa.dto';
 import { SearchEmpresaDto } from './dto/search-empresa.dto';
 import { PaginatedResultDto } from '../../infraestrutura/common/dto/pagination.dto';
+import { TipoEmpresaEnum } from './enums/empresas.enum';
 
 @Injectable()
 export class EmpresasService {
@@ -21,6 +23,8 @@ export class EmpresasService {
     private readonly empresaRepository: Repository<Empresa>,
     @InjectRepository(ContaBancaria)
     private readonly contaBancariaRepository: Repository<ContaBancaria>,
+    @InjectRepository(Laboratorio)
+    private readonly laboratorioRepository: Repository<Laboratorio>,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -56,6 +60,22 @@ export class EmpresasService {
         });
 
         await queryRunner.manager.save(contas);
+      }
+
+      // Se empresa é LABORATORIO_APOIO, cria registro de laboratório automaticamente
+      if (empresaSalva.tipoEmpresa === TipoEmpresaEnum.LABORATORIO_APOIO) {
+        const laboratorio = this.laboratorioRepository.create({
+          empresa_id: empresaSalva.id,
+          codigo_laboratorio:
+            empresaSalva.codigoInterno ||
+            `LAB-${empresaSalva.id.substring(0, 8).toUpperCase()}`,
+          prazo_entrega_normal: 3,
+          prazo_entrega_urgente: 1,
+          aceita_urgencia: false,
+          envia_resultado_automatico: true,
+        });
+
+        await queryRunner.manager.save(Laboratorio, laboratorio);
       }
 
       await queryRunner.commitTransaction();
@@ -344,6 +364,31 @@ export class EmpresasService {
           });
 
           await queryRunner.manager.save(contas);
+        }
+      }
+
+      // Se mudou o tipo para LABORATORIO_APOIO, cria registro de laboratório se não existir
+      if (empresa.tipoEmpresa === TipoEmpresaEnum.LABORATORIO_APOIO) {
+        const laboratorioExistente = await queryRunner.manager.findOne(
+          Laboratorio,
+          {
+            where: { empresa_id: empresa.id },
+          },
+        );
+
+        if (!laboratorioExistente) {
+          const laboratorio = this.laboratorioRepository.create({
+            empresa_id: empresa.id,
+            codigo_laboratorio:
+              empresa.codigoInterno ||
+              `LAB-${empresa.id.substring(0, 8).toUpperCase()}`,
+            prazo_entrega_normal: 3,
+            prazo_entrega_urgente: 1,
+            aceita_urgencia: false,
+            envia_resultado_automatico: true,
+          });
+
+          await queryRunner.manager.save(Laboratorio, laboratorio);
         }
       }
 

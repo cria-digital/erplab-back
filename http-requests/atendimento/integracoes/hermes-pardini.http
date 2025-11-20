@@ -1,0 +1,196 @@
+### ========================================
+### 🧪 INTEGRAÇÃO - Hermes Pardini
+### ========================================
+### Integração com laboratório de apoio usando webservice SOAP
+
+### PASSO 1: Criar integração Hermes Pardini - PRODUÇÃO
+POST {{baseUrl}}/atendimento/integracoes
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoIntegracao": "laboratorio_apoio",
+  "nomeIntegracao": "Hermes Pardini - Produção",
+  "descricaoApi": "Integração com laboratório Hermes Pardini via webservice SOAP - Ambiente de Produção",
+  "codigoIdentificacao": "PARDINI-PROD-001",
+  "unidadeSaudeId": null,
+  "nomeLaboratorio": "Hermes Pardini",
+
+  "urlBase": "https://www.hermespardini.com.br/b2b/HPWS.XMLServer.cls",
+  "padraoComunicacao": "soap",
+  "formatoRetorno": "xml",
+
+  "usuario": "15665",
+  "senha": "5431",
+
+  "configuracoesAdicionais": {
+    "ambiente": "producao",
+    "cliente": "LC 4895 - INSTITUTO SAO LUCAS SR LTDA EPP",
+    "valorReferencia": "0",
+    "papelTimbrado": false,
+    "versaoResultado": 1,
+
+    "urlTabelaExamesEnvio": "http://www.hermespardini.com.br/cal/tabexalhpV2.xml",
+    "urlModelosRetorno": "https://www.hermespardini.com.br/cal/exames/modelos.xml",
+    "urlManualRetorno": "http://www.hermespardini.com.br/cal/Manual_Retorno.zip",
+
+    "webservicesDisponiveis": {
+      "wsRecebeAtendimento": true,
+      "wsEnviaLaudo": true,
+      "wsEnviaLaudoLista": true,
+      "wsEnviaLaudoPeriodo": true,
+      "wsConsultaStatus": true,
+      "wsEnviaAmostras": true,
+      "wsListaProcedimentosPendentes": true,
+      "wsEnviaAmostrasPendentes": true,
+      "wsEnviaLoteResultados": true,
+      "wsEnviaResultadoBase64": true,
+      "wsRelatorioRequisicoes": true,
+      "wsCancelaAmostra": true,
+      "wsConsultaPendenciaTecnica": true,
+      "wsConsultaRastreabilidade": true,
+      "wsGrupoFracionamento": true,
+      "wsCancelaExame": true
+    },
+
+    "configuracoesTecnicas": {
+      "timeoutConexao": 30000,
+      "tentativasRetry": 3,
+      "intervaloRetry": 5000,
+      "validaCertificadoSSL": true,
+      "logRequisicoes": true,
+      "logRespostas": true
+    },
+
+    "notificacoes": {
+      "notificarErro": true,
+      "emailNotificacao": "admin@laboratorio.com.br"
+    }
+  },
+
+  "timeoutSegundos": 30,
+  "status": "em_configuracao",
+  "ativo": false,
+  "observacoes": "Integração Hermes Pardini - LC 4895 INSTITUTO SAO LUCAS"
+}
+
+### Expected Response (201)
+# {
+#   "id": "uuid-da-integracao",
+#   "tipoIntegracao": "laboratorio_apoio",
+#   "nomeIntegracao": "Hermes Pardini - Produção",
+#   "status": "em_configuracao",
+#   ...
+# }
+
+###
+
+### PASSO 2: Criar integração Hermes Pardini - TESTE/HOMOLOGAÇÃO
+POST {{baseUrl}}/atendimento/integracoes
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoIntegracao": "laboratorio_apoio",
+  "nomeIntegracao": "Hermes Pardini - Homologação",
+  "descricaoApi": "Integração com laboratório Hermes Pardini via webservice SOAP - Ambiente de Teste",
+  "codigoIdentificacao": "PARDINI-HOMOLOG-001",
+  "nomeLaboratorio": "Hermes Pardini (Teste)",
+
+  "urlBase": "https://www.hermespardini.com.br/b2bhomologa/HPWS.XMLServer.cls",
+  "padraoComunicacao": "soap",
+  "formatoRetorno": "xml",
+
+  "usuario": "12000",
+  "senha": "5990",
+
+  "configuracoesAdicionais": {
+    "ambiente": "teste",
+    "valorReferencia": "0",
+    "papelTimbrado": false,
+    "versaoResultado": 1
+  },
+
+  "timeoutSegundos": 30,
+  "status": "em_configuracao",
+  "ativo": false,
+  "observacoes": "Ambiente de TESTE - Hermes Pardini"
+}
+
+###
+
+### PASSO 3: Listar todas as integrações de laboratório
+GET {{baseUrl}}/atendimento/integracoes/tipo/laboratorio_apoio
+Authorization: Bearer {{token}}
+
+###
+
+### PASSO 4: Buscar integração por código
+GET {{baseUrl}}/atendimento/integracoes/codigo/PARDINI-PROD-001
+Authorization: Bearer {{token}}
+
+###
+
+### PASSO 5: Testar conexão com a integração
+POST {{baseUrl}}/atendimento/integracoes/f2479234-a3fa-4f6f-9cb0-0728e56d2c30/testar-conexao
+Authorization: Bearer {{token}}
+
+### Expected Response (200)
+# {
+#   "sucesso": true,
+#   "mensagem": "Conexão testada com sucesso",
+#   "detalhes": { ... }
+# }
+
+###
+
+### PASSO 6: Ativar integração (após testes bem-sucedidos)
+PATCH {{baseUrl}}/atendimento/integracoes/{{integracao_id}}/status?status=ativa
+Authorization: Bearer {{token}}
+
+###
+
+### PASSO 7: Obter estatísticas das integrações
+GET {{baseUrl}}/atendimento/integracoes/estatisticas
+Authorization: Bearer {{token}}
+
+###
+
+### PASSO 8 (OPCIONAL): Atualizar configurações da integração
+PATCH {{baseUrl}}/atendimento/integracoes/{{integracao_id}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "observacoes": "Integração atualizada em {{$datetime}}",
+  "configuracoesAdicionais": {
+    "notificacoes": {
+      "emailNotificacao": "novo-email@laboratorio.com.br"
+    }
+  }
+}
+
+###
+
+### PASSO 9 (OPCIONAL): Desativar integração
+PATCH {{baseUrl}}/atendimento/integracoes/{{integracao_id}}/toggle-status
+Authorization: Bearer {{token}}
+
+###
+
+### PASSO 10 (OPCIONAL): Remover integração
+DELETE {{baseUrl}}/atendimento/integracoes/{{integracao_id}}
+Authorization: Bearer {{token}}
+
+###
+
+### ========================================
+### 📋 VARIÁVEIS NECESSÁRIAS
+### ========================================
+# 1. Obter token de autenticação primeiro (ver auth/login.http)
+# 2. Após criar a integração, copiar o ID retornado
+# 3. Substituir {{integracao_id}} pelo UUID real
+
+@integracao_id = cole-o-uuid-da-integracao-aqui
+
+###

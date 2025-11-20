@@ -349,7 +349,7 @@ describe('UnidadeSaudeService', () => {
 
       expect(result).toEqual(paginatedResult);
       expect(mockUnidadeSaudeRepository.findAndCount).toHaveBeenCalledWith({
-        where: {},
+        where: { ativo: true },
         relations: [
           'horariosAtendimento',
           'contas_bancarias',
@@ -371,10 +371,22 @@ describe('UnidadeSaudeService', () => {
 
       expect(mockUnidadeSaudeRepository.findAndCount).toHaveBeenCalledWith({
         where: [
-          { nomeUnidade: expect.objectContaining({ _type: 'ilike' }) },
-          { nomeFantasia: expect.objectContaining({ _type: 'ilike' }) },
-          { cnpj: expect.objectContaining({ _type: 'ilike' }) },
-          { razaoSocial: expect.objectContaining({ _type: 'ilike' }) },
+          {
+            ativo: true,
+            nomeUnidade: expect.objectContaining({ _type: 'ilike' }),
+          },
+          {
+            ativo: true,
+            nomeFantasia: expect.objectContaining({ _type: 'ilike' }),
+          },
+          {
+            ativo: true,
+            cnpj: expect.objectContaining({ _type: 'ilike' }),
+          },
+          {
+            ativo: true,
+            razaoSocial: expect.objectContaining({ _type: 'ilike' }),
+          },
         ],
         relations: [
           'horariosAtendimento',
@@ -418,6 +430,7 @@ describe('UnidadeSaudeService', () => {
 
       expect(mockUnidadeSaudeRepository.findAndCount).toHaveBeenCalledWith({
         where: {
+          ativo: true,
           cidade: expect.objectContaining({ _type: 'ilike' }),
           estado: 'DF',
         },
@@ -441,7 +454,7 @@ describe('UnidadeSaudeService', () => {
       await service.findAll({ page: 3, limit: 20 });
 
       expect(mockUnidadeSaudeRepository.findAndCount).toHaveBeenCalledWith({
-        where: {},
+        where: { ativo: true },
         relations: [
           'horariosAtendimento',
           'contas_bancarias',
@@ -1153,7 +1166,7 @@ describe('UnidadeSaudeService', () => {
 
       expect(mockUnidadeSaudeRepository.findAndCount).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: { estado: 'SP' },
+          where: { ativo: true, estado: 'SP' },
         }),
       );
     });

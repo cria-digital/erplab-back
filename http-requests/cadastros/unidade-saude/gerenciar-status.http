@@ -32,12 +32,24 @@ Authorization: Bearer {{token}}
 
 ### Remover Unidade de Saúde (Soft Delete)
 # Substitua {id} pelo UUID real da unidade
+#
+# ⚠️ IMPORTANTE: Esta operação NÃO deleta permanentemente!
+# - Marca a unidade como inativa (ativo = false)
+# - A unidade NÃO aparecerá mais nas listagens padrão
+# - Para listar unidades inativas: GET /unidades-saude?ativo=false
+# - Para reativar: PATCH /unidades-saude/{id}/ativar
 DELETE {{baseUrl}}/cadastros/unidades-saude/123e4567-e89b-12d3-a456-426614174000
 Authorization: Bearer {{token}}
 
 ### Expected Response
 # Status: 204 No Content
 # (Sem corpo de resposta)
+#
+# Após o DELETE, a unidade:
+# ✅ Não aparece mais em GET /unidades-saude (lista apenas ativas)
+# ✅ Pode ser buscada por ID: GET /unidades-saude/{id}
+# ✅ Aparece com ativo=false em GET /unidades-saude?ativo=false
+# ✅ Pode ser reativada com PATCH /unidades-saude/{id}/ativar
 
 ###
 

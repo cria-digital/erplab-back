@@ -1,8 +1,6 @@
 import {
   Controller,
   Get,
-  Post,
-  Body,
   Patch,
   Param,
   Delete,
@@ -10,6 +8,7 @@ import {
   ParseUUIDPipe,
   HttpCode,
   HttpStatus,
+  Body,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -19,7 +18,6 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { LaboratorioService } from '../services/laboratorio.service';
-import { CreateLaboratorioDto } from '../dto/create-laboratorio.dto';
 import { UpdateLaboratorioDto } from '../dto/update-laboratorio.dto';
 import { Laboratorio } from '../entities/laboratorio.entity';
 
@@ -27,23 +25,6 @@ import { Laboratorio } from '../entities/laboratorio.entity';
 @Controller('relacionamento/laboratorios')
 export class LaboratorioController {
   constructor(private readonly laboratorioService: LaboratorioService) {}
-
-  @Post()
-  @ApiOperation({ summary: 'Criar novo laboratório' })
-  @ApiResponse({
-    status: 201,
-    description: 'Laboratório criado com sucesso',
-    type: Laboratorio,
-  })
-  @ApiResponse({
-    status: 409,
-    description: 'Conflito - Código ou CNPJ já existente',
-  })
-  create(
-    @Body() createLaboratorioDto: CreateLaboratorioDto,
-  ): Promise<Laboratorio> {
-    return this.laboratorioService.create(createLaboratorioDto);
-  }
 
   @Get()
   @ApiOperation({ summary: 'Listar todos os laboratórios' })

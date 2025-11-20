@@ -191,15 +191,22 @@ export class UnidadeSaudeService {
   async findAll(
     params: PaginationParams,
   ): Promise<PaginatedResult<UnidadeSaude>> {
-    const { page = 1, limit = 10, search, ativo, cidade, estado } = params;
+    const {
+      page = 1,
+      limit = 10,
+      search,
+      ativo = true,
+      cidade,
+      estado,
+    } = params;
 
     const skip = (page - 1) * limit;
 
     let where: any = {};
 
-    if (ativo !== undefined) {
-      where.ativo = ativo;
-    }
+    // Por padrão, lista apenas unidades ativas (soft delete)
+    // Para listar inativas, passar explicitamente ativo=false
+    where.ativo = ativo;
 
     if (cidade) {
       where.cidade = ILike(`%${cidade}%`);

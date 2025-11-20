@@ -1,190 +1,51 @@
 ### Buscar Laboratório por ID
-# Substitua {id} pelo UUID do laboratório
 GET {{baseUrl}}/relacionamento/laboratorios/{id}
 Authorization: Bearer {{token}}
 
-### Expected Response
-# Status: 200 OK
-# {
-#   "id": "uuid",
-#   "codigoLaboratorio": "LAB-SL-001",
-#   "responsavelTecnico": "Dr. João Silva",
-#   "conselhoResponsavel": "CRF",
-#   "numeroConselho": "12345-SP",
-#   "tipoIntegracao": "api",
-#   "urlIntegracao": "https://api.labsaolucas.com.br/v1",
-#   "metodosEnvioResultado": ["email", "portal", "sistema"],
-#   "portalResultadosUrl": "https://portal.labsaolucas.com.br",
-#   "prazoPadraoEntregaNormal": 3,
-#   "prazoPadraoEntregaUrgente": 1,
-#   "taxaUrgencia": 50.00,
-#   "percentualRepasse": 65.00,
-#   "aceitaUrgencia": true,
-#   "empresa": {
-#     "id": "uuid",
-#     "cnpj": "12345678000190",
-#     "razaoSocial": "Laboratório São Lucas LTDA",
-#     "nomeFantasia": "Lab São Lucas",
-#     "email": "contato@labsaolucas.com.br",
-#     "telefone": "(11) 3456-7890",
-#     "endereco": {
-#       "cep": "01310-100",
-#       "logradouro": "Av. Paulista",
-#       "numero": "1000",
-#       "cidade": "São Paulo",
-#       "estado": "SP"
-#     }
-#   },
-#   "ativo": true,
-#   ...
-# }
-
+###
 
 ### Buscar por Código do Laboratório
 GET {{baseUrl}}/relacionamento/laboratorios/codigo/LAB-SL-001
 Authorization: Bearer {{token}}
 
-### Expected Response
-# Status: 200 OK
-# { ... dados do laboratório ... }
-
+###
 
 ### Buscar por CNPJ da Empresa
 GET {{baseUrl}}/relacionamento/laboratorios/cnpj/12345678000190
 Authorization: Bearer {{token}}
 
-### Expected Response
-# Status: 200 OK
-# { ... dados do laboratório ... }
-
+###
 
 ### Buscar por CNPJ Formatado
 GET {{baseUrl}}/relacionamento/laboratorios/cnpj/12.345.678/0001-90
 Authorization: Bearer {{token}}
 
-### Expected Response
-# Status: 200 OK
-# { ... dados do laboratório ... }
-
+###
 
 ### Buscar Laboratórios por Tipo de Integração
 GET {{baseUrl}}/relacionamento/laboratorios/integracao/api
 Authorization: Bearer {{token}}
 
-### Expected Response
-# Status: 200 OK
-# [ ... array de laboratórios com integração API ... ]
+###
 
-
-### Buscar Laboratórios por Responsável Técnico
-GET {{baseUrl}}/relacionamento/laboratorios/search?responsavel=João Silva
+### Buscar por Termo
+GET {{baseUrl}}/relacionamento/laboratorios/search?q=São Lucas
 Authorization: Bearer {{token}}
 
-### Expected Response
-# Status: 200 OK
-# [ ... laboratórios com responsável técnico João Silva ... ]
-
-
-### Buscar Laboratórios por Conselho
-GET {{baseUrl}}/relacionamento/laboratorios/search?conselho=CRF
-Authorization: Bearer {{token}}
-
-### Expected Response
-# Status: 200 OK
-# [ ... laboratórios com responsável técnico CRF ... ]
-
-
-### Buscar Laboratórios por Prazo de Entrega
-GET {{baseUrl}}/relacionamento/laboratorios?prazoPadraoEntregaNormal=3
-Authorization: Bearer {{token}}
-
-### Expected Response
-# Status: 200 OK
-# [ ... laboratórios com prazo de entrega normal de 3 dias ... ]
-
-
-### Buscar Laboratórios por Percentual de Repasse
-GET {{baseUrl}}/relacionamento/laboratorios?percentualRepasseMin=60&percentualRepasseMax=70
-Authorization: Bearer {{token}}
-
-### Expected Response
-# Status: 200 OK
-# [ ... laboratórios com repasse entre 60% e 70% ... ]
-
-
-### Verificar Integração Ativa
-GET {{baseUrl}}/relacionamento/laboratorios/{id}/verificar-integracao
-Authorization: Bearer {{token}}
-
-### Expected Response
-# Status: 200 OK
-# {
-#   "laboratorioid": "uuid",
-#   "tipoIntegracao": "api",
-#   "integracaoAtiva": true,
-#   "statusConexao": "online",
-#   "ultimaVerificacao": "2025-10-09T10:30:00Z",
-#   "mensagem": "Integração funcionando corretamente"
-# }
-
-
-### Buscar Métodos Disponíveis do Laboratório
-GET {{baseUrl}}/relacionamento/laboratorios/{id}/metodos
-Authorization: Bearer {{token}}
-
-### Expected Response
-# Status: 200 OK
-# {
-#   "laboratorioid": "uuid",
-#   "metodos": [
-#     {
-#       "id": "uuid",
-#       "codigoMetodo": "HEM-001",
-#       "nomeMetodo": "Hemograma Completo",
-#       "codigoLaboratorio": "HEM",
-#       "prazoEntrega": 3,
-#       "valor": 25.50
-#     },
-#     ...
-#   ],
-#   "total": 150
-# }
-
+###
 
 ### Erro - Laboratório Não Encontrado
 GET {{baseUrl}}/relacionamento/laboratorios/00000000-0000-0000-0000-000000000000
 Authorization: Bearer {{token}}
 
-### Expected Response
-# Status: 404 Not Found
-# {
-#   "statusCode": 404,
-#   "message": "Laboratório não encontrado",
-#   "error": "Not Found"
-# }
-
+###
 
 ### Erro - Código Não Encontrado
 GET {{baseUrl}}/relacionamento/laboratorios/codigo/LAB-XXX-999
 Authorization: Bearer {{token}}
 
-### Expected Response
-# Status: 404 Not Found
-# {
-#   "statusCode": 404,
-#   "message": "Laboratório não encontrado com o código informado",
-#   "error": "Not Found"
-# }
-
+###
 
 ### Erro - CNPJ Não Encontrado
 GET {{baseUrl}}/relacionamento/laboratorios/cnpj/99999999000199
 Authorization: Bearer {{token}}
-
-### Expected Response
-# Status: 404 Not Found
-# {
-#   "statusCode": 404,
-#   "message": "Laboratório não encontrado com o CNPJ informado",
-#   "error": "Not Found"
-# }
