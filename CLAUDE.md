@@ -281,6 +281,14 @@ npm test       # Executar testes unitários
 
 **IMPORTANTE**: SEMPRE executar estes comandos ao finalizar qualquer implementação ou alteração de código.
 
+**⚠️ CRÍTICO - HUSKY PRE-COMMIT HOOK**: O projeto tem Husky configurado que **BLOQUEIA commits** se:
+
+- Build falhar (erros TypeScript)
+- Lint falhar (erros ESLint)
+- Testes falharem (qualquer teste quebrado)
+
+**Por isso, é OBRIGATÓRIO executar os 3 comandos SEMPRE antes de considerar uma tarefa concluída!**
+
 **REGRA CRÍTICA PARA TESTES**: A cada novo teste criado, SEMPRE executar:
 
 1. `npm run build` - Garantir que não há erros de TypeScript
@@ -288,6 +296,12 @@ npm test       # Executar testes unitários
 3. `npm test` - Executar TODOS os testes para garantir que nada quebrou
 
 Essa validação deve ser feita IMEDIATAMENTE após criar cada arquivo de teste, antes de prosseguir para o próximo.
+
+**Ordem de execução recomendada:**
+
+1. Build (mais rápido, detecta erros TypeScript)
+2. Lint (rápido, detecta problemas de código)
+3. Test (mais demorado, valida funcionalidade completa)
 
 ### Pipeline de Qualidade Implementado
 
@@ -735,6 +749,47 @@ convenios
   - Facilita manutenção
   - Permite reutilização
   - Mantém integridade referencial
+
+### ⭐ DECISÃO CRÍTICA: Mesmo ID entre Empresa e Tabelas Relacionadas (Novembro 2025)
+
+**Problema Identificado:**
+
+- `GET /empresas/search?tipoEmpresa=LABORATORIO_APOIO` retorna `empresa.id`
+- `GET /laboratorios/{id}` esperava `laboratorio.id` (diferente!)
+- Causava confusão e impossibilitava usar o ID da busca de empresas diretamente
+
+**Solução Implementada:**
+
+- Tabelas `laboratorios`, `convenios` e `telemedicina` agora usam `@PrimaryColumn` (ID manual)
+- Ao criar empresa do tipo específico, o registro relacionado recebe o **MESMO ID**
+- Migration `RemoveAutoGenerateIdFromRelacionamentos` remove `DEFAULT uuid_generate_v4()` do banco
+
+**Resultado:**
+
+```typescript
+// Criar empresa tipo LABORATORIO_APOIO
+empresa.id = '8b45260a-f272-403f-b2a8-4c632f5a8945'
+
+// Laboratório criado AUTOMATICAMENTE com MESMO ID
+laboratorio.id = '8b45260a-f272-403f-b2a8-4c632f5a8945' ← MESMO!
+laboratorio.empresa_id = '8b45260a-f272-403f-b2a8-4c632f5a8945'
+```
+
+**Arquivos Modificados:**
+
+- ✅ `laboratorios/entities/laboratorio.entity.ts` - `@PrimaryColumn('uuid')`
+- ✅ `convenios/entities/convenio.entity.ts` - `@PrimaryColumn('uuid')`
+- ✅ `telemedicina/entities/telemedicina.entity.ts` - `@PrimaryColumn('uuid')`
+- ✅ `empresas/empresas.service.ts` - Criação automática com `id: empresaSalva.id`
+- ✅ `empresas/empresas.module.ts` - Registro das entidades
+- ✅ Migration `1763734624143-RemoveAutoGenerateIdFromRelacionamentos.ts`
+
+**Vantagens:**
+
+- ✅ Sem ambiguidade de IDs
+- ✅ ID da busca de empresas funciona diretamente nos endpoints específicos
+- ✅ Mantém normalização de dados
+- ✅ Criação automática ao cadastrar empresa
 
 ## Módulo de Telemedicina (Criado Janeiro 2025)
 

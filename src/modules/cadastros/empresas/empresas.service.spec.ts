@@ -7,6 +7,8 @@ import { EmpresasService } from './empresas.service';
 import { Empresa } from './entities/empresa.entity';
 import { ContaBancaria } from '../../financeiro/core/entities/conta-bancaria.entity';
 import { Laboratorio } from '../../relacionamento/laboratorios/entities/laboratorio.entity';
+import { Convenio } from '../../relacionamento/convenios/entities/convenio.entity';
+import { Telemedicina } from '../../relacionamento/telemedicina/entities/telemedicina.entity';
 import { CreateEmpresaDto } from './dto/create-empresa.dto';
 import { UpdateEmpresaDto } from './dto/update-empresa.dto';
 import { TipoEmpresaEnum } from './enums/empresas.enum';
@@ -29,6 +31,20 @@ describe('EmpresasService', () => {
   };
 
   const mockLaboratorioRepository = {
+    create: jest.fn(),
+    save: jest.fn(),
+    find: jest.fn(),
+    findOne: jest.fn(),
+  };
+
+  const mockConvenioRepository = {
+    create: jest.fn(),
+    save: jest.fn(),
+    find: jest.fn(),
+    findOne: jest.fn(),
+  };
+
+  const mockTelemedicinaRepository = {
     create: jest.fn(),
     save: jest.fn(),
     find: jest.fn(),
@@ -112,6 +128,14 @@ describe('EmpresasService', () => {
         {
           provide: getRepositoryToken(Laboratorio),
           useValue: mockLaboratorioRepository,
+        },
+        {
+          provide: getRepositoryToken(Convenio),
+          useValue: mockConvenioRepository,
+        },
+        {
+          provide: getRepositoryToken(Telemedicina),
+          useValue: mockTelemedicinaRepository,
         },
         {
           provide: DataSource,

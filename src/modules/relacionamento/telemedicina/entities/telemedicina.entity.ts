@@ -1,7 +1,7 @@
 import {
   Entity,
   Column,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
   CreateDateColumn,
   UpdateDateColumn,
   OneToOne,
@@ -34,7 +34,7 @@ export enum StatusIntegracao {
 
 @Entity('telemedicina')
 export class Telemedicina {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn('uuid')
   id: string;
 
   @Column({ type: 'uuid', unique: true })

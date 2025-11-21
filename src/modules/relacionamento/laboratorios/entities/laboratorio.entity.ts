@@ -1,7 +1,7 @@
 import {
   Entity,
   Column,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
   CreateDateColumn,
   UpdateDateColumn,
   OneToOne,
@@ -27,7 +27,7 @@ export enum MetodoEnvioResultado {
 
 @Entity('laboratorios')
 export class Laboratorio {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn('uuid')
   id: string;
 
   @Column({ type: 'uuid', unique: true })

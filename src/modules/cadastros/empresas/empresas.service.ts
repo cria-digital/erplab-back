@@ -10,6 +10,8 @@ import { Repository, DataSource, Brackets } from 'typeorm';
 import { Empresa } from './entities/empresa.entity';
 import { ContaBancaria } from '../../financeiro/core/entities/conta-bancaria.entity';
 import { Laboratorio } from '../../relacionamento/laboratorios/entities/laboratorio.entity';
+import { Convenio } from '../../relacionamento/convenios/entities/convenio.entity';
+import { Telemedicina } from '../../relacionamento/telemedicina/entities/telemedicina.entity';
 import { CreateEmpresaDto } from './dto/create-empresa.dto';
 import { UpdateEmpresaDto } from './dto/update-empresa.dto';
 import { SearchEmpresaDto } from './dto/search-empresa.dto';
@@ -25,6 +27,10 @@ export class EmpresasService {
     private readonly contaBancariaRepository: Repository<ContaBancaria>,
     @InjectRepository(Laboratorio)
     private readonly laboratorioRepository: Repository<Laboratorio>,
+    @InjectRepository(Convenio)
+    private readonly convenioRepository: Repository<Convenio>,
+    @InjectRepository(Telemedicina)
+    private readonly telemedicinaRepository: Repository<Telemedicina>,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -62,20 +68,55 @@ export class EmpresasService {
         await queryRunner.manager.save(contas);
       }
 
-      // Se empresa é LABORATORIO_APOIO, cria registro de laboratório automaticamente
-      if (empresaSalva.tipoEmpresa === TipoEmpresaEnum.LABORATORIO_APOIO) {
-        const laboratorio = this.laboratorioRepository.create({
-          empresa_id: empresaSalva.id,
-          codigo_laboratorio:
-            empresaSalva.codigoInterno ||
-            `LAB-${empresaSalva.id.substring(0, 8).toUpperCase()}`,
-          prazo_entrega_normal: 3,
-          prazo_entrega_urgente: 1,
-          aceita_urgencia: false,
-          envia_resultado_automatico: true,
-        });
+      // Cria registros automáticos nas tabelas especializadas baseado no tipo de empresa
+      switch (empresaSalva.tipoEmpresa) {
+        case TipoEmpresaEnum.LABORATORIO_APOIO:
+          const laboratorio = this.laboratorioRepository.create({
+            id: empresaSalva.id, // MESMO ID DA EMPRESA para facilitar buscas
+            empresa_id: empresaSalva.id,
+            codigo_laboratorio:
+              empresaSalva.codigoInterno ||
+              `LAB-${empresaSalva.id.substring(0, 8).toUpperCase()}`,
+            prazo_entrega_normal: 3,
+            prazo_entrega_urgente: 1,
+            aceita_urgencia: false,
+            envia_resultado_automatico: true,
+          });
+          await queryRunner.manager.save(Laboratorio, laboratorio);
+          break;
 
-        await queryRunner.manager.save(Laboratorio, laboratorio);
+        case TipoEmpresaEnum.CONVENIOS:
+          const convenio = this.convenioRepository.create({
+            id: empresaSalva.id, // MESMO ID DA EMPRESA para facilitar buscas
+            empresa_id: empresaSalva.id,
+            codigo_convenio:
+              empresaSalva.codigoInterno ||
+              `CONV-${empresaSalva.id.substring(0, 8).toUpperCase()}`,
+            prazo_pagamento_dias: 30,
+            requer_autorizacao: true,
+            aceita_atendimento_online: false,
+          });
+          await queryRunner.manager.save(Convenio, convenio);
+          break;
+
+        case TipoEmpresaEnum.TELEMEDICINA:
+          const telemedicina = this.telemedicinaRepository.create({
+            id: empresaSalva.id, // MESMO ID DA EMPRESA para facilitar buscas
+            empresa_id: empresaSalva.id,
+            codigo_telemedicina:
+              empresaSalva.codigoInterno ||
+              `TELE-${empresaSalva.id.substring(0, 8).toUpperCase()}`,
+            tempo_consulta_padrao: 30,
+            permite_agendamento_online: true,
+            permite_cancelamento_online: true,
+            antecedencia_minima_agendamento: 60,
+            antecedencia_minima_cancelamento: 24,
+            suporte_gravacao: true,
+            suporte_streaming: true,
+            criptografia_end_to_end: true,
+          });
+          await queryRunner.manager.save(Telemedicina, telemedicina);
+          break;
       }
 
       await queryRunner.commitTransaction();
