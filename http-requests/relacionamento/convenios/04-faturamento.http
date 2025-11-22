@@ -1,0 +1,59 @@
+### ========================================
+### ABA 1: INFORMAÇÕES GERAIS - Seção FATURAMENTO
+### Configurações de faturamento
+### ========================================
+
+@baseUrl = http://localhost:10016/api/v1
+@contentType = application/json
+@token = seu_token_aqui
+
+### Atualizar configurações de faturamento
+PATCH {{baseUrl}}/relacionamento/convenios/{{convenioId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "envio_faturamento_id": "{{envioFaturamentoId}}",
+  "fatura_ate_dia": 20,
+  "dia_vencimento": 10,
+  "data_contrato": "2024-01-15",
+  "data_ultimo_ajuste": "2024-11-01",
+  "instrucoes_faturamento": "Enviar faturamento até dia 20 de cada mês. Incluir todas as guias autorizadas. Anexar comprovantes de autorização."
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Convênio atualizado com sucesso",
+#   "data": {
+#     "envio_faturamento_id": "uuid",
+#     "fatura_ate_dia": 20,
+#     "dia_vencimento": 10,
+#     ...
+#   }
+# }
+
+###
+
+### Atualizar datas do contrato
+PATCH {{baseUrl}}/relacionamento/convenios/{{convenioId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "data_contrato": "2024-01-01",
+  "data_ultimo_ajuste": "2024-12-01"
+}
+
+###
+
+### Atualizar apenas instruções de faturamento
+PATCH {{baseUrl}}/relacionamento/convenios/{{convenioId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "instrucoes_faturamento": "INSTRUÇÕES ATUALIZADAS:\n1. Faturar mensalmente até dia 20\n2. Enviar via portal web\n3. Incluir relatório de produção\n4. Anexar autorizações digitalizadas"
+}
+
+###

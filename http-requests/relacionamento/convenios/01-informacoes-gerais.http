@@ -1,0 +1,107 @@
+### ========================================
+### ABA 1: INFORMAÇÕES GERAIS
+### Campos da primeira aba do Figma
+### ========================================
+
+@baseUrl = http://localhost:10016/api/v1
+@contentType = application/json
+@token = seu_token_aqui
+
+### Criar convênio - Informações Gerais (Unimed)
+POST {{baseUrl}}/relacionamento/convenios
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresa": {
+    "tipoEmpresa": "CONVENIOS",
+    "cnpj": "73730838000181",
+    "razaoSocial": "Unimed São Paulo Cooperativa de Trabalho Médico",
+    "nomeFantasia": "Unimed São Paulo",
+    "email": "faturamento@unimed.com.br",
+    "telefone": "1141886600",
+    "ativo": true
+  },
+  "nome": "Unimed São Paulo",
+  "registro_ans": "359017",
+  "matricula": null,
+  "tipo_convenio_id": null,
+  "forma_liquidacao_id": null
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "message": "Convênio criado com sucesso",
+#   "data": {
+#     "id": "uuid",
+#     "empresa_id": "uuid",
+#     "nome": "Unimed São Paulo",
+#     "registro_ans": "359017",
+#     ...
+#   }
+# }
+
+###
+
+### Criar convênio - Informações Gerais (SulAmérica)
+POST {{baseUrl}}/relacionamento/convenios
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresa": {
+    "tipoEmpresa": "CONVENIOS",
+    "cnpj": "01685053000156",
+    "razaoSocial": "Sul América Companhia de Seguro Saúde",
+    "nomeFantasia": "SulAmérica Saúde",
+    "email": "prestadores@sulamerica.com.br",
+    "telefone": "1135530400",
+    "ativo": true
+  },
+  "nome": "SulAmérica Saúde",
+  "registro_ans": "416428",
+  "matricula": null,
+  "tipo_convenio_id": null,
+  "forma_liquidacao_id": null
+}
+
+###
+
+### Criar convênio - Informações Gerais (Bradesco Saúde)
+POST {{baseUrl}}/relacionamento/convenios
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "empresa": {
+    "tipoEmpresa": "CONVENIOS",
+    "cnpj": "92693118000160",
+    "razaoSocial": "Bradesco Saúde S/A",
+    "nomeFantasia": "Bradesco Saúde",
+    "email": "credenciados@bradescosaude.com.br",
+    "telefone": "1121994400",
+    "ativo": true
+  },
+  "nome": "Bradesco Saúde",
+  "registro_ans": "005711",
+  "matricula": null,
+  "tipo_convenio_id": null,
+  "forma_liquidacao_id": null
+}
+
+###
+
+### Atualizar convênio - Informações Gerais
+PATCH {{baseUrl}}/relacionamento/convenios/{{convenioId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Unimed São Paulo - Atualizado",
+  "registro_ans": "359017",
+  "tipo_convenio_id": "{{tipoConvenioId}}",
+  "forma_liquidacao_id": "{{formaLiquidacaoId}}"
+}
+
+###

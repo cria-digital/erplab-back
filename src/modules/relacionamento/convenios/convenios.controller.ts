@@ -116,13 +116,12 @@ export class ConveniosController {
     @Query('page') page?: string,
     @Query('limit') limit?: string,
     @Query('search') search?: string,
-    @Query('status') status?: string,
+    @Query('status') _status?: string, // TODO: Remover após migration
   ) {
     return await this.conveniosService.findAll(
       page ? parseInt(page) : 1,
       limit ? parseInt(limit) : 10,
       search,
-      status,
     );
   }
 
@@ -144,141 +143,146 @@ export class ConveniosController {
     };
   }
 
-  @Get('com-integracao')
-  @ApiOperation({
-    summary: 'Listar convênios com integração',
-    description: 'Retorna todos os convênios que possuem integração via API.',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Lista de convênios com integração',
-    type: [Convenio],
-  })
-  async findComIntegracao(): Promise<ApiResponseType<Convenio[]>> {
-    const convenios = await this.conveniosService.findComIntegracao();
-    return {
-      message: 'Convênios com integração encontrados',
-      data: convenios,
-    };
-  }
+  // TODO: Refatorar após migration - método removido
+  // @Get('com-integracao')
+  // @ApiOperation({
+  //   summary: 'Listar convênios com integração',
+  //   description: 'Retorna todos os convênios que possuem integração via API.',
+  // })
+  // @ApiResponse({
+  //   status: 200,
+  //   description: 'Lista de convênios com integração',
+  //   type: [Convenio],
+  // })
+  // async findComIntegracao(): Promise<ApiResponseType<Convenio[]>> {
+  //   const convenios = await this.conveniosService.findComIntegracao();
+  //   return {
+  //     message: 'Convênios com integração encontrados',
+  //     data: convenios,
+  //   };
+  // }
 
-  @Get('tipo-faturamento/:tipo')
-  @ApiOperation({
-    summary: 'Buscar convênios por tipo de faturamento',
-    description: 'Retorna convênios filtrados pelo tipo de faturamento.',
-  })
-  @ApiParam({
-    name: 'tipo',
-    enum: ['tiss', 'proprio', 'manual'],
-    description: 'Tipo de faturamento',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Lista de convênios do tipo',
-    type: [Convenio],
-  })
-  async findByTipoFaturamento(
-    @Param('tipo') tipo: string,
-  ): Promise<ApiResponseType<Convenio[]>> {
-    const convenios = await this.conveniosService.findByTipoFaturamento(tipo);
-    return {
-      message: 'Convênios encontrados com sucesso',
-      data: convenios,
-    };
-  }
+  // TODO: Refatorar após migration - método removido
+  // @Get('tipo-faturamento/:tipo')
+  // @ApiOperation({
+  //   summary: 'Buscar convênios por tipo de faturamento',
+  //   description: 'Retorna convênios filtrados pelo tipo de faturamento.',
+  // })
+  // @ApiParam({
+  //   name: 'tipo',
+  //   enum: ['tiss', 'proprio', 'manual'],
+  //   description: 'Tipo de faturamento',
+  // })
+  // @ApiResponse({
+  //   status: 200,
+  //   description: 'Lista de convênios do tipo',
+  //   type: [Convenio],
+  // })
+  // async findByTipoFaturamento(
+  //   @Param('tipo') tipo: string,
+  // ): Promise<ApiResponseType<Convenio[]>> {
+  //   const convenios = await this.conveniosService.findByTipoFaturamento(tipo);
+  //   return {
+  //     message: 'Convênios encontrados com sucesso',
+  //     data: convenios,
+  //   };
+  // }
 
-  @Get(':id/autorizacao')
-  @ApiOperation({
-    summary: 'Verificar requisitos de autorização',
-    description: 'Verifica se o convênio requer autorização e/ou senha.',
-  })
-  @ApiParam({
-    name: 'id',
-    type: String,
-    description: 'ID do convênio',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Requisitos de autorização',
-    schema: {
-      type: 'object',
-      properties: {
-        requerAutorizacao: { type: 'boolean' },
-        requerSenha: { type: 'boolean' },
-      },
-    },
-  })
-  async verificarAutorizacao(
-    @Param('id') id: string,
-  ): Promise<ApiResponseType<any>> {
-    const autorizacao = await this.conveniosService.verificarAutorizacao(id);
-    return {
-      message: 'Requisitos de autorização verificados',
-      data: autorizacao,
-    };
-  }
+  // TODO: Refatorar após migration - método removido
+  // @Get(':id/autorizacao')
+  // @ApiOperation({
+  //   summary: 'Verificar requisitos de autorização',
+  //   description: 'Verifica se o convênio requer autorização e/ou senha.',
+  // })
+  // @ApiParam({
+  //   name: 'id',
+  //   type: String,
+  //   description: 'ID do convênio',
+  // })
+  // @ApiResponse({
+  //   status: 200,
+  //   description: 'Requisitos de autorização',
+  //   schema: {
+  //     type: 'object',
+  //     properties: {
+  //       requerAutorizacao: { type: 'boolean' },
+  //       requerSenha: { type: 'boolean' },
+  //     },
+  //   },
+  // })
+  // async verificarAutorizacao(
+  //   @Param('id') id: string,
+  // ): Promise<ApiResponseType<any>> {
+  //   const autorizacao = await this.conveniosService.verificarAutorizacao(id);
+  //   return {
+  //     message: 'Requisitos de autorização verificados',
+  //     data: autorizacao,
+  //   };
+  // }
 
-  @Get(':id/regras')
-  @ApiOperation({
-    summary: 'Obter regras do convênio',
-    description: 'Retorna as regras específicas e configurações do convênio.',
-  })
-  @ApiParam({
-    name: 'id',
-    type: String,
-    description: 'ID do convênio',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Regras do convênio',
-    schema: {
-      type: 'object',
-      properties: {
-        percentualDesconto: { type: 'number' },
-        tabelaPrecos: { type: 'string' },
-        validadeGuiaDias: { type: 'number' },
-        regrasEspecificas: { type: 'object' },
-      },
-    },
-  })
-  async getRegrasConvenio(
-    @Param('id') id: string,
-  ): Promise<ApiResponseType<any>> {
-    const regras = await this.conveniosService.getRegrasConvenio(id);
-    return {
-      message: 'Regras do convênio obtidas com sucesso',
-      data: regras,
-    };
-  }
+  // TODO: Refatorar após migration - método removido
+  // @Get(':id/regras')
+  // @ApiOperation({
+  //   summary: 'Obter regras do convênio',
+  //   description: 'Retorna as regras específicas e configurações do convênio.',
+  // })
+  // @ApiParam({
+  //   name: 'id',
+  //   type: String,
+  //   description: 'ID do convênio',
+  // })
+  // @ApiResponse({
+  //   status: 200,
+  //   description: 'Regras do convênio',
+  //   schema: {
+  //     type: 'object',
+  //     properties: {
+  //       percentualDesconto: { type: 'number' },
+  //       tabelaPrecos: { type: 'string' },
+  //       validadeGuiaDias: { type: 'number' },
+  //       regrasEspecificas: { type: 'object' },
+  //     },
+  //   },
+  // })
+  // async getRegrasConvenio(
+  //   @Param('id') id: string,
+  // ): Promise<ApiResponseType<any>> {
+  //   const regras = await this.conveniosService.getRegrasConvenio(id);
+  //   return {
+  //     message: 'Regras do convênio obtidas com sucesso',
+  //     data: regras,
+  //   };
+  // }
 
-  @Get('codigo/:codigo')
-  @ApiOperation({
-    summary: 'Buscar convênio por código',
-    description: 'Retorna um convênio específico pelo código.',
-  })
-  @ApiParam({
-    name: 'codigo',
-    type: String,
-    description: 'Código do convênio',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Convênio encontrado',
-    type: Convenio,
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Convênio não encontrado',
-  })
-  async findByCodigo(
-    @Param('codigo') codigo: string,
-  ): Promise<ApiResponseType<Convenio>> {
-    const convenio = await this.conveniosService.findByCodigo(codigo);
-    return {
-      message: 'Convênio encontrado com sucesso',
-      data: convenio,
-    };
-  }
+  // TODO: Refatorar após migration - campo codigo_convenio removido
+  // @Get('codigo/:codigo')
+  // @ApiOperation({
+  //   summary: 'Buscar convênio por código',
+  //   description: 'Retorna um convênio específico pelo código.',
+  // })
+  // @ApiParam({
+  //   name: 'codigo',
+  //   type: String,
+  //   description: 'Código do convênio',
+  // })
+  // @ApiResponse({
+  //   status: 200,
+  //   description: 'Convênio encontrado',
+  //   type: Convenio,
+  // })
+  // @ApiResponse({
+  //   status: 404,
+  //   description: 'Convênio não encontrado',
+  // })
+  // async findByCodigo(
+  //   @Param('codigo') codigo: string,
+  // ): Promise<ApiResponseType<Convenio>> {
+  //   const convenio = await this.conveniosService.findByCodigo(codigo);
+  //   return {
+  //     message: 'Convênio encontrado com sucesso',
+  //     data: convenio,
+  //   };
+  // }
 
   @Get(':id')
   @ApiOperation({

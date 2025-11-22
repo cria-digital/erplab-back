@@ -15,43 +15,48 @@ describe('ConveniosController', () => {
     create: jest.fn(),
     findAll: jest.fn(),
     findOne: jest.fn(),
-    findByCodigo: jest.fn(),
+    // findByCodigo: jest.fn(), // TODO: Removido após migration
     update: jest.fn(),
     remove: jest.fn(),
     findAtivos: jest.fn(),
-    findComIntegracao: jest.fn(),
-    findByTipoFaturamento: jest.fn(),
-    verificarAutorizacao: jest.fn(),
-    getRegrasConvenio: jest.fn(),
+    // findComIntegracao: jest.fn(), // TODO: Removido após migration
+    // findByTipoFaturamento: jest.fn(), // TODO: Removido após migration
+    // verificarAutorizacao: jest.fn(), // TODO: Removido após migration
+    // getRegrasConvenio: jest.fn(), // TODO: Removido após migration
   };
 
   const mockConvenio = {
     id: 'convenio-uuid-1',
     empresa_id: 'empresa-uuid-1',
-    codigo_convenio: 'CONV001',
     nome: 'Unimed Brasília',
     registro_ans: '123456',
-    tem_integracao_api: true,
-    url_api: 'https://api.unimed.com.br',
-    token_api: 'token123',
-    requer_autorizacao: true,
-    requer_senha: false,
-    validade_guia_dias: 30,
-    tipo_faturamento: 'tiss',
-    portal_envio: 'SAVI',
-    dia_fechamento: 15,
-    prazo_pagamento_dias: 30,
-    percentual_desconto: 10.5,
-    tabela_precos: 'AMB',
-    telefone: '61999999999',
-    email: 'contato@unimed.com.br',
-    contato_nome: 'João Silva',
-    regras_especificas: {},
-    status: 'ativo',
-    aceita_atendimento_online: false,
-    percentual_coparticipacao: null,
-    valor_consulta: null,
-    observacoes_convenio: null,
+    matricula: null,
+    tipo_convenio_id: null,
+    forma_liquidacao_id: null,
+    valor_ch: null,
+    valor_filme: null,
+    tiss: false,
+    versao_tiss: null,
+    codigo_operadora_tiss: null,
+    codigo_operadora_autorizacao: null,
+    codigo_prestador: null,
+    envio_faturamento_id: null,
+    fatura_ate_dia: null,
+    dia_vencimento: null,
+    data_contrato: null,
+    data_ultimo_ajuste: null,
+    instrucoes_faturamento: null,
+    tabela_servico_id: null,
+    tabela_base_id: null,
+    tabela_material_id: null,
+    cnes: null,
+    co_participacao: false,
+    nota_fiscal_exige_fatura: false,
+    contato: null,
+    instrucoes: null,
+    observacoes_gerais: null,
+    integracao_id: null,
+    ativo: true,
     criado_em: new Date(),
     atualizado_em: new Date(),
     empresa: {
@@ -61,7 +66,7 @@ describe('ConveniosController', () => {
       nome_fantasia: 'Unimed Brasília',
     } as any,
     planos: [],
-    instrucoes: [],
+    instrucoes_historico: [],
   } as any as Convenio;
 
   beforeEach(async () => {
@@ -133,7 +138,7 @@ describe('ConveniosController', () => {
       const result = await controller.findAll('1', '10');
 
       expect(result).toEqual(paginatedResult);
-      expect(service.findAll).toHaveBeenCalledWith(1, 10, undefined, undefined);
+      expect(service.findAll).toHaveBeenCalledWith(1, 10, undefined);
     });
 
     it('deve passar filtros para o service', async () => {
@@ -146,9 +151,9 @@ describe('ConveniosController', () => {
 
       mockConveniosService.findAll.mockResolvedValue(paginatedResult);
 
-      await controller.findAll('2', '5', 'Unimed', 'ativo');
+      await controller.findAll('2', '5', 'Unimed');
 
-      expect(service.findAll).toHaveBeenCalledWith(2, 5, 'Unimed', 'ativo');
+      expect(service.findAll).toHaveBeenCalledWith(2, 5, 'Unimed');
     });
 
     it('deve usar valores padrão quando não fornecidos', async () => {
@@ -163,7 +168,7 @@ describe('ConveniosController', () => {
 
       await controller.findAll();
 
-      expect(service.findAll).toHaveBeenCalledWith(1, 10, undefined, undefined);
+      expect(service.findAll).toHaveBeenCalledWith(1, 10, undefined);
     });
   });
 
@@ -182,104 +187,103 @@ describe('ConveniosController', () => {
     });
   });
 
-  describe('findComIntegracao', () => {
-    it('deve retornar convênios com integração', async () => {
-      const conveniosComApi = [{ ...mockConvenio, tem_integracao_api: true }];
-      mockConveniosService.findComIntegracao.mockResolvedValue(conveniosComApi);
+  // TODO: Refatorar após migration - métodos removidos
+  // describe('findComIntegracao', () => {
+  //   it('deve retornar convênios com integração', async () => {
+  //     const conveniosComApi = [{ ...mockConvenio, integracao_id: 'integracao-1' }];
+  //     mockConveniosService.findComIntegracao.mockResolvedValue(conveniosComApi);
 
-      const result = await controller.findComIntegracao();
+  //     const result = await controller.findComIntegracao();
 
-      expect(result).toEqual({
-        message: 'Convênios com integração encontrados',
-        data: conveniosComApi,
-      });
-      expect(service.findComIntegracao).toHaveBeenCalled();
-    });
-  });
+  //     expect(result).toEqual({
+  //       message: 'Convênios com integração encontrados',
+  //       data: conveniosComApi,
+  //     });
+  //     expect(service.findComIntegracao).toHaveBeenCalled();
+  //   });
+  // });
 
-  describe('findByTipoFaturamento', () => {
-    it('deve retornar convênios por tipo de faturamento', async () => {
-      const conveniosMensais = [
-        { ...mockConvenio, tipo_faturamento: 'mensal' },
-      ];
-      mockConveniosService.findByTipoFaturamento.mockResolvedValue(
-        conveniosMensais,
-      );
+  // describe('findByTipoFaturamento', () => {
+  //   it('deve retornar convênios por tipo de faturamento', async () => {
+  //     const conveniosMensais = [mockConvenio];
+  //     mockConveniosService.findByTipoFaturamento.mockResolvedValue(
+  //       conveniosMensais,
+  //     );
 
-      const result = await controller.findByTipoFaturamento('mensal');
+  //     const result = await controller.findByTipoFaturamento('mensal');
 
-      expect(result).toEqual({
-        message: 'Convênios encontrados com sucesso',
-        data: conveniosMensais,
-      });
-      expect(service.findByTipoFaturamento).toHaveBeenCalledWith('mensal');
-    });
-  });
+  //     expect(result).toEqual({
+  //       message: 'Convênios encontrados com sucesso',
+  //       data: conveniosMensais,
+  //     });
+  //     expect(service.findByTipoFaturamento).toHaveBeenCalledWith('mensal');
+  //   });
+  // });
 
-  describe('verificarAutorizacao', () => {
-    it('deve retornar requisitos de autorização', async () => {
-      const autorizacaoData = {
-        requerAutorizacao: true,
-        requerSenha: false,
-      };
-      mockConveniosService.verificarAutorizacao.mockResolvedValue(
-        autorizacaoData,
-      );
+  // describe('verificarAutorizacao', () => {
+  //   it('deve retornar requisitos de autorização', async () => {
+  //     const autorizacaoData = {
+  //       requerAutorizacao: true,
+  //       requerSenha: false,
+  //     };
+  //     mockConveniosService.verificarAutorizacao.mockResolvedValue(
+  //       autorizacaoData,
+  //     );
 
-      const result = await controller.verificarAutorizacao('convenio-uuid-1');
+  //     const result = await controller.verificarAutorizacao('convenio-uuid-1');
 
-      expect(result).toEqual({
-        message: 'Requisitos de autorização verificados',
-        data: autorizacaoData,
-      });
-      expect(service.verificarAutorizacao).toHaveBeenCalledWith(
-        'convenio-uuid-1',
-      );
-    });
-  });
+  //     expect(result).toEqual({
+  //       message: 'Requisitos de autorização verificados',
+  //       data: autorizacaoData,
+  //     });
+  //     expect(service.verificarAutorizacao).toHaveBeenCalledWith(
+  //       'convenio-uuid-1',
+  //     );
+  //   });
+  // });
 
-  describe('getRegrasConvenio', () => {
-    it('deve retornar regras do convênio', async () => {
-      const regrasData = {
-        percentualDesconto: 10.5,
-        tabelaPrecos: 'AMB',
-        validadeGuiaDias: 30,
-        regrasEspecificas: {},
-      };
-      mockConveniosService.getRegrasConvenio.mockResolvedValue(regrasData);
+  // describe('getRegrasConvenio', () => {
+  //   it('deve retornar regras do convênio', async () => {
+  //     const regrasData = {
+  //       percentualDesconto: 10.5,
+  //       tabelaPrecos: 'AMB',
+  //       validadeGuiaDias: 30,
+  //       regrasEspecificas: {},
+  //     };
+  //     mockConveniosService.getRegrasConvenio.mockResolvedValue(regrasData);
 
-      const result = await controller.getRegrasConvenio('convenio-uuid-1');
+  //     const result = await controller.getRegrasConvenio('convenio-uuid-1');
 
-      expect(result).toEqual({
-        message: 'Regras do convênio obtidas com sucesso',
-        data: regrasData,
-      });
-      expect(service.getRegrasConvenio).toHaveBeenCalledWith('convenio-uuid-1');
-    });
-  });
+  //     expect(result).toEqual({
+  //       message: 'Regras do convênio obtidas com sucesso',
+  //       data: regrasData,
+  //     });
+  //     expect(service.getRegrasConvenio).toHaveBeenCalledWith('convenio-uuid-1');
+  //   });
+  // });
 
-  describe('findByCodigo', () => {
-    it('deve retornar um convênio por código', async () => {
-      mockConveniosService.findByCodigo.mockResolvedValue(mockConvenio);
+  // describe('findByCodigo', () => {
+  //   it('deve retornar um convênio por código', async () => {
+  //     mockConveniosService.findByCodigo.mockResolvedValue(mockConvenio);
 
-      const result = await controller.findByCodigo('CONV001');
+  //     const result = await controller.findByCodigo('CONV001');
 
-      expect(result).toEqual({
-        message: 'Convênio encontrado com sucesso',
-        data: mockConvenio,
-      });
-      expect(service.findByCodigo).toHaveBeenCalledWith('CONV001');
-    });
+  //     expect(result).toEqual({
+  //       message: 'Convênio encontrado com sucesso',
+  //       data: mockConvenio,
+  //     });
+  //     expect(service.findByCodigo).toHaveBeenCalledWith('CONV001');
+  //   });
 
-    it('deve retornar erro quando código não for encontrado', async () => {
-      const notFoundError = new NotFoundException('Convênio não encontrado');
-      mockConveniosService.findByCodigo.mockRejectedValue(notFoundError);
+  //   it('deve retornar erro quando código não for encontrado', async () => {
+  //     const notFoundError = new NotFoundException('Convênio não encontrado');
+  //     mockConveniosService.findByCodigo.mockRejectedValue(notFoundError);
 
-      await expect(controller.findByCodigo('INVALID')).rejects.toThrow(
-        NotFoundException,
-      );
-    });
-  });
+  //     await expect(controller.findByCodigo('INVALID')).rejects.toThrow(
+  //       NotFoundException,
+  //     );
+  //   });
+  // });
 
   describe('findOne', () => {
     it('deve retornar um convênio por ID', async () => {

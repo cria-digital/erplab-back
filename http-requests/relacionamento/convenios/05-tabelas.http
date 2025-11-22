@@ -1,0 +1,59 @@
+### ========================================
+### ABA 1: INFORMAÇÕES GERAIS - Seção TABELAS
+### Tabelas de referência e CNES
+### ========================================
+
+@baseUrl = http://localhost:10016/api/v1
+@contentType = application/json
+@token = seu_token_aqui
+
+### Atualizar tabelas de referência
+PATCH {{baseUrl}}/relacionamento/convenios/{{convenioId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tabela_servico_id": "{{tabelaServicoId}}",
+  "tabela_base_id": "{{tabelaBaseId}}",
+  "tabela_material_id": "{{tabelaMaterialId}}",
+  "cnes": "2000105"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Convênio atualizado com sucesso",
+#   "data": {
+#     "tabela_servico_id": "uuid",
+#     "tabela_base_id": "uuid",
+#     "tabela_material_id": "uuid",
+#     "cnes": "2000105",
+#     ...
+#   }
+# }
+
+###
+
+### Atualizar apenas CNES
+PATCH {{baseUrl}}/relacionamento/convenios/{{convenioId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "cnes": "2000105"
+}
+
+###
+
+### Atualizar apenas tabelas (sem CNES)
+PATCH {{baseUrl}}/relacionamento/convenios/{{convenioId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tabela_servico_id": "{{tabelaServicoId}}",
+  "tabela_base_id": "{{tabelaBaseId}}",
+  "tabela_material_id": "{{tabelaMaterialId}}"
+}
+
+###

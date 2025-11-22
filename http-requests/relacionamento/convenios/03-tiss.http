@@ -1,0 +1,61 @@
+### ========================================
+### ABA 1: INFORMAÇÕES GERAIS - Seção TISS
+### Configurações do padrão TISS
+### ========================================
+
+@baseUrl = http://localhost:10016/api/v1
+@contentType = application/json
+@token = seu_token_aqui
+
+### Atualizar configurações TISS
+PATCH {{baseUrl}}/relacionamento/convenios/{{convenioId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tiss": true,
+  "versao_tiss": "4.03.00",
+  "codigo_operadora_tiss": "359017",
+  "codigo_operadora_autorizacao": "UNIMED-SP",
+  "codigo_prestador": "123456"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Convênio atualizado com sucesso",
+#   "data": {
+#     "tiss": true,
+#     "versao_tiss": "4.03.00",
+#     "codigo_operadora_tiss": "359017",
+#     ...
+#   }
+# }
+
+###
+
+### Desabilitar TISS
+PATCH {{baseUrl}}/relacionamento/convenios/{{convenioId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tiss": false,
+  "versao_tiss": null,
+  "codigo_operadora_tiss": null,
+  "codigo_operadora_autorizacao": null,
+  "codigo_prestador": null
+}
+
+###
+
+### Atualizar apenas versão TISS
+PATCH {{baseUrl}}/relacionamento/convenios/{{convenioId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "versao_tiss": "4.04.00"
+}
+
+###

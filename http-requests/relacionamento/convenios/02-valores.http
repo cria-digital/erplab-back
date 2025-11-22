@@ -1,0 +1,54 @@
+### ========================================
+### ABA 1: INFORMAÇÕES GERAIS - Seção VALORES
+### Campos de valores (CH e Filme)
+### ========================================
+
+@baseUrl = http://localhost:10016/api/v1
+@contentType = application/json
+@token = seu_token_aqui
+
+### Atualizar valores - CH e Filme
+PATCH {{baseUrl}}/relacionamento/convenios/{{convenioId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "valor_ch": 25.50,
+  "valor_filme": 15.00
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Convênio atualizado com sucesso",
+#   "data": {
+#     "id": "uuid",
+#     "valor_ch": 25.50,
+#     "valor_filme": 15.00,
+#     ...
+#   }
+# }
+
+###
+
+### Atualizar apenas valor CH
+PATCH {{baseUrl}}/relacionamento/convenios/{{convenioId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "valor_ch": 30.00
+}
+
+###
+
+### Atualizar apenas valor do Filme
+PATCH {{baseUrl}}/relacionamento/convenios/{{convenioId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "valor_filme": 20.00
+}
+
+###

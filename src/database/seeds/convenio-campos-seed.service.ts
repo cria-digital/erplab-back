@@ -322,6 +322,8 @@ export class ConvenioCamposSeedService {
       });
     }
 
-    console.log('   ✅ Campo "dia_vencimento" criado com 31 alternativas (dias 1-31)');
+    console.log(
+      '   ✅ Campo "dia_vencimento" criado com 31 alternativas (dias 1-31)',
+    );
   }
 }

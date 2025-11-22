@@ -1,0 +1,68 @@
+### ========================================
+### ABA 2: INTEGRAÇÃO
+### Vincular convênio com integração externa
+### (Deixado preparado para implementação futura)
+### ========================================
+
+@baseUrl = http://localhost:10016/api/v1
+@contentType = application/json
+@token = seu_token_aqui
+
+### Vincular convênio com integração
+PATCH {{baseUrl}}/relacionamento/convenios/{{convenioId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "integracao_id": "{{integracaoId}}"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Convênio atualizado com sucesso",
+#   "data": {
+#     "id": "uuid",
+#     "integracao_id": "uuid",
+#     "integracao": {
+#       "id": "uuid",
+#       "nome": "Integração TISS Unimed",
+#       "tipo": "tiss",
+#       ...
+#     },
+#     ...
+#   }
+# }
+
+###
+
+### Remover vínculo com integração
+PATCH {{baseUrl}}/relacionamento/convenios/{{convenioId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "integracao_id": null
+}
+
+###
+
+### Listar integrações disponíveis
+GET {{baseUrl}}/atendimento/integracoes?tipo=tiss
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [
+#     {
+#       "id": "uuid",
+#       "nome": "Integração TISS Unimed",
+#       "tipo": "tiss",
+#       "ativo": true
+#     },
+#     ...
+#   ]
+# }
+
+###

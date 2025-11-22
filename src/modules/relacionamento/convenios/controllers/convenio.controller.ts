@@ -77,18 +77,19 @@ export class ConvenioController {
     return this.convenioService.search(query);
   }
 
-  @Get('codigo/:codigo')
-  @ApiOperation({ summary: 'Buscar convênio por código' })
-  @ApiParam({ name: 'codigo', description: 'Código do convênio' })
-  @ApiResponse({
-    status: 200,
-    description: 'Convênio encontrado',
-    type: Convenio,
-  })
-  @ApiResponse({ status: 404, description: 'Convênio não encontrado' })
-  findByCodigo(@Param('codigo') codigo: string): Promise<Convenio> {
-    return this.convenioService.findByCodigo(codigo);
-  }
+  // TODO: Refatorar após migration - campo codigo_convenio removido
+  // @Get('codigo/:codigo')
+  // @ApiOperation({ summary: 'Buscar convênio por código' })
+  // @ApiParam({ name: 'codigo', description: 'Código do convênio' })
+  // @ApiResponse({
+  //   status: 200,
+  //   description: 'Convênio encontrado',
+  //   type: Convenio,
+  // })
+  // @ApiResponse({ status: 404, description: 'Convênio não encontrado' })
+  // findByCodigo(@Param('codigo') codigo: string): Promise<Convenio> {
+  //   return this.convenioService.findByCodigo(codigo);
+  // }
 
   @Get('cnpj/:cnpj')
   @ApiOperation({ summary: 'Buscar convênio por CNPJ' })

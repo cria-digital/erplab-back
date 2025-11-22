@@ -89,12 +89,7 @@ export class EmpresasService {
           const convenio = this.convenioRepository.create({
             id: empresaSalva.id, // MESMO ID DA EMPRESA para facilitar buscas
             empresa_id: empresaSalva.id,
-            codigo_convenio:
-              empresaSalva.codigoInterno ||
-              `CONV-${empresaSalva.id.substring(0, 8).toUpperCase()}`,
-            prazo_pagamento_dias: 30,
-            requer_autorizacao: true,
-            aceita_atendimento_online: false,
+            nome: empresaSalva.nomeFantasia || empresaSalva.razaoSocial,
           });
           await queryRunner.manager.save(Convenio, convenio);
           break;

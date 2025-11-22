@@ -147,15 +147,11 @@ export class Convenio {
   fatura_ate_dia: number;
 
   @Column({
-    type: 'uuid',
+    type: 'int',
     nullable: true,
-    comment: 'FK → Dia de vencimento',
+    comment: 'Dia de vencimento do mês (1-31)',
   })
-  dia_vencimento_id: string;
-
-  @ManyToOne(() => AlternativaCampoFormulario, { nullable: true })
-  @JoinColumn({ name: 'dia_vencimento_id' })
-  diaVencimento: AlternativaCampoFormulario;
+  dia_vencimento: number;
 
   @Column({ type: 'date', nullable: true, comment: 'Data do contrato' })
   data_contrato: Date;

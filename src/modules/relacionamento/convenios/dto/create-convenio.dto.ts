@@ -1,7 +1,7 @@
 import {
   IsString,
   IsEmail,
-  IsEnum,
+  // IsEnum, // TODO: Será necessário após refatoração
   IsOptional,
   IsBoolean,
   IsNumber,
@@ -11,7 +11,8 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { TipoFaturamento, StatusConvenio } from '../entities/convenio.entity';
+// TODO: Refatorar após migration - enums removidos
+// import { TipoFaturamento, StatusConvenio } from '../entities/convenio.entity';
 import { CreateEmpresaDto } from '../../../cadastros/empresas/dto/create-empresa.dto';
 
 export class CreateConvenioDto {
@@ -71,14 +72,15 @@ export class CreateConvenioDto {
   @IsNumber()
   validade_guia_dias?: number;
 
-  @ApiProperty({
-    enum: TipoFaturamento,
-    description: 'Tipo de faturamento',
-    required: false,
-  })
-  @IsOptional()
-  @IsEnum(TipoFaturamento)
-  tipo_faturamento?: TipoFaturamento;
+  // TODO: Refatorar após migration - enum removido
+  // @ApiProperty({
+  //   enum: TipoFaturamento,
+  //   description: 'Tipo de faturamento',
+  //   required: false,
+  // })
+  // @IsOptional()
+  // @IsEnum(TipoFaturamento)
+  // tipo_faturamento?: TipoFaturamento;
 
   @ApiProperty({ description: 'Portal de envio', required: false })
   @IsOptional()
@@ -128,14 +130,15 @@ export class CreateConvenioDto {
   @IsOptional()
   regras_especificas?: any;
 
-  @ApiProperty({
-    enum: StatusConvenio,
-    description: 'Status do convênio',
-    default: StatusConvenio.ATIVO,
-  })
-  @IsOptional()
-  @IsEnum(StatusConvenio)
-  status?: StatusConvenio;
+  // TODO: Refatorar após migration - enum removido
+  // @ApiProperty({
+  //   enum: StatusConvenio,
+  //   description: 'Status do convênio',
+  //   default: StatusConvenio.ATIVO,
+  // })
+  // @IsOptional()
+  // @IsEnum(StatusConvenio)
+  // status?: StatusConvenio;
 
   @ApiProperty({ description: 'Aceita atendimento online', default: false })
   @IsOptional()

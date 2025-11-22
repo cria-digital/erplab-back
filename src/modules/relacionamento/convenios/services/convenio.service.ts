@@ -27,15 +27,7 @@ export class ConvenioService {
     await queryRunner.startTransaction();
 
     try {
-      // Verificar código único
-      const existingCodigo = await this.convenioRepository.findOne({
-        where: { codigo_convenio: createConvenioDto.codigo_convenio },
-      });
-
-      if (existingCodigo) {
-        throw new ConflictException('Já existe um convênio com este código');
-      }
-
+      // TODO: Refatorar após migration - validação de código removida
       // Verificar CNPJ único na tabela empresas
       const existingCnpj = await this.empresaRepository.findOne({
         where: { cnpj: createConvenioDto.empresa.cnpj },
@@ -78,7 +70,7 @@ export class ConvenioService {
 
   async findAll(): Promise<Convenio[]> {
     const convenios = await this.convenioRepository.find({
-      relations: ['empresa', 'planos', 'instrucoes'],
+      relations: ['empresa', 'planos', 'instrucoes_historico'],
     });
 
     // Ordenar pelo nome fantasia da empresa
@@ -90,7 +82,7 @@ export class ConvenioService {
   async findOne(id: string): Promise<Convenio> {
     const convenio = await this.convenioRepository.findOne({
       where: { id },
-      relations: ['empresa', 'planos', 'instrucoes'],
+      relations: ['empresa', 'planos', 'instrucoes_historico'],
     });
 
     if (!convenio) {
@@ -100,27 +92,31 @@ export class ConvenioService {
     return convenio;
   }
 
-  async findByCodigo(codigo: string): Promise<Convenio> {
-    const convenio = await this.convenioRepository.findOne({
-      where: { codigo_convenio: codigo },
-      relations: ['empresa', 'planos', 'instrucoes'],
-    });
+  // TODO: Refatorar após migration - campo codigo_convenio removido
+  // async findByCodigo(codigo: string): Promise<Convenio> {
+  //   const convenio = await this.convenioRepository.findOne({
+  //     where: { codigo_convenio: codigo },
+  //     relations: ['empresa', 'planos', 'instrucoes_historico'],
+  //   });
 
-    if (!convenio) {
-      throw new NotFoundException(
-        `Convênio com código ${codigo} não encontrado`,
-      );
-    }
+  //   if (!convenio) {
+  //     throw new NotFoundException(
+  //       `Convênio com código ${codigo} não encontrado`,
+  //     );
+  //   }
 
-    return convenio;
-  }
+  //   return convenio;
+  // }
 
   async findByCnpj(cnpj: string): Promise<Convenio> {
     const convenio = await this.convenioRepository
       .createQueryBuilder('convenio')
       .leftJoinAndSelect('convenio.empresa', 'empresa')
       .leftJoinAndSelect('convenio.planos', 'planos')
-      .leftJoinAndSelect('convenio.instrucoes', 'instrucoes')
+      .leftJoinAndSelect(
+        'convenio.instrucoes_historico',
+        'instrucoes_historico',
+      )
       .where('empresa.cnpj = :cnpj', { cnpj })
       .getOne();
 
@@ -152,20 +148,7 @@ export class ConvenioService {
     try {
       const convenio = await this.findOne(id);
 
-      // Verificar código único se foi alterado
-      if (
-        updateConvenioDto.codigo_convenio &&
-        updateConvenioDto.codigo_convenio !== convenio.codigo_convenio
-      ) {
-        const existingCodigo = await this.convenioRepository.findOne({
-          where: { codigo_convenio: updateConvenioDto.codigo_convenio },
-        });
-
-        if (existingCodigo) {
-          throw new ConflictException('Já existe um convênio com este código');
-        }
-      }
-
+      // TODO: Refatorar após migration - validação de código removida
       // Atualizar dados da empresa se fornecidos
       if (updateConvenioDto.empresa) {
         // Verificar CNPJ único se foi alterado
@@ -223,7 +206,8 @@ export class ConvenioService {
       .where('empresa.nomeFantasia ILIKE :query', { query: `%${query}%` })
       .orWhere('empresa.razaoSocial ILIKE :query', { query: `%${query}%` })
       .orWhere('empresa.cnpj LIKE :query', { query: `%${query}%` })
-      .orWhere('convenio.codigo_convenio LIKE :query', { query: `%${query}%` })
+      // TODO: Refatorar após migration - campo codigo_convenio removido
+      // .orWhere('convenio.codigo_convenio LIKE :query', { query: `%${query}%` })
       .orderBy('empresa.nomeFantasia', 'ASC')
       .getMany();
   }

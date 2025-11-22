@@ -1,0 +1,81 @@
+### ========================================
+### CONSULTAS E LISTAGENS
+### Endpoints de busca e listagem de convênios
+### ========================================
+
+@baseUrl = http://localhost:10016/api/v1
+@contentType = application/json
+@token = seu_token_aqui
+
+### Listar todos os convênios (paginado)
+GET {{baseUrl}}/relacionamento/convenios?page=1&limit=10
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [...],
+#   "total": 50,
+#   "page": 1,
+#   "lastPage": 5
+# }
+
+###
+
+### Listar convênios com busca por nome
+GET {{baseUrl}}/relacionamento/convenios?page=1&limit=10&search=Unimed
+Authorization: Bearer {{token}}
+
+###
+
+### Listar apenas convênios ativos
+GET {{baseUrl}}/relacionamento/convenios/ativos
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Convênios ativos encontrados",
+#   "data": [...]
+# }
+
+###
+
+### Buscar convênio por ID
+GET {{baseUrl}}/relacionamento/convenios/{{convenioId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Convênio encontrado com sucesso",
+#   "data": {
+#     "id": "uuid",
+#     "empresa_id": "uuid",
+#     "nome": "Unimed São Paulo",
+#     "registro_ans": "359017",
+#     "empresa": {
+#       "id": "uuid",
+#       "cnpj": "73730838000181",
+#       "razaoSocial": "Unimed São Paulo Cooperativa",
+#       ...
+#     },
+#     "planos": [...],
+#     "instrucoes_historico": [...],
+#     ...
+#   }
+# }
+
+###
+
+### Desativar convênio (soft delete)
+DELETE {{baseUrl}}/relacionamento/convenios/{{convenioId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Convênio desativado com sucesso"
+# }
+
+###

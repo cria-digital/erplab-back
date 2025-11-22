@@ -1,0 +1,70 @@
+### ========================================
+### ABA 1: INFORMAÇÕES GERAIS - Seção OUTRAS INFORMAÇÕES
+### Co-participação, NF, Contato, Instruções, Observações
+### ========================================
+
+@baseUrl = http://localhost:10016/api/v1
+@contentType = application/json
+@token = seu_token_aqui
+
+### Atualizar outras informações completas
+PATCH {{baseUrl}}/relacionamento/convenios/{{convenioId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "co_participacao": true,
+  "nota_fiscal_exige_fatura": true,
+  "contato": "Maria Silva - Supervisora de Credenciamento",
+  "instrucoes": "INSTRUÇÕES GERAIS:\n- Solicitar autorização prévia para exames de alto custo\n- Prazo de validade da guia: 30 dias\n- Recurso de glosa: até 30 dias após recebimento",
+  "observacoes_gerais": "Convênio com co-participação variável conforme plano do beneficiário. Verificar elegibilidade antes do atendimento."
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Convênio atualizado com sucesso",
+#   "data": {
+#     "co_participacao": true,
+#     "nota_fiscal_exige_fatura": true,
+#     "contato": "Maria Silva - Supervisora de Credenciamento",
+#     ...
+#   }
+# }
+
+###
+
+### Atualizar apenas co-participação e NF
+PATCH {{baseUrl}}/relacionamento/convenios/{{convenioId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "co_participacao": false,
+  "nota_fiscal_exige_fatura": false
+}
+
+###
+
+### Atualizar apenas contato
+PATCH {{baseUrl}}/relacionamento/convenios/{{convenioId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "contato": "João Santos - Gerente de Operações\nTel: (11) 1234-5678\nEmail: joao.santos@convenio.com.br"
+}
+
+###
+
+### Atualizar instruções e observações
+PATCH {{baseUrl}}/relacionamento/convenios/{{convenioId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "instrucoes": "NOVAS INSTRUÇÕES 2024:\n1. Autorização eletrônica obrigatória\n2. Upload de documentos via portal\n3. Prazo de resposta: 48h úteis",
+  "observacoes_gerais": "A partir de Janeiro/2024, todas as autorizações devem ser solicitadas exclusivamente via portal web. Ligações telefônicas não serão mais aceitas."
+}
+
+###

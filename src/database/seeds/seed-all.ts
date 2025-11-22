@@ -4,6 +4,7 @@ import { CnaeSeedService } from './cnae-seed.service';
 import { BancoSeedService } from './banco-seed.service';
 import { ServicoSaudeSeedService } from './servico-saude-seed.service';
 import { CampoFormularioSeedService } from './campo-formulario-seed.service';
+import { CampoFormularioConveniosSeedService } from './campo-formulario-convenios-seed.service';
 import { EstadoSeedService } from './estado-seed.service';
 import { CidadeSeedService } from './cidade-seed.service';
 
@@ -37,14 +38,21 @@ async function bootstrap() {
     console.log('4. Importando Campos de Formulário...');
     await campoFormularioSeedService.seed();
 
+    // Executar seed de Campos de Formulário - Convênios
+    const campoFormularioConveniosSeedService = app.get(
+      CampoFormularioConveniosSeedService,
+    );
+    console.log('5. Importando Campos de Formulário de Convênios...');
+    await campoFormularioConveniosSeedService.seed();
+
     // Executar seed de Estados
     const estadoSeedService = app.get(EstadoSeedService);
-    console.log('5. Importando Estados do Brasil...');
+    console.log('6. Importando Estados do Brasil...');
     await estadoSeedService.seed();
 
     // Executar seed de Cidades
     const cidadeSeedService = app.get(CidadeSeedService);
-    console.log('6. Importando Cidades do Brasil...');
+    console.log('7. Importando Cidades do Brasil...');
     await cidadeSeedService.seed();
 
     const duration = Date.now() - startTime;
