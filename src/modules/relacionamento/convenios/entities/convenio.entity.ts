@@ -5,26 +5,15 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
-  OneToOne,
+  ManyToOne,
   JoinColumn,
+  OneToOne,
 } from 'typeorm';
 import { Plano } from './plano.entity';
 import { Instrucao } from './instrucao.entity';
 import { Empresa } from '../../../cadastros/empresas/entities/empresa.entity';
-
-export enum TipoFaturamento {
-  MENSAL = 'mensal',
-  QUINZENAL = 'quinzenal',
-  SEMANAL = 'semanal',
-  AVULSO = 'avulso',
-}
-
-export enum StatusConvenio {
-  ATIVO = 'ativo',
-  INATIVO = 'inativo',
-  SUSPENSO = 'suspenso',
-  BLOQUEADO = 'bloqueado',
-}
+import { AlternativaCampoFormulario } from '../../../infraestrutura/campos-formulario/entities/alternativa-campo-formulario.entity';
+import { Integracao } from '../../../atendimento/integracoes/entities/integracao.entity';
 
 @Entity('convenios')
 export class Convenio {
@@ -38,87 +27,253 @@ export class Convenio {
   @JoinColumn({ name: 'empresa_id' })
   empresa: Empresa;
 
-  @Column({ type: 'varchar', length: 20, unique: true })
-  codigo_convenio: string;
+  // ==========================================
+  // CAMPOS DO FIGMA - Seção: Identificação
+  // ==========================================
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
+  @Column({ type: 'varchar', length: 255, comment: 'Nome do convênio' })
   nome: string;
 
   @Column({ type: 'varchar', length: 20, nullable: true })
   registro_ans: string;
 
-  @Column({ type: 'boolean', default: false })
-  tem_integracao_api: boolean;
+  @Column({
+    type: 'varchar',
+    length: 50,
+    nullable: true,
+    comment: 'Matrícula do beneficiário',
+  })
+  matricula: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  url_api: string;
+  @Column({ type: 'uuid', nullable: true, comment: 'FK → Tipo de convênio' })
+  tipo_convenio_id: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  token_api: string;
+  @ManyToOne(() => AlternativaCampoFormulario, { nullable: true })
+  @JoinColumn({ name: 'tipo_convenio_id' })
+  tipoConvenio: AlternativaCampoFormulario;
 
-  @Column({ type: 'boolean', default: true })
-  requer_autorizacao: boolean;
+  @Column({
+    type: 'uuid',
+    nullable: true,
+    comment: 'FK → Forma de liquidação',
+  })
+  forma_liquidacao_id: string;
 
-  @Column({ type: 'boolean', default: false })
-  requer_senha: boolean;
+  @ManyToOne(() => AlternativaCampoFormulario, { nullable: true })
+  @JoinColumn({ name: 'forma_liquidacao_id' })
+  formaLiquidacao: AlternativaCampoFormulario;
 
-  @Column({ type: 'int', nullable: true })
-  validade_guia_dias: number;
+  // ==========================================
+  // CAMPOS DO FIGMA - Seção: Valores
+  // ==========================================
 
-  @Column({ type: 'enum', enum: TipoFaturamento, nullable: true })
-  tipo_faturamento: TipoFaturamento;
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    nullable: true,
+    comment: 'Valor CH (consulta/hora)',
+  })
+  valor_ch: number;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  portal_envio: string;
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    nullable: true,
+    comment: 'Valor do filme',
+  })
+  valor_filme: number;
 
-  @Column({ type: 'int', nullable: true })
-  dia_fechamento: number;
+  // ==========================================
+  // CAMPOS DO FIGMA - Seção: TISS
+  // ==========================================
 
-  @Column({ type: 'int', default: 30 })
-  prazo_pagamento_dias: number;
+  @Column({ type: 'boolean', default: false, comment: 'Utiliza padrão TISS' })
+  tiss: boolean;
 
-  @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
-  percentual_desconto: number;
+  @Column({
+    type: 'varchar',
+    length: 20,
+    nullable: true,
+    comment: 'Versão TISS',
+  })
+  versao_tiss: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  tabela_precos: string;
+  @Column({
+    type: 'varchar',
+    length: 50,
+    nullable: true,
+    comment: 'Código na operadora (TISS)',
+  })
+  codigo_operadora_tiss: string;
 
-  @Column({ type: 'varchar', length: 20, nullable: true })
-  telefone: string;
+  @Column({
+    type: 'varchar',
+    length: 50,
+    nullable: true,
+    comment: 'Código operadora (Autorização)',
+  })
+  codigo_operadora_autorizacao: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  email: string;
+  @Column({
+    type: 'varchar',
+    length: 50,
+    nullable: true,
+    comment: 'Código do prestador no convênio',
+  })
+  codigo_prestador: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  contato_nome: string;
+  // ==========================================
+  // CAMPOS DO FIGMA - Seção: Faturamento
+  // ==========================================
 
-  @Column({ type: 'jsonb', nullable: true })
-  regras_especificas: any;
+  @Column({
+    type: 'uuid',
+    nullable: true,
+    comment: 'FK → Forma de envio do faturamento',
+  })
+  envio_faturamento_id: string;
 
-  @Column({ type: 'enum', enum: StatusConvenio, default: StatusConvenio.ATIVO })
-  status: StatusConvenio;
+  @ManyToOne(() => AlternativaCampoFormulario, { nullable: true })
+  @JoinColumn({ name: 'envio_faturamento_id' })
+  envioFaturamento: AlternativaCampoFormulario;
 
-  @Column({ type: 'boolean', default: false })
-  aceita_atendimento_online: boolean;
+  @Column({
+    type: 'int',
+    nullable: true,
+    comment: 'Faturar até o dia X do mês (1-31)',
+  })
+  fatura_ate_dia: number;
 
-  @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
-  percentual_coparticipacao: number;
+  @Column({
+    type: 'uuid',
+    nullable: true,
+    comment: 'FK → Dia de vencimento',
+  })
+  dia_vencimento_id: string;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
-  valor_consulta: number;
+  @ManyToOne(() => AlternativaCampoFormulario, { nullable: true })
+  @JoinColumn({ name: 'dia_vencimento_id' })
+  diaVencimento: AlternativaCampoFormulario;
 
-  @Column({ type: 'text', nullable: true })
-  observacoes_convenio: string;
+  @Column({ type: 'date', nullable: true, comment: 'Data do contrato' })
+  data_contrato: Date;
+
+  @Column({ type: 'date', nullable: true, comment: 'Data do último ajuste' })
+  data_ultimo_ajuste: Date;
+
+  @Column({
+    type: 'text',
+    nullable: true,
+    comment: 'Instruções para faturamento',
+  })
+  instrucoes_faturamento: string;
+
+  // ==========================================
+  // CAMPOS DO FIGMA - Seção: Tabelas
+  // ==========================================
+
+  @Column({
+    type: 'uuid',
+    nullable: true,
+    comment: 'FK → Tabela de serviços',
+  })
+  tabela_servico_id: string;
+
+  @ManyToOne(() => AlternativaCampoFormulario, { nullable: true })
+  @JoinColumn({ name: 'tabela_servico_id' })
+  tabelaServico: AlternativaCampoFormulario;
+
+  @Column({ type: 'uuid', nullable: true, comment: 'FK → Tabela base' })
+  tabela_base_id: string;
+
+  @ManyToOne(() => AlternativaCampoFormulario, { nullable: true })
+  @JoinColumn({ name: 'tabela_base_id' })
+  tabelaBase: AlternativaCampoFormulario;
+
+  @Column({
+    type: 'uuid',
+    nullable: true,
+    comment: 'FK → Tabela de materiais',
+  })
+  tabela_material_id: string;
+
+  @ManyToOne(() => AlternativaCampoFormulario, { nullable: true })
+  @JoinColumn({ name: 'tabela_material_id' })
+  tabelaMaterial: AlternativaCampoFormulario;
+
+  @Column({
+    type: 'varchar',
+    length: 20,
+    nullable: true,
+    comment: 'Código CNES',
+  })
+  cnes: string;
+
+  // ==========================================
+  // CAMPOS DO FIGMA - Seção: Outras Informações
+  // ==========================================
+
+  @Column({
+    type: 'boolean',
+    default: false,
+    comment: 'Possui co-participação',
+  })
+  co_participacao: boolean;
+
+  @Column({ type: 'boolean', default: false, comment: 'Exige NF na fatura' })
+  nota_fiscal_exige_fatura: boolean;
+
+  @Column({
+    type: 'varchar',
+    length: 255,
+    nullable: true,
+    comment: 'Nome do contato',
+  })
+  contato: string;
+
+  @Column({ type: 'text', nullable: true, comment: 'Instruções gerais' })
+  instrucoes: string;
+
+  @Column({ type: 'text', nullable: true, comment: 'Observações gerais' })
+  observacoes_gerais: string;
+
+  // ==========================================
+  // INTEGRAÇÃO (Vínculo)
+  // ==========================================
+
+  @Column({
+    type: 'uuid',
+    nullable: true,
+    comment: 'FK → integracoes (vínculo com integração)',
+  })
+  integracao_id: string;
+
+  @ManyToOne(() => Integracao, { nullable: true })
+  @JoinColumn({ name: 'integracao_id' })
+  integracao: Integracao;
+
+  // ==========================================
+  // RELACIONAMENTOS
+  // ==========================================
+
+  @OneToMany(() => Plano, (plano) => plano.convenio)
+  planos: Plano[];
+
+  @OneToMany(() => Instrucao, (instrucao) => instrucao.convenio)
+  instrucoes_historico: Instrucao[];
+
+  // ==========================================
+  // CONTROLE
+  // ==========================================
+
+  @Column({ type: 'boolean', default: true, comment: 'Convenio ativo?' })
+  ativo: boolean;
 
   @CreateDateColumn({ name: 'criado_em' })
   criado_em: Date;
 
   @UpdateDateColumn({ name: 'atualizado_em' })
   atualizado_em: Date;
-
-  @OneToMany(() => Plano, (plano) => plano.convenio)
-  planos: Plano[];
-
-  @OneToMany(() => Instrucao, (instrucao) => instrucao.convenio)
-  instrucoes: Instrucao[];
 }

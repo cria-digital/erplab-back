@@ -13,6 +13,7 @@ import { AlternativaCampoFormulario } from './alternativa-campo-formulario.entit
  * Enum com todos os campos de formulário disponíveis no sistema
  */
 export enum NomeCampoFormulario {
+  // Campos de Exames
   TIPO_EXAMES = 'tipo_exames',
   ESPECIALIDADE = 'especialidade',
   GRUPO = 'grupo',
@@ -25,6 +26,15 @@ export enum NomeCampoFormulario {
   REGIAO_COLETA = 'regiao_coleta',
   VOLUME_MINIMO = 'volume_minimo',
   ESTABILIDADE = 'estabilidade',
+
+  // Campos de Convênios
+  TIPO_CONVENIO = 'tipo_convenio',
+  FORMA_LIQUIDACAO = 'forma_liquidacao',
+  ENVIO_FATURAMENTO = 'envio_faturamento',
+  TABELA_SERVICO = 'tabela_servico',
+  TABELA_BASE = 'tabela_base',
+  TABELA_MATERIAL = 'tabela_material',
+  DIA_VENCIMENTO = 'dia_vencimento',
 }
 
 /**

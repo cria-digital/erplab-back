@@ -26,6 +26,12 @@ import {
   ConsultaRastreabilidadeDto,
   EnviaResultadoBase64Dto,
   RelatorioRequisicoesDto,
+  EnviaAmostrasDto,
+  EnviaAmostrasPendentesDto,
+  EnviaLoteResultadosDto,
+  CancelaAmostraDto,
+  ConsultaPendenciaTecnicaDto,
+  GrupoFracionamentoDto,
 } from '../dto/hermes-pardini.dto';
 
 @ApiTags('Hermes Pardini - SOAP')
@@ -127,5 +133,66 @@ export class HermesPardiniController {
     return await this.hermesPardiniService.consultaRastreabilidade(
       dto.numeroRequisicao,
     );
+  }
+
+  @Post('envia-amostras')
+  @ApiOperation({ summary: 'Enviar informações de amostras coletadas' })
+  @ApiResponse({ status: 201, description: 'Amostras enviadas com sucesso' })
+  @ApiResponse({ status: 400, description: 'Dados inválidos' })
+  async enviaAmostras(@Body() dto: EnviaAmostrasDto) {
+    return await this.hermesPardiniService.enviaAmostras(dto);
+  }
+
+  @Get('envia-amostras-pendentes')
+  @ApiOperation({
+    summary: 'Consultar amostras de procedimentos com coleta pendente',
+  })
+  @ApiResponse({ status: 200, description: 'Amostras pendentes consultadas' })
+  async enviaAmostrasPendentes(@Query() dto: EnviaAmostrasPendentesDto) {
+    return await this.hermesPardiniService.enviaAmostrasProcedimentosPendentes(
+      dto,
+    );
+  }
+
+  @Post('envia-lote-resultados')
+  @ApiOperation({ summary: 'Enviar lote de resultados de exames' })
+  @ApiResponse({
+    status: 201,
+    description: 'Lote de resultados enviado com sucesso',
+  })
+  @ApiResponse({ status: 400, description: 'Dados inválidos' })
+  async enviaLoteResultados(@Body() dto: EnviaLoteResultadosDto) {
+    return await this.hermesPardiniService.enviaLoteResultados(dto);
+  }
+
+  @Post('cancela-amostra')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Cancelar uma amostra específica' })
+  @ApiResponse({ status: 200, description: 'Amostra cancelada com sucesso' })
+  @ApiResponse({ status: 400, description: 'Dados inválidos' })
+  async cancelaAmostra(@Body() dto: CancelaAmostraDto) {
+    return await this.hermesPardiniService.cancelaAmostra(dto);
+  }
+
+  @Get('consulta-pendencia-tecnica')
+  @ApiOperation({ summary: 'Consultar pendências técnicas de uma requisição' })
+  @ApiResponse({
+    status: 200,
+    description: 'Pendências técnicas consultadas',
+  })
+  async consultaPendenciaTecnica(@Query() dto: ConsultaPendenciaTecnicaDto) {
+    return await this.hermesPardiniService.consultaPendenciaTecnica(dto);
+  }
+
+  @Post('grupo-fracionamento')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Gerenciar grupos de fracionamento de exames' })
+  @ApiResponse({
+    status: 200,
+    description: 'Grupo de fracionamento processado',
+  })
+  @ApiResponse({ status: 400, description: 'Dados inválidos' })
+  async grupoFracionamento(@Body() dto: GrupoFracionamentoDto) {
+    return await this.hermesPardiniService.grupoFracionamento(dto);
   }
 }

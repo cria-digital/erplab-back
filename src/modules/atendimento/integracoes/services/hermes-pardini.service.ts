@@ -36,6 +36,47 @@ export interface CancelaExameRequest {
   motivo: string;
 }
 
+export interface EnviaAmostrasRequest {
+  numeroRequisicao: string;
+  amostras: Array<{
+    codigoAmostra: string;
+    codigoExame: string;
+    tipoMaterial: string;
+    dataHoraColeta: string;
+  }>;
+}
+
+export interface EnviaAmostrasPendentesRequest {
+  numeroRequisicao: string;
+}
+
+export interface EnviaLoteResultadosRequest {
+  numeroLote: string;
+  resultados: Array<{
+    codigoExame: string;
+    parametro: string;
+    valor: string;
+    unidade: string;
+    valorReferencia: string;
+  }>;
+}
+
+export interface CancelaAmostraRequest {
+  numeroRequisicao: string;
+  codigoAmostra: string;
+  motivo: string;
+}
+
+export interface ConsultaPendenciaTecnicaRequest {
+  numeroRequisicao: string;
+}
+
+export interface GrupoFracionamentoRequest {
+  codigoGrupo: string;
+  descricao: string;
+  exames: string[];
+}
+
 @Injectable()
 export class HermesPardiniService {
   private readonly logger = new Logger(HermesPardiniService.name);
@@ -550,6 +591,280 @@ export class HermesPardiniService {
       return {
         sucesso: false,
         mensagem: `Erro ao consultar rastreabilidade: ${error.message}`,
+      };
+    }
+  }
+
+  /**
+   * 11. ENVIA AMOSTRAS
+   * Envia informações de amostras coletadas para o laboratório
+   */
+  async enviaAmostras(
+    request: EnviaAmostrasRequest,
+  ): Promise<{ sucesso: boolean; mensagem: string; protocolo?: string }> {
+    const integracao = await this.getIntegracao();
+
+    try {
+      const client = await this.createSoapClient(integracao);
+
+      const args = {
+        codigoCliente: integracao.usuario,
+        senhaCliente: integracao.senha,
+        numeroRequisicao: request.numeroRequisicao,
+        amostras: request.amostras,
+      };
+
+      const [result] = await client.EnviaAmostrasAsync(args);
+
+      await this.registrarRequisicao(integracao.id, true);
+
+      this.logger.log(
+        `EnviaAmostras executado: ${request.numeroRequisicao} - ${request.amostras.length} amostras`,
+      );
+
+      return {
+        sucesso: true,
+        mensagem: 'Amostras enviadas com sucesso',
+        protocolo: result?.numeroProtocolo,
+      };
+    } catch (error) {
+      await this.registrarRequisicao(integracao.id, false);
+
+      this.logger.error(`Erro EnviaAmostras: ${error.message}`);
+
+      return {
+        sucesso: false,
+        mensagem: `Erro ao enviar amostras: ${error.message}`,
+      };
+    }
+  }
+
+  /**
+   * 12. ENVIA AMOSTRAS PROCEDIMENTOS PENDENTES
+   * Envia amostras de procedimentos com coleta pendente
+   */
+  async enviaAmostrasProcedimentosPendentes(
+    request: EnviaAmostrasPendentesRequest,
+  ): Promise<{
+    sucesso: boolean;
+    mensagem: string;
+    amostrasPendentes?: any[];
+  }> {
+    const integracao = await this.getIntegracao();
+
+    try {
+      const client = await this.createSoapClient(integracao);
+
+      const args = {
+        codigoCliente: integracao.usuario,
+        senhaCliente: integracao.senha,
+        numeroRequisicao: request.numeroRequisicao,
+      };
+
+      const [result] =
+        await client.EnviaAmostrasProcedimentosPendentesAsync(args);
+
+      await this.registrarRequisicao(integracao.id, true);
+
+      this.logger.log(
+        `EnviaAmostrasProcedimentosPendentes executado: ${request.numeroRequisicao}`,
+      );
+
+      return {
+        sucesso: true,
+        mensagem: 'Amostras pendentes consultadas com sucesso',
+        amostrasPendentes: result?.amostrasPendentes || [],
+      };
+    } catch (error) {
+      await this.registrarRequisicao(integracao.id, false);
+
+      this.logger.error(
+        `Erro EnviaAmostrasProcedimentosPendentes: ${error.message}`,
+      );
+
+      return {
+        sucesso: false,
+        mensagem: `Erro ao consultar amostras pendentes: ${error.message}`,
+      };
+    }
+  }
+
+  /**
+   * 13. ENVIA LOTE RESULTADOS
+   * Envia lote de resultados de exames para processamento
+   */
+  async enviaLoteResultados(
+    request: EnviaLoteResultadosRequest,
+  ): Promise<{ sucesso: boolean; mensagem: string; protocolo?: string }> {
+    const integracao = await this.getIntegracao();
+
+    try {
+      const client = await this.createSoapClient(integracao);
+
+      const args = {
+        codigoCliente: integracao.usuario,
+        senhaCliente: integracao.senha,
+        numeroLote: request.numeroLote,
+        resultados: request.resultados,
+      };
+
+      const [result] = await client.EnviaLoteResultadosAsync(args);
+
+      await this.registrarRequisicao(integracao.id, true);
+
+      this.logger.log(
+        `EnviaLoteResultados executado: ${request.numeroLote} - ${request.resultados.length} resultados`,
+      );
+
+      return {
+        sucesso: true,
+        mensagem: 'Lote de resultados enviado com sucesso',
+        protocolo: result?.numeroProtocolo,
+      };
+    } catch (error) {
+      await this.registrarRequisicao(integracao.id, false);
+
+      this.logger.error(`Erro EnviaLoteResultados: ${error.message}`);
+
+      return {
+        sucesso: false,
+        mensagem: `Erro ao enviar lote de resultados: ${error.message}`,
+      };
+    }
+  }
+
+  /**
+   * 14. CANCELA AMOSTRA
+   * Cancela uma amostra específica de uma requisição
+   */
+  async cancelaAmostra(
+    request: CancelaAmostraRequest,
+  ): Promise<{ sucesso: boolean; mensagem: string }> {
+    const integracao = await this.getIntegracao();
+
+    try {
+      const client = await this.createSoapClient(integracao);
+
+      const args = {
+        codigoCliente: integracao.usuario,
+        senhaCliente: integracao.senha,
+        numeroRequisicao: request.numeroRequisicao,
+        codigoAmostra: request.codigoAmostra,
+        motivo: request.motivo,
+      };
+
+      await client.CancelaAmostraAsync(args);
+
+      await this.registrarRequisicao(integracao.id, true);
+
+      this.logger.log(
+        `CancelaAmostra executado: ${request.numeroRequisicao} - ${request.codigoAmostra}`,
+      );
+
+      return {
+        sucesso: true,
+        mensagem: 'Amostra cancelada com sucesso',
+      };
+    } catch (error) {
+      await this.registrarRequisicao(integracao.id, false);
+
+      this.logger.error(`Erro CancelaAmostra: ${error.message}`);
+
+      return {
+        sucesso: false,
+        mensagem: `Erro ao cancelar amostra: ${error.message}`,
+      };
+    }
+  }
+
+  /**
+   * 15. CONSULTA PENDÊNCIA TÉCNICA
+   * Consulta pendências técnicas de uma requisição
+   */
+  async consultaPendenciaTecnica(
+    request: ConsultaPendenciaTecnicaRequest,
+  ): Promise<{
+    sucesso: boolean;
+    mensagem: string;
+    pendencias?: any[];
+  }> {
+    const integracao = await this.getIntegracao();
+
+    try {
+      const client = await this.createSoapClient(integracao);
+
+      const args = {
+        codigoCliente: integracao.usuario,
+        senhaCliente: integracao.senha,
+        numeroRequisicao: request.numeroRequisicao,
+      };
+
+      const [result] = await client.ConsultaPendenciaTecnicaAsync(args);
+
+      await this.registrarRequisicao(integracao.id, true);
+
+      this.logger.log(
+        `ConsultaPendenciaTecnica executado: ${request.numeroRequisicao}`,
+      );
+
+      return {
+        sucesso: true,
+        mensagem: 'Pendências técnicas consultadas com sucesso',
+        pendencias: result?.pendencias || [],
+      };
+    } catch (error) {
+      await this.registrarRequisicao(integracao.id, false);
+
+      this.logger.error(`Erro ConsultaPendenciaTecnica: ${error.message}`);
+
+      return {
+        sucesso: false,
+        mensagem: `Erro ao consultar pendências técnicas: ${error.message}`,
+      };
+    }
+  }
+
+  /**
+   * 16. GRUPO FRACIONAMENTO
+   * Gerencia grupos de fracionamento de exames
+   */
+  async grupoFracionamento(
+    request: GrupoFracionamentoRequest,
+  ): Promise<{ sucesso: boolean; mensagem: string; grupo?: any }> {
+    const integracao = await this.getIntegracao();
+
+    try {
+      const client = await this.createSoapClient(integracao);
+
+      const args = {
+        codigoCliente: integracao.usuario,
+        senhaCliente: integracao.senha,
+        codigoGrupo: request.codigoGrupo,
+        descricao: request.descricao,
+        exames: request.exames,
+      };
+
+      const [result] = await client.GrupoFracionamentoAsync(args);
+
+      await this.registrarRequisicao(integracao.id, true);
+
+      this.logger.log(
+        `GrupoFracionamento executado: ${request.codigoGrupo} - ${request.exames.length} exames`,
+      );
+
+      return {
+        sucesso: true,
+        mensagem: 'Grupo de fracionamento processado com sucesso',
+        grupo: result,
+      };
+    } catch (error) {
+      await this.registrarRequisicao(integracao.id, false);
+
+      this.logger.error(`Erro GrupoFracionamento: ${error.message}`);
+
+      return {
+        sucesso: false,
+        mensagem: `Erro ao processar grupo de fracionamento: ${error.message}`,
       };
     }
   }

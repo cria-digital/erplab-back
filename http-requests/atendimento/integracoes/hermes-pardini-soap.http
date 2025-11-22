@@ -249,21 +249,200 @@ Authorization: Bearer {{token}}
 
 ###
 
+###
+### 12. ENVIA AMOSTRAS (Enviar informações de amostras coletadas)
+###
+POST {{baseUrl}}/atendimento/integracoes/hermes-pardini/envia-amostras
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "numeroRequisicao": "REQ-2025-001",
+  "amostras": [
+    {
+      "codigoAmostra": "TUBO001",
+      "codigoExame": "HEMO",
+      "tipoMaterial": "Sangue EDTA",
+      "dataHoraColeta": "2025-11-20 08:30:00"
+    },
+    {
+      "codigoAmostra": "TUBO002",
+      "codigoExame": "GLICO",
+      "tipoMaterial": "Sangue com Fluoreto",
+      "dataHoraColeta": "2025-11-20 08:35:00"
+    }
+  ]
+}
+
+### Expected Response (201)
+# {
+#   "sucesso": true,
+#   "mensagem": "Amostras enviadas com sucesso",
+#   "protocolo": "PROT-2025-001"
+# }
+
+###
+
+###
+### 13. ENVIA AMOSTRAS PENDENTES (Consultar amostras com coleta pendente)
+###
+GET {{baseUrl}}/atendimento/integracoes/hermes-pardini/envia-amostras-pendentes?numeroRequisicao=REQ-2025-001
+Authorization: Bearer {{token}}
+
+### Expected Response (200)
+# {
+#   "sucesso": true,
+#   "mensagem": "Amostras pendentes consultadas com sucesso",
+#   "amostrasPendentes": [
+#     {
+#       "codigoExame": "URINA",
+#       "tipoMaterial": "Urina Tipo 1",
+#       "statusColeta": "PENDENTE"
+#     }
+#   ]
+# }
+
+###
+
+###
+### 14. ENVIA LOTE RESULTADOS (Enviar lote de resultados de exames)
+###
+POST {{baseUrl}}/atendimento/integracoes/hermes-pardini/envia-lote-resultados
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "numeroLote": "LOTE-2025-001",
+  "resultados": [
+    {
+      "codigoExame": "HEMO",
+      "parametro": "Hemoglobina",
+      "valor": "14.5",
+      "unidade": "g/dL",
+      "valorReferencia": "12.0 - 16.0"
+    },
+    {
+      "codigoExame": "HEMO",
+      "parametro": "Hematócrito",
+      "valor": "42.0",
+      "unidade": "%",
+      "valorReferencia": "36.0 - 48.0"
+    },
+    {
+      "codigoExame": "GLICO",
+      "parametro": "Glicose",
+      "valor": "95",
+      "unidade": "mg/dL",
+      "valorReferencia": "70 - 100"
+    }
+  ]
+}
+
+### Expected Response (201)
+# {
+#   "sucesso": true,
+#   "mensagem": "Lote de resultados enviado com sucesso",
+#   "protocolo": "LOTE-2025-001"
+# }
+
+###
+
+###
+### 15. CANCELA AMOSTRA (Cancelar amostra específica)
+###
+POST {{baseUrl}}/atendimento/integracoes/hermes-pardini/cancela-amostra
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "numeroRequisicao": "REQ-2025-001",
+  "codigoAmostra": "TUBO001",
+  "motivo": "Amostra inadequada - hemolisada"
+}
+
+### Expected Response (200)
+# {
+#   "sucesso": true,
+#   "mensagem": "Amostra cancelada com sucesso"
+# }
+
+###
+
+###
+### 16. CONSULTA PENDÊNCIA TÉCNICA (Consultar pendências técnicas)
+###
+GET {{baseUrl}}/atendimento/integracoes/hermes-pardini/consulta-pendencia-tecnica?numeroRequisicao=REQ-2025-001
+Authorization: Bearer {{token}}
+
+### Expected Response (200)
+# {
+#   "sucesso": true,
+#   "mensagem": "Pendências técnicas consultadas com sucesso",
+#   "pendencias": [
+#     {
+#       "tipo": "INFORMACAO_ADICIONAL",
+#       "descricao": "Necessário informar medicamentos em uso",
+#       "urgente": true
+#     }
+#   ]
+# }
+
+###
+
+###
+### 17. GRUPO FRACIONAMENTO (Gerenciar grupos de fracionamento)
+###
+POST {{baseUrl}}/atendimento/integracoes/hermes-pardini/grupo-fracionamento
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoGrupo": "GRUPO-001",
+  "descricao": "Exames de Rotina - Check-up Básico",
+  "exames": [
+    "HEMO",
+    "GLICO",
+    "CREA",
+    "UREIA",
+    "TGO",
+    "TGP"
+  ]
+}
+
+### Expected Response (200)
+# {
+#   "sucesso": true,
+#   "mensagem": "Grupo de fracionamento processado com sucesso",
+#   "grupo": {
+#     "codigoGrupo": "GRUPO-001",
+#     "descricao": "Exames de Rotina - Check-up Básico",
+#     "totalExames": 6
+#   }
+# }
+
+###
+
 ### ========================================
 ### 📊 ENDPOINTS DISPONÍVEIS
 ### ========================================
 
-# POST   /hermes-pardini/testar-conexao                 - Testar conexão
-# POST   /hermes-pardini/recebe-atendimento              - Enviar requisição
-# POST   /hermes-pardini/envia-laudo                     - Buscar laudo
-# POST   /hermes-pardini/envia-laudo-lista               - Laudos (múltiplos)
-# POST   /hermes-pardini/envia-laudo-periodo             - Laudos (período)
-# GET    /hermes-pardini/consulta-status                 - Status requisição
-# GET    /hermes-pardini/lista-procedimentos-pendentes   - Pendentes
-# POST   /hermes-pardini/cancela-exame                   - Cancelar exame
-# GET    /hermes-pardini/envia-resultado-base64          - PDF Base64
-# POST   /hermes-pardini/relatorio-requisicoes           - Relatório
-# GET    /hermes-pardini/consulta-rastreabilidade        - Rastreamento
+# POST   /hermes-pardini/testar-conexao                     - Testar conexão
+# POST   /hermes-pardini/recebe-atendimento                  - Enviar requisição
+# POST   /hermes-pardini/envia-laudo                         - Buscar laudo
+# POST   /hermes-pardini/envia-laudo-lista                   - Laudos (múltiplos)
+# POST   /hermes-pardini/envia-laudo-periodo                 - Laudos (período)
+# GET    /hermes-pardini/consulta-status                     - Status requisição
+# GET    /hermes-pardini/lista-procedimentos-pendentes       - Pendentes
+# POST   /hermes-pardini/cancela-exame                       - Cancelar exame
+# GET    /hermes-pardini/envia-resultado-base64              - PDF Base64
+# POST   /hermes-pardini/relatorio-requisicoes               - Relatório
+# GET    /hermes-pardini/consulta-rastreabilidade            - Rastreamento
+# POST   /hermes-pardini/envia-amostras                      - Enviar amostras
+# GET    /hermes-pardini/envia-amostras-pendentes            - Amostras pendentes
+# POST   /hermes-pardini/envia-lote-resultados               - Lote de resultados
+# POST   /hermes-pardini/cancela-amostra                     - Cancelar amostra
+# GET    /hermes-pardini/consulta-pendencia-tecnica          - Pendências técnicas
+# POST   /hermes-pardini/grupo-fracionamento                 - Grupos fracionamento
 
 ###
 
