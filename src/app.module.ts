@@ -52,6 +52,9 @@ import { EquipamentosModule } from './modules/configuracoes/estrutura/equipament
 import { ImobilizadosModule } from './modules/configuracoes/estrutura/imobilizados/imobilizados.module';
 import { EtiquetasAmostraModule } from './modules/configuracoes/estrutura/etiquetas-amostra/etiquetas-amostra.module';
 
+// Configurações - Campos de Formulário
+import { CamposFormularioModule as ConfiguracoesCamposFormularioModule } from './modules/configuracoes/campos-formulario/campos-formulario.module';
+
 // Infraestrutura
 import { AuditoriaModule } from './modules/infraestrutura/auditoria/auditoria.module';
 import { CommonModule } from './modules/infraestrutura/common/common.module';
@@ -117,6 +120,7 @@ import { SeedModule } from './database/seeds/seed.module';
     EquipamentosModule,
     ImobilizadosModule,
     EtiquetasAmostraModule,
+    ConfiguracoesCamposFormularioModule,
 
     // 8. Infraestrutura
     AuditoriaModule,

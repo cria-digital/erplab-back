@@ -4,7 +4,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 // Entities
 import { Exame } from './entities/exame.entity';
 import { TipoExame } from './entities/tipo-exame.entity';
-import { Convenio } from './entities/convenio.entity';
 import { OrdemServico } from './entities/ordem-servico.entity';
 import { OrdemServicoExame } from './entities/ordem-servico-exame.entity';
 import { ResultadoExame } from './entities/resultado-exame.entity';
@@ -13,14 +12,15 @@ import { SubgrupoExame } from './entities/subgrupo-exame.entity';
 import { SetorExame } from './entities/setor-exame.entity';
 import { Empresa } from '../../cadastros/empresas/entities/empresa.entity';
 
+// Modules
+import { ConveniosModule } from '../../relacionamento/convenios/convenios.module';
+
 // Services
 import { ExamesService } from './exames.service';
-import { ConveniosService } from '../../relacionamento/convenios/convenios.service';
 import { TiposExameService } from './tipos-exame.service';
 
 // Controllers
 import { ExamesController } from './exames.controller';
-import { ConveniosController } from '../../relacionamento/convenios/convenios.controller';
 import { TiposExameController } from './tipos-exame.controller';
 
 @Module({
@@ -28,7 +28,6 @@ import { TiposExameController } from './tipos-exame.controller';
     TypeOrmModule.forFeature([
       Exame,
       TipoExame,
-      Convenio,
       OrdemServico,
       OrdemServicoExame,
       ResultadoExame,
@@ -37,9 +36,10 @@ import { TiposExameController } from './tipos-exame.controller';
       SetorExame,
       Empresa,
     ]),
+    ConveniosModule, // Importar módulo completo para ter acesso aos services
   ],
-  controllers: [ExamesController, ConveniosController, TiposExameController],
-  providers: [ExamesService, ConveniosService, TiposExameService],
-  exports: [ExamesService, ConveniosService, TiposExameService],
+  controllers: [ExamesController, TiposExameController],
+  providers: [ExamesService, TiposExameService],
+  exports: [ExamesService, TiposExameService],
 })
 export class ExamesModule {}

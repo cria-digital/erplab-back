@@ -8,7 +8,7 @@ Content-Type: {{contentType}}
 
 {
   "email": "diegosoek@gmail.com",
-  "senha": "Admin123!"
+  "password": "Admin123!"
 }
 
 ### Expected Response:

@@ -12,7 +12,7 @@ import {
 import { Paciente } from '../../../cadastros/pacientes/entities/paciente.entity';
 import { UnidadeSaude } from '../../../cadastros/unidade-saude/entities/unidade-saude.entity';
 import { OrdemServicoExame } from './ordem-servico-exame.entity';
-import { Convenio } from './convenio.entity';
+import { Convenio } from '../../../relacionamento/convenios/entities/convenio.entity';
 
 @Entity('ordens_servico')
 @Index(['codigo'])

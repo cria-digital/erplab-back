@@ -3,10 +3,6 @@
 ### Co-participação, NF, Contato, Instruções, Observações
 ### ========================================
 
-@baseUrl = http://localhost:10016/api/v1
-@contentType = application/json
-@token = seu_token_aqui
-
 ### Atualizar outras informações completas
 PATCH {{baseUrl}}/relacionamento/convenios/{{convenioId}}
 Content-Type: {{contentType}}

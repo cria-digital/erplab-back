@@ -149,7 +149,9 @@ src/modules/
 │   ├── exames/
 │   ├── formularios/
 │   ├── kits/
-│   └── metodos/
+│   ├── metodos/
+│   ├── matrizes/
+│   └── amostras/
 ├── relacionamento/        # Integrações externas
 │   ├── convenios/
 │   ├── laboratorios/
@@ -162,10 +164,14 @@ src/modules/
 │   └── integracoes/
 ├── financeiro/            # Gestão financeira
 │   └── core/
+├── configuracoes/         # Configurações do sistema
+│   ├── estrutura/         # Estrutura física (salas, setores, equipamentos)
+│   └── campos-formulario/ # Configuração de campos obrigatórios por entidade
 └── infraestrutura/        # Serviços de infraestrutura
     ├── auditoria/
     ├── common/
-    └── email/
+    ├── email/
+    └── campos-formulario/ # Campos globais de formulários (opções de select)
 ```
 
 ### Padrões de Imports Após Reorganização
@@ -346,7 +352,7 @@ Essa validação deve ser feita IMEDIATAMENTE após criar cada arquivo de teste,
 - Separar DTOs de Create e Update
 - Sempre validar UUIDs e formatos específicos (CPF, email, etc)
 
-### Padrões de Refatoração e Manutenção (Outubro 2025)
+### Padrões de Refatoração e Manutenção (Outubro-Novembro 2025)
 
 **Lições aprendidas da reorganização de módulos:**
 
@@ -363,7 +369,9 @@ Essa validação deve ser feita IMEDIATAMENTE após criar cada arquivo de teste,
 3. **Dependências de Módulos com Relacionamentos**
    - Quando um Service usa múltiplos repositories, garantir que todas as entidades estejam no `TypeOrmModule.forFeature()`
    - Exemplo: `ConveniosService` precisa de `Convenio` E `Empresa` no mesmo módulo
-   - Evitar importar providers/controllers diretamente - preferir importar o módulo completo
+   - **CRÍTICO**: Evitar importar providers/controllers diretamente - **SEMPRE importar o módulo completo**
+   - ✅ Correto: `imports: [ConveniosModule]`
+   - ❌ Errado: `providers: [ConvenioService]` sem importar módulo
 
 4. **TypeORM Index Names**
    - SEMPRE usar nomes de propriedades TypeScript (camelCase) em `@Index()`
@@ -380,6 +388,31 @@ Essa validação deve ser feita IMEDIATAMENTE após criar cada arquivo de teste,
    - Ao criar entidades com OneToOne, usar transações para garantir atomicidade
    - Criar a entidade relacionada primeiro, depois vincular o ID
    - Exemplo: Criar `Empresa` → depois `Convenio` com `empresa_id`
+
+7. **⚠️ CRÍTICO: Entidades Duplicadas com Mesmo Nome de Tabela (Novembro 2025)**
+   - **NUNCA** ter duas entidades diferentes apontando para a mesma tabela
+   - TypeORM registra metadata globalmente - a primeira entidade carregada "vence"
+   - Sintomas: Query SQL mostra campos que não existem mais
+   - Solução: Buscar TODAS as entidades com `find src -name "*.entity.ts" -exec grep -l "class NomeEntidade" {} \;`
+   - **Exemplo Real**: Duas entidades `Convenio` causaram queries com 33+ campos obsoletos
+
+8. **Metadata do TypeORM Não é Recarregada com Hot Reload**
+   - Metadata de entidades é carregada na inicialização e fica em cache
+   - Hot reload NÃO recarrega metadata de entidades
+   - **Solução**: Matar processo Node completamente (`pkill -9 node`) e reiniciar
+   - Limpar dist não resolve - o problema é memória do processo
+
+9. **ValidationPipe e Campos Null**
+   - `@IsOptional()` permite OMITIR o campo, mas NÃO permite enviar `null` explicitamente
+   - `@IsString()` valida tipo quando valor é fornecido - falha com `null`
+   - **Solução 1**: Não enviar campos null no JSON (omitir completamente)
+   - **Solução 2**: Adicionar `nullable: true` no `@ApiProperty()` e usar union type `string | null`
+
+10. **Simplificação de Services com Relacionamentos**
+    - Evitar usar `relations: ['empresa']` se a entidade relacionada tem campos problemáticos
+    - Preferir buscar entidades relacionadas separadamente quando necessário
+    - Usar QueryBuilder apenas quando absolutamente necessário
+    - Exemplo: `findOne()` sem relations + busca separada da empresa quando preciso
 
 ## APIs Disponíveis
 
@@ -699,9 +732,48 @@ laboratorios
 - **Motivo**: TypeORM com PostgreSQL tem limitações para herança de tabelas
 - **Benefício**: Mantém dados normalizados e evita duplicação
 
-## Módulo de Convênios (Refatorado)
+## Módulo de Convênios (Refatorado - CRÍTICO)
 
-### Refatoração Realizada (Janeiro 2025)
+### ⚠️ Refatoração Crítica Completa (Novembro 2025)
+
+**Status**: ✅ CONCLUÍDA em 22/11/2025
+
+Esta foi uma refatoração complexa que envolveu limpeza de campos antigos, remoção de entidades duplicadas e simplificação da arquitetura.
+
+#### Problema Identificado
+
+1. **Entidade Duplicada**: Existiam DUAS entidades `Convenio`:
+   - `src/modules/exames/exames/entities/convenio.entity.ts` (ANTIGA - com 25+ campos obsoletos)
+   - `src/modules/relacionamento/convenios/entities/convenio.entity.ts` (NOVA - refatorada)
+
+2. **Services Duplicados**:
+   - `src/modules/relacionamento/convenios/convenios.service.ts` (ANTIGO)
+   - `src/modules/relacionamento/convenios/services/convenio.service.ts` (NOVO)
+
+3. **Campos Obsoletos no Banco**: 33+ campos antigos ainda existiam na tabela `convenios`
+
+#### Solução Implementada
+
+1. **Limpeza de Entidades**:
+   - ✅ Removida entidade antiga de `exames/exames/entities/convenio.entity.ts`
+   - ✅ Atualizado `ExamesModule` para importar `ConveniosModule` completo
+   - ✅ Corrigido import em `ordem-servico.entity.ts`
+
+2. **Limpeza de Services**:
+   - ✅ Renomeado service antigo para `.old`
+   - ✅ Atualizado controller para usar service refatorado
+   - ✅ Atualizado `ExamesModule` para importar módulo ao invés de service direto
+
+3. **Limpeza do Banco de Dados**:
+   - ✅ Migration `RemoveCodigoFromConvenios` - removeu campo `codigo`
+   - ✅ Migration `RemoveOldFieldsFromConvenios` - removeu 33+ campos obsoletos
+
+4. **Refatoração do Service**:
+   - ✅ Removidas referências a relações `empresa` (causavam erro de metadata)
+   - ✅ Simplificados métodos usando busca separada de empresa
+   - ✅ Métodos refatorados: `findAll`, `findOne`, `findByCnpj`, `findAtivos`, `search`, `toggleStatus`
+
+### Refatoração Anterior (Janeiro 2025)
 
 - **Antes**: Tabela `convenios` com todos os campos (duplicando dados de empresa)
 - **Depois**: Relacionamento OneToOne com `empresas`, mantendo apenas campos específicos
@@ -1736,6 +1808,87 @@ servicos_saude
 - ✅ Build: 0 erros TypeScript
 - ✅ Endpoint testado: Retorna 13 CNAEs corretamente
 - ✅ Sem duplicatas: Validado
+
+---
+
+### ✅ Refatoração: Módulo de Configuração de Campos (Novembro 2025)
+
+**Objetivo**: Mover módulo de configuração de campos obrigatórios de `relacionamento/convenios` para `configuracoes/campos-formulario`.
+
+**Motivação**:
+
+A funcionalidade de configurar quais campos são obrigatórios é genérica e serve para QUALQUER entidade (convenio, laboratorio, telemedicina, fornecedor, prestador_servico, unidade_saude), não sendo específica de convênios. Por isso, foi movida para o módulo de configurações.
+
+**Implementação Completa:**
+
+- ✅ Arquivos movidos de `src/modules/relacionamento/convenios/` para `src/modules/configuracoes/campos-formulario/`
+- ✅ Módulo próprio criado (`campos-formulario.module.ts`)
+- ✅ Imports atualizados em:
+  - `convenios.module.ts` (removido imports relacionados)
+  - `configuracao-campos-cadastro-paciente-seed.service.ts`
+  - `app.module.ts` (registrado novo módulo)
+
+**Estrutura Anterior:**
+
+```
+src/modules/relacionamento/convenios/
+├── entities/configuracao-campo-formulario.entity.ts
+├── dto/create-configuracao-campo.dto.ts
+├── dto/update-configuracao-campo.dto.ts
+├── services/configuracao-campo.service.ts
+└── controllers/configuracao-campo.controller.ts
+```
+
+**Nova Estrutura:**
+
+```
+src/modules/configuracoes/campos-formulario/
+├── entities/configuracao-campo-formulario.entity.ts
+├── dto/create-configuracao-campo.dto.ts
+├── dto/update-configuracao-campo.dto.ts
+├── services/configuracao-campo.service.ts
+├── controllers/configuracao-campo.controller.ts
+└── campos-formulario.module.ts (NOVO!)
+```
+
+**Diferença entre Módulos de Campos:**
+
+1. **`infraestrutura/campos-formulario`** (já existia):
+   - Define campos de formulários globais do sistema
+   - Campos com alternativas/opções (ex: tipo_convenio → ["Particular", "Empresarial", "SUS"])
+   - Tabela: `campos_formulario`
+
+2. **`configuracoes/campos-formulario`** (recém-movido):
+   - Configura quais campos são obrigatórios por entidade
+   - Ex: "Convênio X exige CPF obrigatório no cadastro de paciente"
+   - Tabela: `configuracoes_campos_formulario`
+
+**Benefícios da Refatoração:**
+
+- ✅ **Genérico**: Serve para qualquer entidade (convenio, laboratorio, telemedicina, etc)
+- ✅ **Reutilizável**: Outros módulos podem importar e usar o serviço
+- ✅ **Organizado**: Mantém módulos separados por domínio funcional
+- ✅ **Escalável**: Facilita adicionar novas configurações de formulários
+
+**Arquivos Modificados:**
+
+- `src/modules/configuracoes/campos-formulario/campos-formulario.module.ts` (CRIADO)
+- `src/modules/relacionamento/convenios/convenios.module.ts` (ATUALIZADO - removido imports)
+- `src/database/seeds/configuracao-campos-cadastro-paciente-seed.service.ts` (ATUALIZADO - import path)
+- `src/app.module.ts` (ATUALIZADO - registrado novo módulo)
+
+**Validações:**
+
+- ✅ ESLint: 0 erros
+- ✅ Build: 0 erros TypeScript
+- ✅ Todos os imports atualizados corretamente
+- ✅ Módulo registrado no AppModule
+
+**Endpoint da API:**
+
+- URL Base: `POST/GET/PATCH/DELETE /api/v1/configuracoes-campos`
+- Autenticação: Requerida (JWT)
+- Funcionalidades: CRUD completo + batch configuration
 
 ---
 

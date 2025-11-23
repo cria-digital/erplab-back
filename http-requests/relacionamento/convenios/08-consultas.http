@@ -3,10 +3,6 @@
 ### Endpoints de busca e listagem de convênios
 ### ========================================
 
-@baseUrl = http://localhost:10016/api/v1
-@contentType = application/json
-@token = seu_token_aqui
-
 ### Listar todos os convênios (paginado)
 GET {{baseUrl}}/relacionamento/convenios?page=1&limit=10
 Authorization: Bearer {{token}}

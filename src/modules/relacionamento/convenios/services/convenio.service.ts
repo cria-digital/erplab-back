@@ -1,15 +1,10 @@
-import {
-  Injectable,
-  NotFoundException,
-  ConflictException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { Convenio } from '../entities/convenio.entity';
 import { Empresa } from '../../../cadastros/empresas/entities/empresa.entity';
 import { CreateConvenioDto } from '../dto/create-convenio.dto';
 import { UpdateConvenioDto } from '../dto/update-convenio.dto';
-import { TipoEmpresaEnum } from '../../../cadastros/empresas/enums/empresas.enum';
 
 @Injectable()
 export class ConvenioService {
@@ -21,68 +16,24 @@ export class ConvenioService {
     private readonly dataSource: DataSource,
   ) {}
 
+  /**
+   * @deprecated Convênios agora são criados automaticamente ao criar empresa tipo CONVENIOS
+   * Use: POST /cadastros/empresas com tipoEmpresa: "CONVENIOS"
+   */
   async create(createConvenioDto: CreateConvenioDto): Promise<Convenio> {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
-      // TODO: Refatorar após migration - validação de código removida
-      // Verificar CNPJ único na tabela empresas
-      const existingCnpj = await this.empresaRepository.findOne({
-        where: { cnpj: createConvenioDto.empresa.cnpj },
-      });
-
-      if (existingCnpj) {
-        throw new ConflictException('Já existe uma empresa com este CNPJ');
-      }
-
-      // Criar empresa primeiro
-      const empresaData = {
-        ...createConvenioDto.empresa,
-        tipoEmpresa: TipoEmpresaEnum.CONVENIOS,
-      };
-      const empresa = this.empresaRepository.create(empresaData);
-      const savedEmpresa = await queryRunner.manager.save(empresa);
-
-      // Criar convênio vinculado à empresa
-      const convenioData = {
-        ...createConvenioDto,
-        empresa_id: savedEmpresa.id,
-        empresa: undefined, // Remover objeto empresa do convenioData
-      };
-      delete convenioData.empresa;
-
-      const convenio = this.convenioRepository.create(convenioData);
-      const savedConvenio = await queryRunner.manager.save(convenio);
-
-      await queryRunner.commitTransaction();
-
-      // Buscar com relacionamento
-      return await this.findOne(savedConvenio.id);
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
-      throw error;
-    } finally {
-      await queryRunner.release();
-    }
+    // Criar convênio diretamente (sem empresa)
+    const convenio = this.convenioRepository.create(createConvenioDto);
+    const savedConvenio = await this.convenioRepository.save(convenio);
+    return await this.findOne(savedConvenio.id);
   }
 
   async findAll(): Promise<Convenio[]> {
-    const convenios = await this.convenioRepository.find({
-      relations: ['empresa', 'planos', 'instrucoes_historico'],
-    });
-
-    // Ordenar pelo nome fantasia da empresa
-    return convenios.sort((a, b) =>
-      a.empresa.nomeFantasia.localeCompare(b.empresa.nomeFantasia),
-    );
+    return await this.convenioRepository.find();
   }
 
   async findOne(id: string): Promise<Convenio> {
     const convenio = await this.convenioRepository.findOne({
       where: { id },
-      relations: ['empresa', 'planos', 'instrucoes_historico'],
     });
 
     if (!convenio) {
@@ -109,16 +60,19 @@ export class ConvenioService {
   // }
 
   async findByCnpj(cnpj: string): Promise<Convenio> {
-    const convenio = await this.convenioRepository
-      .createQueryBuilder('convenio')
-      .leftJoinAndSelect('convenio.empresa', 'empresa')
-      .leftJoinAndSelect('convenio.planos', 'planos')
-      .leftJoinAndSelect(
-        'convenio.instrucoes_historico',
-        'instrucoes_historico',
-      )
-      .where('empresa.cnpj = :cnpj', { cnpj })
-      .getOne();
+    // Buscar empresa por CNPJ primeiro
+    const empresa = await this.empresaRepository.findOne({
+      where: { cnpj },
+    });
+
+    if (!empresa) {
+      throw new NotFoundException(`Convênio com CNPJ ${cnpj} não encontrado`);
+    }
+
+    // Buscar convênio pelo empresa_id
+    const convenio = await this.convenioRepository.findOne({
+      where: { empresa_id: empresa.id },
+    });
 
     if (!convenio) {
       throw new NotFoundException(`Convênio com CNPJ ${cnpj} não encontrado`);
@@ -128,12 +82,21 @@ export class ConvenioService {
   }
 
   async findAtivos(): Promise<Convenio[]> {
+    // Buscar empresas ativas tipo CONVENIOS
+    const empresasAtivas = await this.empresaRepository.find({
+      where: { ativo: true, tipoEmpresa: 'CONVENIOS' as any },
+    });
+
+    const empresaIds = empresasAtivas.map((e) => e.id);
+
+    if (empresaIds.length === 0) {
+      return [];
+    }
+
+    // Buscar convênios dessas empresas
     return await this.convenioRepository
       .createQueryBuilder('convenio')
-      .leftJoinAndSelect('convenio.empresa', 'empresa')
-      .leftJoinAndSelect('convenio.planos', 'planos')
-      .where('empresa.ativo = :ativo', { ativo: true })
-      .orderBy('empresa.nomeFantasia', 'ASC')
+      .whereInIds(empresaIds)
       .getMany();
   }
 
@@ -141,48 +104,13 @@ export class ConvenioService {
     id: string,
     updateConvenioDto: UpdateConvenioDto,
   ): Promise<Convenio> {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    const convenio = await this.findOne(id);
 
-    try {
-      const convenio = await this.findOne(id);
+    // Atualizar apenas dados do convênio (não atualiza empresa - use PUT /cadastros/empresas/:id)
+    Object.assign(convenio, updateConvenioDto);
+    const savedConvenio = await this.convenioRepository.save(convenio);
 
-      // TODO: Refatorar após migration - validação de código removida
-      // Atualizar dados da empresa se fornecidos
-      if (updateConvenioDto.empresa) {
-        // Verificar CNPJ único se foi alterado
-        if (
-          updateConvenioDto.empresa.cnpj &&
-          updateConvenioDto.empresa.cnpj !== convenio.empresa.cnpj
-        ) {
-          const existingCnpj = await this.empresaRepository.findOne({
-            where: { cnpj: updateConvenioDto.empresa.cnpj },
-          });
-
-          if (existingCnpj && existingCnpj.id !== convenio.empresa_id) {
-            throw new ConflictException('Já existe uma empresa com este CNPJ');
-          }
-        }
-
-        Object.assign(convenio.empresa, updateConvenioDto.empresa);
-        await queryRunner.manager.save(convenio.empresa);
-      }
-
-      // Atualizar dados do convênio
-      const convenioData = { ...updateConvenioDto };
-      delete convenioData.empresa;
-      Object.assign(convenio, convenioData);
-      const savedConvenio = await queryRunner.manager.save(convenio);
-
-      await queryRunner.commitTransaction();
-      return await this.findOne(savedConvenio.id);
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
-      throw error;
-    } finally {
-      await queryRunner.release();
-    }
+    return await this.findOne(savedConvenio.id);
   }
 
   async remove(id: string): Promise<void> {
@@ -192,23 +120,40 @@ export class ConvenioService {
 
   async toggleStatus(id: string): Promise<Convenio> {
     const convenio = await this.findOne(id);
-    // Toggle status na empresa
-    convenio.empresa.ativo = !convenio.empresa.ativo;
-    await this.empresaRepository.save(convenio.empresa);
+
+    // Buscar empresa e toggle status
+    const empresa = await this.empresaRepository.findOne({
+      where: { id: convenio.empresa_id },
+    });
+
+    if (empresa) {
+      empresa.ativo = !empresa.ativo;
+      await this.empresaRepository.save(empresa);
+    }
+
     return await this.findOne(id);
   }
 
   async search(query: string): Promise<Convenio[]> {
-    return await this.convenioRepository
-      .createQueryBuilder('convenio')
-      .leftJoinAndSelect('convenio.empresa', 'empresa')
-      .leftJoinAndSelect('convenio.planos', 'planos')
+    // Buscar empresas que correspondem à query
+    const empresas = await this.empresaRepository
+      .createQueryBuilder('empresa')
       .where('empresa.nomeFantasia ILIKE :query', { query: `%${query}%` })
       .orWhere('empresa.razaoSocial ILIKE :query', { query: `%${query}%` })
       .orWhere('empresa.cnpj LIKE :query', { query: `%${query}%` })
-      // TODO: Refatorar após migration - campo codigo_convenio removido
-      // .orWhere('convenio.codigo_convenio LIKE :query', { query: `%${query}%` })
-      .orderBy('empresa.nomeFantasia', 'ASC')
+      .andWhere('empresa.tipoEmpresa = :tipo', { tipo: 'CONVENIOS' })
+      .getMany();
+
+    if (empresas.length === 0) {
+      return [];
+    }
+
+    const empresaIds = empresas.map((e) => e.id);
+
+    // Buscar convênios dessas empresas
+    return await this.convenioRepository
+      .createQueryBuilder('convenio')
+      .whereInIds(empresaIds)
       .getMany();
   }
 }

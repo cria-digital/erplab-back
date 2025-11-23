@@ -3,105 +3,115 @@
 ### Campos da primeira aba do Figma
 ### ========================================
 
-@baseUrl = http://localhost:10016/api/v1
-@contentType = application/json
-@token = seu_token_aqui
-
-### Criar convênio - Informações Gerais (Unimed)
-POST {{baseUrl}}/relacionamento/convenios
+### PASSO 1: Criar Empresa tipo CONVENIOS
+POST {{baseUrl}}/cadastros/empresas
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "empresa": {
-    "tipoEmpresa": "CONVENIOS",
-    "cnpj": "73730838000181",
-    "razaoSocial": "Unimed São Paulo Cooperativa de Trabalho Médico",
-    "nomeFantasia": "Unimed São Paulo",
-    "email": "faturamento@unimed.com.br",
-    "telefone": "1141886600",
-    "ativo": true
-  },
-  "nome": "Unimed São Paulo",
-  "registro_ans": "359017",
-  "matricula": null,
-  "tipo_convenio_id": null,
-  "forma_liquidacao_id": null
+  "tipoEmpresa": "CONVENIOS",
+  "cnpj": "73.730.838/0001-81",
+  "razaoSocial": "Unimed São Paulo Cooperativa de Trabalho Médico",
+  "nomeFantasia": "Unimed São Paulo",
+  "telefoneFixo": "(11) 4188-6600",
+  "emailComercial": "faturamento@unimed.com.br",
+  "cep": "04543-906",
+  "rua": "Avenida Ibirapuera",
+  "numero": "2907",
+  "bairro": "Indianópolis",
+  "estado": "SP",
+  "cidade": "São Paulo",
+  "ativo": true
 }
 
-### Expected Response
+### Expected Response - Salvar o ID retornado!
 # Status: 201 Created
 # {
-#   "message": "Convênio criado com sucesso",
-#   "data": {
-#     "id": "uuid",
-#     "empresa_id": "uuid",
-#     "nome": "Unimed São Paulo",
-#     "registro_ans": "359017",
-#     ...
-#   }
+#   "id": "uuid-da-empresa-criada",  ← COPIAR ESTE ID!
+#   "tipoEmpresa": "CONVENIOS",
+#   "cnpj": "73.730.838/0001-81",
+#   ...
 # }
 
 ###
 
-### Criar convênio - Informações Gerais (SulAmérica)
-POST {{baseUrl}}/relacionamento/convenios
+### PASSO 2: Atualizar com dados específicos de convênio (ABA 1)
+### Substitua {convenioId} pelo ID retornado no passo 1
+PATCH {{baseUrl}}/relacionamento/convenios/{convenioId}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "empresa": {
-    "tipoEmpresa": "CONVENIOS",
-    "cnpj": "01685053000156",
-    "razaoSocial": "Sul América Companhia de Seguro Saúde",
-    "nomeFantasia": "SulAmérica Saúde",
-    "email": "prestadores@sulamerica.com.br",
-    "telefone": "1135530400",
-    "ativo": true
-  },
+  "nome": "Unimed São Paulo",
+  "registro_ans": "359017"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "empresa_id": "uuid",
+#   "nome": "Unimed São Paulo",
+#   "registro_ans": "359017",
+#   ...
+# }
+
+###
+
+### Exemplo 2: SulAmérica - Criar Empresa
+POST {{baseUrl}}/cadastros/empresas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipoEmpresa": "CONVENIOS",
+  "cnpj": "01.685.053/0001-56",
+  "razaoSocial": "Sul América Companhia de Seguro Saúde",
+  "nomeFantasia": "SulAmérica Saúde",
+  "telefoneFixo": "(11) 3553-0400",
+  "emailComercial": "prestadores@sulamerica.com.br",
+  "ativo": true
+}
+
+###
+
+### Exemplo 2: SulAmérica - Atualizar dados de convênio
+PATCH {{baseUrl}}/relacionamento/convenios/{convenioId}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
   "nome": "SulAmérica Saúde",
-  "registro_ans": "416428",
-  "matricula": null,
-  "tipo_convenio_id": null,
-  "forma_liquidacao_id": null
+  "registro_ans": "416428"
 }
 
 ###
 
-### Criar convênio - Informações Gerais (Bradesco Saúde)
-POST {{baseUrl}}/relacionamento/convenios
+### Exemplo 3: Bradesco Saúde - Criar Empresa
+POST {{baseUrl}}/cadastros/empresas
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "empresa": {
-    "tipoEmpresa": "CONVENIOS",
-    "cnpj": "92693118000160",
-    "razaoSocial": "Bradesco Saúde S/A",
-    "nomeFantasia": "Bradesco Saúde",
-    "email": "credenciados@bradescosaude.com.br",
-    "telefone": "1121994400",
-    "ativo": true
-  },
+  "tipoEmpresa": "CONVENIOS",
+  "cnpj": "92.693.118/0001-60",
+  "razaoSocial": "Bradesco Saúde S/A",
+  "nomeFantasia": "Bradesco Saúde",
+  "telefoneFixo": "(11) 2199-4400",
+  "emailComercial": "credenciados@bradescosaude.com.br",
+  "ativo": true
+}
+
+###
+
+### Exemplo 3: Bradesco - Atualizar dados de convênio
+PATCH {{baseUrl}}/relacionamento/convenios/{convenioId}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
   "nome": "Bradesco Saúde",
-  "registro_ans": "005711",
-  "matricula": null,
-  "tipo_convenio_id": null,
-  "forma_liquidacao_id": null
-}
-
-###
-
-### Atualizar convênio - Informações Gerais
-PATCH {{baseUrl}}/relacionamento/convenios/{{convenioId}}
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-  "nome": "Unimed São Paulo - Atualizado",
-  "registro_ans": "359017",
-  "tipo_convenio_id": "{{tipoConvenioId}}",
-  "forma_liquidacao_id": "{{formaLiquidacaoId}}"
+  "registro_ans": "005711"
 }
 
 ###

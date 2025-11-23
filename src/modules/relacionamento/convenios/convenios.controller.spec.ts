@@ -2,16 +2,16 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException, ConflictException } from '@nestjs/common';
 
 import { ConveniosController } from './convenios.controller';
-import { ConveniosService } from './convenios.service';
+import { ConvenioService } from './services/convenio.service';
 import { CreateConvenioExamesDto } from '../../exames/exames/dto/create-convenio-exames.dto';
 import { UpdateConvenioExamesDto } from '../../exames/exames/dto/update-convenio-exames.dto';
 import { Convenio } from './entities/convenio.entity';
 
 describe('ConveniosController', () => {
   let controller: ConveniosController;
-  let service: ConveniosService;
+  let service: ConvenioService;
 
-  const mockConveniosService = {
+  const mockConvenioService = {
     create: jest.fn(),
     findAll: jest.fn(),
     findOne: jest.fn(),
@@ -74,14 +74,14 @@ describe('ConveniosController', () => {
       controllers: [ConveniosController],
       providers: [
         {
-          provide: ConveniosService,
-          useValue: mockConveniosService,
+          provide: ConvenioService,
+          useValue: mockConvenioService,
         },
       ],
     }).compile();
 
     controller = module.get<ConveniosController>(ConveniosController);
-    service = module.get<ConveniosService>(ConveniosService);
+    service = module.get<ConvenioService>(ConvenioService);
   });
 
   afterEach(() => {
@@ -103,7 +103,7 @@ describe('ConveniosController', () => {
     };
 
     it('deve criar um convênio com sucesso', async () => {
-      mockConveniosService.create.mockResolvedValue(mockConvenio);
+      mockConvenioService.create.mockResolvedValue(mockConvenio);
 
       const result = await controller.create(createConvenioDto);
 
@@ -116,7 +116,7 @@ describe('ConveniosController', () => {
 
     it('deve retornar erro quando código já existir', async () => {
       const conflictError = new ConflictException('Código já cadastrado');
-      mockConveniosService.create.mockRejectedValue(conflictError);
+      mockConvenioService.create.mockRejectedValue(conflictError);
 
       await expect(controller.create(createConvenioDto)).rejects.toThrow(
         ConflictException,
@@ -125,57 +125,48 @@ describe('ConveniosController', () => {
   });
 
   describe('findAll', () => {
-    it('deve retornar lista paginada de convênios', async () => {
-      const paginatedResult = {
-        data: [mockConvenio],
-        total: 1,
-        page: 1,
-        lastPage: 1,
-      };
+    it('deve retornar lista de convênios', async () => {
+      const convenios = [mockConvenio];
+      mockConvenioService.findAll.mockResolvedValue(convenios);
 
-      mockConveniosService.findAll.mockResolvedValue(paginatedResult);
+      const result = await controller.findAll();
 
-      const result = await controller.findAll('1', '10');
-
-      expect(result).toEqual(paginatedResult);
-      expect(service.findAll).toHaveBeenCalledWith(1, 10, undefined);
+      expect(result).toEqual({
+        message: 'Convênios encontrados',
+        data: convenios,
+      });
+      expect(service.findAll).toHaveBeenCalledWith();
     });
 
-    it('deve passar filtros para o service', async () => {
-      const paginatedResult = {
-        data: [],
-        total: 0,
-        page: 2,
-        lastPage: 0,
-      };
+    it('deve ignorar parâmetros de paginação (service refatorado)', async () => {
+      const convenios = [mockConvenio];
+      mockConvenioService.findAll.mockResolvedValue(convenios);
 
-      mockConveniosService.findAll.mockResolvedValue(paginatedResult);
+      const result = await controller.findAll('2', '5', 'Unimed');
 
-      await controller.findAll('2', '5', 'Unimed');
-
-      expect(service.findAll).toHaveBeenCalledWith(2, 5, 'Unimed');
+      expect(result).toEqual({
+        message: 'Convênios encontrados',
+        data: convenios,
+      });
+      expect(service.findAll).toHaveBeenCalledWith();
     });
 
-    it('deve usar valores padrão quando não fornecidos', async () => {
-      const paginatedResult = {
+    it('deve retornar lista vazia quando não há convênios', async () => {
+      mockConvenioService.findAll.mockResolvedValue([]);
+
+      const result = await controller.findAll();
+
+      expect(result).toEqual({
+        message: 'Convênios encontrados',
         data: [],
-        total: 0,
-        page: 1,
-        lastPage: 0,
-      };
-
-      mockConveniosService.findAll.mockResolvedValue(paginatedResult);
-
-      await controller.findAll();
-
-      expect(service.findAll).toHaveBeenCalledWith(1, 10, undefined);
+      });
     });
   });
 
   describe('findAtivos', () => {
     it('deve retornar convênios ativos', async () => {
       const conveniosAtivos = [mockConvenio];
-      mockConveniosService.findAtivos.mockResolvedValue(conveniosAtivos);
+      mockConvenioService.findAtivos.mockResolvedValue(conveniosAtivos);
 
       const result = await controller.findAtivos();
 
@@ -191,7 +182,7 @@ describe('ConveniosController', () => {
   // describe('findComIntegracao', () => {
   //   it('deve retornar convênios com integração', async () => {
   //     const conveniosComApi = [{ ...mockConvenio, integracao_id: 'integracao-1' }];
-  //     mockConveniosService.findComIntegracao.mockResolvedValue(conveniosComApi);
+  //     mockConvenioService.findComIntegracao.mockResolvedValue(conveniosComApi);
 
   //     const result = await controller.findComIntegracao();
 
@@ -206,7 +197,7 @@ describe('ConveniosController', () => {
   // describe('findByTipoFaturamento', () => {
   //   it('deve retornar convênios por tipo de faturamento', async () => {
   //     const conveniosMensais = [mockConvenio];
-  //     mockConveniosService.findByTipoFaturamento.mockResolvedValue(
+  //     mockConvenioService.findByTipoFaturamento.mockResolvedValue(
   //       conveniosMensais,
   //     );
 
@@ -226,7 +217,7 @@ describe('ConveniosController', () => {
   //       requerAutorizacao: true,
   //       requerSenha: false,
   //     };
-  //     mockConveniosService.verificarAutorizacao.mockResolvedValue(
+  //     mockConvenioService.verificarAutorizacao.mockResolvedValue(
   //       autorizacaoData,
   //     );
 
@@ -250,7 +241,7 @@ describe('ConveniosController', () => {
   //       validadeGuiaDias: 30,
   //       regrasEspecificas: {},
   //     };
-  //     mockConveniosService.getRegrasConvenio.mockResolvedValue(regrasData);
+  //     mockConvenioService.getRegrasConvenio.mockResolvedValue(regrasData);
 
   //     const result = await controller.getRegrasConvenio('convenio-uuid-1');
 
@@ -264,7 +255,7 @@ describe('ConveniosController', () => {
 
   // describe('findByCodigo', () => {
   //   it('deve retornar um convênio por código', async () => {
-  //     mockConveniosService.findByCodigo.mockResolvedValue(mockConvenio);
+  //     mockConvenioService.findByCodigo.mockResolvedValue(mockConvenio);
 
   //     const result = await controller.findByCodigo('CONV001');
 
@@ -277,7 +268,7 @@ describe('ConveniosController', () => {
 
   //   it('deve retornar erro quando código não for encontrado', async () => {
   //     const notFoundError = new NotFoundException('Convênio não encontrado');
-  //     mockConveniosService.findByCodigo.mockRejectedValue(notFoundError);
+  //     mockConvenioService.findByCodigo.mockRejectedValue(notFoundError);
 
   //     await expect(controller.findByCodigo('INVALID')).rejects.toThrow(
   //       NotFoundException,
@@ -287,7 +278,7 @@ describe('ConveniosController', () => {
 
   describe('findOne', () => {
     it('deve retornar um convênio por ID', async () => {
-      mockConveniosService.findOne.mockResolvedValue(mockConvenio);
+      mockConvenioService.findOne.mockResolvedValue(mockConvenio);
 
       const result = await controller.findOne('convenio-uuid-1');
 
@@ -300,7 +291,7 @@ describe('ConveniosController', () => {
 
     it('deve retornar erro quando convênio não for encontrado', async () => {
       const notFoundError = new NotFoundException('Convênio não encontrado');
-      mockConveniosService.findOne.mockRejectedValue(notFoundError);
+      mockConvenioService.findOne.mockRejectedValue(notFoundError);
 
       await expect(controller.findOne('invalid-id')).rejects.toThrow(
         NotFoundException,
@@ -316,7 +307,7 @@ describe('ConveniosController', () => {
 
     it('deve atualizar um convênio com sucesso', async () => {
       const convenioAtualizado = { ...mockConvenio, ...updateConvenioDto };
-      mockConveniosService.update.mockResolvedValue(convenioAtualizado);
+      mockConvenioService.update.mockResolvedValue(convenioAtualizado);
 
       const result = await controller.update(
         'convenio-uuid-1',
@@ -335,7 +326,7 @@ describe('ConveniosController', () => {
 
     it('deve retornar erro quando convênio não for encontrado', async () => {
       const notFoundError = new NotFoundException('Convênio não encontrado');
-      mockConveniosService.update.mockRejectedValue(notFoundError);
+      mockConvenioService.update.mockRejectedValue(notFoundError);
 
       await expect(
         controller.update('invalid-id', updateConvenioDto),
@@ -344,7 +335,7 @@ describe('ConveniosController', () => {
 
     it('deve retornar erro quando código já existir', async () => {
       const conflictError = new ConflictException('Código já existe');
-      mockConveniosService.update.mockRejectedValue(conflictError);
+      mockConvenioService.update.mockRejectedValue(conflictError);
 
       await expect(
         controller.update('convenio-uuid-1', { codigo: 'CONV002' }),
@@ -354,7 +345,7 @@ describe('ConveniosController', () => {
 
   describe('remove', () => {
     it('deve desativar um convênio com sucesso', async () => {
-      mockConveniosService.remove.mockResolvedValue(undefined);
+      mockConvenioService.remove.mockResolvedValue(undefined);
 
       const result = await controller.remove('convenio-uuid-1');
 
@@ -366,7 +357,7 @@ describe('ConveniosController', () => {
 
     it('deve retornar erro quando convênio não for encontrado', async () => {
       const notFoundError = new NotFoundException('Convênio não encontrado');
-      mockConveniosService.remove.mockRejectedValue(notFoundError);
+      mockConvenioService.remove.mockRejectedValue(notFoundError);
 
       await expect(controller.remove('invalid-id')).rejects.toThrow(
         NotFoundException,

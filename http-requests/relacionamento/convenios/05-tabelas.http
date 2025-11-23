@@ -3,10 +3,6 @@
 ### Tabelas de referência e CNES
 ### ========================================
 
-@baseUrl = http://localhost:10016/api/v1
-@contentType = application/json
-@token = seu_token_aqui
-
 ### Atualizar tabelas de referência
 PATCH {{baseUrl}}/relacionamento/convenios/{{convenioId}}
 Content-Type: {{contentType}}

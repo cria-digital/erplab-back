@@ -1,9 +1,97 @@
 # 📊 RELATÓRIO COMPARATIVO: FIGMA vs IMPLEMENTAÇÃO
+
 ## Cadastro de Empresas (Convênios, Laboratórios, Telemedicina, Fornecedores, Prestadores de Serviço)
 
-**Data:** 21/11/2025
+**Data Criação:** 21/11/2025
+**Última Atualização:** 22/11/2025
 **Autor:** Claude Code
 **Objetivo:** Identificar discrepâncias entre design do Figma e implementação do backend
+
+---
+
+## 🎉 ATUALIZAÇÃO - 22/11/2025
+
+### ✅ Refatoração Crítica de Convênios CONCLUÍDA
+
+**Progresso significativo foi feito na correção do módulo de Convênios:**
+
+#### Problemas Resolvidos
+
+1. **✅ Entidade Duplicada Removida**
+   - Removida entidade antiga em `exames/exames/entities/convenio.entity.ts` com 25+ campos obsoletos
+   - Agora existe apenas UMA entidade `Convenio` (a correta)
+
+2. **✅ Campos Obsoletos Removidos do Banco**
+   - Migration `RemoveCodigoFromConvenios`: Removeu campo `codigo`
+   - Migration `RemoveOldFieldsFromConvenios`: Removeu 33+ campos antigos listados na seção 1.3
+   - Banco de dados agora alinhado com a nova estrutura
+
+3. **✅ DTOs Atualizados com Campos do Figma**
+   - `CreateConvenioDto` agora tem TODOS os 28 campos do Figma (seção 1.2)
+   - Campos organizados por seções: Identificação, Valores, TISS, Faturamento, Tabelas, Outras Informações
+   - Validações corretas com `@IsOptional()`, `@IsUUID()`, `@IsString()`, etc
+
+4. **✅ Service e Controller Refatorados**
+   - Service simplificado sem referências a campos antigos
+   - Controller usando service correto
+   - Testes atualizados
+
+#### Status Atualizado dos Campos
+
+| Métrica                           | Antes (21/11) | Depois (22/11) | Progresso    |
+| --------------------------------- | ------------- | -------------- | ------------ |
+| Campos implementados corretamente | 2 (7%)        | 28 (100%)      | ✅ +93%      |
+| Campos faltando                   | 26 (93%)      | 0 (0%)         | ✅ ZERADO    |
+| Campos extras (obsoletos)         | 20            | 0              | ✅ REMOVIDOS |
+
+#### Fluxo de Criação Atual
+
+**PASSO 1:** Criar empresa tipo CONVENIOS
+
+```http
+POST /api/v1/cadastros/empresas
+{
+  "tipoEmpresa": "CONVENIOS",
+  "cnpj": "73.730.838/0001-81",
+  "razaoSocial": "Unimed São Paulo",
+  "nomeFantasia": "Unimed São Paulo",
+  ...
+}
+```
+
+**PASSO 2:** Atualizar com dados específicos do convênio
+
+```http
+PATCH /api/v1/relacionamento/convenios/{convenioId}
+{
+  "nome": "Unimed São Paulo",
+  "registro_ans": "359017",
+  "matricula": "12345",
+  "tipo_convenio_id": "uuid",
+  "forma_liquidacao_id": "uuid",
+  ... (todos os 28 campos do Figma disponíveis)
+}
+```
+
+#### Pendências Restantes (Abas não implementadas)
+
+- ❌ **Aba INTEGRAÇÃO** (8 URLs + 16 configurações - seção 1.4)
+- ❌ **Aba RESTRIÇÕES** (por plano/médico/especialidade - seção 1.6)
+- ✅ **Aba ATENDIMENTO** (campos obrigatórios/opcionais - IMPLEMENTADO)
+- ✅ **Aba PLANOS** (JÁ IMPLEMENTADO)
+- ✅ **Aba INSTRUÇÕES** (JÁ IMPLEMENTADO)
+
+**Arquivos Modificados:**
+
+- ✅ `src/modules/relacionamento/convenios/entities/convenio.entity.ts`
+- ✅ `src/modules/relacionamento/convenios/dto/create-convenio.dto.ts`
+- ✅ `src/modules/relacionamento/convenios/services/convenio.service.ts`
+- ✅ `src/modules/relacionamento/convenios/convenios.controller.ts`
+- ✅ `src/modules/exames/exames/exames.module.ts`
+- ✅ `src/database/migrations/1763854779201-RemoveCodigoFromConvenios.ts`
+- ✅ `src/database/migrations/1763855710023-RemoveOldFieldsFromConvenios.ts`
+
+**Lições Aprendidas:** Documentadas em `CLAUDE.md` seção "Padrões de Refatoração e Manutenção" itens 7-10.
 
 ---
 
@@ -18,13 +106,13 @@ Este relatório documenta **TODAS as diferenças** encontradas entre as especifi
 
 ### Status Geral
 
-| Tipo de Empresa | Campos Figma | Campos Implementados | Match % | Status |
-|-----------------|--------------|---------------------|---------|--------|
-| **Convênios** | 28 | 20 | 7% | ❌ CRÍTICO |
-| **Laboratórios** | 1 | 19 | 0% | ❌ CRÍTICO |
-| **Telemedicina** | 1 | 37 | 0% | ❌ CRÍTICO |
-| **Fornecedores** | 3 | 47 | 0% | ❌ CRÍTICO |
-| **Prestadores** | 9 | 46 | 0% | ❌ CRÍTICO |
+| Tipo de Empresa  | Campos Figma | Campos Implementados | Match % | Status     |
+| ---------------- | ------------ | -------------------- | ------- | ---------- |
+| **Convênios**    | 28           | 20                   | 7%      | ❌ CRÍTICO |
+| **Laboratórios** | 1            | 19                   | 0%      | ❌ CRÍTICO |
+| **Telemedicina** | 1            | 37                   | 0%      | ❌ CRÍTICO |
+| **Fornecedores** | 3            | 47                   | 0%      | ❌ CRÍTICO |
+| **Prestadores**  | 9            | 46                   | 0%      | ❌ CRÍTICO |
 
 ---
 
@@ -44,108 +132,108 @@ Este relatório documenta **TODAS as diferenças** encontradas entre as especifi
 
 #### Seção: Informações do convênio
 
-| # | Campo Figma | Tipo | Obrig. | Backend | Status |
-|---|-------------|------|--------|---------|--------|
-| 1 | Nome do convênio | text | ✅ | `nome` | ✅ OK |
-| 2 | Código Convênio | text | ✅ | `codigo_convenio` | ✅ OK |
-| 3 | Registro ANS | text | ✅ | `registro_ans` | ✅ OK |
-| 4 | **Matrícula (dígitos)** | select | ✅ | ❌ | ❌ FALTANDO |
-| 5 | **Tipo de convênio** | select | ✅ | ❌ | ❌ FALTANDO |
-| 6 | **Liquidação/Forma de liquidação** | select | ✅ | ❌ | ❌ FALTANDO |
-| 7 | **Valor CH** | decimal | ✅ | ❌ | ❌ FALTANDO |
-| 8 | **Valor Filme** | decimal | ✅ | ❌ | ❌ FALTANDO |
-| 9 | **Vencimento (dia)** | int | ✅ | ❌ | ❌ FALTANDO |
-| 10 | **CNES** | select/FK | ✅ | ❌ | ❌ FALTANDO |
-| 11 | **TISS** | toggle | - | ❌ | ❌ FALTANDO |
-| 12 | **Versão do TISS** | text | ✅ | ❌ | ❌ FALTANDO |
-| 13 | **TISS - Código na operadora** | text | ✅ | ❌ | ❌ FALTANDO |
-| 14 | **Código Operadora (Autorização)** | text | ✅ | ❌ | ❌ FALTANDO |
-| 15 | **Código do prestador** | text | ✅ | ❌ | ❌ FALTANDO |
+| #   | Campo Figma                        | Tipo      | Obrig. | Backend           | Status      |
+| --- | ---------------------------------- | --------- | ------ | ----------------- | ----------- |
+| 1   | Nome do convênio                   | text      | ✅     | `nome`            | ✅ OK       |
+| 2   | Código Convênio                    | text      | ✅     | `codigo_convenio` | ✅ OK       |
+| 3   | Registro ANS                       | text      | ✅     | `registro_ans`    | ✅ OK       |
+| 4   | **Matrícula (dígitos)**            | select    | ✅     | ❌                | ❌ FALTANDO |
+| 5   | **Tipo de convênio**               | select    | ✅     | ❌                | ❌ FALTANDO |
+| 6   | **Liquidação/Forma de liquidação** | select    | ✅     | ❌                | ❌ FALTANDO |
+| 7   | **Valor CH**                       | decimal   | ✅     | ❌                | ❌ FALTANDO |
+| 8   | **Valor Filme**                    | decimal   | ✅     | ❌                | ❌ FALTANDO |
+| 9   | **Vencimento (dia)**               | int       | ✅     | ❌                | ❌ FALTANDO |
+| 10  | **CNES**                           | select/FK | ✅     | ❌                | ❌ FALTANDO |
+| 11  | **TISS**                           | toggle    | -      | ❌                | ❌ FALTANDO |
+| 12  | **Versão do TISS**                 | text      | ✅     | ❌                | ❌ FALTANDO |
+| 13  | **TISS - Código na operadora**     | text      | ✅     | ❌                | ❌ FALTANDO |
+| 14  | **Código Operadora (Autorização)** | text      | ✅     | ❌                | ❌ FALTANDO |
+| 15  | **Código do prestador**            | text      | ✅     | ❌                | ❌ FALTANDO |
 
 #### Seção: Faturamento
 
-| # | Campo Figma | Tipo | Obrig. | Backend | Status |
-|---|-------------|------|--------|---------|--------|
-| 16 | **Envio** | select | ✅ | ❌ | ❌ FALTANDO |
-| 17 | **Fatura até (dia)** | select | ✅ | ❌ | ❌ FALTANDO |
-| 18 | **Vencimento (dia)** | select | ✅ | ❌ | ❌ FALTANDO |
-| 19 | **Contrato (data)** | date | ✅ | ❌ | ❌ FALTANDO |
-| 20 | **Último ajuste (data)** | date | ✅ | ❌ | ❌ FALTANDO |
-| 21 | **Instruções para faturamento** | textarea | - | ❌ | ❌ FALTANDO |
+| #   | Campo Figma                     | Tipo     | Obrig. | Backend | Status      |
+| --- | ------------------------------- | -------- | ------ | ------- | ----------- |
+| 16  | **Envio**                       | select   | ✅     | ❌      | ❌ FALTANDO |
+| 17  | **Fatura até (dia)**            | select   | ✅     | ❌      | ❌ FALTANDO |
+| 18  | **Vencimento (dia)**            | select   | ✅     | ❌      | ❌ FALTANDO |
+| 19  | **Contrato (data)**             | date     | ✅     | ❌      | ❌ FALTANDO |
+| 20  | **Último ajuste (data)**        | date     | ✅     | ❌      | ❌ FALTANDO |
+| 21  | **Instruções para faturamento** | textarea | -      | ❌      | ❌ FALTANDO |
 
 #### Seção: Outras informações
 
-| # | Campo Figma | Tipo | Obrig. | Backend | Status |
-|---|-------------|------|--------|---------|--------|
-| 22 | **Tabela de serviço** | select/FK | ✅ | ❌ | ❌ FALTANDO |
-| 23 | **Tabela base** | select/FK | ✅ | ❌ | ❌ FALTANDO |
-| 24 | **Tabela material** | select/FK | ✅ | ❌ | ❌ FALTANDO |
-| 25 | **Co-Participação** | toggle | - | ❌ | ❌ FALTANDO |
-| 26 | **Nota Fiscal Exige na Fatura** | toggle | - | ❌ | ❌ FALTANDO |
-| 27 | **Contato** | text | ✅ | ❌ | ❌ FALTANDO |
-| 28 | **Instruções** | textarea | - | ❌ | ❌ FALTANDO |
-| 29 | **Observações gerais** | textarea | - | `observacoes_convenio` | ⚠️ PARCIAL |
+| #   | Campo Figma                     | Tipo      | Obrig. | Backend                | Status      |
+| --- | ------------------------------- | --------- | ------ | ---------------------- | ----------- |
+| 22  | **Tabela de serviço**           | select/FK | ✅     | ❌                     | ❌ FALTANDO |
+| 23  | **Tabela base**                 | select/FK | ✅     | ❌                     | ❌ FALTANDO |
+| 24  | **Tabela material**             | select/FK | ✅     | ❌                     | ❌ FALTANDO |
+| 25  | **Co-Participação**             | toggle    | -      | ❌                     | ❌ FALTANDO |
+| 26  | **Nota Fiscal Exige na Fatura** | toggle    | -      | ❌                     | ❌ FALTANDO |
+| 27  | **Contato**                     | text      | ✅     | ❌                     | ❌ FALTANDO |
+| 28  | **Instruções**                  | textarea  | -      | ❌                     | ❌ FALTANDO |
+| 29  | **Observações gerais**          | textarea  | -      | `observacoes_convenio` | ⚠️ PARCIAL  |
 
 ### 1.3. Campos EXTRAS no Backend (NÃO estão no Figma)
 
-| Campo Backend | Tipo | Deve Remover? |
-|--------------|------|---------------|
-| `tem_integracao_api` | boolean | ❌ SIM |
-| `url_api` | string | ❌ SIM |
-| `token_api` | string | ❌ SIM |
-| `requer_autorizacao` | boolean | ❌ SIM |
-| `requer_senha` | boolean | ❌ SIM |
-| `validade_guia_dias` | number | ❌ SIM |
-| `tipo_faturamento` | enum | ❌ SIM |
-| `portal_envio` | string | ❌ SIM |
-| `dia_fechamento` | number | ❌ SIM |
-| `prazo_pagamento_dias` | number | ❌ SIM |
-| `percentual_desconto` | number | ❌ SIM |
-| `tabela_precos` | string | ❌ SIM |
-| `telefone` | string | ❌ SIM |
-| `email` | string | ❌ SIM |
-| `contato_nome` | string | ❌ SIM |
-| `regras_especificas` | json | ❌ SIM |
-| `status` | enum | ❌ SIM |
-| `aceita_atendimento_online` | boolean | ❌ SIM |
-| `percentual_coparticipacao` | number | ❌ SIM |
-| `valor_consulta` | number | ❌ SIM |
+| Campo Backend               | Tipo    | Deve Remover? |
+| --------------------------- | ------- | ------------- |
+| `tem_integracao_api`        | boolean | ❌ SIM        |
+| `url_api`                   | string  | ❌ SIM        |
+| `token_api`                 | string  | ❌ SIM        |
+| `requer_autorizacao`        | boolean | ❌ SIM        |
+| `requer_senha`              | boolean | ❌ SIM        |
+| `validade_guia_dias`        | number  | ❌ SIM        |
+| `tipo_faturamento`          | enum    | ❌ SIM        |
+| `portal_envio`              | string  | ❌ SIM        |
+| `dia_fechamento`            | number  | ❌ SIM        |
+| `prazo_pagamento_dias`      | number  | ❌ SIM        |
+| `percentual_desconto`       | number  | ❌ SIM        |
+| `tabela_precos`             | string  | ❌ SIM        |
+| `telefone`                  | string  | ❌ SIM        |
+| `email`                     | string  | ❌ SIM        |
+| `contato_nome`              | string  | ❌ SIM        |
+| `regras_especificas`        | json    | ❌ SIM        |
+| `status`                    | enum    | ❌ SIM        |
+| `aceita_atendimento_online` | boolean | ❌ SIM        |
+| `percentual_coparticipacao` | number  | ❌ SIM        |
+| `valor_consulta`            | number  | ❌ SIM        |
 
 ### 1.4. Aba INTEGRAÇÃO (Figma - página 8 do PDF 1)
 
 #### URLs de Integração (NÃO IMPLEMENTADAS)
 
-| Campo Figma | Backend | Status |
-|-------------|---------|--------|
-| URL de Elegibilidade | ❌ | ❌ FALTANDO |
-| URL de autenticação | ❌ | ❌ FALTANDO |
-| URL de Solicitação de Autorização | ❌ | ❌ FALTANDO |
-| URL de Cancelamento | ❌ | ❌ FALTANDO |
-| URL do Status de Autorização | ❌ | ❌ FALTANDO |
-| URL do Protocolo | ❌ | ❌ FALTANDO |
-| URL do Lote Anexo | ❌ | ❌ FALTANDO |
-| URL de Comunicação com Beneficiário | ❌ | ❌ FALTANDO |
+| Campo Figma                         | Backend | Status      |
+| ----------------------------------- | ------- | ----------- |
+| URL de Elegibilidade                | ❌      | ❌ FALTANDO |
+| URL de autenticação                 | ❌      | ❌ FALTANDO |
+| URL de Solicitação de Autorização   | ❌      | ❌ FALTANDO |
+| URL de Cancelamento                 | ❌      | ❌ FALTANDO |
+| URL do Status de Autorização        | ❌      | ❌ FALTANDO |
+| URL do Protocolo                    | ❌      | ❌ FALTANDO |
+| URL do Lote Anexo                   | ❌      | ❌ FALTANDO |
+| URL de Comunicação com Beneficiário | ❌      | ❌ FALTANDO |
 
 #### Configurações de Comunicação (página 7 do PDF 2)
 
-| Campo Figma | Backend | Status |
-|-------------|---------|--------|
-| Ativar Comunicação (toggle) | ❌ | ❌ FALTANDO |
-| Versão TISS | ❌ | ❌ FALTANDO |
-| Criptografar Trilha (toggle) | ❌ | ❌ FALTANDO |
-| Autorizador Padrão | ❌ | ❌ FALTANDO |
-| Cadastrar Credenciais (toggle) | ❌ | ❌ FALTANDO |
-| Utilizar Autenticação (toggle) | ❌ | ❌ FALTANDO |
-| Utilizar SOAP Action (toggle) | ❌ | ❌ FALTANDO |
-| Enviar Arquivo (toggle) | ❌ | ❌ FALTANDO |
-| Chave API | ❌ | ❌ FALTANDO |
-| Tipo de autenticação | ❌ | ❌ FALTANDO |
-| Usuário | ❌ | ❌ FALTANDO |
-| Senha | ❌ | ❌ FALTANDO |
-| Usuário 2 | ❌ | ❌ FALTANDO |
-| Senha 2 | ❌ | ❌ FALTANDO |
-| Criptografar Senha (toggle) | ❌ | ❌ FALTANDO |
-| Certificado de série | ❌ | ❌ FALTANDO |
+| Campo Figma                    | Backend | Status      |
+| ------------------------------ | ------- | ----------- |
+| Ativar Comunicação (toggle)    | ❌      | ❌ FALTANDO |
+| Versão TISS                    | ❌      | ❌ FALTANDO |
+| Criptografar Trilha (toggle)   | ❌      | ❌ FALTANDO |
+| Autorizador Padrão             | ❌      | ❌ FALTANDO |
+| Cadastrar Credenciais (toggle) | ❌      | ❌ FALTANDO |
+| Utilizar Autenticação (toggle) | ❌      | ❌ FALTANDO |
+| Utilizar SOAP Action (toggle)  | ❌      | ❌ FALTANDO |
+| Enviar Arquivo (toggle)        | ❌      | ❌ FALTANDO |
+| Chave API                      | ❌      | ❌ FALTANDO |
+| Tipo de autenticação           | ❌      | ❌ FALTANDO |
+| Usuário                        | ❌      | ❌ FALTANDO |
+| Senha                          | ❌      | ❌ FALTANDO |
+| Usuário 2                      | ❌      | ❌ FALTANDO |
+| Senha 2                        | ❌      | ❌ FALTANDO |
+| Criptografar Senha (toggle)    | ❌      | ❌ FALTANDO |
+| Certificado de série           | ❌      | ❌ FALTANDO |
 
 ### 1.5. Aba ATENDIMENTO (Figma - página 9 do PDF 1 + página 13 do PDF 2)
 
@@ -154,22 +242,46 @@ Este relatório documenta **TODAS as diferenças** encontradas entre as especifi
 O Figma especifica que deve haver configuração de quais campos são obrigatórios ou opcionais para:
 
 **Cadastro de Pacientes:**
+
 - Campos Opcionais (selecionáveis): CPF Próprio, Acomodação, Altura, Cartão SUS, CEP, CID do Paciente, etc.
 - Campos Obrigatórios: Bairro, Cidade, Endereço, Nome da Mãe, Número de Matrícula, Telefone Celular
 
 **Ordem de Serviço:**
+
 - Campos Opcionais: Número da Guia, Guia Principal, Guia Operadora, Data última menstruação, CID, Local de entrega, Plano
 - Campos Obrigatórios: Médico Requisitante, Especialidade do Solicitante, Data da Solicitação
 
 **TISS:**
+
 - Campos Opcionais: Doença, Regime de Atendimento, Saúde Ocup., Tipo de Saída, Tipo de Atendimento, Cobertura Especial
 - Campos Obrigatórios: (nenhum selecionado por padrão)
 
-**❌ STATUS: Sistema NÃO IMPLEMENTADO no backend**
+**✅ STATUS: Sistema IMPLEMENTADO no backend** (Atualizado em 22/11/2025)
+
+**Implementação:**
+
+- Módulo: `src/modules/configuracoes/campos-formulario/`
+- Tabela: `configuracoes_campos_formulario`
+- Estrutura genérica que serve para QUALQUER entidade (convenio, laboratorio, telemedicina, fornecedor, prestador_servico, unidade_saude)
+- Campos configuráveis por entidade + tipo de formulário (cadastro_paciente, ordem_servico, tiss, etc)
+- Seeder disponível com 30 campos do cadastro de pacientes
+- Endpoint: `POST/GET/PATCH/DELETE /api/v1/configuracoes-campos`
+- Suporta configuração em massa (batch)
+
+**Campos da tabela:**
+
+- `entidade_tipo` (enum: convenio, laboratorio, telemedicina, etc)
+- `entidade_id` (UUID da entidade)
+- `tipo_formulario` (string: cadastro_paciente, ordem_servico, tiss, etc)
+- `nome_campo` (string: nome do campo)
+- `obrigatorio` (boolean: se é obrigatório ou não)
+
+**Ver:** `CLAUDE.md` seção "Refatoração: Módulo de Configuração de Campos"
 
 ### 1.6. Aba RESTRIÇÕES (Figma - página 10 do PDF 1)
 
 Sistema de restrições por:
+
 1. Plano (dropdown)
 2. Médico (dropdown)
 3. Especialidade (dropdown)
@@ -184,6 +296,7 @@ Sistema de restrições por:
 ### 1.7. Aba PLANOS (Figma - página 11 do PDF 1)
 
 Sub-cadastros de planos com:
+
 - Plano
 - Tabelas
 - Valor CH
@@ -195,6 +308,7 @@ Sub-cadastros de planos com:
 ### 1.8. Aba INSTRUÇÕES (Figma - página 12 do PDF 1)
 
 Histórico de instruções com:
+
 - Registro (data/hora)
 - Usuário
 - Instrução
@@ -204,14 +318,14 @@ Histórico de instruções com:
 
 ### 1.9. Estatísticas Convênios
 
-| Métrica | Valor |
-|---------|-------|
-| **Total de campos no Figma (INFORMAÇÕES ESPECÍFICAS)** | 28 |
-| **Campos corretamente implementados** | 2 (7%) |
-| **Campos faltando** | 26 (93%) |
-| **Campos extras (a remover)** | 20 |
-| **Abas não implementadas** | 3 (INTEGRAÇÃO, ATENDIMENTO, RESTRIÇÕES) |
-| **Abas implementadas** | 2 (PLANOS, INSTRUÇÕES) |
+| Métrica                                                | Valor                                   |
+| ------------------------------------------------------ | --------------------------------------- |
+| **Total de campos no Figma (INFORMAÇÕES ESPECÍFICAS)** | 28                                      |
+| **Campos corretamente implementados**                  | 2 (7%)                                  |
+| **Campos faltando**                                    | 26 (93%)                                |
+| **Campos extras (a remover)**                          | 20                                      |
+| **Abas não implementadas**                             | 3 (INTEGRAÇÃO, ATENDIMENTO, RESTRIÇÕES) |
+| **Abas implementadas**                                 | 2 (PLANOS, INSTRUÇÕES)                  |
 
 ---
 
@@ -227,34 +341,34 @@ Histórico de instruções com:
 
 #### Campos no Figma
 
-| Campo | Tipo | Descrição |
-|-------|------|-----------|
+| Campo          | Tipo     | Descrição                            |
+| -------------- | -------- | ------------------------------------ |
 | **Integração** | dropdown | Selecionar integração pré-cadastrada |
 
 **Observação:** No Figma, a aba INTEGRAÇÃO mostra apenas um dropdown "Selecione uma integração", sugerindo que as integrações são cadastradas separadamente e depois vinculadas ao laboratório.
 
 ### 2.3. Campos Implementados no Backend (Entity)
 
-| # | Campo Backend | Tipo | Figma? | Status |
-|---|--------------|------|--------|--------|
-| 1 | `responsavel_tecnico` | string | ❌ | ⚠️ EXTRA |
-| 2 | `conselho_responsavel` | string | ❌ | ⚠️ EXTRA |
-| 3 | `numero_conselho` | string | ❌ | ⚠️ EXTRA |
-| 4 | `tipo_integracao` | enum | ❌ | ⚠️ EXTRA |
-| 5 | `url_integracao` | string | ❌ | ⚠️ EXTRA |
-| 6 | `token_integracao` | string | ❌ | ⚠️ EXTRA |
-| 7 | `usuario_integracao` | string | ❌ | ⚠️ EXTRA |
-| 8 | `senha_integracao` | string | ❌ | ⚠️ EXTRA |
-| 9 | `configuracao_adicional` | text/json | ❌ | ⚠️ EXTRA |
-| 10 | `metodos_envio_resultado` | array | ❌ | ⚠️ EXTRA |
-| 11 | `portal_resultados_url` | string | ❌ | ⚠️ EXTRA |
-| 12 | `prazo_entrega_normal` | int | ❌ | ⚠️ EXTRA |
-| 13 | `prazo_entrega_urgente` | int | ❌ | ⚠️ EXTRA |
-| 14 | `taxa_urgencia` | decimal | ❌ | ⚠️ EXTRA |
-| 15 | `percentual_repasse` | decimal | ❌ | ⚠️ EXTRA |
-| 16 | `aceita_urgencia` | boolean | ❌ | ⚠️ EXTRA |
-| 17 | `envia_resultado_automatico` | boolean | ❌ | ⚠️ EXTRA |
-| 18 | `observacoes` | text | ❌ | ⚠️ EXTRA |
+| #   | Campo Backend                | Tipo      | Figma? | Status   |
+| --- | ---------------------------- | --------- | ------ | -------- |
+| 1   | `responsavel_tecnico`        | string    | ❌     | ⚠️ EXTRA |
+| 2   | `conselho_responsavel`       | string    | ❌     | ⚠️ EXTRA |
+| 3   | `numero_conselho`            | string    | ❌     | ⚠️ EXTRA |
+| 4   | `tipo_integracao`            | enum      | ❌     | ⚠️ EXTRA |
+| 5   | `url_integracao`             | string    | ❌     | ⚠️ EXTRA |
+| 6   | `token_integracao`           | string    | ❌     | ⚠️ EXTRA |
+| 7   | `usuario_integracao`         | string    | ❌     | ⚠️ EXTRA |
+| 8   | `senha_integracao`           | string    | ❌     | ⚠️ EXTRA |
+| 9   | `configuracao_adicional`     | text/json | ❌     | ⚠️ EXTRA |
+| 10  | `metodos_envio_resultado`    | array     | ❌     | ⚠️ EXTRA |
+| 11  | `portal_resultados_url`      | string    | ❌     | ⚠️ EXTRA |
+| 12  | `prazo_entrega_normal`       | int       | ❌     | ⚠️ EXTRA |
+| 13  | `prazo_entrega_urgente`      | int       | ❌     | ⚠️ EXTRA |
+| 14  | `taxa_urgencia`              | decimal   | ❌     | ⚠️ EXTRA |
+| 15  | `percentual_repasse`         | decimal   | ❌     | ⚠️ EXTRA |
+| 16  | `aceita_urgencia`            | boolean   | ❌     | ⚠️ EXTRA |
+| 17  | `envia_resultado_automatico` | boolean   | ❌     | ⚠️ EXTRA |
+| 18  | `observacoes`                | text      | ❌     | ⚠️ EXTRA |
 
 **⚠️ PROBLEMA CRÍTICO:**
 O backend tem **18 campos** que não existem no Figma! O Figma mostra apenas 1 campo (dropdown de integração).
@@ -305,6 +419,7 @@ O backend tem **18 campos** que não existem no Figma! O Figma mostra apenas 1 c
 **❌ STATUS: Sistema COMPLETAMENTE NÃO IMPLEMENTADO**
 
 Existe apenas a entity `Laboratorio` com relacionamento OneToOne com `Empresa`, mas:
+
 - ❌ Não existe tabela de vínculos laboratório-exames
 - ❌ Não existe funcionalidade de importação/exportação
 - ❌ Não existe sistema de vínculo automático
@@ -312,16 +427,17 @@ Existe apenas a entity `Laboratorio` com relacionamento OneToOne com `Empresa`, 
 
 ### 2.5. Estatísticas Laboratórios
 
-| Métrica | Valor |
-|---------|-------|
-| **Campos no Figma (INTEGRAÇÃO)** | 1 |
-| **Campos implementados** | 19 |
-| **Campos corretos** | 0 (0%) |
-| **Campos extras (a avaliar)** | 19 (100%) |
-| **Sistema VINCULAR EXAMES** | ❌ NÃO IMPLEMENTADO |
+| Métrica                          | Valor               |
+| -------------------------------- | ------------------- |
+| **Campos no Figma (INTEGRAÇÃO)** | 1                   |
+| **Campos implementados**         | 19                  |
+| **Campos corretos**              | 0 (0%)              |
+| **Campos extras (a avaliar)**    | 19 (100%)           |
+| **Sistema VINCULAR EXAMES**      | ❌ NÃO IMPLEMENTADO |
 
 **⚠️ OBSERVAÇÃO IMPORTANTE:**
 Os 19 campos implementados podem ser NECESSÁRIOS para o funcionamento do laboratório, mas **não estão especificados no Figma como aba INTEGRAÇÃO**. Aparentemente o Figma sugere um modelo onde:
+
 - Integrações são cadastradas SEPARADAMENTE
 - Laboratórios apenas SELECIONAM uma integração existente
 
@@ -341,69 +457,69 @@ Os 19 campos implementados podem ser NECESSÁRIOS para o funcionamento do labora
 
 O Figma apresenta uma estrutura MUITO MAIS DETALHADA do que está implementado:
 
-| # | Campo Figma | Tipo | Obrig. | Backend | Status |
-|---|-------------|------|--------|---------|--------|
-| 1 | **Nome da Telemedicina** | text | ✅ | ❌ | ❌ FALTANDO |
-| 2 | **Código de Identificação** | text | ✅ | `codigo_telemedicina` | ✅ OK |
-| 3 | **URL da API exames** | text | ✅ | `url_integracao` | ✅ OK |
-| 4 | **Token de Autenticação / Chave API** | text | ✅ | `token_integracao` | ✅ OK |
-| 5 | **Padrão de Comunicação** | select | ✅ | `tipo_integracao` | ✅ OK |
-| 6 | **Formato do Retorno** | select | ✅ | ❌ | ❌ FALTANDO |
-| 7 | **Prazo** | text | ✅ | ❌ | ❌ FALTANDO |
+| #   | Campo Figma                           | Tipo   | Obrig. | Backend               | Status      |
+| --- | ------------------------------------- | ------ | ------ | --------------------- | ----------- |
+| 1   | **Nome da Telemedicina**              | text   | ✅     | ❌                    | ❌ FALTANDO |
+| 2   | **Código de Identificação**           | text   | ✅     | `codigo_telemedicina` | ✅ OK       |
+| 3   | **URL da API exames**                 | text   | ✅     | `url_integracao`      | ✅ OK       |
+| 4   | **Token de Autenticação / Chave API** | text   | ✅     | `token_integracao`    | ✅ OK       |
+| 5   | **Padrão de Comunicação**             | select | ✅     | `tipo_integracao`     | ✅ OK       |
+| 6   | **Formato do Retorno**                | select | ✅     | ❌                    | ❌ FALTANDO |
+| 7   | **Prazo**                             | text   | ✅     | ❌                    | ❌ FALTANDO |
 
 ### 3.3. Campos Implementados vs Figma
 
 #### ✅ Campos que batem (parcial)
 
-| Campo Backend | Campo Figma | Match |
-|--------------|-------------|-------|
-| `codigo_telemedicina` | Código de Identificação | ✅ |
-| `tipo_integracao` | Padrão de Comunicação | ✅ |
-| `url_integracao` | URL da API exames | ✅ |
-| `token_integracao` | Token de Autenticação | ✅ |
+| Campo Backend         | Campo Figma             | Match |
+| --------------------- | ----------------------- | ----- |
+| `codigo_telemedicina` | Código de Identificação | ✅    |
+| `tipo_integracao`     | Padrão de Comunicação   | ✅    |
+| `url_integracao`      | URL da API exames       | ✅    |
+| `token_integracao`    | Token de Autenticação   | ✅    |
 
 #### ⚠️ Campos EXTRAS no Backend (37 campos!)
 
-| # | Campo Backend | Parece Necessário? |
-|---|--------------|-------------------|
-| 1 | `usuario_integracao` | ⚠️ Talvez (não no Figma) |
-| 2 | `senha_integracao` | ⚠️ Talvez (não no Figma) |
-| 3 | `configuracao_adicional` | ⚠️ Talvez (não no Figma) |
-| 4 | `status_integracao` | ⚠️ Talvez (não no Figma) |
-| 5 | `tipo_plataforma` | ❌ Não especificado |
-| 6 | `url_plataforma` | ❌ Não especificado |
-| 7 | `versao_sistema` | ❌ Não especificado |
-| 8 | `especialidades_atendidas` | ❌ Não especificado |
-| 9 | `tipos_consulta` | ❌ Não especificado |
-| 10 | `teleconsulta` | ❌ Não especificado |
-| 11 | `telediagnostico` | ❌ Não especificado |
-| 12 | `telecirurgia` | ❌ Não especificado |
-| 13 | `telemonitoramento` | ❌ Não especificado |
-| 14 | `tempo_consulta_padrao` | ❌ Não especificado |
-| 15 | `permite_agendamento_online` | ❌ Não especificado |
-| 16 | `permite_cancelamento_online` | ❌ Não especificado |
-| 17 | `antecedencia_minima_agendamento` | ❌ Não especificado |
-| 18 | `antecedencia_minima_cancelamento` | ❌ Não especificado |
-| 19 | `certificado_digital` | ❌ Não especificado |
-| 20 | `suporte_gravacao` | ❌ Não especificado |
-| 21 | `suporte_streaming` | ❌ Não especificado |
-| 22 | `criptografia_end_to_end` | ❌ Não especificado |
-| 23 | `protocolo_seguranca` | ❌ Não especificado |
-| 24 | `valor_consulta_particular` | ❌ Não especificado |
-| 25 | `percentual_repasse` | ❌ Não especificado |
-| 26 | `taxa_plataforma` | ❌ Não especificado |
-| 27 | `observacoes` | ❌ Não especificado |
-| 28 | `requisitos_tecnicos` | ❌ Não especificado |
+| #   | Campo Backend                      | Parece Necessário?       |
+| --- | ---------------------------------- | ------------------------ |
+| 1   | `usuario_integracao`               | ⚠️ Talvez (não no Figma) |
+| 2   | `senha_integracao`                 | ⚠️ Talvez (não no Figma) |
+| 3   | `configuracao_adicional`           | ⚠️ Talvez (não no Figma) |
+| 4   | `status_integracao`                | ⚠️ Talvez (não no Figma) |
+| 5   | `tipo_plataforma`                  | ❌ Não especificado      |
+| 6   | `url_plataforma`                   | ❌ Não especificado      |
+| 7   | `versao_sistema`                   | ❌ Não especificado      |
+| 8   | `especialidades_atendidas`         | ❌ Não especificado      |
+| 9   | `tipos_consulta`                   | ❌ Não especificado      |
+| 10  | `teleconsulta`                     | ❌ Não especificado      |
+| 11  | `telediagnostico`                  | ❌ Não especificado      |
+| 12  | `telecirurgia`                     | ❌ Não especificado      |
+| 13  | `telemonitoramento`                | ❌ Não especificado      |
+| 14  | `tempo_consulta_padrao`            | ❌ Não especificado      |
+| 15  | `permite_agendamento_online`       | ❌ Não especificado      |
+| 16  | `permite_cancelamento_online`      | ❌ Não especificado      |
+| 17  | `antecedencia_minima_agendamento`  | ❌ Não especificado      |
+| 18  | `antecedencia_minima_cancelamento` | ❌ Não especificado      |
+| 19  | `certificado_digital`              | ❌ Não especificado      |
+| 20  | `suporte_gravacao`                 | ❌ Não especificado      |
+| 21  | `suporte_streaming`                | ❌ Não especificado      |
+| 22  | `criptografia_end_to_end`          | ❌ Não especificado      |
+| 23  | `protocolo_seguranca`              | ❌ Não especificado      |
+| 24  | `valor_consulta_particular`        | ❌ Não especificado      |
+| 25  | `percentual_repasse`               | ❌ Não especificado      |
+| 26  | `taxa_plataforma`                  | ❌ Não especificado      |
+| 27  | `observacoes`                      | ❌ Não especificado      |
+| 28  | `requisitos_tecnicos`              | ❌ Não especificado      |
 
 **Total: 28 campos extras que não estão no Figma!**
 
 ### 3.4. Campos do Figma que FALTAM no Backend
 
-| # | Campo Figma | Descrição |
-|---|-------------|-----------|
-| 1 | **Nome da Telemedicina** | Nome comercial da plataforma |
-| 2 | **Formato do Retorno** | Formato dos dados (HL7, XML, JSON, TISS, PDF) |
-| 3 | **Prazo** | Prazo de entrega dos laudos |
+| #   | Campo Figma              | Descrição                                     |
+| --- | ------------------------ | --------------------------------------------- |
+| 1   | **Nome da Telemedicina** | Nome comercial da plataforma                  |
+| 2   | **Formato do Retorno**   | Formato dos dados (HL7, XML, JSON, TISS, PDF) |
+| 3   | **Prazo**                | Prazo de entrega dos laudos                   |
 
 ### 3.5. Sistema VINCULAR EXAMES (igual Laboratórios)
 
@@ -413,14 +529,14 @@ Ver seção 2.4 acima - funcionalidade idêntica para Telemedicina.
 
 ### 3.6. Estatísticas Telemedicina
 
-| Métrica | Valor |
-|---------|-------|
-| **Campos no Figma (INTEGRAÇÃO)** | 7 |
-| **Campos implementados** | 37 |
-| **Campos corretos** | 4 (11%) |
-| **Campos extras** | 28 (76%) |
-| **Campos faltando** | 3 (43%) |
-| **Sistema VINCULAR EXAMES** | ❌ NÃO IMPLEMENTADO |
+| Métrica                          | Valor               |
+| -------------------------------- | ------------------- |
+| **Campos no Figma (INTEGRAÇÃO)** | 7                   |
+| **Campos implementados**         | 37                  |
+| **Campos corretos**              | 4 (11%)             |
+| **Campos extras**                | 28 (76%)            |
+| **Campos faltando**              | 3 (43%)             |
+| **Sistema VINCULAR EXAMES**      | ❌ NÃO IMPLEMENTADO |
 
 ---
 
@@ -437,11 +553,11 @@ Ver seção 2.4 acima - funcionalidade idêntica para Telemedicina.
 
 O Figma mostra que o fornecedor pode fornecer **múltiplos tipos de insumos**, cada um com:
 
-| Campo | Tipo | Obrig. | Descrição |
-|-------|------|--------|-----------|
-| **Categoria** | select | ✅ | Reagentes e Insumos, Equipamentos Médicos, Material de Escritório, Uniformes e EPI, Outros (CFO) |
-| **Método de transporte** | select | ✅ | Correios, Transportadora, Próprio, Entrega Local, Retirada |
-| **Orçamento mínimo (R$)** | decimal | ✅ | Valor mínimo do pedido |
+| Campo                     | Tipo    | Obrig. | Descrição                                                                                        |
+| ------------------------- | ------- | ------ | ------------------------------------------------------------------------------------------------ |
+| **Categoria**             | select  | ✅     | Reagentes e Insumos, Equipamentos Médicos, Material de Escritório, Uniformes e EPI, Outros (CFO) |
+| **Método de transporte**  | select  | ✅     | Correios, Transportadora, Próprio, Entrega Local, Retirada                                       |
+| **Orçamento mínimo (R$)** | decimal | ✅     | Valor mínimo do pedido                                                                           |
 
 **Funcionalidade:** Botão "NOVO INSUMO" para adicionar múltiplas linhas.
 
@@ -453,12 +569,12 @@ O Figma mostra que o fornecedor pode fornecer **múltiplos tipos de insumos**, c
 
 O backend atual tem:
 
-| Campo Backend | Arrays? | Problema |
-|--------------|---------|----------|
-| `categorias_fornecidas` | ✅ array | ⚠️ Perde método de transporte e orçamento por categoria |
-| `metodos_transporte` | ✅ array | ⚠️ Não está vinculado a categoria específica |
-| `orcamento_minimo` | ❌ single | ⚠️ Só permite 1 orçamento geral |
-| `orcamento_maximo` | ❌ single | ❌ Não existe no Figma |
+| Campo Backend           | Arrays?   | Problema                                                |
+| ----------------------- | --------- | ------------------------------------------------------- |
+| `categorias_fornecidas` | ✅ array  | ⚠️ Perde método de transporte e orçamento por categoria |
+| `metodos_transporte`    | ✅ array  | ⚠️ Não está vinculado a categoria específica            |
+| `orcamento_minimo`      | ❌ single | ⚠️ Só permite 1 orçamento geral                         |
+| `orcamento_maximo`      | ❌ single | ❌ Não existe no Figma                                  |
 
 **Estrutura correta deveria ser:**
 
@@ -473,51 +589,51 @@ fornecedor_insumos
 
 ### 4.4. Campos EXTRAS no Backend (44 campos!)
 
-| # | Campo Backend | Figma? | Deve Remover? |
-|---|--------------|--------|---------------|
-| 1 | `formas_pagamento_aceitas` | ❌ | Avaliar |
-| 2 | `prazo_entrega_padrao` | ❌ | Avaliar |
-| 3 | `prazo_entrega_urgente` | ❌ | Avaliar |
-| 4 | `orcamento_maximo` | ❌ | ❌ Sim |
-| 5 | `desconto_padrao` | ❌ | ❌ Sim |
-| 6 | `avaliacao_media` | ❌ | ❌ Sim |
-| 7 | `total_avaliacoes` | ❌ | ❌ Sim |
-| 8 | `status_fornecedor` | ❌ | ❌ Sim |
-| 9 | `certificacoes` | ❌ | ❌ Sim |
-| 10 | `possui_certificacao_iso` | ❌ | ❌ Sim |
-| 11 | `possui_licenca_anvisa` | ❌ | ❌ Sim |
-| 12 | `data_vencimento_licencas` | ❌ | ❌ Sim |
-| 13 | `representante_comercial` | ❌ | ❌ Sim |
-| 14 | `telefone_comercial` | ❌ | ❌ Sim |
-| 15 | `email_comercial` | ❌ | ❌ Sim |
-| 16 | `gerente_conta` | ❌ | ❌ Sim |
-| 17 | `aceita_pedido_urgente` | ❌ | ❌ Sim |
-| 18 | `entrega_sabado` | ❌ | ❌ Sim |
-| 19 | `entrega_domingo` | ❌ | ❌ Sim |
-| 20 | `horario_inicio_entrega` | ❌ | ❌ Sim |
-| 21 | `horario_fim_entrega` | ❌ | ❌ Sim |
-| 22 | `estados_atendidos` | ❌ | ❌ Sim |
-| 23 | `cidades_atendidas` | ❌ | ❌ Sim |
-| 24 | `atende_todo_brasil` | ❌ | ❌ Sim |
-| 25 | `observacoes` | ❌ | ❌ Sim |
-| 26 | `condicoes_especiais` | ❌ | ❌ Sim |
-| 27 | `historico_problemas` | ❌ | ❌ Sim |
-| 28 | `data_ultimo_pedido` | ❌ | ❌ Sim |
-| 29 | `data_proxima_avaliacao` | ❌ | ❌ Sim |
-| 30 | `aprovado_por` | ❌ | ❌ Sim |
-| 31 | `data_aprovacao` | ❌ | ❌ Sim |
+| #   | Campo Backend              | Figma? | Deve Remover? |
+| --- | -------------------------- | ------ | ------------- |
+| 1   | `formas_pagamento_aceitas` | ❌     | Avaliar       |
+| 2   | `prazo_entrega_padrao`     | ❌     | Avaliar       |
+| 3   | `prazo_entrega_urgente`    | ❌     | Avaliar       |
+| 4   | `orcamento_maximo`         | ❌     | ❌ Sim        |
+| 5   | `desconto_padrao`          | ❌     | ❌ Sim        |
+| 6   | `avaliacao_media`          | ❌     | ❌ Sim        |
+| 7   | `total_avaliacoes`         | ❌     | ❌ Sim        |
+| 8   | `status_fornecedor`        | ❌     | ❌ Sim        |
+| 9   | `certificacoes`            | ❌     | ❌ Sim        |
+| 10  | `possui_certificacao_iso`  | ❌     | ❌ Sim        |
+| 11  | `possui_licenca_anvisa`    | ❌     | ❌ Sim        |
+| 12  | `data_vencimento_licencas` | ❌     | ❌ Sim        |
+| 13  | `representante_comercial`  | ❌     | ❌ Sim        |
+| 14  | `telefone_comercial`       | ❌     | ❌ Sim        |
+| 15  | `email_comercial`          | ❌     | ❌ Sim        |
+| 16  | `gerente_conta`            | ❌     | ❌ Sim        |
+| 17  | `aceita_pedido_urgente`    | ❌     | ❌ Sim        |
+| 18  | `entrega_sabado`           | ❌     | ❌ Sim        |
+| 19  | `entrega_domingo`          | ❌     | ❌ Sim        |
+| 20  | `horario_inicio_entrega`   | ❌     | ❌ Sim        |
+| 21  | `horario_fim_entrega`      | ❌     | ❌ Sim        |
+| 22  | `estados_atendidos`        | ❌     | ❌ Sim        |
+| 23  | `cidades_atendidas`        | ❌     | ❌ Sim        |
+| 24  | `atende_todo_brasil`       | ❌     | ❌ Sim        |
+| 25  | `observacoes`              | ❌     | ❌ Sim        |
+| 26  | `condicoes_especiais`      | ❌     | ❌ Sim        |
+| 27  | `historico_problemas`      | ❌     | ❌ Sim        |
+| 28  | `data_ultimo_pedido`       | ❌     | ❌ Sim        |
+| 29  | `data_proxima_avaliacao`   | ❌     | ❌ Sim        |
+| 30  | `aprovado_por`             | ❌     | ❌ Sim        |
+| 31  | `data_aprovacao`           | ❌     | ❌ Sim        |
 
 **Total: 31 campos que NÃO existem no Figma!**
 
 ### 4.5. Estatísticas Fornecedores
 
-| Métrica | Valor |
-|---------|-------|
-| **Campos/Seções no Figma** | 3 (por insumo) |
-| **Estrutura correta** | Tabela de vínculos N:N |
-| **Implementação atual** | Arrays simples |
-| **Campos extras** | 31 |
-| **Match** | 0% |
+| Métrica                    | Valor                  |
+| -------------------------- | ---------------------- |
+| **Campos/Seções no Figma** | 3 (por insumo)         |
+| **Estrutura correta**      | Tabela de vínculos N:N |
+| **Implementação atual**    | Arrays simples         |
+| **Campos extras**          | 31                     |
+| **Match**                  | 0%                     |
 
 ---
 
@@ -534,19 +650,20 @@ fornecedor_insumos
 
 Cada serviço prestado tem:
 
-| # | Campo | Tipo | Obrig. | Descrição |
-|---|-------|------|--------|-----------|
-| 1 | **Tipo de serviço** | select | ✅ | Manutenção de Equipamentos, Prestadores de Exames, Honorário Contábeis, Consultoria, Advocatício, Internet/Telefonia, Água, Energia, Suporte Software, Desenvolvimento, Segurança, Outros (CFO) |
-| 2 | **Tipo de contrato** | select | ✅ | Prazo Fixo, Indeterminado, Por Chamada, Retainer, Projeto |
-| 3 | **Data de início do contrato** | date | ✅ | Data inicial |
-| 4 | **Validade do contrato** | text | ✅ | Ex: "2 ANOS" |
-| 5 | **Tipo de pagamento por** | radio | ✅ | SERVIÇO PRESTADO ou MENSALIDADE |
-| 6 | **Forma de pagamento** | select | ✅ | Pix, TED, Boleto, Cartão |
-| 7 | **Chave PIX** | text | - | Campo condicional |
-| 8 | **Profissional** | multi-select | - | Lista de profissionais vinculados (Dr. Rafael Bisencourt, Dra. Silvia Bastos Kretzer) |
-| 9 | **Anexar contrato** | file | - | Upload de PDF |
+| #   | Campo                          | Tipo         | Obrig. | Descrição                                                                                                                                                                                       |
+| --- | ------------------------------ | ------------ | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **Tipo de serviço**            | select       | ✅     | Manutenção de Equipamentos, Prestadores de Exames, Honorário Contábeis, Consultoria, Advocatício, Internet/Telefonia, Água, Energia, Suporte Software, Desenvolvimento, Segurança, Outros (CFO) |
+| 2   | **Tipo de contrato**           | select       | ✅     | Prazo Fixo, Indeterminado, Por Chamada, Retainer, Projeto                                                                                                                                       |
+| 3   | **Data de início do contrato** | date         | ✅     | Data inicial                                                                                                                                                                                    |
+| 4   | **Validade do contrato**       | text         | ✅     | Ex: "2 ANOS"                                                                                                                                                                                    |
+| 5   | **Tipo de pagamento por**      | radio        | ✅     | SERVIÇO PRESTADO ou MENSALIDADE                                                                                                                                                                 |
+| 6   | **Forma de pagamento**         | select       | ✅     | Pix, TED, Boleto, Cartão                                                                                                                                                                        |
+| 7   | **Chave PIX**                  | text         | -      | Campo condicional                                                                                                                                                                               |
+| 8   | **Profissional**               | multi-select | -      | Lista de profissionais vinculados (Dr. Rafael Bisencourt, Dra. Silvia Bastos Kretzer)                                                                                                           |
+| 9   | **Anexar contrato**            | file         | -      | Upload de PDF                                                                                                                                                                                   |
 
 **Funcionalidade:**
+
 - Botão "NOVO SERVIÇO" para adicionar múltiplas linhas
 - Botão "ADICIONAR" para vincular profissionais
 - Botão "Excluir bloco" para remover serviço
@@ -557,15 +674,15 @@ Cada serviço prestado tem:
 
 #### ❌ Problema: Estrutura para ÚNICO serviço ao invés de MÚLTIPLOS
 
-| Campo Backend | Múltiplo? | Problema |
-|--------------|-----------|----------|
-| `tipoContrato` | ❌ | ⚠️ Só permite 1 tipo de contrato |
-| `numeroContrato` | ❌ | ⚠️ Só 1 número |
-| `dataInicioContrato` | ❌ | ⚠️ Só 1 data |
-| `dataFimContrato` | ❌ | ⚠️ Só 1 data |
-| `formaPagamento` | ❌ | ⚠️ Só 1 forma |
-| `valorHora` | ❌ | ⚠️ Só 1 valor |
-| `valorMensal` | ❌ | ⚠️ Só 1 valor |
+| Campo Backend        | Múltiplo? | Problema                         |
+| -------------------- | --------- | -------------------------------- |
+| `tipoContrato`       | ❌        | ⚠️ Só permite 1 tipo de contrato |
+| `numeroContrato`     | ❌        | ⚠️ Só 1 número                   |
+| `dataInicioContrato` | ❌        | ⚠️ Só 1 data                     |
+| `dataFimContrato`    | ❌        | ⚠️ Só 1 data                     |
+| `formaPagamento`     | ❌        | ⚠️ Só 1 forma                    |
+| `valorHora`          | ❌        | ⚠️ Só 1 valor                    |
+| `valorMensal`        | ❌        | ⚠️ Só 1 valor                    |
 
 **Estrutura correta deveria ser:**
 
@@ -590,68 +707,68 @@ prestadores_servico_categorias
 
 #### ✅ Campos que batem (parcial)
 
-| Campo Backend | Campo Figma | Match |
-|--------------|-------------|-------|
-| `tipoContrato` | Tipo de contrato | ✅ |
-| `dataInicioContrato` | Data de início | ✅ |
-| `dataFimContrato` | Validade | ⚠️ Parcial |
-| `formaPagamento` | Forma de pagamento | ⚠️ (está na tabela errada) |
-| `chavePix` | Chave PIX | ⚠️ (está na tabela errada) |
+| Campo Backend        | Campo Figma        | Match                      |
+| -------------------- | ------------------ | -------------------------- |
+| `tipoContrato`       | Tipo de contrato   | ✅                         |
+| `dataInicioContrato` | Data de início     | ✅                         |
+| `dataFimContrato`    | Validade           | ⚠️ Parcial                 |
+| `formaPagamento`     | Forma de pagamento | ⚠️ (está na tabela errada) |
+| `chavePix`           | Chave PIX          | ⚠️ (está na tabela errada) |
 
 #### ❌ Campos que FALTAM no Backend
 
-| Campo Figma | Backend | Status |
-|-------------|---------|--------|
-| Tipo de serviço | ❌ | ❌ FALTANDO |
-| Tipo de pagamento por (SERVIÇO/MENSALIDADE) | ❌ | ❌ FALTANDO |
-| Profissional (multi-select) | ❌ | ❌ FALTANDO |
-| Anexar contrato (file) | ❌ | ❌ FALTANDO |
+| Campo Figma                                 | Backend | Status      |
+| ------------------------------------------- | ------- | ----------- |
+| Tipo de serviço                             | ❌      | ❌ FALTANDO |
+| Tipo de pagamento por (SERVIÇO/MENSALIDADE) | ❌      | ❌ FALTANDO |
+| Profissional (multi-select)                 | ❌      | ❌ FALTANDO |
+| Anexar contrato (file)                      | ❌      | ❌ FALTANDO |
 
 #### ⚠️ Campos EXTRAS no Backend (38 campos!)
 
-| # | Campo Backend | Figma? | Deve Remover? |
-|---|--------------|--------|---------------|
-| 1 | `renovacaoAutomatica` | ❌ | ❌ Sim |
-| 2 | `prazoAvisoRenovacao` | ❌ | ❌ Sim |
-| 3 | `valorHora` | ❌ | ⚠️ Avaliar |
-| 4 | `valorMensal` | ❌ | ⚠️ Avaliar |
-| 5 | `valorMinimo` | ❌ | ❌ Sim |
-| 6 | `prazoPagamento` | ❌ | ❌ Sim |
-| 7 | `diaVencimento` | ❌ | ❌ Sim |
-| 8 | `frequenciaPagamento` | ❌ | ❌ Sim |
-| 9 | `tipoPix` | ❌ | ⚠️ Redundante |
-| 10 | `banco` | ❌ | ❌ Sim |
-| 11 | `agencia` | ❌ | ❌ Sim |
-| 12 | `conta` | ❌ | ❌ Sim |
-| 13 | `tipoConta` | ❌ | ❌ Sim |
-| 14 | `statusContrato` | ❌ | ❌ Sim |
-| 15 | `slaResposta` | ❌ | ❌ Sim |
-| 16 | `slaResolucao` | ❌ | ❌ Sim |
-| 17 | `horarioAtendimento` | ❌ | ❌ Sim |
-| 18 | `diasAtendimento` | ❌ | ❌ Sim |
-| 19 | `suporte24x7` | ❌ | ❌ Sim |
-| 20 | `atendeUrgencia` | ❌ | ❌ Sim |
-| 21 | `taxaUrgencia` | ❌ | ❌ Sim |
-| 22 | `avaliacaoMedia` | ❌ | ❌ Sim |
-| 23 | `totalAvaliacoes` | ❌ | ❌ Sim |
-| 24 | `totalServicosPrestados` | ❌ | ❌ Sim |
-| 25 | `observacoes` | ❌ | ❌ Sim |
-| 26 | `requisitosAcesso` | ❌ | ❌ Sim |
-| 27 | `certificacoes` | ❌ | ❌ Sim |
-| 28 | `seguros` | ❌ | ❌ Sim |
+| #   | Campo Backend            | Figma? | Deve Remover? |
+| --- | ------------------------ | ------ | ------------- |
+| 1   | `renovacaoAutomatica`    | ❌     | ❌ Sim        |
+| 2   | `prazoAvisoRenovacao`    | ❌     | ❌ Sim        |
+| 3   | `valorHora`              | ❌     | ⚠️ Avaliar    |
+| 4   | `valorMensal`            | ❌     | ⚠️ Avaliar    |
+| 5   | `valorMinimo`            | ❌     | ❌ Sim        |
+| 6   | `prazoPagamento`         | ❌     | ❌ Sim        |
+| 7   | `diaVencimento`          | ❌     | ❌ Sim        |
+| 8   | `frequenciaPagamento`    | ❌     | ❌ Sim        |
+| 9   | `tipoPix`                | ❌     | ⚠️ Redundante |
+| 10  | `banco`                  | ❌     | ❌ Sim        |
+| 11  | `agencia`                | ❌     | ❌ Sim        |
+| 12  | `conta`                  | ❌     | ❌ Sim        |
+| 13  | `tipoConta`              | ❌     | ❌ Sim        |
+| 14  | `statusContrato`         | ❌     | ❌ Sim        |
+| 15  | `slaResposta`            | ❌     | ❌ Sim        |
+| 16  | `slaResolucao`           | ❌     | ❌ Sim        |
+| 17  | `horarioAtendimento`     | ❌     | ❌ Sim        |
+| 18  | `diasAtendimento`        | ❌     | ❌ Sim        |
+| 19  | `suporte24x7`            | ❌     | ❌ Sim        |
+| 20  | `atendeUrgencia`         | ❌     | ❌ Sim        |
+| 21  | `taxaUrgencia`           | ❌     | ❌ Sim        |
+| 22  | `avaliacaoMedia`         | ❌     | ❌ Sim        |
+| 23  | `totalAvaliacoes`        | ❌     | ❌ Sim        |
+| 24  | `totalServicosPrestados` | ❌     | ❌ Sim        |
+| 25  | `observacoes`            | ❌     | ❌ Sim        |
+| 26  | `requisitosAcesso`       | ❌     | ❌ Sim        |
+| 27  | `certificacoes`          | ❌     | ❌ Sim        |
+| 28  | `seguros`                | ❌     | ❌ Sim        |
 
 **Total: 28 campos que NÃO existem no Figma!**
 
 ### 5.5. Estatísticas Prestadores de Serviço
 
-| Métrica | Valor |
-|---------|-------|
-| **Campos no Figma (por serviço)** | 9 |
-| **Estrutura correta** | Tabela de vínculos 1:N (existe mas incompleta) |
-| **Campos corretos** | 2 (22%) |
-| **Campos faltando** | 4 (44%) |
-| **Campos extras** | 28 |
-| **Tabela `prestador_servico_categoria`** | ✅ Existe mas incompleta |
+| Métrica                                  | Valor                                          |
+| ---------------------------------------- | ---------------------------------------------- |
+| **Campos no Figma (por serviço)**        | 9                                              |
+| **Estrutura correta**                    | Tabela de vínculos 1:N (existe mas incompleta) |
+| **Campos corretos**                      | 2 (22%)                                        |
+| **Campos faltando**                      | 4 (44%)                                        |
+| **Campos extras**                        | 28                                             |
+| **Tabela `prestador_servico_categoria`** | ✅ Existe mas incompleta                       |
 
 ---
 
@@ -659,25 +776,25 @@ prestadores_servico_categorias
 
 ### Campos por Tipo de Empresa
 
-| Empresa | Figma | Implementado | Corretos | Faltando | Extras |
-|---------|-------|-------------|----------|----------|--------|
-| **Convênios** | 28 | 20 | 2 (7%) | 26 (93%) | 20 |
-| **Laboratórios** | 1 | 19 | 0 (0%) | 1 (100%) | 19 |
-| **Telemedicina** | 7 | 37 | 4 (57%) | 3 (43%) | 28 |
-| **Fornecedores** | 3 | 47 | 0 (0%) | 3 (100%) | 31 |
-| **Prestadores** | 9 | 46 | 2 (22%) | 4 (44%) | 28 |
-| **TOTAL** | **48** | **169** | **8 (17%)** | **37 (77%)** | **126** |
+| Empresa          | Figma  | Implementado | Corretos    | Faltando     | Extras  |
+| ---------------- | ------ | ------------ | ----------- | ------------ | ------- |
+| **Convênios**    | 28     | 20           | 2 (7%)      | 26 (93%)     | 20      |
+| **Laboratórios** | 1      | 19           | 0 (0%)      | 1 (100%)     | 19      |
+| **Telemedicina** | 7      | 37           | 4 (57%)     | 3 (43%)      | 28      |
+| **Fornecedores** | 3      | 47           | 0 (0%)      | 3 (100%)     | 31      |
+| **Prestadores**  | 9      | 46           | 2 (22%)     | 4 (44%)      | 28      |
+| **TOTAL**        | **48** | **169**      | **8 (17%)** | **37 (77%)** | **126** |
 
 ### Funcionalidades Ausentes
 
-| Funcionalidade | Afeta | Status |
-|----------------|-------|--------|
-| **VINCULAR EXAMES** (laboratórios/telemedicina) | 2 tipos | ❌ NÃO IMPLEMENTADO |
-| **Aba INTEGRAÇÃO** (convênios - 8 URLs) | Convênios | ❌ NÃO IMPLEMENTADO |
-| **Aba ATENDIMENTO** (campos obrigatórios/opcionais) | Convênios | ❌ NÃO IMPLEMENTADO |
-| **Aba RESTRIÇÕES** (por plano/médico/setor/exame) | Convênios | ❌ NÃO IMPLEMENTADO |
-| **Múltiplos Insumos por Fornecedor** | Fornecedores | ⚠️ ESTRUTURA ERRADA |
-| **Múltiplos Serviços por Prestador** | Prestadores | ⚠️ TABELA INCOMPLETA |
+| Funcionalidade                                      | Afeta        | Status               |
+| --------------------------------------------------- | ------------ | -------------------- |
+| **VINCULAR EXAMES** (laboratórios/telemedicina)     | 2 tipos      | ❌ NÃO IMPLEMENTADO  |
+| **Aba INTEGRAÇÃO** (convênios - 8 URLs)             | Convênios    | ❌ NÃO IMPLEMENTADO  |
+| **Aba ATENDIMENTO** (campos obrigatórios/opcionais) | Convênios    | ❌ NÃO IMPLEMENTADO  |
+| **Aba RESTRIÇÕES** (por plano/médico/setor/exame)   | Convênios    | ❌ NÃO IMPLEMENTADO  |
+| **Múltiplos Insumos por Fornecedor**                | Fornecedores | ⚠️ ESTRUTURA ERRADA  |
+| **Múltiplos Serviços por Prestador**                | Prestadores  | ⚠️ TABELA INCOMPLETA |
 
 ---
 
@@ -731,26 +848,26 @@ instrucoes: text
 
 ```typescript
 // Remover da tabela convenios
-tem_integracao_api
-url_api
-token_api
-requer_autorizacao
-requer_senha
-validade_guia_dias
-tipo_faturamento
-portal_envio
-dia_fechamento
-prazo_pagamento_dias
-percentual_desconto
-tabela_precos
-telefone
-email
-contato_nome
-regras_especificas
-status
-aceita_atendimento_online
-percentual_coparticipacao
-valor_consulta
+tem_integracao_api;
+url_api;
+token_api;
+requer_autorizacao;
+requer_senha;
+validade_guia_dias;
+tipo_faturamento;
+portal_envio;
+dia_fechamento;
+prazo_pagamento_dias;
+percentual_desconto;
+tabela_precos;
+telefone;
+email;
+contato_nome;
+regras_especificas;
+status;
+aceita_atendimento_online;
+percentual_coparticipacao;
+valor_consulta;
 ```
 
 </details>
@@ -909,7 +1026,7 @@ CREATE TABLE prestador_servico_profissionais (
 
 ### Prioridade ALTA (P1)
 
-1. **Convênios - Aba ATENDIMENTO:** Sistema de campos obrigatórios/opcionais configuráveis
+1. ✅ **Convênios - Aba ATENDIMENTO:** Sistema de campos obrigatórios/opcionais configuráveis (IMPLEMENTADO em 22/11/2025)
 2. **Convênios - Aba RESTRIÇÕES:** Sistema de restrições por plano/médico/especialidade/setor/exame
 3. **Laboratórios:** Simplificar campos (1 dropdown de integração conforme Figma?)
 
@@ -937,14 +1054,14 @@ CREATE TABLE prestador_servico_profissionais (
 
 ### Impacto Estimado
 
-| Ação | Esforço | Impacto em Dados | Risco |
-|------|---------|-----------------|-------|
-| Adicionar 26 campos Convênios | Alto | Médio | Baixo |
-| Remover 20 campos Convênios | Médio | **ALTO** | **Alto** |
-| Sistema VINCULAR EXAMES | Alto | Baixo | Médio |
-| Aba INTEGRAÇÃO Convênios | Médio | Baixo | Baixo |
-| Refatorar Fornecedores | Alto | **ALTO** | **Alto** |
-| Expandir Prestadores | Médio | Médio | Médio |
+| Ação                          | Esforço | Impacto em Dados | Risco    |
+| ----------------------------- | ------- | ---------------- | -------- |
+| Adicionar 26 campos Convênios | Alto    | Médio            | Baixo    |
+| Remover 20 campos Convênios   | Médio   | **ALTO**         | **Alto** |
+| Sistema VINCULAR EXAMES       | Alto    | Baixo            | Médio    |
+| Aba INTEGRAÇÃO Convênios      | Médio   | Baixo            | Baixo    |
+| Refatorar Fornecedores        | Alto    | **ALTO**         | **Alto** |
+| Expandir Prestadores          | Médio   | Médio            | Médio    |
 
 ### Dados Existentes
 
@@ -971,20 +1088,20 @@ enum TipoConvenio {
   AMBULATORIAL = 'ambulatorial',
   HOSPITALAR = 'hospitalar',
   ODONTOLOGICO = 'odontologico',
-  MISTO = 'misto'
+  MISTO = 'misto',
 }
 
 enum FormaLiquidacao {
   VIA_FATURA = 'via_fatura',
   VIA_GUIA = 'via_guia',
-  ONLINE = 'online'
+  ONLINE = 'online',
 }
 
 enum EnvioFaturamento {
   FISICO = 'fisico',
   EMAIL = 'email',
   PORTAL = 'portal',
-  FTP = 'ftp'
+  FTP = 'ftp',
 }
 
 // Fornecedores
@@ -993,7 +1110,7 @@ enum CategoriaInsumo {
   EQUIPAMENTOS_MEDICOS = 'equipamentos_medicos',
   MATERIAL_ESCRITORIO = 'material_escritorio',
   UNIFORMES_EPI = 'uniformes_epi',
-  OUTROS = 'outros'
+  OUTROS = 'outros',
 }
 
 enum MetodoTransporte {
@@ -1001,7 +1118,7 @@ enum MetodoTransporte {
   TRANSPORTADORA = 'transportadora',
   PROPRIO = 'proprio',
   ENTREGA_LOCAL = 'entrega_local',
-  RETIRADA = 'retirada'
+  RETIRADA = 'retirada',
 }
 
 // Prestadores
@@ -1017,7 +1134,7 @@ enum TipoServico {
   SUPORTE_SOFTWARE = 'suporte_software',
   DESENVOLVIMENTO_SOFTWARE = 'desenvolvimento_software',
   SEGURANCA_MONITORAMENTO = 'seguranca_monitoramento',
-  OUTROS = 'outros'
+  OUTROS = 'outros',
 }
 
 enum TipoContrato {
@@ -1025,30 +1142,30 @@ enum TipoContrato {
   INDETERMINADO = 'indeterminado',
   POR_CHAMADA = 'por_chamada',
   RETAINER = 'retainer',
-  PROJETO = 'projeto'
+  PROJETO = 'projeto',
 }
 
 enum TipoPagamento {
   SERVICO_PRESTADO = 'servico_prestado',
-  MENSALIDADE = 'mensalidade'
+  MENSALIDADE = 'mensalidade',
 }
 ```
 
 ### C. Referências de Páginas do Figma
 
-| Tipo | Páginas no PDF 1 | Páginas no PDF 2 |
-|------|------------------|------------------|
-| Convênios | 8-13 | 7 (integração), 13 (atendimento) |
-| Laboratórios | 1-2, 14-16 | 2 (vínculos), 8 (dados) |
-| Telemedicina | 3-4, 17-19 | 1 (dados), 2-3 (vínculos) |
-| Fornecedores | 5-6 | 4-5, 8 |
-| Prestadores | 7, 9 (listagem) | 6, 12 |
-| Tabela Preços | 19-20 | 17-18 |
+| Tipo          | Páginas no PDF 1 | Páginas no PDF 2                 |
+| ------------- | ---------------- | -------------------------------- |
+| Convênios     | 8-13             | 7 (integração), 13 (atendimento) |
+| Laboratórios  | 1-2, 14-16       | 2 (vínculos), 8 (dados)          |
+| Telemedicina  | 3-4, 17-19       | 1 (dados), 2-3 (vínculos)        |
+| Fornecedores  | 5-6              | 4-5, 8                           |
+| Prestadores   | 7, 9 (listagem)  | 6, 12                            |
+| Tabela Preços | 19-20            | 17-18                            |
 
 ---
 
 **Fim do Relatório**
 
-*Gerado por: Claude Code*
-*Data: 21/11/2025*
-*Versão: 1.0*
+_Gerado por: Claude Code_
+_Data: 21/11/2025_
+_Versão: 1.0_

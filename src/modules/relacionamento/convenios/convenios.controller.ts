@@ -18,7 +18,7 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 
-import { ConveniosService } from './convenios.service';
+import { ConvenioService } from './services/convenio.service';
 import { CreateConvenioExamesDto } from '../../exames/exames/dto/create-convenio-exames.dto';
 import { UpdateConvenioExamesDto } from '../../exames/exames/dto/update-convenio-exames.dto';
 import { Convenio } from './entities/convenio.entity';
@@ -32,7 +32,7 @@ interface ApiResponseType<T = any> {
 @ApiBearerAuth()
 @Controller('relacionamento/convenios')
 export class ConveniosController {
-  constructor(private readonly conveniosService: ConveniosService) {}
+  constructor(private readonly convenioService: ConvenioService) {}
 
   @Post()
   @ApiOperation({
@@ -57,7 +57,7 @@ export class ConveniosController {
   async create(
     @Body() createConvenioDto: CreateConvenioExamesDto,
   ): Promise<ApiResponseType<Convenio>> {
-    const convenio = await this.conveniosService.create(createConvenioDto);
+    const convenio = await this.convenioService.create(createConvenioDto);
 
     return {
       message: 'Convênio criado com sucesso',
@@ -113,16 +113,17 @@ export class ConveniosController {
     description: 'Filtrar por status',
   })
   async findAll(
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
-    @Query('search') search?: string,
+    @Query('page') _page?: string,
+    @Query('limit') _limit?: string,
+    @Query('search') _search?: string,
     @Query('status') _status?: string, // TODO: Remover após migration
   ) {
-    return await this.conveniosService.findAll(
-      page ? parseInt(page) : 1,
-      limit ? parseInt(limit) : 10,
-      search,
-    );
+    // Service refatorado não tem paginação - retorna todos
+    const convenios = await this.convenioService.findAll();
+    return {
+      message: 'Convênios encontrados',
+      data: convenios,
+    };
   }
 
   @Get('ativos')
@@ -136,7 +137,7 @@ export class ConveniosController {
     type: [Convenio],
   })
   async findAtivos(): Promise<ApiResponseType<Convenio[]>> {
-    const convenios = await this.conveniosService.findAtivos();
+    const convenios = await this.convenioService.findAtivos();
     return {
       message: 'Convênios ativos encontrados',
       data: convenios,
@@ -155,7 +156,7 @@ export class ConveniosController {
   //   type: [Convenio],
   // })
   // async findComIntegracao(): Promise<ApiResponseType<Convenio[]>> {
-  //   const convenios = await this.conveniosService.findComIntegracao();
+  //   const convenios = await this.convenioService.findComIntegracao();
   //   return {
   //     message: 'Convênios com integração encontrados',
   //     data: convenios,
@@ -181,7 +182,7 @@ export class ConveniosController {
   // async findByTipoFaturamento(
   //   @Param('tipo') tipo: string,
   // ): Promise<ApiResponseType<Convenio[]>> {
-  //   const convenios = await this.conveniosService.findByTipoFaturamento(tipo);
+  //   const convenios = await this.convenioService.findByTipoFaturamento(tipo);
   //   return {
   //     message: 'Convênios encontrados com sucesso',
   //     data: convenios,
@@ -213,7 +214,7 @@ export class ConveniosController {
   // async verificarAutorizacao(
   //   @Param('id') id: string,
   // ): Promise<ApiResponseType<any>> {
-  //   const autorizacao = await this.conveniosService.verificarAutorizacao(id);
+  //   const autorizacao = await this.convenioService.verificarAutorizacao(id);
   //   return {
   //     message: 'Requisitos de autorização verificados',
   //     data: autorizacao,
@@ -247,7 +248,7 @@ export class ConveniosController {
   // async getRegrasConvenio(
   //   @Param('id') id: string,
   // ): Promise<ApiResponseType<any>> {
-  //   const regras = await this.conveniosService.getRegrasConvenio(id);
+  //   const regras = await this.convenioService.getRegrasConvenio(id);
   //   return {
   //     message: 'Regras do convênio obtidas com sucesso',
   //     data: regras,
@@ -277,7 +278,7 @@ export class ConveniosController {
   // async findByCodigo(
   //   @Param('codigo') codigo: string,
   // ): Promise<ApiResponseType<Convenio>> {
-  //   const convenio = await this.conveniosService.findByCodigo(codigo);
+  //   const convenio = await this.convenioService.findByCodigo(codigo);
   //   return {
   //     message: 'Convênio encontrado com sucesso',
   //     data: convenio,
@@ -304,7 +305,7 @@ export class ConveniosController {
     description: 'Convênio não encontrado',
   })
   async findOne(@Param('id') id: string): Promise<ApiResponseType<Convenio>> {
-    const convenio = await this.conveniosService.findOne(id);
+    const convenio = await this.convenioService.findOne(id);
     return {
       message: 'Convênio encontrado com sucesso',
       data: convenio,
@@ -339,7 +340,7 @@ export class ConveniosController {
     @Param('id') id: string,
     @Body() updateConvenioDto: UpdateConvenioExamesDto,
   ): Promise<ApiResponseType<Convenio>> {
-    const convenio = await this.conveniosService.update(id, updateConvenioDto);
+    const convenio = await this.convenioService.update(id, updateConvenioDto);
     return {
       message: 'Convênio atualizado com sucesso',
       data: convenio,
@@ -365,7 +366,7 @@ export class ConveniosController {
     description: 'Convênio não encontrado',
   })
   async remove(@Param('id') id: string): Promise<ApiResponseType> {
-    await this.conveniosService.remove(id);
+    await this.convenioService.remove(id);
     return {
       message: 'Convênio desativado com sucesso',
     };

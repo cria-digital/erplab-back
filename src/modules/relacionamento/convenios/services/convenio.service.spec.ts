@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { ConflictException, NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 
 import { ConvenioService } from './convenio.service';
 import { Convenio } from '../entities/convenio.entity';
@@ -32,6 +32,7 @@ describe('ConvenioService', () => {
     leftJoinAndSelect: jest.fn().mockReturnThis(),
     where: jest.fn().mockReturnThis(),
     orWhere: jest.fn().mockReturnThis(),
+    whereInIds: jest.fn().mockReturnThis(),
     orderBy: jest.fn().mockReturnThis(),
     getOne: jest.fn(),
     getMany: jest.fn(),
@@ -48,8 +49,10 @@ describe('ConvenioService', () => {
 
   const mockEmpresaRepository = {
     findOne: jest.fn(),
+    find: jest.fn(),
     create: jest.fn(),
     save: jest.fn(),
+    createQueryBuilder: jest.fn(),
   };
 
   const mockEmpresa = {
@@ -132,17 +135,9 @@ describe('ConvenioService', () => {
 
   describe('create', () => {
     const createConvenioDto: CreateConvenioDto = {
-      empresa: {
-        tipoEmpresa: TipoEmpresaEnum.CONVENIOS,
-        cnpj: '12.345.678/0001-90',
-        razaoSocial: 'Convênio Teste Ltda',
-        nomeFantasia: 'Convênio Teste',
-        emailComercial: 'contato@convenioteste.com.br',
-      },
-      codigo_convenio: 'CONV001',
       nome: 'Convênio Teste',
-      requer_autorizacao: true,
-      prazo_pagamento_dias: 30,
+      registro_ans: '123456',
+      matricula: null,
     };
 
     // TODO: Refatorar após migration - mock complexo de findOne
@@ -180,29 +175,26 @@ describe('ConvenioService', () => {
       expect(true).toBe(true);
     });
 
-    it('deve retornar erro quando CNPJ já existir', async () => {
-      mockConvenioRepository.findOne.mockResolvedValue(null);
-      mockEmpresaRepository.findOne.mockResolvedValue(mockEmpresa);
-
-      await expect(service.create(createConvenioDto)).rejects.toThrow(
-        ConflictException,
-      );
-      expect(mockQueryRunner.rollbackTransaction).toHaveBeenCalled();
+    // Convênio agora é criado pela empresa - validação de CNPJ é feita no EmpresaService
+    it.skip('deve retornar erro quando CNPJ já existir', async () => {
+      // Teste obsoleto - convênios são criados automaticamente pelo EmpresaService
+      expect(true).toBe(true);
     });
 
-    it('deve fazer rollback em caso de erro', async () => {
-      mockConvenioRepository.findOne.mockResolvedValue(null);
-      mockEmpresaRepository.findOne.mockResolvedValue(null);
-      mockEmpresaRepository.create.mockReturnValue(mockEmpresa);
-      mockQueryRunner.manager.save.mockRejectedValue(
-        new Error('Database error'),
-      );
+    it('deve criar convênio diretamente quando chamado', async () => {
+      const savedConvenio = { ...mockConvenio, id: 'convenio-uuid-new' };
 
-      await expect(service.create(createConvenioDto)).rejects.toThrow(
-        'Database error',
+      mockConvenioRepository.create.mockReturnValue(savedConvenio);
+      mockConvenioRepository.save.mockResolvedValue(savedConvenio);
+      mockConvenioRepository.findOne.mockResolvedValue(savedConvenio);
+
+      const result = await service.create(createConvenioDto);
+
+      expect(result).toEqual(savedConvenio);
+      expect(mockConvenioRepository.create).toHaveBeenCalledWith(
+        createConvenioDto,
       );
-      expect(mockQueryRunner.rollbackTransaction).toHaveBeenCalled();
-      expect(mockQueryRunner.release).toHaveBeenCalled();
+      expect(mockConvenioRepository.save).toHaveBeenCalled();
     });
 
     // TODO: Refatorar após migration - mock complexo de findOne
@@ -243,36 +235,33 @@ describe('ConvenioService', () => {
   });
 
   describe('findAll', () => {
-    it('deve retornar lista de convênios ordenada por nome fantasia', async () => {
+    it('deve retornar lista de convênios', async () => {
       const convenios = [mockConvenio];
       mockConvenioRepository.find.mockResolvedValue(convenios);
 
       const result = await service.findAll();
 
       expect(result).toEqual(convenios);
-      expect(mockConvenioRepository.find).toHaveBeenCalledWith({
-        relations: ['empresa', 'planos', 'instrucoes_historico'],
-      });
+      expect(mockConvenioRepository.find).toHaveBeenCalledWith();
     });
 
-    it('deve ordenar convênios por nome fantasia da empresa', async () => {
+    it('deve retornar múltiplos convênios', async () => {
       const convenio1 = {
         ...mockConvenio,
         id: 'conv-1',
-        empresa: { ...mockEmpresa, nomeFantasia: 'Z Convênio' },
       };
       const convenio2 = {
         ...mockConvenio,
         id: 'conv-2',
-        empresa: { ...mockEmpresa, nomeFantasia: 'A Convênio' },
       };
 
       mockConvenioRepository.find.mockResolvedValue([convenio1, convenio2]);
 
       const result = await service.findAll();
 
-      expect(result[0].empresa.nomeFantasia).toBe('A Convênio');
-      expect(result[1].empresa.nomeFantasia).toBe('Z Convênio');
+      expect(result).toHaveLength(2);
+      expect(result[0].id).toBe('conv-1');
+      expect(result[1].id).toBe('conv-2');
     });
 
     it('deve retornar lista vazia quando não há convênios', async () => {
@@ -328,27 +317,23 @@ describe('ConvenioService', () => {
   });
 
   describe('findByCnpj', () => {
-    it('deve retornar convênio por CNPJ usando QueryBuilder', async () => {
-      mockQueryBuilder.getOne.mockResolvedValue(mockConvenio);
+    it('deve retornar convênio por CNPJ', async () => {
+      mockEmpresaRepository.findOne.mockResolvedValue(mockEmpresa);
+      mockConvenioRepository.findOne.mockResolvedValue(mockConvenio);
 
       const result = await service.findByCnpj('12.345.678/0001-90');
 
       expect(result).toEqual(mockConvenio);
-      expect(mockConvenioRepository.createQueryBuilder).toHaveBeenCalledWith(
-        'convenio',
-      );
-      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledWith(
-        'convenio.empresa',
-        'empresa',
-      );
-      expect(mockQueryBuilder.where).toHaveBeenCalledWith(
-        'empresa.cnpj = :cnpj',
-        { cnpj: '12.345.678/0001-90' },
-      );
+      expect(mockEmpresaRepository.findOne).toHaveBeenCalledWith({
+        where: { cnpj: '12.345.678/0001-90' },
+      });
+      expect(mockConvenioRepository.findOne).toHaveBeenCalledWith({
+        where: { empresa_id: mockEmpresa.id },
+      });
     });
 
     it('deve retornar erro quando CNPJ não for encontrado', async () => {
-      mockQueryBuilder.getOne.mockResolvedValue(null);
+      mockEmpresaRepository.findOne.mockResolvedValue(null);
 
       await expect(service.findByCnpj('00.000.000/0000-00')).rejects.toThrow(
         NotFoundException,
@@ -358,23 +343,26 @@ describe('ConvenioService', () => {
 
   describe('findAtivos', () => {
     it('deve retornar apenas convênios ativos', async () => {
+      const empresasAtivas = [mockEmpresa];
+      mockEmpresaRepository.find.mockResolvedValue(empresasAtivas);
+      mockConvenioRepository.createQueryBuilder.mockReturnValue(
+        mockQueryBuilder,
+      );
       mockQueryBuilder.getMany.mockResolvedValue([mockConvenio]);
 
       const result = await service.findAtivos();
 
       expect(result).toEqual([mockConvenio]);
-      expect(mockQueryBuilder.where).toHaveBeenCalledWith(
-        'empresa.ativo = :ativo',
-        { ativo: true },
-      );
-      expect(mockQueryBuilder.orderBy).toHaveBeenCalledWith(
-        'empresa.nomeFantasia',
-        'ASC',
+      expect(mockEmpresaRepository.find).toHaveBeenCalledWith({
+        where: { ativo: true, tipoEmpresa: 'CONVENIOS' },
+      });
+      expect(mockConvenioRepository.createQueryBuilder).toHaveBeenCalledWith(
+        'convenio',
       );
     });
 
     it('deve retornar lista vazia quando não há convênios ativos', async () => {
-      mockQueryBuilder.getMany.mockResolvedValue([]);
+      mockEmpresaRepository.find.mockResolvedValue([]);
 
       const result = await service.findAtivos();
 
@@ -385,7 +373,8 @@ describe('ConvenioService', () => {
   describe('update', () => {
     const updateConvenioDto: UpdateConvenioDto = {
       nome: 'Convênio Atualizado',
-      prazo_pagamento_dias: 45,
+      registro_ans: '654321',
+      valor_ch: 150.0,
     };
 
     it('deve atualizar um convênio com sucesso', async () => {
@@ -394,35 +383,21 @@ describe('ConvenioService', () => {
         ...updateConvenioDto,
       };
 
-      mockConvenioRepository.findOne.mockResolvedValue(mockConvenio);
-      mockQueryRunner.manager.save.mockResolvedValue(convenioAtualizado);
+      mockConvenioRepository.findOne
+        .mockResolvedValueOnce(mockConvenio)
+        .mockResolvedValueOnce(convenioAtualizado);
+      mockConvenioRepository.save.mockResolvedValue(convenioAtualizado);
 
       const result = await service.update('convenio-uuid-1', updateConvenioDto);
 
       expect(result).toEqual(convenioAtualizado);
-      expect(mockQueryRunner.commitTransaction).toHaveBeenCalled();
+      expect(mockConvenioRepository.save).toHaveBeenCalled();
     });
 
-    it('deve atualizar dados da empresa quando fornecidos', async () => {
-      const updateComEmpresa = {
-        ...updateConvenioDto,
-        empresa: {
-          tipoEmpresa: TipoEmpresaEnum.CONVENIOS,
-          cnpj: '12.345.678/0001-90',
-          razaoSocial: 'Empresa Atualizada Ltda',
-          nomeFantasia: 'Empresa Atualizada',
-          emailComercial: 'novo@email.com',
-        },
-      };
-
-      mockConvenioRepository.findOne.mockResolvedValue(mockConvenio);
-      mockQueryRunner.manager.save
-        .mockResolvedValueOnce(mockEmpresa) // save empresa
-        .mockResolvedValueOnce(mockConvenio); // save convenio
-
-      await service.update('convenio-uuid-1', updateComEmpresa);
-
-      expect(mockQueryRunner.manager.save).toHaveBeenCalledTimes(2);
+    // Dados de empresa agora são atualizados via PUT /cadastros/empresas/:id
+    it.skip('deve atualizar dados da empresa quando fornecidos', async () => {
+      // Teste obsoleto - empresa é atualizada via endpoint específico
+      expect(true).toBe(true);
     });
 
     // TODO: Refatorar após migration - validação de código comentada
@@ -430,63 +405,23 @@ describe('ConvenioService', () => {
       expect(true).toBe(true);
     });
 
-    it('deve verificar duplicidade de CNPJ ao atualizar empresa', async () => {
-      const updateComNovoCnpj = {
-        ...updateConvenioDto,
-        empresa: {
-          tipoEmpresa: TipoEmpresaEnum.CONVENIOS,
-          cnpj: '98.765.432/0001-10',
-          razaoSocial: 'Empresa Nova Ltda',
-          nomeFantasia: 'Empresa Nova',
-          emailComercial: 'nova@empresa.com',
-        },
-      };
-
-      const outraEmpresa = {
-        ...mockEmpresa,
-        id: 'empresa-uuid-2',
-        cnpj: '98.765.432/0001-10',
-      };
-
-      mockConvenioRepository.findOne.mockResolvedValue(mockConvenio);
-      mockEmpresaRepository.findOne.mockResolvedValue(outraEmpresa);
-
-      await expect(
-        service.update('convenio-uuid-1', updateComNovoCnpj),
-      ).rejects.toThrow(ConflictException);
+    // Validação de CNPJ agora é feita no EmpresaService
+    it.skip('deve verificar duplicidade de CNPJ ao atualizar empresa', async () => {
+      // Teste obsoleto - validação feita no EmpresaService
+      expect(true).toBe(true);
     });
 
-    it('deve permitir atualizar mesmo CNPJ da empresa atual', async () => {
-      const updateMesmoCnpj = {
-        ...updateConvenioDto,
-        empresa: {
-          tipoEmpresa: TipoEmpresaEnum.CONVENIOS,
-          cnpj: '12.345.678/0001-90', // mesmo CNPJ atual
-          razaoSocial: 'Razão Social Atualizada',
-          nomeFantasia: 'Nome Atualizado',
-          emailComercial: 'atualizado@empresa.com',
-        },
-      };
-
-      mockConvenioRepository.findOne.mockResolvedValue(mockConvenio);
-      mockEmpresaRepository.findOne.mockResolvedValue(mockEmpresa);
-      mockQueryRunner.manager.save
-        .mockResolvedValueOnce(mockEmpresa)
-        .mockResolvedValueOnce(mockConvenio);
-
-      await service.update('convenio-uuid-1', updateMesmoCnpj);
-
-      expect(mockQueryRunner.commitTransaction).toHaveBeenCalled();
+    it.skip('deve permitir atualizar mesmo CNPJ da empresa atual', async () => {
+      // Teste obsoleto - atualização de empresa via endpoint específico
+      expect(true).toBe(true);
     });
 
-    it('deve fazer rollback em caso de erro', async () => {
-      mockConvenioRepository.findOne.mockResolvedValue(mockConvenio);
-      mockQueryRunner.manager.save.mockRejectedValue(new Error('Update error'));
+    it('deve retornar erro quando convênio não existe', async () => {
+      mockConvenioRepository.findOne.mockResolvedValue(null);
 
       await expect(
-        service.update('convenio-uuid-1', updateConvenioDto),
-      ).rejects.toThrow('Update error');
-      expect(mockQueryRunner.rollbackTransaction).toHaveBeenCalled();
+        service.update('invalid-id', updateConvenioDto),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -511,33 +446,32 @@ describe('ConvenioService', () => {
 
   describe('toggleStatus', () => {
     it('deve ativar convênio inativo', async () => {
+      const empresaInativa = { ...mockEmpresa, ativo: false };
       const convenioInativo = {
         ...mockConvenio,
-        empresa: { ...mockEmpresa, ativo: false },
+        empresa_id: empresaInativa.id,
       };
 
-      mockConvenioRepository.findOne
-        .mockResolvedValueOnce(convenioInativo)
-        .mockResolvedValueOnce({
-          ...convenioInativo,
-          empresa: { ...mockEmpresa, ativo: true },
-        });
-      mockEmpresaRepository.save.mockResolvedValue(mockEmpresa);
+      mockConvenioRepository.findOne.mockResolvedValue(convenioInativo);
+      mockEmpresaRepository.findOne.mockResolvedValue(empresaInativa);
+      mockEmpresaRepository.save.mockResolvedValue({
+        ...empresaInativa,
+        ativo: true,
+      });
 
       await service.toggleStatus('convenio-uuid-1');
 
+      expect(mockEmpresaRepository.findOne).toHaveBeenCalledWith({
+        where: { id: convenioInativo.empresa_id },
+      });
       expect(mockEmpresaRepository.save).toHaveBeenCalledWith(
         expect.objectContaining({ ativo: true }),
       );
     });
 
     it('deve desativar convênio ativo', async () => {
-      mockConvenioRepository.findOne
-        .mockResolvedValueOnce(mockConvenio)
-        .mockResolvedValueOnce({
-          ...mockConvenio,
-          empresa: { ...mockEmpresa, ativo: false },
-        });
+      mockConvenioRepository.findOne.mockResolvedValue(mockConvenio);
+      mockEmpresaRepository.findOne.mockResolvedValue(mockEmpresa);
       mockEmpresaRepository.save.mockResolvedValue({
         ...mockEmpresa,
         ativo: false,
@@ -545,6 +479,9 @@ describe('ConvenioService', () => {
 
       await service.toggleStatus('convenio-uuid-1');
 
+      expect(mockEmpresaRepository.findOne).toHaveBeenCalledWith({
+        where: { id: mockConvenio.empresa_id },
+      });
       expect(mockEmpresaRepository.save).toHaveBeenCalledWith(
         expect.objectContaining({ ativo: false }),
       );
@@ -553,66 +490,117 @@ describe('ConvenioService', () => {
 
   describe('search', () => {
     it('deve buscar convênios por nome fantasia', async () => {
+      const mockSearchQueryBuilder = {
+        where: jest.fn().mockReturnThis(),
+        orWhere: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
+        orderBy: jest.fn().mockReturnThis(),
+        getMany: jest.fn().mockResolvedValue([mockEmpresa]),
+      };
+
+      mockEmpresaRepository.createQueryBuilder.mockReturnValue(
+        mockSearchQueryBuilder,
+      );
+      mockConvenioRepository.createQueryBuilder.mockReturnValue(
+        mockQueryBuilder,
+      );
       mockQueryBuilder.getMany.mockResolvedValue([mockConvenio]);
 
       const result = await service.search('Teste');
 
       expect(result).toEqual([mockConvenio]);
-      expect(mockQueryBuilder.where).toHaveBeenCalledWith(
-        'empresa.nomeFantasia ILIKE :query',
-        { query: '%Teste%' },
+      expect(mockEmpresaRepository.createQueryBuilder).toHaveBeenCalledWith(
+        'empresa',
       );
     });
 
     it('deve buscar convênios por razão social', async () => {
+      const mockSearchQueryBuilder = {
+        where: jest.fn().mockReturnThis(),
+        orWhere: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
+        orderBy: jest.fn().mockReturnThis(),
+        getMany: jest.fn().mockResolvedValue([mockEmpresa]),
+      };
+
+      mockEmpresaRepository.createQueryBuilder.mockReturnValue(
+        mockSearchQueryBuilder,
+      );
+      mockConvenioRepository.createQueryBuilder.mockReturnValue(
+        mockQueryBuilder,
+      );
       mockQueryBuilder.getMany.mockResolvedValue([mockConvenio]);
 
-      await service.search('Ltda');
+      const result = await service.search('Ltda');
 
-      expect(mockQueryBuilder.orWhere).toHaveBeenCalledWith(
-        'empresa.razaoSocial ILIKE :query',
-        { query: '%Ltda%' },
-      );
+      expect(result).toEqual([mockConvenio]);
     });
 
     it('deve buscar convênios por CNPJ', async () => {
-      mockQueryBuilder.getMany.mockResolvedValue([mockConvenio]);
+      const mockSearchQueryBuilder = {
+        where: jest.fn().mockReturnThis(),
+        orWhere: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
+        orderBy: jest.fn().mockReturnThis(),
+        getMany: jest.fn().mockResolvedValue([mockEmpresa]),
+      };
 
-      await service.search('12.345.678');
-
-      expect(mockQueryBuilder.orWhere).toHaveBeenCalledWith(
-        'empresa.cnpj LIKE :query',
-        { query: '%12.345.678%' },
+      mockEmpresaRepository.createQueryBuilder.mockReturnValue(
+        mockSearchQueryBuilder,
       );
-    });
-
-    // TODO: Refatorar após migration - campo codigo_convenio removido
-    it.skip('deve buscar convênios por código', async () => {
+      mockConvenioRepository.createQueryBuilder.mockReturnValue(
+        mockQueryBuilder,
+      );
       mockQueryBuilder.getMany.mockResolvedValue([mockConvenio]);
 
-      await service.search('CONV001');
+      const result = await service.search('12.345.678');
 
-      // Removido: campo codigo_convenio não existe mais
-      expect(true).toBe(true);
+      expect(result).toEqual([mockConvenio]);
     });
 
     it('deve retornar lista vazia quando não encontrar resultados', async () => {
-      mockQueryBuilder.getMany.mockResolvedValue([]);
+      const mockSearchQueryBuilder = {
+        where: jest.fn().mockReturnThis(),
+        orWhere: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
+        orderBy: jest.fn().mockReturnThis(),
+        getMany: jest.fn().mockResolvedValue([]),
+      };
+
+      mockEmpresaRepository.createQueryBuilder.mockReturnValue(
+        mockSearchQueryBuilder,
+      );
 
       const result = await service.search('inexistente');
 
       expect(result).toEqual([]);
     });
 
-    it('deve ordenar resultados por nome fantasia', async () => {
+    it('deve buscar convênios das empresas encontradas', async () => {
+      const mockSearchQueryBuilder = {
+        where: jest.fn().mockReturnThis(),
+        orWhere: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
+        getMany: jest.fn().mockResolvedValue([mockEmpresa]),
+      };
+
+      mockEmpresaRepository.createQueryBuilder.mockReturnValue(
+        mockSearchQueryBuilder,
+      );
+      mockConvenioRepository.createQueryBuilder.mockReturnValue(
+        mockQueryBuilder,
+      );
       mockQueryBuilder.getMany.mockResolvedValue([mockConvenio]);
 
-      await service.search('Teste');
+      const result = await service.search('Teste');
 
-      expect(mockQueryBuilder.orderBy).toHaveBeenCalledWith(
-        'empresa.nomeFantasia',
-        'ASC',
+      expect(result).toEqual([mockConvenio]);
+      expect(mockConvenioRepository.createQueryBuilder).toHaveBeenCalledWith(
+        'convenio',
       );
+      expect(mockQueryBuilder.whereInIds).toHaveBeenCalledWith([
+        mockEmpresa.id,
+      ]);
     });
   });
 });
