@@ -1,7 +1,6 @@
 import {
   Controller,
   Get,
-  Post,
   Body,
   Patch,
   Param,
@@ -17,7 +16,6 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { TelemedicinaService } from '../services/telemedicina.service';
-import { CreateTelemedicinaDto } from '../dto/create-telemedicina.dto';
 import { UpdateTelemedicinaDto } from '../dto/update-telemedicina.dto';
 import { Telemedicina } from '../entities/telemedicina.entity';
 
@@ -25,21 +23,6 @@ import { Telemedicina } from '../entities/telemedicina.entity';
 @Controller('relacionamento/telemedicina')
 export class TelemedicinaController {
   constructor(private readonly telemedicinaService: TelemedicinaService) {}
-
-  @Post()
-  @ApiOperation({ summary: 'Criar nova empresa de telemedicina' })
-  @ApiResponse({
-    status: 201,
-    description: 'Telemedicina criada com sucesso.',
-    type: Telemedicina,
-  })
-  @ApiResponse({ status: 400, description: 'Dados inválidos.' })
-  @ApiResponse({ status: 409, description: 'Código ou CNPJ já existe.' })
-  async create(
-    @Body() createTelemedicinaDto: CreateTelemedicinaDto,
-  ): Promise<Telemedicina> {
-    return await this.telemedicinaService.create(createTelemedicinaDto);
-  }
 
   @Get()
   @ApiOperation({ summary: 'Listar todas as empresas de telemedicina' })
@@ -73,40 +56,6 @@ export class TelemedicinaController {
   })
   async search(@Query('q') query: string): Promise<Telemedicina[]> {
     return await this.telemedicinaService.search(query);
-  }
-
-  @Get('estatisticas')
-  @ApiOperation({ summary: 'Obter estatísticas das telemedicinas' })
-  @ApiResponse({
-    status: 200,
-    description: 'Estatísticas retornadas com sucesso.',
-  })
-  async getEstatisticas(): Promise<any> {
-    return await this.telemedicinaService.getEstatisticas();
-  }
-
-  @Get('integracao/:tipo')
-  @ApiOperation({ summary: 'Buscar telemedicinas por tipo de integração' })
-  @ApiParam({ name: 'tipo', description: 'Tipo de integração' })
-  @ApiResponse({
-    status: 200,
-    description: 'Lista de telemedicinas por tipo de integração.',
-    type: [Telemedicina],
-  })
-  async findByIntegracao(@Param('tipo') tipo: string): Promise<Telemedicina[]> {
-    return await this.telemedicinaService.findByIntegracao(tipo);
-  }
-
-  @Get('plataforma/:tipo')
-  @ApiOperation({ summary: 'Buscar telemedicinas por tipo de plataforma' })
-  @ApiParam({ name: 'tipo', description: 'Tipo de plataforma' })
-  @ApiResponse({
-    status: 200,
-    description: 'Lista de telemedicinas por tipo de plataforma.',
-    type: [Telemedicina],
-  })
-  async findByPlataforma(@Param('tipo') tipo: string): Promise<Telemedicina[]> {
-    return await this.telemedicinaService.findByPlataforma(tipo);
   }
 
   @Get('codigo/:codigo')
@@ -178,21 +127,6 @@ export class TelemedicinaController {
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<Telemedicina> {
     return await this.telemedicinaService.toggleStatus(id);
-  }
-
-  @Patch(':id/status-integracao')
-  @ApiOperation({ summary: 'Atualizar status da integração' })
-  @ApiParam({ name: 'id', description: 'ID da telemedicina' })
-  @ApiResponse({
-    status: 200,
-    description: 'Status da integração atualizado.',
-    type: Telemedicina,
-  })
-  async updateStatusIntegracao(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body('status') status: string,
-  ): Promise<Telemedicina> {
-    return await this.telemedicinaService.updateStatusIntegracao(id, status);
   }
 
   @Delete(':id')

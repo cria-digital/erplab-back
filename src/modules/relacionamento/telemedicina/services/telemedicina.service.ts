@@ -1,15 +1,9 @@
-import {
-  Injectable,
-  NotFoundException,
-  ConflictException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { Telemedicina } from '../entities/telemedicina.entity';
 import { Empresa } from '../../../cadastros/empresas/entities/empresa.entity';
-import { CreateTelemedicinaDto } from '../dto/create-telemedicina.dto';
 import { UpdateTelemedicinaDto } from '../dto/update-telemedicina.dto';
-import { TipoEmpresaEnum } from '../../../cadastros/empresas/enums/empresas.enum';
 
 @Injectable()
 export class TelemedicinaService {
@@ -20,67 +14,6 @@ export class TelemedicinaService {
     private readonly empresaRepository: Repository<Empresa>,
     private readonly dataSource: DataSource,
   ) {}
-
-  async create(
-    createTelemedicinaDto: CreateTelemedicinaDto,
-  ): Promise<Telemedicina> {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
-      // Verificar código único
-      const existingCodigo = await this.telemedicinaRepository.findOne({
-        where: {
-          codigo_telemedicina: createTelemedicinaDto.codigo_telemedicina,
-        },
-      });
-
-      if (existingCodigo) {
-        throw new ConflictException(
-          'Já existe uma telemedicina com este código',
-        );
-      }
-
-      // Verificar CNPJ único na tabela empresas
-      const existingCnpj = await this.empresaRepository.findOne({
-        where: { cnpj: createTelemedicinaDto.empresa.cnpj },
-      });
-
-      if (existingCnpj) {
-        throw new ConflictException('Já existe uma empresa com este CNPJ');
-      }
-
-      // Criar empresa primeiro
-      const empresaData = {
-        ...createTelemedicinaDto.empresa,
-        tipoEmpresa: TipoEmpresaEnum.TELEMEDICINA,
-      };
-      const empresa = this.empresaRepository.create(empresaData);
-      const savedEmpresa = await queryRunner.manager.save(empresa);
-
-      // Criar telemedicina vinculada à empresa
-      const telemedicinaData = {
-        ...createTelemedicinaDto,
-        empresa_id: savedEmpresa.id,
-        empresa: undefined,
-      };
-      delete telemedicinaData.empresa;
-
-      const telemedicina = this.telemedicinaRepository.create(telemedicinaData);
-      const savedTelemedicina = await queryRunner.manager.save(telemedicina);
-
-      await queryRunner.commitTransaction();
-
-      // Buscar com relacionamento
-      return await this.findOne(savedTelemedicina.id);
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
-      throw error;
-    } finally {
-      await queryRunner.release();
-    }
-  }
 
   async findAll(): Promise<Telemedicina[]> {
     const telemedicinas = await this.telemedicinaRepository.find({
@@ -146,84 +79,22 @@ export class TelemedicinaService {
       .getMany();
   }
 
-  async findByIntegracao(tipo_integracao: string): Promise<Telemedicina[]> {
-    return await this.telemedicinaRepository.find({
-      where: { tipo_integracao: tipo_integracao as any },
-      relations: ['empresa'],
-    });
-  }
-
-  async findByPlataforma(tipo_plataforma: string): Promise<Telemedicina[]> {
-    return await this.telemedicinaRepository.find({
-      where: { tipo_plataforma: tipo_plataforma as any },
-      relations: ['empresa'],
-    });
-  }
-
   async update(
     id: string,
     updateTelemedicinaDto: UpdateTelemedicinaDto,
   ): Promise<Telemedicina> {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    const telemedicina = await this.findOne(id);
 
-    try {
-      const telemedicina = await this.findOne(id);
-
-      // Verificar código único se foi alterado
-      if (
-        updateTelemedicinaDto.codigo_telemedicina &&
-        updateTelemedicinaDto.codigo_telemedicina !==
-          telemedicina.codigo_telemedicina
-      ) {
-        const existingCodigo = await this.telemedicinaRepository.findOne({
-          where: {
-            codigo_telemedicina: updateTelemedicinaDto.codigo_telemedicina,
-          },
-        });
-
-        if (existingCodigo) {
-          throw new ConflictException(
-            'Já existe uma telemedicina com este código',
-          );
-        }
-      }
-
-      // Atualizar dados da empresa se fornecidos
-      if (updateTelemedicinaDto.empresa) {
-        // Verificar CNPJ único se foi alterado
-        if (
-          updateTelemedicinaDto.empresa.cnpj &&
-          updateTelemedicinaDto.empresa.cnpj !== telemedicina.empresa.cnpj
-        ) {
-          const existingCnpj = await this.empresaRepository.findOne({
-            where: { cnpj: updateTelemedicinaDto.empresa.cnpj },
-          });
-
-          if (existingCnpj && existingCnpj.id !== telemedicina.empresa_id) {
-            throw new ConflictException('Já existe uma empresa com este CNPJ');
-          }
-        }
-
-        Object.assign(telemedicina.empresa, updateTelemedicinaDto.empresa);
-        await queryRunner.manager.save(telemedicina.empresa);
-      }
-
-      // Atualizar dados da telemedicina
-      const telemedicinaData = { ...updateTelemedicinaDto };
-      delete telemedicinaData.empresa;
-      Object.assign(telemedicina, telemedicinaData);
-      const savedTelemedicina = await queryRunner.manager.save(telemedicina);
-
-      await queryRunner.commitTransaction();
-      return await this.findOne(savedTelemedicina.id);
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
-      throw error;
-    } finally {
-      await queryRunner.release();
+    // Atualizar dados da telemedicina (apenas integracaoId e observacoes)
+    if (updateTelemedicinaDto.integracaoId !== undefined) {
+      telemedicina.integracao_id = updateTelemedicinaDto.integracaoId;
     }
+    if (updateTelemedicinaDto.observacoes !== undefined) {
+      telemedicina.observacoes = updateTelemedicinaDto.observacoes;
+    }
+
+    await this.telemedicinaRepository.save(telemedicina);
+    return await this.findOne(id);
   }
 
   async remove(id: string): Promise<void> {
@@ -251,46 +122,5 @@ export class TelemedicinaService {
       })
       .orderBy('empresa.nomeFantasia', 'ASC')
       .getMany();
-  }
-
-  // Métodos específicos para telemedicina
-  async updateStatusIntegracao(
-    id: string,
-    status: string,
-  ): Promise<Telemedicina> {
-    const telemedicina = await this.findOne(id);
-    telemedicina.status_integracao = status as any;
-    await this.telemedicinaRepository.save(telemedicina);
-    return await this.findOne(id);
-  }
-
-  async getEstatisticas(): Promise<any> {
-    const total = await this.telemedicinaRepository.count();
-    const ativos = await this.telemedicinaRepository.count({
-      where: { empresa: { ativo: true } },
-      relations: ['empresa'],
-    });
-
-    const porTipoIntegracao = await this.telemedicinaRepository
-      .createQueryBuilder('telemedicina')
-      .select('telemedicina.tipo_integracao', 'tipo')
-      .addSelect('COUNT(*)', 'total')
-      .groupBy('telemedicina.tipo_integracao')
-      .getRawMany();
-
-    const porTipoPlataforma = await this.telemedicinaRepository
-      .createQueryBuilder('telemedicina')
-      .select('telemedicina.tipo_plataforma', 'tipo')
-      .addSelect('COUNT(*)', 'total')
-      .groupBy('telemedicina.tipo_plataforma')
-      .getRawMany();
-
-    return {
-      total,
-      ativos,
-      inativos: total - ativos,
-      porTipoIntegracao,
-      porTipoPlataforma,
-    };
   }
 }

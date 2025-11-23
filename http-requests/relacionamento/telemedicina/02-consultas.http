@@ -1,0 +1,115 @@
+### ========================================
+### CONSULTAS E LISTAGENS
+### Endpoints de busca e listagem de telemedicinas
+### ========================================
+
+### Listar todas as telemedicinas
+GET {{baseUrl}}/relacionamento/telemedicina
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid",
+#     "empresa_id": "uuid",
+#     "codigo_telemedicina": "TELE001",
+#     "integracao_id": "uuid",
+#     "observacoes": "Plataforma de telemedicina",
+#     "empresa": {
+#       "id": "uuid",
+#       "cnpj": "98765432000190",
+#       "razaoSocial": "Telemedicina Virtual LTDA",
+#       "nomeFantasia": "Tele Virtual",
+#       "ativo": true,
+#       ...
+#     },
+#     ...
+#   },
+#   ...
+# ]
+
+###
+
+### Listar apenas telemedicinas ativas
+GET {{baseUrl}}/relacionamento/telemedicina/ativos
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [...]
+
+###
+
+### Buscar telemedicina por código
+GET {{baseUrl}}/relacionamento/telemedicina/codigo/TELE001
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "codigo_telemedicina": "TELE001",
+#   ...
+# }
+
+###
+
+### Buscar telemedicina por CNPJ
+GET {{baseUrl}}/relacionamento/telemedicina/cnpj/98765432000190
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar telemedicina por ID
+GET {{baseUrl}}/relacionamento/telemedicina/{{telemedicinaId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar telemedicinas (search)
+GET {{baseUrl}}/relacionamento/telemedicina/search?q=Virtual
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid",
+#     "codigo_telemedicina": "TELE001",
+#     "empresa": {
+#       "nomeFantasia": "Tele Virtual",
+#       ...
+#     },
+#     ...
+#   }
+# ]
+
+###
+
+### Alternar status da telemedicina (ativo/inativo)
+PATCH {{baseUrl}}/relacionamento/telemedicina/{{telemedicinaId}}/toggle-status
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "empresa": {
+#     "ativo": false,
+#     ...
+#   },
+#   ...
+# }
+
+###
+
+### Remover telemedicina
+DELETE {{baseUrl}}/relacionamento/telemedicina/{{telemedicinaId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# (void)
+
+###

@@ -1,0 +1,66 @@
+### ========================================
+### INTEGRAÇÃO
+### Vincular telemedicina com integração externa
+### ========================================
+
+### Vincular telemedicina com integração
+PATCH {{baseUrl}}/relacionamento/telemedicina/{{telemedicinaId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "integracaoId": "{{integracaoId}}"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "empresa_id": "uuid",
+#   "codigo_telemedicina": "TELE001",
+#   "integracao_id": "uuid",
+#   "observacoes": "Plataforma de telemedicina completa",
+#   ...
+# }
+
+###
+
+### Remover vínculo com integração
+PATCH {{baseUrl}}/relacionamento/telemedicina/{{telemedicinaId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "integracaoId": null
+}
+
+###
+
+### Atualizar observações da telemedicina
+PATCH {{baseUrl}}/relacionamento/telemedicina/{{telemedicinaId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "observacoes": "Plataforma com suporte a teleconsulta, telediagnóstico e telemonitoramento."
+}
+
+###
+
+### Listar integrações disponíveis para telemedicina
+GET {{baseUrl}}/atendimento/integracoes?tipo=TELEMEDICINA
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid",
+#     "nome": "Integração Telemedicina Virtual",
+#     "tipo": "TELEMEDICINA",
+#     "ativo": true
+#   },
+#   ...
+# ]
+
+###

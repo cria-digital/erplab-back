@@ -72,15 +72,11 @@ export class EmpresasService {
       switch (empresaSalva.tipoEmpresa) {
         case TipoEmpresaEnum.LABORATORIO_APOIO:
           const laboratorio = this.laboratorioRepository.create({
-            id: empresaSalva.id, // MESMO ID DA EMPRESA para facilitar buscas
+            id: empresaSalva.id,
             empresa_id: empresaSalva.id,
             codigo_laboratorio:
               empresaSalva.codigoInterno ||
               `LAB-${empresaSalva.id.substring(0, 8).toUpperCase()}`,
-            prazo_entrega_normal: 3,
-            prazo_entrega_urgente: 1,
-            aceita_urgencia: false,
-            envia_resultado_automatico: true,
           });
           await queryRunner.manager.save(Laboratorio, laboratorio);
           break;
@@ -96,19 +92,11 @@ export class EmpresasService {
 
         case TipoEmpresaEnum.TELEMEDICINA:
           const telemedicina = this.telemedicinaRepository.create({
-            id: empresaSalva.id, // MESMO ID DA EMPRESA para facilitar buscas
+            id: empresaSalva.id,
             empresa_id: empresaSalva.id,
             codigo_telemedicina:
               empresaSalva.codigoInterno ||
               `TELE-${empresaSalva.id.substring(0, 8).toUpperCase()}`,
-            tempo_consulta_padrao: 30,
-            permite_agendamento_online: true,
-            permite_cancelamento_online: true,
-            antecedencia_minima_agendamento: 60,
-            antecedencia_minima_cancelamento: 24,
-            suporte_gravacao: true,
-            suporte_streaming: true,
-            criptografia_end_to_end: true,
           });
           await queryRunner.manager.save(Telemedicina, telemedicina);
           break;
@@ -414,14 +402,11 @@ export class EmpresasService {
 
         if (!laboratorioExistente) {
           const laboratorio = this.laboratorioRepository.create({
+            id: empresa.id,
             empresa_id: empresa.id,
             codigo_laboratorio:
               empresa.codigoInterno ||
               `LAB-${empresa.id.substring(0, 8).toUpperCase()}`,
-            prazo_entrega_normal: 3,
-            prazo_entrega_urgente: 1,
-            aceita_urgencia: false,
-            envia_resultado_automatico: true,
           });
 
           await queryRunner.manager.save(Laboratorio, laboratorio);

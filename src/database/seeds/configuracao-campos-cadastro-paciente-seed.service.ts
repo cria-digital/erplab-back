@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import {
   ConfiguracaoCampoFormulario,
   TipoEntidadeEnum,
+  TipoFormularioEnum,
 } from '../../modules/configuracoes/campos-formulario/entities/configuracao-campo-formulario.entity';
 
 /**
@@ -82,7 +83,7 @@ export class ConfiguracaoCamposCadastroPacienteSeedService {
       where: {
         entidadeTipo: TipoEntidadeEnum.CONVENIO,
         entidadeId: convenioId,
-        tipoFormulario: 'cadastro_paciente',
+        tipoFormulario: TipoFormularioEnum.CADASTRO_PACIENTE,
       },
     });
 
@@ -102,7 +103,7 @@ export class ConfiguracaoCamposCadastroPacienteSeedService {
       return this.configuracaoRepository.create({
         entidadeTipo: TipoEntidadeEnum.CONVENIO,
         entidadeId: convenioId,
-        tipoFormulario: 'cadastro_paciente',
+        tipoFormulario: TipoFormularioEnum.CADASTRO_PACIENTE,
         nomeCampo: campo.nomeCampo,
         obrigatorio,
       });

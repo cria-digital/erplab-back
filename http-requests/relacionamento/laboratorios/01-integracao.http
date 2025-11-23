@@ -1,0 +1,66 @@
+### ========================================
+### INTEGRAÇÃO
+### Vincular laboratório com integração externa
+### ========================================
+
+### Vincular laboratório com integração
+PATCH {{baseUrl}}/relacionamento/laboratorios/{{laboratorioId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "integracaoId": "{{integracaoId}}"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "empresa_id": "uuid",
+#   "codigo_laboratorio": "LAB001",
+#   "integracao_id": "uuid",
+#   "observacoes": "Laboratório de apoio",
+#   ...
+# }
+
+###
+
+### Remover vínculo com integração
+PATCH {{baseUrl}}/relacionamento/laboratorios/{{laboratorioId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "integracaoId": null
+}
+
+###
+
+### Atualizar observações do laboratório
+PATCH {{baseUrl}}/relacionamento/laboratorios/{{laboratorioId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "observacoes": "Laboratório com certificação PALC. Realiza exames de alta complexidade."
+}
+
+###
+
+### Listar integrações disponíveis para laboratórios
+GET {{baseUrl}}/atendimento/integracoes?tipo=LABORATORIO_APOIO
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid",
+#     "nome": "Integração Laboratório Central",
+#     "tipo": "LABORATORIO_APOIO",
+#     "ativo": true
+#   },
+#   ...
+# ]
+
+###

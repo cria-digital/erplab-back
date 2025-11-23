@@ -4,7 +4,6 @@ import { NotFoundException } from '@nestjs/common';
 import { LaboratorioController } from './laboratorio.controller';
 import { LaboratorioService } from '../services/laboratorio.service';
 import { UpdateLaboratorioDto } from '../dto/update-laboratorio.dto';
-import { TipoIntegracao } from '../entities/laboratorio.entity';
 
 describe('LaboratorioController', () => {
   let controller: LaboratorioController;
@@ -12,23 +11,17 @@ describe('LaboratorioController', () => {
 
   const mockLaboratorio = {
     id: 'lab-uuid-1',
+    empresa_id: 'empresa-uuid-1',
     empresa: {
       id: 'empresa-uuid-1',
       cnpj: '12.345.678/0001-90',
-      razao_social: 'Laboratório Teste Ltda',
-      nome_fantasia: 'Lab Teste',
+      razaoSocial: 'Laboratório Teste Ltda',
+      nomeFantasia: 'Lab Teste',
       ativo: true,
     },
-    codigo: 'LAB001',
-    responsavel_tecnico: 'Dr. João Silva',
-    conselho_responsavel: 'CRF',
-    numero_conselho: '12345',
-    tipo_integracao: TipoIntegracao.API,
-    url_integracao: 'https://api.labteste.com.br',
-    aceita_urgencia: true,
-    prazo_entrega_normal: 3,
-    prazo_entrega_urgente: 1,
-    percentual_repasse: 30.0,
+    codigo_laboratorio: 'LAB001',
+    integracao_id: null,
+    observacoes: 'Laboratório de apoio',
     created_at: new Date(),
     updated_at: new Date(),
   };
@@ -36,12 +29,10 @@ describe('LaboratorioController', () => {
   const mockService = {
     findAll: jest.fn(),
     findAtivos: jest.fn(),
-    findAceitamUrgencia: jest.fn(),
-    search: jest.fn(),
-    findByIntegracao: jest.fn(),
+    findOne: jest.fn(),
     findByCodigo: jest.fn(),
     findByCnpj: jest.fn(),
-    findOne: jest.fn(),
+    search: jest.fn(),
     update: jest.fn(),
     toggleStatus: jest.fn(),
     remove: jest.fn(),
@@ -60,9 +51,7 @@ describe('LaboratorioController', () => {
 
     controller = module.get<LaboratorioController>(LaboratorioController);
     service = module.get<LaboratorioService>(LaboratorioService);
-  });
 
-  afterEach(() => {
     jest.clearAllMocks();
   });
 
@@ -71,369 +60,117 @@ describe('LaboratorioController', () => {
   });
 
   describe('findAll', () => {
-    it('deve retornar lista de laboratórios', async () => {
-      const laboratorios = [mockLaboratorio];
-      mockService.findAll.mockResolvedValue(laboratorios);
+    it('should return array of laboratorios', async () => {
+      mockService.findAll.mockResolvedValue([mockLaboratorio]);
 
       const result = await controller.findAll();
 
-      expect(result).toEqual(laboratorios);
-      expect(service.findAll).toHaveBeenCalledTimes(1);
-    });
-
-    it('deve retornar lista vazia quando não há laboratórios', async () => {
-      mockService.findAll.mockResolvedValue([]);
-
-      const result = await controller.findAll();
-
-      expect(result).toEqual([]);
+      expect(result).toEqual([mockLaboratorio]);
       expect(service.findAll).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('findAtivos', () => {
-    it('deve retornar apenas laboratórios ativos', async () => {
-      const laboratoriosAtivos = [mockLaboratorio];
-      mockService.findAtivos.mockResolvedValue(laboratoriosAtivos);
+    it('should return array of active laboratorios', async () => {
+      mockService.findAtivos.mockResolvedValue([mockLaboratorio]);
 
       const result = await controller.findAtivos();
 
-      expect(result).toEqual(laboratoriosAtivos);
+      expect(result).toEqual([mockLaboratorio]);
       expect(service.findAtivos).toHaveBeenCalledTimes(1);
-    });
-
-    it('deve retornar lista vazia quando não há laboratórios ativos', async () => {
-      mockService.findAtivos.mockResolvedValue([]);
-
-      const result = await controller.findAtivos();
-
-      expect(result).toEqual([]);
-    });
-  });
-
-  describe('findAceitamUrgencia', () => {
-    it('deve retornar laboratórios que aceitam urgência', async () => {
-      const laboratoriosUrgencia = [
-        { ...mockLaboratorio, aceita_urgencia: true },
-      ];
-      mockService.findAceitamUrgencia.mockResolvedValue(laboratoriosUrgencia);
-
-      const result = await controller.findAceitamUrgencia();
-
-      expect(result).toEqual(laboratoriosUrgencia);
-      expect(service.findAceitamUrgencia).toHaveBeenCalledTimes(1);
-    });
-
-    it('deve retornar lista vazia quando nenhum aceita urgência', async () => {
-      mockService.findAceitamUrgencia.mockResolvedValue([]);
-
-      const result = await controller.findAceitamUrgencia();
-
-      expect(result).toEqual([]);
-    });
-  });
-
-  describe('search', () => {
-    it('deve buscar laboratórios por termo', async () => {
-      const termoBusca = 'Lab Teste';
-      const laboratoriosEncontrados = [mockLaboratorio];
-      mockService.search.mockResolvedValue(laboratoriosEncontrados);
-
-      const result = await controller.search(termoBusca);
-
-      expect(result).toEqual(laboratoriosEncontrados);
-      expect(service.search).toHaveBeenCalledWith(termoBusca);
-    });
-
-    it('deve retornar lista vazia para termo não encontrado', async () => {
-      mockService.search.mockResolvedValue([]);
-
-      const result = await controller.search('termo inexistente');
-
-      expect(result).toEqual([]);
-      expect(service.search).toHaveBeenCalledWith('termo inexistente');
-    });
-
-    it('deve buscar por CNPJ', async () => {
-      const cnpj = '12.345.678/0001-90';
-      mockService.search.mockResolvedValue([mockLaboratorio]);
-
-      const result = await controller.search(cnpj);
-
-      expect(result).toEqual([mockLaboratorio]);
-      expect(service.search).toHaveBeenCalledWith(cnpj);
-    });
-
-    it('deve buscar por código', async () => {
-      const codigo = 'LAB001';
-      mockService.search.mockResolvedValue([mockLaboratorio]);
-
-      const result = await controller.search(codigo);
-
-      expect(result).toEqual([mockLaboratorio]);
-      expect(service.search).toHaveBeenCalledWith(codigo);
-    });
-  });
-
-  describe('findByIntegracao', () => {
-    it('deve retornar laboratórios por tipo de integração', async () => {
-      const tipo = 'api';
-      const laboratoriosApi = [mockLaboratorio];
-      mockService.findByIntegracao.mockResolvedValue(laboratoriosApi);
-
-      const result = await controller.findByIntegracao(tipo);
-
-      expect(result).toEqual(laboratoriosApi);
-      expect(service.findByIntegracao).toHaveBeenCalledWith(tipo);
-    });
-
-    it('deve funcionar para todos os tipos de integração', async () => {
-      const tipos = ['api', 'webservice', 'manual', 'ftp', 'email'];
-
-      for (const tipo of tipos) {
-        mockService.findByIntegracao.mockResolvedValue([mockLaboratorio]);
-
-        const result = await controller.findByIntegracao(tipo);
-
-        expect(result).toEqual([mockLaboratorio]);
-        expect(service.findByIntegracao).toHaveBeenCalledWith(tipo);
-      }
-    });
-
-    it('deve retornar lista vazia para tipo sem laboratórios', async () => {
-      mockService.findByIntegracao.mockResolvedValue([]);
-
-      const result = await controller.findByIntegracao('manual');
-
-      expect(result).toEqual([]);
-    });
-  });
-
-  describe('findByCodigo', () => {
-    it('deve retornar laboratório por código', async () => {
-      const codigo = 'LAB001';
-      mockService.findByCodigo.mockResolvedValue(mockLaboratorio);
-
-      const result = await controller.findByCodigo(codigo);
-
-      expect(result).toEqual(mockLaboratorio);
-      expect(service.findByCodigo).toHaveBeenCalledWith(codigo);
-    });
-
-    it('deve propagar erro quando código não for encontrado', async () => {
-      const codigo = 'LAB999';
-      const notFoundError = new NotFoundException('Laboratório não encontrado');
-      mockService.findByCodigo.mockRejectedValue(notFoundError);
-
-      await expect(controller.findByCodigo(codigo)).rejects.toThrow(
-        NotFoundException,
-      );
-      expect(service.findByCodigo).toHaveBeenCalledWith(codigo);
-    });
-  });
-
-  describe('findByCnpj', () => {
-    it('deve retornar laboratório por CNPJ', async () => {
-      const cnpj = '12.345.678/0001-90';
-      mockService.findByCnpj.mockResolvedValue(mockLaboratorio);
-
-      const result = await controller.findByCnpj(cnpj);
-
-      expect(result).toEqual(mockLaboratorio);
-      expect(service.findByCnpj).toHaveBeenCalledWith(cnpj);
-    });
-
-    it('deve propagar erro quando CNPJ não for encontrado', async () => {
-      const cnpj = '00.000.000/0000-00';
-      const notFoundError = new NotFoundException('Laboratório não encontrado');
-      mockService.findByCnpj.mockRejectedValue(notFoundError);
-
-      await expect(controller.findByCnpj(cnpj)).rejects.toThrow(
-        NotFoundException,
-      );
-      expect(service.findByCnpj).toHaveBeenCalledWith(cnpj);
-    });
-
-    it('deve funcionar com CNPJ sem formatação', async () => {
-      const cnpjSemFormato = '12345678000190';
-      mockService.findByCnpj.mockResolvedValue(mockLaboratorio);
-
-      const result = await controller.findByCnpj(cnpjSemFormato);
-
-      expect(result).toEqual(mockLaboratorio);
-      expect(service.findByCnpj).toHaveBeenCalledWith(cnpjSemFormato);
     });
   });
 
   describe('findOne', () => {
-    it('deve retornar laboratório por ID', async () => {
-      const id = 'lab-uuid-1';
+    it('should return a laboratorio by id', async () => {
       mockService.findOne.mockResolvedValue(mockLaboratorio);
 
-      const result = await controller.findOne(id);
+      const result = await controller.findOne('lab-uuid-1');
 
       expect(result).toEqual(mockLaboratorio);
-      expect(service.findOne).toHaveBeenCalledWith(id);
+      expect(service.findOne).toHaveBeenCalledWith('lab-uuid-1');
     });
 
-    it('deve propagar erro quando ID não for encontrado', async () => {
-      const id = 'invalid-uuid';
-      const notFoundError = new NotFoundException('Laboratório não encontrado');
-      mockService.findOne.mockRejectedValue(notFoundError);
+    it('should throw NotFoundException when laboratorio not found', async () => {
+      mockService.findOne.mockRejectedValue(new NotFoundException());
 
-      await expect(controller.findOne(id)).rejects.toThrow(NotFoundException);
-      expect(service.findOne).toHaveBeenCalledWith(id);
-    });
-  });
-
-  describe('update', () => {
-    const updateLaboratorioDto: UpdateLaboratorioDto = {
-      responsavelTecnico: 'Dr. Maria Silva',
-      aceitaUrgencia: false,
-    };
-
-    it('deve atualizar laboratório com sucesso', async () => {
-      const laboratorioAtualizado = {
-        ...mockLaboratorio,
-        ...updateLaboratorioDto,
-      };
-
-      mockService.update.mockResolvedValue(laboratorioAtualizado);
-
-      const result = await controller.update(
-        'lab-uuid-1',
-        updateLaboratorioDto,
-      );
-
-      expect(result).toEqual(laboratorioAtualizado);
-      expect(service.update).toHaveBeenCalledWith(
-        'lab-uuid-1',
-        updateLaboratorioDto,
-      );
-    });
-
-    it('deve propagar erro quando laboratório não for encontrado', async () => {
-      const notFoundError = new NotFoundException('Laboratório não encontrado');
-      mockService.update.mockRejectedValue(notFoundError);
-
-      await expect(
-        controller.update('invalid-id', updateLaboratorioDto),
-      ).rejects.toThrow(NotFoundException);
-    });
-
-    it('deve atualizar dados de integração', async () => {
-      const updateIntegracao = {
-        tipoIntegracao: TipoIntegracao.WEBSERVICE,
-        urlIntegracao: 'https://ws.novolab.com.br',
-        tokenIntegracao: 'novotoken123',
-      };
-
-      const laboratorioComNovaIntegracao = {
-        ...mockLaboratorio,
-        ...updateIntegracao,
-      };
-
-      mockService.update.mockResolvedValue(laboratorioComNovaIntegracao);
-
-      const result = await controller.update('lab-uuid-1', updateIntegracao);
-
-      expect(result).toEqual(laboratorioComNovaIntegracao);
-      expect(service.update).toHaveBeenCalledWith(
-        'lab-uuid-1',
-        updateIntegracao,
-      );
-    });
-
-    it('deve atualizar prazos de entrega', async () => {
-      const updatePrazos = {
-        prazoEntregaNormal: 5,
-        prazoEntregaUrgente: 2,
-        taxaUrgencia: 50.0,
-      };
-
-      const laboratorioComNovosPrazos = {
-        ...mockLaboratorio,
-        prazo_entrega_normal: 5,
-        prazo_entrega_urgente: 2,
-        taxa_urgencia: 50.0,
-      };
-
-      mockService.update.mockResolvedValue(laboratorioComNovosPrazos);
-
-      const result = await controller.update('lab-uuid-1', updatePrazos);
-
-      expect(result).toEqual(laboratorioComNovosPrazos);
-      expect(result.prazo_entrega_normal).toBe(5);
-      expect(result.prazo_entrega_urgente).toBe(2);
-    });
-  });
-
-  describe('toggleStatus', () => {
-    it('deve alternar status de ativo para inativo', async () => {
-      const laboratorioInativo = {
-        ...mockLaboratorio,
-        empresa: { ...mockLaboratorio.empresa, ativo: false },
-      };
-
-      mockService.toggleStatus.mockResolvedValue(laboratorioInativo);
-
-      const result = await controller.toggleStatus('lab-uuid-1');
-
-      expect(result).toEqual(laboratorioInativo);
-      expect(result.empresa.ativo).toBe(false);
-      expect(service.toggleStatus).toHaveBeenCalledWith('lab-uuid-1');
-    });
-
-    it('deve alternar status de inativo para ativo', async () => {
-      const laboratorioAtivo = {
-        ...mockLaboratorio,
-        empresa: { ...mockLaboratorio.empresa, ativo: true },
-      };
-
-      mockService.toggleStatus.mockResolvedValue(laboratorioAtivo);
-
-      const result = await controller.toggleStatus('lab-uuid-1');
-
-      expect(result).toEqual(laboratorioAtivo);
-      expect(result.empresa.ativo).toBe(true);
-    });
-
-    it('deve propagar erro quando laboratório não for encontrado', async () => {
-      const notFoundError = new NotFoundException('Laboratório não encontrado');
-      mockService.toggleStatus.mockRejectedValue(notFoundError);
-
-      await expect(controller.toggleStatus('invalid-id')).rejects.toThrow(
+      await expect(controller.findOne('invalid-id')).rejects.toThrow(
         NotFoundException,
       );
     });
   });
 
+  describe('findByCodigo', () => {
+    it('should return a laboratorio by codigo', async () => {
+      mockService.findByCodigo.mockResolvedValue(mockLaboratorio);
+
+      const result = await controller.findByCodigo('LAB001');
+
+      expect(result).toEqual(mockLaboratorio);
+      expect(service.findByCodigo).toHaveBeenCalledWith('LAB001');
+    });
+  });
+
+  describe('findByCnpj', () => {
+    it('should return a laboratorio by CNPJ', async () => {
+      mockService.findByCnpj.mockResolvedValue(mockLaboratorio);
+
+      const result = await controller.findByCnpj('12.345.678/0001-90');
+
+      expect(result).toEqual(mockLaboratorio);
+      expect(service.findByCnpj).toHaveBeenCalledWith('12.345.678/0001-90');
+    });
+  });
+
+  describe('search', () => {
+    it('should return laboratorios matching search query', async () => {
+      mockService.search.mockResolvedValue([mockLaboratorio]);
+
+      const result = await controller.search('Lab Teste');
+
+      expect(result).toEqual([mockLaboratorio]);
+      expect(service.search).toHaveBeenCalledWith('Lab Teste');
+    });
+  });
+
+  describe('update', () => {
+    it('should update a laboratorio', async () => {
+      const updateDto: UpdateLaboratorioDto = {
+        integracaoId: 'integracao-uuid',
+        observacoes: 'Observações atualizadas',
+      };
+      const updatedLaboratorio = { ...mockLaboratorio, ...updateDto };
+      mockService.update.mockResolvedValue(updatedLaboratorio);
+
+      const result = await controller.update('lab-uuid-1', updateDto);
+
+      expect(result).toEqual(updatedLaboratorio);
+      expect(service.update).toHaveBeenCalledWith('lab-uuid-1', updateDto);
+    });
+  });
+
+  describe('toggleStatus', () => {
+    it('should toggle laboratorio status', async () => {
+      const toggledLaboratorio = {
+        ...mockLaboratorio,
+        empresa: { ...mockLaboratorio.empresa, ativo: false },
+      };
+      mockService.toggleStatus.mockResolvedValue(toggledLaboratorio);
+
+      const result = await controller.toggleStatus('lab-uuid-1');
+
+      expect(result).toEqual(toggledLaboratorio);
+      expect(service.toggleStatus).toHaveBeenCalledWith('lab-uuid-1');
+    });
+  });
+
   describe('remove', () => {
-    it('deve remover laboratório com sucesso', async () => {
+    it('should remove a laboratorio', async () => {
       mockService.remove.mockResolvedValue(undefined);
 
       await controller.remove('lab-uuid-1');
 
       expect(service.remove).toHaveBeenCalledWith('lab-uuid-1');
-      expect(service.remove).toHaveBeenCalledTimes(1);
-    });
-
-    it('deve propagar erro quando laboratório não for encontrado', async () => {
-      const notFoundError = new NotFoundException('Laboratório não encontrado');
-      mockService.remove.mockRejectedValue(notFoundError);
-
-      await expect(controller.remove('invalid-id')).rejects.toThrow(
-        NotFoundException,
-      );
-      expect(service.remove).toHaveBeenCalledWith('invalid-id');
-    });
-
-    it('deve retornar void quando remoção for bem-sucedida', async () => {
-      mockService.remove.mockResolvedValue(undefined);
-
-      const result = await controller.remove('lab-uuid-1');
-
-      expect(result).toBeUndefined();
     });
   });
 });

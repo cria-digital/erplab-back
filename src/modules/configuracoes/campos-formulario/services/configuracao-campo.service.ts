@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import {
   ConfiguracaoCampoFormulario,
   TipoEntidadeEnum,
+  TipoFormularioEnum,
 } from '../entities/configuracao-campo-formulario.entity';
 import { CreateConfiguracaoCampoDto } from '../dto/create-configuracao-campo.dto';
 import { UpdateConfiguracaoCampoDto } from '../dto/update-configuracao-campo.dto';
@@ -45,7 +46,7 @@ export class ConfiguracaoCampoService {
   async findByEntidade(
     entidadeTipo: TipoEntidadeEnum,
     entidadeId: string,
-    tipoFormulario?: string,
+    tipoFormulario?: TipoFormularioEnum,
   ): Promise<ConfiguracaoCampoFormulario[]> {
     const where: any = { entidadeTipo, entidadeId };
 
@@ -76,7 +77,7 @@ export class ConfiguracaoCampoService {
   async configurarEmMassa(
     entidadeTipo: TipoEntidadeEnum,
     entidadeId: string,
-    tipoFormulario: string,
+    tipoFormulario: TipoFormularioEnum,
     campos: Array<{ nomeCampo: string; obrigatorio: boolean }>,
   ): Promise<ConfiguracaoCampoFormulario[]> {
     // Remover configurações antigas
@@ -103,7 +104,7 @@ export class ConfiguracaoCampoService {
   async obterCamposObrigatorios(
     entidadeTipo: TipoEntidadeEnum,
     entidadeId: string,
-    tipoFormulario: string,
+    tipoFormulario: TipoFormularioEnum,
   ): Promise<string[]> {
     const configuracoes = await this.configuracaoRepository.find({
       where: {

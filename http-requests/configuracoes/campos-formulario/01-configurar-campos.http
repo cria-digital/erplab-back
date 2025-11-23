@@ -1,0 +1,87 @@
+### ========================================
+### CONFIGURAÇÃO DE CAMPOS OBRIGATÓRIOS/OPCIONAIS
+### Configurar quais campos são obrigatórios por entidade
+### ========================================
+
+### Criar configuração de campo obrigatório
+POST {{baseUrl}}/api/v1/configuracoes-campos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "entidadeTipo": "convenio",
+  "entidadeId": "6cf271ce-0e16-4fca-bf80-48100da44667",
+  "tipoFormulario": "cadastro_paciente",
+  "nomeCampo": "cpf",
+  "obrigatorio": true
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "id": "uuid",
+#   "entidadeTipo": "convenio",
+#   "entidadeId": "uuid",
+#   "tipoFormulario": "cadastro_paciente",
+#   "nomeCampo": "cpf",
+#   "obrigatorio": true,
+#   "created_at": "...",
+#   "updated_at": "..."
+# }
+
+###
+
+### Criar configuração de campo opcional
+POST {{baseUrl}}/api/v1/configuracoes-campos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "entidadeTipo": "convenio",
+  "entidadeId": "{{convenioId}}",
+  "tipoFormulario": "cadastro_paciente",
+  "nomeCampo": "nome_mae",
+  "obrigatorio": false
+}
+
+###
+
+### Atualizar configuração (tornar campo obrigatório)
+PATCH {{baseUrl}}/api/v1/configuracoes-campos/{{configuracaoCampoId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "obrigatorio": true
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "nomeCampo": "nome_mae",
+#   "obrigatorio": true,
+#   ...
+# }
+
+###
+
+### Atualizar configuração (tornar campo opcional)
+PATCH {{baseUrl}}/api/v1/configuracoes-campos/{{configuracaoCampoId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "obrigatorio": false
+}
+
+###
+
+### Deletar configuração de campo
+DELETE {{baseUrl}}/api/v1/configuracoes-campos/{{configuracaoCampoId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+
+###

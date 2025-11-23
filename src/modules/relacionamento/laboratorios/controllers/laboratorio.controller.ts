@@ -48,17 +48,6 @@ export class LaboratorioController {
     return this.laboratorioService.findAtivos();
   }
 
-  @Get('urgencia')
-  @ApiOperation({ summary: 'Listar laboratórios que aceitam urgência' })
-  @ApiResponse({
-    status: 200,
-    description: 'Lista de laboratórios que aceitam urgência',
-    type: [Laboratorio],
-  })
-  findAceitamUrgencia(): Promise<Laboratorio[]> {
-    return this.laboratorioService.findAceitamUrgencia();
-  }
-
   @Get('search')
   @ApiOperation({ summary: 'Buscar laboratórios' })
   @ApiQuery({ name: 'q', description: 'Termo de busca' })
@@ -69,21 +58,6 @@ export class LaboratorioController {
   })
   search(@Query('q') query: string): Promise<Laboratorio[]> {
     return this.laboratorioService.search(query);
-  }
-
-  @Get('integracao/:tipo')
-  @ApiOperation({ summary: 'Buscar laboratórios por tipo de integração' })
-  @ApiParam({
-    name: 'tipo',
-    enum: ['api', 'webservice', 'manual', 'ftp', 'email'],
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Laboratórios com o tipo de integração especificado',
-    type: [Laboratorio],
-  })
-  findByIntegracao(@Param('tipo') tipo: string): Promise<Laboratorio[]> {
-    return this.laboratorioService.findByIntegracao(tipo);
   }
 
   @Get('codigo/:codigo')

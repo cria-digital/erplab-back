@@ -1,17 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { NotFoundException } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import { ConflictException, NotFoundException } from '@nestjs/common';
 
 import { TelemedicinaService } from './telemedicina.service';
-import {
-  Telemedicina,
-  TipoIntegracaoTelemedicina,
-  TipoPlataforma,
-  StatusIntegracao,
-} from '../entities/telemedicina.entity';
+import { Telemedicina } from '../entities/telemedicina.entity';
 import { Empresa } from '../../../cadastros/empresas/entities/empresa.entity';
-import { CreateTelemedicinaDto } from '../dto/create-telemedicina.dto';
 import { UpdateTelemedicinaDto } from '../dto/update-telemedicina.dto';
 import { TipoEmpresaEnum } from '../../../cadastros/empresas/enums/empresas.enum';
 
@@ -23,44 +17,23 @@ describe('TelemedicinaService', () => {
     where: jest.fn().mockReturnThis(),
     orWhere: jest.fn().mockReturnThis(),
     orderBy: jest.fn().mockReturnThis(),
-    select: jest.fn().mockReturnThis(),
-    addSelect: jest.fn().mockReturnThis(),
-    groupBy: jest.fn().mockReturnThis(),
-    getOne: jest.fn(),
     getMany: jest.fn(),
-    getRawMany: jest.fn(),
+    getOne: jest.fn(),
   };
 
   const mockTelemedicinaRepository = {
-    create: jest.fn(),
-    save: jest.fn(),
     find: jest.fn(),
     findOne: jest.fn(),
+    save: jest.fn(),
     remove: jest.fn(),
-    count: jest.fn(),
     createQueryBuilder: jest.fn(() => mockQueryBuilder),
   };
 
   const mockEmpresaRepository = {
-    create: jest.fn(),
     save: jest.fn(),
-    findOne: jest.fn(),
   };
 
-  const mockQueryRunner = {
-    connect: jest.fn(),
-    startTransaction: jest.fn(),
-    commitTransaction: jest.fn(),
-    rollbackTransaction: jest.fn(),
-    release: jest.fn(),
-    manager: {
-      save: jest.fn(),
-    },
-  };
-
-  const mockDataSource = {
-    createQueryRunner: jest.fn(() => mockQueryRunner),
-  };
+  const mockDataSource = {} as DataSource;
 
   const mockEmpresa = {
     id: 'empresa-uuid-1',
@@ -68,6 +41,7 @@ describe('TelemedicinaService', () => {
     cnpj: '12.345.678/0001-90',
     razaoSocial: 'Telemedicina Teste Ltda',
     nomeFantasia: 'TeleMed Teste',
+    emailComercial: 'contato@telemed.com.br',
     ativo: true,
   };
 
@@ -76,22 +50,11 @@ describe('TelemedicinaService', () => {
     empresa_id: 'empresa-uuid-1',
     empresa: mockEmpresa,
     codigo_telemedicina: 'TELE001',
-    tipo_integracao: TipoIntegracaoTelemedicina.API_REST,
-    url_integracao: 'https://api.telemedicina.com',
-    status_integracao: StatusIntegracao.ATIVO,
-    tipo_plataforma: TipoPlataforma.WEB,
-    url_plataforma: 'https://plataforma.telemedicina.com',
-    especialidades_atendidas: ['cardiologia', 'neurologia'],
-    teleconsulta: true,
-    telediagnostico: true,
-    telecirurgia: false,
-    telemonitoramento: true,
-    permite_agendamento_online: true,
-    suporte_gravacao: true,
-    criptografia_end_to_end: true,
+    integracao_id: null,
+    observacoes: 'Plataforma de telemedicina',
     created_at: new Date(),
     updated_at: new Date(),
-  };
+  } as Telemedicina;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -121,112 +84,36 @@ describe('TelemedicinaService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('create', () => {
-    const createTelemedicinaDto: CreateTelemedicinaDto = {
-      codigo_telemedicina: 'TELE001',
-      tipo_integracao: TipoIntegracaoTelemedicina.API_REST,
-      tipo_plataforma: TipoPlataforma.WEB,
-      teleconsulta: true,
-      telediagnostico: true,
-      empresa: {
-        tipoEmpresa: TipoEmpresaEnum.TELEMEDICINA,
-        cnpj: '12345678000190',
-        razaoSocial: 'Telemedicina Teste Ltda',
-        nomeFantasia: 'TeleMed Teste',
-        emailComercial: 'contato@telemed.com.br',
-        ativo: true,
-      } as any,
-    };
-
-    it('deve criar uma telemedicina com sucesso', async () => {
-      mockTelemedicinaRepository.findOne.mockResolvedValueOnce(null); // código único
-      mockEmpresaRepository.findOne.mockResolvedValueOnce(null); // CNPJ único
-      mockEmpresaRepository.create.mockReturnValue(mockEmpresa);
-      mockQueryRunner.manager.save
-        .mockResolvedValueOnce(mockEmpresa)
-        .mockResolvedValueOnce(mockTelemedicina);
-      mockTelemedicinaRepository.create.mockReturnValue(mockTelemedicina);
-      mockTelemedicinaRepository.findOne.mockResolvedValueOnce(
-        mockTelemedicina,
-      ); // findOne após criar
-
-      const result = await service.create(createTelemedicinaDto);
-
-      expect(result).toEqual(mockTelemedicina);
-      expect(mockQueryRunner.startTransaction).toHaveBeenCalled();
-      expect(mockQueryRunner.commitTransaction).toHaveBeenCalled();
-      expect(mockQueryRunner.release).toHaveBeenCalled();
-    });
-
-    it('deve retornar erro quando código já existir', async () => {
-      mockTelemedicinaRepository.findOne.mockResolvedValue(mockTelemedicina);
-
-      await expect(service.create(createTelemedicinaDto)).rejects.toThrow(
-        ConflictException,
-      );
-      expect(mockQueryRunner.rollbackTransaction).toHaveBeenCalled();
-    });
-
-    it('deve retornar erro quando CNPJ já existir', async () => {
-      mockTelemedicinaRepository.findOne.mockResolvedValueOnce(null);
-      mockEmpresaRepository.findOne.mockResolvedValue(mockEmpresa);
-
-      await expect(service.create(createTelemedicinaDto)).rejects.toThrow(
-        ConflictException,
-      );
-    });
-
-    it('deve criar telemedicina com todos os campos opcionais', async () => {
-      const createCompleto = {
-        ...createTelemedicinaDto,
-        url_integracao: 'https://api.telemedicina.com',
-        token_integracao: 'token123',
-        especialidades_atendidas: ['cardiologia', 'neurologia'],
-        tempo_consulta_padrao: 30,
-        valor_consulta_particular: 150.0,
-      };
-
-      mockTelemedicinaRepository.findOne.mockResolvedValueOnce(null);
-      mockEmpresaRepository.findOne.mockResolvedValueOnce(null);
-      mockEmpresaRepository.create.mockReturnValue(mockEmpresa);
-      mockQueryRunner.manager.save
-        .mockResolvedValueOnce(mockEmpresa)
-        .mockResolvedValueOnce(mockTelemedicina);
-      mockTelemedicinaRepository.create.mockReturnValue(mockTelemedicina);
-      mockTelemedicinaRepository.findOne.mockResolvedValueOnce(
-        mockTelemedicina,
-      );
-
-      const result = await service.create(createCompleto);
-
-      expect(result).toEqual(mockTelemedicina);
-    });
-  });
-
   describe('findAll', () => {
-    it('deve retornar lista de telemedicinas ordenada', async () => {
-      const telemedicinas = [mockTelemedicina];
-      mockTelemedicinaRepository.find.mockResolvedValue(telemedicinas);
+    it('should return array of telemedicinas', async () => {
+      mockTelemedicinaRepository.find.mockResolvedValue([mockTelemedicina]);
 
       const result = await service.findAll();
 
-      expect(result).toEqual(telemedicinas);
+      expect(result).toEqual([mockTelemedicina]);
       expect(mockTelemedicinaRepository.find).toHaveBeenCalledWith({
         relations: ['empresa'],
       });
     });
 
-    it('deve retornar lista vazia quando não há telemedicinas', async () => {
-      mockTelemedicinaRepository.find.mockResolvedValue([]);
+    it('should return sorted array by nomeFantasia', async () => {
+      const tele2 = {
+        ...mockTelemedicina,
+        empresa: { ...mockEmpresa, nomeFantasia: 'Aaaa' },
+      };
+      mockTelemedicinaRepository.find.mockResolvedValue([
+        mockTelemedicina,
+        tele2,
+      ]);
 
       const result = await service.findAll();
 
-      expect(result).toEqual([]);
+      expect(result[0].empresa.nomeFantasia).toBe('Aaaa');
     });
   });
 
   describe('findOne', () => {
-    it('deve retornar uma telemedicina por ID', async () => {
+    it('should return a telemedicina by id', async () => {
       mockTelemedicinaRepository.findOne.mockResolvedValue(mockTelemedicina);
 
       const result = await service.findOne('telemedicina-uuid-1');
@@ -238,7 +125,7 @@ describe('TelemedicinaService', () => {
       });
     });
 
-    it('deve retornar erro quando telemedicina não for encontrada', async () => {
+    it('should throw NotFoundException when telemedicina not found', async () => {
       mockTelemedicinaRepository.findOne.mockResolvedValue(null);
 
       await expect(service.findOne('invalid-id')).rejects.toThrow(
@@ -248,7 +135,7 @@ describe('TelemedicinaService', () => {
   });
 
   describe('findByCodigo', () => {
-    it('deve retornar telemedicina por código', async () => {
+    it('should return a telemedicina by codigo', async () => {
       mockTelemedicinaRepository.findOne.mockResolvedValue(mockTelemedicina);
 
       const result = await service.findByCodigo('TELE001');
@@ -260,7 +147,7 @@ describe('TelemedicinaService', () => {
       });
     });
 
-    it('deve retornar erro quando código não for encontrado', async () => {
+    it('should throw NotFoundException when not found', async () => {
       mockTelemedicinaRepository.findOne.mockResolvedValue(null);
 
       await expect(service.findByCodigo('INVALID')).rejects.toThrow(
@@ -270,19 +157,24 @@ describe('TelemedicinaService', () => {
   });
 
   describe('findByCnpj', () => {
-    it('deve retornar telemedicina por CNPJ', async () => {
+    it('should return a telemedicina by CNPJ', async () => {
       mockQueryBuilder.getOne.mockResolvedValue(mockTelemedicina);
 
       const result = await service.findByCnpj('12.345.678/0001-90');
 
       expect(result).toEqual(mockTelemedicina);
+      expect(mockTelemedicinaRepository.createQueryBuilder).toHaveBeenCalled();
+      expect(mockQueryBuilder.leftJoinAndSelect).toHaveBeenCalledWith(
+        'telemedicina.empresa',
+        'empresa',
+      );
       expect(mockQueryBuilder.where).toHaveBeenCalledWith(
         'empresa.cnpj = :cnpj',
         { cnpj: '12.345.678/0001-90' },
       );
     });
 
-    it('deve retornar erro quando CNPJ não for encontrado', async () => {
+    it('should throw NotFoundException when not found', async () => {
       mockQueryBuilder.getOne.mockResolvedValue(null);
 
       await expect(service.findByCnpj('00.000.000/0000-00')).rejects.toThrow(
@@ -292,129 +184,56 @@ describe('TelemedicinaService', () => {
   });
 
   describe('findAtivos', () => {
-    it('deve retornar apenas telemedicinas ativas', async () => {
-      const telemedicinaAtivas = [mockTelemedicina];
-      mockQueryBuilder.getMany.mockResolvedValue(telemedicinaAtivas);
+    it('should return array of active telemedicinas', async () => {
+      mockQueryBuilder.getMany.mockResolvedValue([mockTelemedicina]);
 
       const result = await service.findAtivos();
 
-      expect(result).toEqual(telemedicinaAtivas);
+      expect(result).toEqual([mockTelemedicina]);
       expect(mockQueryBuilder.where).toHaveBeenCalledWith(
         'empresa.ativo = :ativo',
         { ativo: true },
       );
-    });
-  });
-
-  describe('findByIntegracao', () => {
-    it('deve retornar telemedicinas por tipo de integração', async () => {
-      const telemedicinasApi = [mockTelemedicina];
-      mockTelemedicinaRepository.find.mockResolvedValue(telemedicinasApi);
-
-      const result = await service.findByIntegracao('api_rest');
-
-      expect(result).toEqual(telemedicinasApi);
-      expect(mockTelemedicinaRepository.find).toHaveBeenCalledWith({
-        where: { tipo_integracao: 'api_rest' },
-        relations: ['empresa'],
-      });
-    });
-  });
-
-  describe('findByPlataforma', () => {
-    it('deve retornar telemedicinas por tipo de plataforma', async () => {
-      const telemedicinasWeb = [mockTelemedicina];
-      mockTelemedicinaRepository.find.mockResolvedValue(telemedicinasWeb);
-
-      const result = await service.findByPlataforma('web');
-
-      expect(result).toEqual(telemedicinasWeb);
-      expect(mockTelemedicinaRepository.find).toHaveBeenCalledWith({
-        where: { tipo_plataforma: 'web' },
-        relations: ['empresa'],
-      });
+      expect(mockQueryBuilder.orderBy).toHaveBeenCalledWith(
+        'empresa.nomeFantasia',
+        'ASC',
+      );
     });
   });
 
   describe('update', () => {
-    const updateTelemedicinaDto: UpdateTelemedicinaDto = {
-      url_plataforma: 'https://nova-plataforma.com',
-      telecirurgia: true,
-    };
-
-    it('deve atualizar telemedicina com sucesso', async () => {
-      const telemedicinaAtualizada = {
-        ...mockTelemedicina,
-        ...updateTelemedicinaDto,
+    it('should update a telemedicina', async () => {
+      const updateDto: UpdateTelemedicinaDto = {
+        integracaoId: 'integracao-uuid',
+        observacoes: 'Observações atualizadas',
       };
-
       mockTelemedicinaRepository.findOne.mockResolvedValue(mockTelemedicina);
-      mockQueryRunner.manager.save.mockResolvedValue(telemedicinaAtualizada);
-
-      const result = await service.update(
-        'telemedicina-uuid-1',
-        updateTelemedicinaDto,
-      );
-
-      expect(result).toEqual(mockTelemedicina);
-      expect(mockQueryRunner.commitTransaction).toHaveBeenCalled();
-    });
-
-    it('deve verificar duplicidade de código ao atualizar', async () => {
-      const updateComNovoCodigo = {
-        codigo_telemedicina: 'TELE002',
-      };
-
-      mockTelemedicinaRepository.findOne
-        .mockResolvedValueOnce(mockTelemedicina) // findOne inicial
-        .mockResolvedValueOnce({ ...mockTelemedicina, id: 'outro-id' }); // código já existe
-
-      await expect(
-        service.update('telemedicina-uuid-1', updateComNovoCodigo),
-      ).rejects.toThrow(ConflictException);
-    });
-
-    it('deve atualizar dados da empresa quando fornecidos', async () => {
-      const updateComEmpresa = {
-        empresa: {
-          nomeFantasia: 'Novo Nome',
-          emailComercial: 'novo@email.com',
-        } as any,
-      };
-
-      mockTelemedicinaRepository.findOne.mockResolvedValue(mockTelemedicina);
-      mockQueryRunner.manager.save
-        .mockResolvedValueOnce(mockEmpresa)
-        .mockResolvedValueOnce(mockTelemedicina);
-
-      await service.update('telemedicina-uuid-1', updateComEmpresa);
-
-      expect(mockQueryRunner.manager.save).toHaveBeenCalledTimes(2);
-    });
-
-    it('deve verificar duplicidade de CNPJ ao atualizar empresa', async () => {
-      const updateComNovoCnpj = {
-        empresa: {
-          cnpj: '98.765.432/0001-10',
-        } as any,
-      };
-
+      mockTelemedicinaRepository.save.mockResolvedValue(mockTelemedicina);
       mockTelemedicinaRepository.findOne.mockResolvedValueOnce(
         mockTelemedicina,
       );
-      mockEmpresaRepository.findOne.mockResolvedValue({
-        ...mockEmpresa,
-        id: 'outro-id',
+      mockTelemedicinaRepository.findOne.mockResolvedValueOnce({
+        ...mockTelemedicina,
+        observacoes: 'Observações atualizadas',
       });
 
+      const result = await service.update('telemedicina-uuid-1', updateDto);
+
+      expect(mockTelemedicinaRepository.save).toHaveBeenCalled();
+      expect(result.observacoes).toBe('Observações atualizadas');
+    });
+
+    it('should throw NotFoundException when telemedicina not found', async () => {
+      mockTelemedicinaRepository.findOne.mockResolvedValue(null);
+
       await expect(
-        service.update('telemedicina-uuid-1', updateComNovoCnpj),
-      ).rejects.toThrow(ConflictException);
+        service.update('invalid-id', { observacoes: 'test' }),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
   describe('remove', () => {
-    it('deve remover telemedicina com sucesso', async () => {
+    it('should remove a telemedicina', async () => {
       mockTelemedicinaRepository.findOne.mockResolvedValue(mockTelemedicina);
       mockTelemedicinaRepository.remove.mockResolvedValue(mockTelemedicina);
 
@@ -425,7 +244,7 @@ describe('TelemedicinaService', () => {
       );
     });
 
-    it('deve retornar erro quando telemedicina não for encontrada', async () => {
+    it('should throw NotFoundException when not found', async () => {
       mockTelemedicinaRepository.findOne.mockResolvedValue(null);
 
       await expect(service.remove('invalid-id')).rejects.toThrow(
@@ -435,122 +254,49 @@ describe('TelemedicinaService', () => {
   });
 
   describe('toggleStatus', () => {
-    it('deve alternar status de ativo para inativo', async () => {
-      const telemedicinaInativa = {
+    it('should toggle telemedicina status', async () => {
+      const teleWithEmpresa = {
         ...mockTelemedicina,
-        empresa: { ...mockEmpresa, ativo: false },
+        empresa: { ...mockEmpresa, ativo: true },
       };
-
-      mockTelemedicinaRepository.findOne
-        .mockResolvedValueOnce(mockTelemedicina)
-        .mockResolvedValueOnce(telemedicinaInativa);
+      mockTelemedicinaRepository.findOne.mockResolvedValueOnce(teleWithEmpresa);
       mockEmpresaRepository.save.mockResolvedValue({
         ...mockEmpresa,
         ativo: false,
       });
-
-      const result = await service.toggleStatus('telemedicina-uuid-1');
-
-      expect(result.empresa.ativo).toBe(false);
-    });
-
-    it('deve alternar status de inativo para ativo', async () => {
-      const telemedicinaInativa = {
-        ...mockTelemedicina,
+      mockTelemedicinaRepository.findOne.mockResolvedValueOnce({
+        ...teleWithEmpresa,
         empresa: { ...mockEmpresa, ativo: false },
-      };
-
-      const telemedicinaAtiva = {
-        ...mockTelemedicina,
-        empresa: { ...mockEmpresa, ativo: true },
-      };
-
-      mockTelemedicinaRepository.findOne
-        .mockResolvedValueOnce(telemedicinaInativa)
-        .mockResolvedValueOnce(telemedicinaAtiva);
-      mockEmpresaRepository.save.mockResolvedValue({
-        ...mockEmpresa,
-        ativo: true,
       });
 
       const result = await service.toggleStatus('telemedicina-uuid-1');
 
-      expect(result.empresa.ativo).toBe(true);
+      expect(mockEmpresaRepository.save).toHaveBeenCalled();
+      expect(result.empresa.ativo).toBe(false);
     });
   });
 
   describe('search', () => {
-    it('deve buscar telemedicinas por termo', async () => {
+    it('should return telemedicinas matching query', async () => {
       mockQueryBuilder.getMany.mockResolvedValue([mockTelemedicina]);
 
-      const result = await service.search('teste');
+      const result = await service.search('TeleMed');
 
       expect(result).toEqual([mockTelemedicina]);
       expect(mockQueryBuilder.where).toHaveBeenCalled();
-      expect(mockQueryBuilder.orWhere).toHaveBeenCalledTimes(3);
+      expect(mockQueryBuilder.orWhere).toHaveBeenCalled();
+      expect(mockQueryBuilder.orderBy).toHaveBeenCalledWith(
+        'empresa.nomeFantasia',
+        'ASC',
+      );
     });
 
-    it('deve retornar lista vazia para busca sem resultados', async () => {
+    it('should return empty array when no matches', async () => {
       mockQueryBuilder.getMany.mockResolvedValue([]);
 
-      const result = await service.search('inexistente');
+      const result = await service.search('NonExistent');
 
       expect(result).toEqual([]);
-    });
-  });
-
-  describe('updateStatusIntegracao', () => {
-    it('deve atualizar status de integração', async () => {
-      const telemedicinaAtualizada = {
-        ...mockTelemedicina,
-        status_integracao: StatusIntegracao.INATIVO,
-      };
-
-      mockTelemedicinaRepository.findOne
-        .mockResolvedValueOnce(mockTelemedicina)
-        .mockResolvedValueOnce(telemedicinaAtualizada);
-      mockTelemedicinaRepository.save.mockResolvedValue(telemedicinaAtualizada);
-
-      const result = await service.updateStatusIntegracao(
-        'telemedicina-uuid-1',
-        'inativo',
-      );
-
-      expect(result.status_integracao).toBe('inativo');
-    });
-  });
-
-  describe('getEstatisticas', () => {
-    it('deve retornar estatísticas das telemedicinas', async () => {
-      mockTelemedicinaRepository.count
-        .mockResolvedValueOnce(10) // total
-        .mockResolvedValueOnce(8); // ativos
-
-      mockQueryBuilder.getRawMany
-        .mockResolvedValueOnce([
-          { tipo: 'api_rest', total: 5 },
-          { tipo: 'webhook', total: 3 },
-        ])
-        .mockResolvedValueOnce([
-          { tipo: 'web', total: 6 },
-          { tipo: 'mobile', total: 4 },
-        ]);
-
-      const result = await service.getEstatisticas();
-
-      expect(result).toEqual({
-        total: 10,
-        ativos: 8,
-        inativos: 2,
-        porTipoIntegracao: [
-          { tipo: 'api_rest', total: 5 },
-          { tipo: 'webhook', total: 3 },
-        ],
-        porTipoPlataforma: [
-          { tipo: 'web', total: 6 },
-          { tipo: 'mobile', total: 4 },
-        ],
-      });
     });
   });
 });

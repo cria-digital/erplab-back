@@ -7,13 +7,19 @@ import {
   IsBoolean,
   IsOptional,
 } from 'class-validator';
-import { TipoEntidadeEnum } from '../entities/configuracao-campo-formulario.entity';
+import {
+  TipoEntidadeEnum,
+  TipoFormularioEnum,
+  CampoCadastroPacienteEnum,
+  CampoOrdemServicoEnum,
+  CampoTissEnum,
+} from '../entities/configuracao-campo-formulario.entity';
 
 export class CreateConfiguracaoCampoDto {
   @ApiProperty({
     enum: TipoEntidadeEnum,
     description: 'Tipo da entidade',
-    example: 'convenio',
+    example: TipoEntidadeEnum.CONVENIO,
   })
   @IsEnum(TipoEntidadeEnum)
   @IsNotEmpty()
@@ -28,23 +34,31 @@ export class CreateConfiguracaoCampoDto {
   entidadeId: string;
 
   @ApiProperty({
-    description: 'Tipo do formulário',
-    example: 'cadastro_paciente',
+    enum: TipoFormularioEnum,
+    description:
+      'Tipo do formulário (cadastro_paciente, ordem_servico ou tiss)',
+    example: TipoFormularioEnum.CADASTRO_PACIENTE,
   })
-  @IsString()
+  @IsEnum(TipoFormularioEnum)
   @IsNotEmpty()
-  tipoFormulario: string;
+  tipoFormulario: TipoFormularioEnum;
 
   @ApiProperty({
-    description: 'Nome do campo',
-    example: 'cpf',
+    description:
+      'Nome do campo no formulário. Deve corresponder aos enums: CampoCadastroPacienteEnum (30 campos), CampoOrdemServicoEnum (10 campos) ou CampoTissEnum (6 campos)',
+    example: CampoCadastroPacienteEnum.CPF,
+    enum: [
+      ...Object.values(CampoCadastroPacienteEnum),
+      ...Object.values(CampoOrdemServicoEnum),
+      ...Object.values(CampoTissEnum),
+    ],
   })
   @IsString()
   @IsNotEmpty()
   nomeCampo: string;
 
   @ApiProperty({
-    description: 'Se o campo é obrigatório',
+    description: 'Se o campo é obrigatório para esta entidade',
     example: true,
     default: false,
   })

@@ -1,0 +1,182 @@
+### ========================================
+### CONSULTAS E LISTAGENS
+### Buscar configurações de campos
+### ========================================
+
+### Listar campos disponíveis para cadastro de paciente
+GET {{baseUrl}}/api/v1/configuracoes-campos/campos-disponiveis/cadastro_paciente
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   "foto", "codigo_interno", "nome", "nome_social", "usar_nome_social",
+#   "sexo", "data_nascimento", "nome_mae", "prontuario", "rg", "cpf",
+#   "estado_civil", "email", "contatos", "whatsapp", "profissao", "observacao",
+#   "convenio", "plano", "validade_convenio", "matricula", "nome_titular",
+#   "cartao_sus", "cep", "rua", "numero", "bairro", "complemento", "estado", "cidade"
+# ]
+# Total: 30 campos
+
+###
+
+### Listar campos disponíveis para ordem de serviço
+GET {{baseUrl}}/api/v1/configuracoes-campos/campos-disponiveis/ordem_servico
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   "numero_guia", "guia_principal", "guia_operadora", "data_ultima_menstruacao",
+#   "cid", "local_entrega", "plano", "medico_requisitante",
+#   "especialidade_solicitante", "data_solicitacao"
+# ]
+# Total: 10 campos
+
+###
+
+### Listar campos disponíveis para TISS
+GET {{baseUrl}}/api/v1/configuracoes-campos/campos-disponiveis/tiss
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   "doenca", "regime_atendimento", "saude_ocupacional",
+#   "tipo_saida", "tipo_atendimento", "cobertura_especial"
+# ]
+# Total: 6 campos
+
+###
+
+### Listar todas as configurações
+GET {{baseUrl}}/api/v1/configuracoes-campos
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid",
+#     "entidadeTipo": "convenio",
+#     "entidadeId": "uuid",
+#     "tipoFormulario": "cadastro_paciente",
+#     "nomeCampo": "cpf",
+#     "obrigatorio": true,
+#     ...
+#   },
+#   ...
+# ]
+
+###
+
+### Buscar configurações por entidade (todas os formulários)
+GET {{baseUrl}}/api/v1/configuracoes-campos/entidade/convenio/{{convenioId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid",
+#     "tipoFormulario": "cadastro_paciente",
+#     "nomeCampo": "cpf",
+#     "obrigatorio": true,
+#     ...
+#   },
+#   {
+#     "id": "uuid",
+#     "tipoFormulario": "ordem_servico",
+#     "nomeCampo": "medico_requisitante",
+#     "obrigatorio": true,
+#     ...
+#   },
+#   ...
+# ]
+
+###
+
+### Buscar configurações por entidade e tipo de formulário
+GET {{baseUrl}}/api/v1/configuracoes-campos/entidade/convenio/{{convenioId}}?tipoFormulario=cadastro_paciente
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid",
+#     "nomeCampo": "cpf",
+#     "obrigatorio": true,
+#     ...
+#   },
+#   {
+#     "id": "uuid",
+#     "nomeCampo": "nome_mae",
+#     "obrigatorio": false,
+#     ...
+#   },
+#   ...
+# ]
+
+###
+
+### Obter apenas campos obrigatórios (para validação)
+GET {{baseUrl}}/api/v1/configuracoes-campos/campos-obrigatorios/convenio/{{convenioId}}/cadastro_paciente
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   "cpf",
+#   "bairro",
+#   "cidade",
+#   "endereco",
+#   "nome_mae",
+#   "numero_matricula",
+#   "telefone_celular"
+# ]
+
+###
+
+### Buscar configuração por ID
+GET {{baseUrl}}/api/v1/configuracoes-campos/{{configuracaoCampoId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "entidadeTipo": "convenio",
+#   "entidadeId": "uuid",
+#   "tipoFormulario": "cadastro_paciente",
+#   "nomeCampo": "cpf",
+#   "obrigatorio": true,
+#   ...
+# }
+
+###
+
+### Buscar configurações de laboratório
+GET {{baseUrl}}/api/v1/configuracoes-campos/entidade/laboratorio/{{laboratorioId}}?tipoFormulario=cadastro_paciente
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar configurações de telemedicina
+GET {{baseUrl}}/api/v1/configuracoes-campos/entidade/telemedicina/{{telemedicinaId}}?tipoFormulario=ordem_servico
+Authorization: Bearer {{token}}
+
+###
+
+### Obter campos obrigatórios para TISS
+GET {{baseUrl}}/api/v1/configuracoes-campos/campos-obrigatorios/convenio/{{convenioId}}/tiss
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   "regime_atendimento",
+#   "tipo_atendimento"
+# ]
+
+###

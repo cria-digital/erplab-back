@@ -1,0 +1,114 @@
+### ========================================
+### CONSULTAS E LISTAGENS
+### Endpoints de busca e listagem de laboratórios
+### ========================================
+
+### Listar todos os laboratórios
+GET {{baseUrl}}/relacionamento/laboratorios
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid",
+#     "empresa_id": "uuid",
+#     "codigo_laboratorio": "LAB001",
+#     "integracao_id": "uuid",
+#     "observacoes": "Laboratório de apoio",
+#     "empresa": {
+#       "id": "uuid",
+#       "cnpj": "12345678000190",
+#       "razaoSocial": "Laboratório Central LTDA",
+#       "nomeFantasia": "Lab Central",
+#       "ativo": true,
+#       ...
+#     },
+#     ...
+#   },
+#   ...
+# ]
+
+###
+
+### Listar apenas laboratórios ativos
+GET {{baseUrl}}/relacionamento/laboratorios/ativos
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [...]
+
+###
+
+### Buscar laboratório por código
+GET {{baseUrl}}/relacionamento/laboratorios/codigo/LAB001
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "codigo_laboratorio": "LAB001",
+#   ...
+# }
+
+###
+
+### Buscar laboratório por CNPJ
+GET {{baseUrl}}/relacionamento/laboratorios/cnpj/12345678000190
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar laboratório por ID
+GET {{baseUrl}}/relacionamento/laboratorios/{{laboratorioId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar laboratórios (search)
+GET {{baseUrl}}/relacionamento/laboratorios/search?q=Central
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid",
+#     "codigo_laboratorio": "LAB001",
+#     "empresa": {
+#       "nomeFantasia": "Lab Central",
+#       ...
+#     },
+#     ...
+#   }
+# ]
+
+###
+
+### Alternar status do laboratório (ativo/inativo)
+PATCH {{baseUrl}}/relacionamento/laboratorios/{{laboratorioId}}/toggle-status
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "empresa": {
+#     "ativo": false,
+#     ...
+#   },
+#   ...
+# }
+
+###
+
+### Excluir laboratório
+DELETE {{baseUrl}}/relacionamento/laboratorios/{{laboratorioId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 204 No Content
+
+###

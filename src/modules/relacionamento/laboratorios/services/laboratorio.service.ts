@@ -68,28 +68,6 @@ export class LaboratorioService {
     });
   }
 
-  async findByIntegracao(tipo: string): Promise<Laboratorio[]> {
-    return await this.laboratorioRepository.find({
-      where: {
-        tipo_integracao: tipo as any,
-        empresa: { ativo: true },
-      },
-      relations: ['empresa'],
-      order: { codigo_laboratorio: 'ASC' },
-    });
-  }
-
-  async findAceitamUrgencia(): Promise<Laboratorio[]> {
-    return await this.laboratorioRepository.find({
-      where: {
-        aceita_urgencia: true,
-        empresa: { ativo: true },
-      },
-      relations: ['empresa'],
-      order: { codigo_laboratorio: 'ASC' },
-    });
-  }
-
   async update(
     id: string,
     updateLaboratorioDto: UpdateLaboratorioDto,

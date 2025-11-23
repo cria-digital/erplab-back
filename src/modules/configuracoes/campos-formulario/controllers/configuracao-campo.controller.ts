@@ -9,12 +9,24 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiQuery,
+  ApiParam,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../autenticacao/auth/guards/jwt-auth.guard';
 import { ConfiguracaoCampoService } from '../services/configuracao-campo.service';
 import { CreateConfiguracaoCampoDto } from '../dto/create-configuracao-campo.dto';
 import { UpdateConfiguracaoCampoDto } from '../dto/update-configuracao-campo.dto';
-import { TipoEntidadeEnum } from '../entities/configuracao-campo-formulario.entity';
+import {
+  TipoEntidadeEnum,
+  TipoFormularioEnum,
+  CampoCadastroPacienteEnum,
+  CampoOrdemServicoEnum,
+  CampoTissEnum,
+} from '../entities/configuracao-campo-formulario.entity';
 
 @ApiTags('Configurações de Campos')
 @Controller('api/v1/configuracoes-campos')
@@ -56,7 +68,7 @@ export class ConfiguracaoCampoController {
   findByEntidade(
     @Param('entidadeTipo') entidadeTipo: TipoEntidadeEnum,
     @Param('entidadeId') entidadeId: string,
-    @Query('tipoFormulario') tipoFormulario?: string,
+    @Query('tipoFormulario') tipoFormulario?: TipoFormularioEnum,
   ) {
     return this.configuracaoCampoService.findByEntidade(
       entidadeTipo,
@@ -79,7 +91,7 @@ export class ConfiguracaoCampoController {
   obterCamposObrigatorios(
     @Param('entidadeTipo') entidadeTipo: TipoEntidadeEnum,
     @Param('entidadeId') entidadeId: string,
-    @Param('tipoFormulario') tipoFormulario: string,
+    @Param('tipoFormulario') tipoFormulario: TipoFormularioEnum,
   ) {
     return this.configuracaoCampoService.obterCamposObrigatorios(
       entidadeTipo,
@@ -113,5 +125,42 @@ export class ConfiguracaoCampoController {
   @ApiResponse({ status: 404, description: 'Configuração não encontrada' })
   remove(@Param('id') id: string) {
     return this.configuracaoCampoService.remove(id);
+  }
+
+  @Get('campos-disponiveis/:tipoFormulario')
+  @ApiOperation({
+    summary: 'Listar campos disponíveis por tipo de formulário',
+    description:
+      'Retorna todos os campos que podem ser configurados para um tipo de formulário específico',
+  })
+  @ApiParam({
+    name: 'tipoFormulario',
+    enum: TipoFormularioEnum,
+    description: 'Tipo do formulário',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de campos disponíveis',
+    schema: {
+      type: 'array',
+      items: {
+        type: 'string',
+      },
+      example: ['cpf', 'nome', 'data_nascimento', '...'],
+    },
+  })
+  listarCamposDisponiveis(
+    @Param('tipoFormulario') tipoFormulario: TipoFormularioEnum,
+  ): string[] {
+    switch (tipoFormulario) {
+      case TipoFormularioEnum.CADASTRO_PACIENTE:
+        return Object.values(CampoCadastroPacienteEnum);
+      case TipoFormularioEnum.ORDEM_SERVICO:
+        return Object.values(CampoOrdemServicoEnum);
+      case TipoFormularioEnum.TISS:
+        return Object.values(CampoTissEnum);
+      default:
+        return [];
+    }
   }
 }

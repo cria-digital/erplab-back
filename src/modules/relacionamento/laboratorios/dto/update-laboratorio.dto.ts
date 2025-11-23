@@ -1,108 +1,19 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import {
-  IsOptional,
-  IsString,
-  IsNumber,
-  IsBoolean,
-  IsEnum,
-  IsArray,
-} from 'class-validator';
-
-enum TipoIntegracao {
-  API = 'api',
-  WEBSERVICE = 'webservice',
-  MANUAL = 'manual',
-  FTP = 'ftp',
-  EMAIL = 'email',
-}
+import { IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class UpdateLaboratorioDto {
-  @ApiPropertyOptional({ example: 'Dr. João Silva' })
+  @ApiPropertyOptional({
+    example: 'a1b2c3d4-e5f6-7g8h-9i0j-1k2l3m4n5o6p',
+    description: 'ID da integração',
+  })
   @IsOptional()
-  @IsString()
-  responsavelTecnico?: string;
+  @IsUUID()
+  integracaoId?: string;
 
-  @ApiPropertyOptional({ example: 'CRF' })
-  @IsOptional()
-  @IsString()
-  conselhoResponsavel?: string;
-
-  @ApiPropertyOptional({ example: '12345-SP' })
-  @IsOptional()
-  @IsString()
-  numeroConselho?: string;
-
-  @ApiPropertyOptional({ enum: TipoIntegracao })
-  @IsOptional()
-  @IsEnum(TipoIntegracao)
-  tipoIntegracao?: string;
-
-  @ApiPropertyOptional({ example: 'https://api.laboratorio.com.br/v1' })
-  @IsOptional()
-  @IsString()
-  urlIntegracao?: string;
-
-  @ApiPropertyOptional({ example: 'token-secreto' })
-  @IsOptional()
-  @IsString()
-  tokenIntegracao?: string;
-
-  @ApiPropertyOptional({ example: 'usuario_api' })
-  @IsOptional()
-  @IsString()
-  usuarioIntegracao?: string;
-
-  @ApiPropertyOptional({ example: 'senha_api' })
-  @IsOptional()
-  @IsString()
-  senhaIntegracao?: string;
-
-  @ApiPropertyOptional({ example: '{"timeout": 30}' })
-  @IsOptional()
-  @IsString()
-  configuracaoAdicional?: string;
-
-  @ApiPropertyOptional({ example: ['email', 'portal'] })
-  @IsOptional()
-  @IsArray()
-  metodosEnvioResultado?: string[];
-
-  @ApiPropertyOptional({ example: 'https://portal.resultados.com.br' })
-  @IsOptional()
-  @IsString()
-  portalResultadosUrl?: string;
-
-  @ApiPropertyOptional({ example: 3 })
-  @IsOptional()
-  @IsNumber()
-  prazoEntregaNormal?: number;
-
-  @ApiPropertyOptional({ example: 1 })
-  @IsOptional()
-  @IsNumber()
-  prazoEntregaUrgente?: number;
-
-  @ApiPropertyOptional({ example: 50.0 })
-  @IsOptional()
-  @IsNumber()
-  taxaUrgencia?: number;
-
-  @ApiPropertyOptional({ example: 65.0 })
-  @IsOptional()
-  @IsNumber()
-  percentualRepasse?: number;
-
-  @ApiPropertyOptional({ example: true })
-  @IsOptional()
-  @IsBoolean()
-  aceitaUrgencia?: boolean;
-
-  @ApiPropertyOptional({ example: true })
-  @IsOptional()
-  @IsBoolean()
-  enviaResultadoAutomatico?: boolean;
-
-  @ApiPropertyOptional({ example: 'Laboratório com certificação PALC' })
+  @ApiPropertyOptional({
+    example: 'Laboratório com certificação PALC',
+    description: 'Observações gerais do laboratório',
+  })
   @IsOptional()
   @IsString()
   observacoes?: string;
