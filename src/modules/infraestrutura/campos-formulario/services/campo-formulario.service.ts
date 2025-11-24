@@ -122,58 +122,73 @@ export class CampoFormularioService {
   ): Promise<PaginatedResultDto<CampoFormulario>> {
     const { page = 1, limit = 10, termo, nomeCampo, ativo } = searchDto;
 
-    // Query para buscar campos que TÊM alternativas
-    const queryIds = this.campoRepository
+    // Query base para contar total
+    const queryCount = this.campoRepository
       .createQueryBuilder('campo')
       .select('campo.id')
-      // JOIN com alternativas para garantir que só pegamos campos com alternativas
       .innerJoin('campo.alternativas', 'alt')
-      // Agrupar para evitar duplicatas (um campo pode ter várias alternativas)
-      .groupBy('campo.id')
-      .orderBy('campo.nomeCampo', 'ASC');
+      .groupBy('campo.id');
 
-    // Filtro por termo (busca na descrição e no nome do campo)
-    // Importante: nomeCampo é ENUM, precisa fazer cast para text antes de usar LOWER()
-    // Usar aspas duplas para referenciar o nome da coluna no banco (nome_campo)
+    // Filtros
     if (termo) {
-      queryIds.andWhere(
+      queryCount.andWhere(
         'LOWER(campo.descricao) LIKE LOWER(:termo) OR LOWER("campo"."nome_campo"::text) LIKE LOWER(:termo)',
         { termo: `%${termo}%` },
       );
     }
 
-    // Filtro por nome específico do campo
     if (nomeCampo) {
-      queryIds.andWhere('campo.nomeCampo = :nomeCampo', {
-        nomeCampo: nomeCampo,
-      });
+      queryCount.andWhere('campo.nomeCampo = :nomeCampo', { nomeCampo });
     }
 
-    // Filtro por status ativo/inativo
     if (ativo !== undefined) {
-      queryIds.andWhere('campo.ativo = :ativo', { ativo: ativo });
+      queryCount.andWhere('campo.ativo = :ativo', { ativo });
     }
 
-    // Contar total de registros (campos com alternativas)
-    const total = await queryIds.getCount();
+    // Contar total
+    const total = await queryCount.getCount();
 
-    // Aplicar paginação
-    queryIds.skip((page - 1) * limit).take(limit);
+    // Query com LIMIT e OFFSET usando subquery (workaround para GROUP BY)
+    // Primeiro, criar a subquery que retorna os IDs com paginação
+    const subquery = this.campoRepository
+      .createQueryBuilder('campo')
+      .select('campo.id', 'id')
+      .innerJoin('campo.alternativas', 'alt')
+      .groupBy('campo.id')
+      .orderBy('campo.nomeCampo', 'ASC')
+      .limit(limit)
+      .offset((page - 1) * limit);
 
-    // Buscar IDs
-    const idsResult = await queryIds.getRawMany();
-    const ids = idsResult.map((row) => row.campo_id);
+    // Aplicar mesmos filtros na subquery
+    if (termo) {
+      subquery.andWhere(
+        'LOWER(campo.descricao) LIKE LOWER(:termo) OR LOWER("campo"."nome_campo"::text) LIKE LOWER(:termo)',
+        { termo: `%${termo}%` },
+      );
+    }
+
+    if (nomeCampo) {
+      subquery.andWhere('campo.nomeCampo = :nomeCampo', { nomeCampo });
+    }
+
+    if (ativo !== undefined) {
+      subquery.andWhere('campo.ativo = :ativo', { ativo });
+    }
+
+    // Executar subquery para pegar IDs
+    const idsResult = await subquery.getRawMany();
+    const ids = idsResult.map((row) => row.id);
 
     // Se não houver resultados, retornar vazio
     if (ids.length === 0) {
       return new PaginatedResultDto([], total, page, limit);
     }
 
-    // Segunda query: buscar campos completos com alternativas usando os IDs
+    // Query final: buscar campos completos com alternativas
     const data = await this.campoRepository
       .createQueryBuilder('campo')
       .leftJoinAndSelect('campo.alternativas', 'alternativas')
-      .whereInIds(ids)
+      .where('campo.id IN (:...ids)', { ids })
       .orderBy('campo.nomeCampo', 'ASC')
       .addOrderBy('alternativas.ordem', 'ASC')
       .getMany();
