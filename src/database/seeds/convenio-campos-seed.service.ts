@@ -25,7 +25,6 @@ export class ConvenioCamposSeedService {
     await this.seedTabelaServico();
     await this.seedTabelaBase();
     await this.seedTabelaMaterial();
-    await this.seedDiaVencimento();
 
     console.log('✅ Seed de campos de Convênios concluído!');
   }
@@ -283,47 +282,5 @@ export class ConvenioCamposSeedService {
     }
 
     console.log('   ✅ Campo "tabela_material" criado com 5 alternativas');
-  }
-
-  private async seedDiaVencimento() {
-    const nomeCampo = NomeCampoFormulario.DIA_VENCIMENTO;
-
-    const existe = await this.campoFormularioRepository.findOne({
-      where: { nomeCampo },
-    });
-
-    if (existe) {
-      console.log('   ⏭️  Campo "dia_vencimento" já existe, pulando...');
-      return;
-    }
-
-    const campo = this.campoFormularioRepository.create({
-      nomeCampo,
-      descricao: 'Dia de vencimento da fatura',
-      ativo: true,
-    });
-
-    const campoSalvo = await this.campoFormularioRepository.save(campo);
-
-    const alternativas = [];
-    for (let dia = 1; dia <= 31; dia++) {
-      alternativas.push({
-        textoAlternativa: `Dia ${dia}`,
-        ordem: dia,
-      });
-    }
-
-    for (const alt of alternativas) {
-      await this.alternativaRepository.save({
-        campoFormularioId: campoSalvo.id,
-        textoAlternativa: alt.textoAlternativa,
-        ordem: alt.ordem,
-        ativo: true,
-      });
-    }
-
-    console.log(
-      '   ✅ Campo "dia_vencimento" criado com 31 alternativas (dias 1-31)',
-    );
   }
 }
