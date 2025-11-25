@@ -1,0 +1,37 @@
+### ==========================================
+### DELETAR INTEGRAÇÕES
+### Remover integrações (soft delete)
+### ==========================================
+
+### Deletar integração (soft delete)
+DELETE {{baseUrl}}/atendimento/integracoes/{id}
+Authorization: Bearer {{token}}
+
+### Expected Response: 200 OK
+# {
+#   "message": "Integração removida com sucesso",
+#   "id": "uuid-123",
+#   "ativo": false,
+#   "deleted_at": "2025-11-25T10:40:00Z"
+# }
+
+###
+
+### Tentar deletar integração inexistente
+DELETE {{baseUrl}}/atendimento/integracoes/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{token}}
+
+### Expected Response: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Integração não encontrada"
+# }
+
+###
+
+### IMPORTANTE: Deletar integração CASCADE
+# Quando uma integração é deletada:
+# ✅ Registro em 'integracoes' é marcado como deletado (soft delete)
+# ✅ Registros em 'integracoes_configuracoes' são removidos (CASCADE)
+# ⚠️ Vínculos em 'laboratorios', 'convenios', 'telemedicina' ficam NULL
+#    (integracao_id = NULL após delete)

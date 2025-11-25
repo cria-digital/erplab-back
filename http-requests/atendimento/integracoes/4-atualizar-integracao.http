@@ -1,0 +1,102 @@
+### ==========================================
+### ATUALIZAR INTEGRAÇÕES
+### Modificar dados e configurações
+### ==========================================
+
+### Atualizar dados básicos (substitua {id})
+PATCH {{baseUrl}}/atendimento/integracoes/{id}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "nome_instancia": "Hermes Pardini - Unidade Centro (Atualizado)",
+  "descricao": "Descrição atualizada da integração"
+}
+
+### Expected Response: 200 OK
+# {
+#   "id": "uuid-123",
+#   "nome_instancia": "Hermes Pardini - Unidade Centro (Atualizado)",
+#   "descricao": "Descrição atualizada da integração",
+#   ...
+# }
+
+###
+
+### Atualizar configurações específicas
+PATCH {{baseUrl}}/atendimento/integracoes/{id}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "configuracoes": {
+    "ambiente": "producao",
+    "timeout": 60
+  }
+}
+
+### Expected Response: 200 OK
+# Apenas as configurações enviadas são atualizadas
+# Outras configs (usuario, senha, url_wsdl) permanecem inalteradas
+
+###
+
+### Atualizar tudo de uma vez
+PATCH {{baseUrl}}/atendimento/integracoes/{id}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "nome_instancia": "HP - Centro V2",
+  "descricao": "Nova versão da integração",
+  "tipos_contexto": ["LABORATORIO_APOIO", "CONVENIOS"],
+  "configuracoes": {
+    "usuario": "novo_usuario",
+    "senha": "NovaSenha123!",
+    "ambiente": "producao",
+    "timeout": 90
+  }
+}
+
+###
+
+### Alternar status ativo/inativo
+PATCH {{baseUrl}}/atendimento/integracoes/{id}/toggle-status
+Authorization: Bearer {{token}}
+
+### Expected Response: 200 OK
+# {
+#   "id": "uuid-123",
+#   "ativo": false,  // Se estava true, vira false (e vice-versa)
+#   ...
+# }
+
+###
+
+### Atualizar status específico
+PATCH {{baseUrl}}/atendimento/integracoes/{id}/status?status=ativa
+Authorization: Bearer {{token}}
+
+###
+
+### Atualizar status: em_configuracao
+PATCH {{baseUrl}}/atendimento/integracoes/{id}/status?status=em_configuracao
+Authorization: Bearer {{token}}
+
+###
+
+### Atualizar status: inativa
+PATCH {{baseUrl}}/atendimento/integracoes/{id}/status?status=inativa
+Authorization: Bearer {{token}}
+
+###
+
+### Atualizar status: erro
+PATCH {{baseUrl}}/atendimento/integracoes/{id}/status?status=erro
+Authorization: Bearer {{token}}
+
+###
+
+### Atualizar status: manutencao
+PATCH {{baseUrl}}/atendimento/integracoes/{id}/status?status=manutencao
+Authorization: Bearer {{token}}

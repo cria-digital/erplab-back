@@ -2,9 +2,10 @@ import {
   Injectable,
   NotFoundException,
   ConflictException,
+  BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { CreateIntegracaoDto } from './dto/create-integracao.dto';
 import { UpdateIntegracaoDto } from './dto/update-integracao.dto';
 import {
@@ -12,72 +13,162 @@ import {
   TipoIntegracao,
   StatusIntegracao,
 } from './entities/integracao.entity';
+import { IntegracaoConfiguracao } from './entities/integracao-configuracao.entity';
+import { getSchemaBySlug } from './schemas/index';
 
 @Injectable()
 export class IntegracoesService {
   constructor(
     @InjectRepository(Integracao)
     private integracaoRepository: Repository<Integracao>,
+    @InjectRepository(IntegracaoConfiguracao)
+    private configuracaoRepository: Repository<IntegracaoConfiguracao>,
+    private dataSource: DataSource,
   ) {}
 
-  async create(createIntegracaoDto: CreateIntegracaoDto): Promise<Integracao> {
+  /**
+   * Cria nova integração com configurações usando transação
+   */
+  async create(createDto: CreateIntegracaoDto): Promise<Integracao> {
+    // Validar se schema existe
+    const schema = getSchemaBySlug(createDto.templateSlug);
+    if (!schema) {
+      throw new BadRequestException(
+        `Template '${createDto.templateSlug}' não encontrado`,
+      );
+    }
+
+    // Validar se código já existe
     const existingByCode = await this.integracaoRepository.findOne({
-      where: { codigoIdentificacao: createIntegracaoDto.codigoIdentificacao },
+      where: { codigoIdentificacao: createDto.codigoIdentificacao },
     });
 
     if (existingByCode) {
       throw new ConflictException(
-        `Já existe uma integração com o código ${createIntegracaoDto.codigoIdentificacao}`,
+        `Já existe uma integração com o código ${createDto.codigoIdentificacao}`,
       );
     }
 
-    const integracao = this.integracaoRepository.create(createIntegracaoDto);
-    return await this.integracaoRepository.save(integracao);
+    // Validar campos obrigatórios do schema
+    this.validateConfiguracoes(schema, createDto.configuracoes);
+
+    // Criar integração e configurações em transação
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      // Criar integração
+      const integracao = this.integracaoRepository.create({
+        templateSlug: createDto.templateSlug,
+        codigoIdentificacao: createDto.codigoIdentificacao,
+        nomeInstancia: createDto.nomeInstancia,
+        descricao: createDto.descricao,
+        tiposContexto: createDto.tiposContexto,
+        observacoes: createDto.observacoes,
+      });
+
+      const integracaoSalva = await queryRunner.manager.save(integracao);
+
+      // Criar configurações (key-value pairs)
+      const configuracoes = Object.entries(createDto.configuracoes).map(
+        ([chave, valor]) => {
+          return this.configuracaoRepository.create({
+            integracaoId: integracaoSalva.id,
+            chave,
+            valor:
+              typeof valor === 'object' ? JSON.stringify(valor) : String(valor),
+          });
+        },
+      );
+
+      await queryRunner.manager.save(configuracoes);
+      await queryRunner.commitTransaction();
+
+      // Retornar integração com configurações
+      return this.findOne(integracaoSalva.id);
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
   }
 
+  /**
+   * Valida se as configurações obrigatórias do schema foram fornecidas
+   */
+  private validateConfiguracoes(
+    schema: any,
+    configuracoes: Record<string, any>,
+  ): void {
+    const camposObrigatorios = schema.campos
+      .filter((campo) => campo.obrigatorio)
+      .map((campo) => campo.chave);
+
+    const chavesConfiguradas = Object.keys(configuracoes);
+    const faltando = camposObrigatorios.filter(
+      (chave) => !chavesConfiguradas.includes(chave),
+    );
+
+    if (faltando.length > 0) {
+      throw new BadRequestException(
+        `Campos obrigatórios faltando: ${faltando.join(', ')}`,
+      );
+    }
+  }
+
+  /**
+   * Lista todas as integrações com configurações
+   */
   async findAll(): Promise<Integracao[]> {
     return await this.integracaoRepository.find({
-      relations: ['unidadeSaude'],
-      order: { nomeIntegracao: 'ASC' },
+      relations: ['configuracoes'],
+      order: { nomeInstancia: 'ASC' },
     });
   }
 
+  /**
+   * Lista integrações ativas
+   */
   async findAtivos(): Promise<Integracao[]> {
     return await this.integracaoRepository.find({
       where: { ativo: true },
-      relations: ['unidadeSaude'],
-      order: { nomeIntegracao: 'ASC' },
+      relations: ['configuracoes'],
+      order: { nomeInstancia: 'ASC' },
     });
   }
 
+  /**
+   * Busca por tipo de integração
+   */
   async findByTipo(tipo: TipoIntegracao): Promise<Integracao[]> {
-    return await this.integracaoRepository.find({
-      where: { tipoIntegracao: tipo },
-      relations: ['unidadeSaude'],
-      order: { nomeIntegracao: 'ASC' },
-    });
+    return await this.integracaoRepository
+      .createQueryBuilder('integracao')
+      .leftJoinAndSelect('integracao.configuracoes', 'configuracoes')
+      .where(':tipo = ANY(integracao.tipos_contexto)', { tipo })
+      .orderBy('integracao.nome_instancia', 'ASC')
+      .getMany();
   }
 
+  /**
+   * Busca por status
+   */
   async findByStatus(status: StatusIntegracao): Promise<Integracao[]> {
     return await this.integracaoRepository.find({
       where: { status },
-      relations: ['unidadeSaude'],
-      order: { nomeIntegracao: 'ASC' },
+      relations: ['configuracoes'],
+      order: { nomeInstancia: 'ASC' },
     });
   }
 
-  async findByUnidadeSaude(unidadeSaudeId: string): Promise<Integracao[]> {
-    return await this.integracaoRepository.find({
-      where: { unidadeSaudeId },
-      relations: ['unidadeSaude'],
-      order: { nomeIntegracao: 'ASC' },
-    });
-  }
-
+  /**
+   * Busca por código
+   */
   async findByCodigo(codigo: string): Promise<Integracao> {
     const integracao = await this.integracaoRepository.findOne({
       where: { codigoIdentificacao: codigo },
-      relations: ['unidadeSaude'],
+      relations: ['configuracoes'],
     });
 
     if (!integracao) {
@@ -89,23 +180,29 @@ export class IntegracoesService {
     return integracao;
   }
 
+  /**
+   * Busca por termo (nome, descrição, código)
+   */
   async search(termo: string): Promise<Integracao[]> {
     return await this.integracaoRepository
       .createQueryBuilder('integracao')
-      .leftJoinAndSelect('integracao.unidadeSaude', 'unidadeSaude')
-      .where('integracao.nome_integracao ILIKE :termo', { termo: `%${termo}%` })
-      .orWhere('integracao.descricao_api ILIKE :termo', { termo: `%${termo}%` })
+      .leftJoinAndSelect('integracao.configuracoes', 'configuracoes')
+      .where('integracao.nome_instancia ILIKE :termo', { termo: `%${termo}%` })
+      .orWhere('integracao.descricao ILIKE :termo', { termo: `%${termo}%` })
       .orWhere('integracao.codigo_identificacao ILIKE :termo', {
         termo: `%${termo}%`,
       })
-      .orderBy('integracao.nome_integracao', 'ASC')
+      .orderBy('integracao.nome_instancia', 'ASC')
       .getMany();
   }
 
+  /**
+   * Busca por ID
+   */
   async findOne(id: string): Promise<Integracao> {
     const integracao = await this.integracaoRepository.findOne({
       where: { id },
-      relations: ['unidadeSaude'],
+      relations: ['configuracoes'],
     });
 
     if (!integracao) {
@@ -115,86 +212,182 @@ export class IntegracoesService {
     return integracao;
   }
 
+  /**
+   * Atualiza integração e configurações
+   */
   async update(
     id: string,
-    updateIntegracaoDto: UpdateIntegracaoDto,
+    updateDto: UpdateIntegracaoDto,
   ): Promise<Integracao> {
     const integracao = await this.findOne(id);
 
+    // Validar código único se está mudando
     if (
-      updateIntegracaoDto.codigoIdentificacao &&
-      updateIntegracaoDto.codigoIdentificacao !== integracao.codigoIdentificacao
+      updateDto.codigoIdentificacao &&
+      updateDto.codigoIdentificacao !== integracao.codigoIdentificacao
     ) {
       const existingByCode = await this.integracaoRepository.findOne({
-        where: { codigoIdentificacao: updateIntegracaoDto.codigoIdentificacao },
+        where: { codigoIdentificacao: updateDto.codigoIdentificacao },
       });
 
       if (existingByCode) {
         throw new ConflictException(
-          `Já existe uma integração com o código ${updateIntegracaoDto.codigoIdentificacao}`,
+          `Já existe uma integração com o código ${updateDto.codigoIdentificacao}`,
         );
       }
     }
 
-    Object.assign(integracao, updateIntegracaoDto);
-    return await this.integracaoRepository.save(integracao);
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      // Atualizar dados da integração
+      Object.assign(integracao, {
+        codigoIdentificacao: updateDto.codigoIdentificacao,
+        nomeInstancia: updateDto.nomeInstancia,
+        descricao: updateDto.descricao,
+        tiposContexto: updateDto.tiposContexto,
+        observacoes: updateDto.observacoes,
+      });
+
+      const integracaoAtualizada = await queryRunner.manager.save(integracao);
+
+      // Atualizar configurações se fornecidas
+      if (updateDto.configuracoes) {
+        const schema = getSchemaBySlug(integracao.templateSlug);
+        if (schema) {
+          // Validar configurações
+          const camposObrigatorios = schema.campos
+            .filter((campo) => campo.obrigatorio)
+            .map((campo) => campo.chave);
+
+          // Para cada campo obrigatório, verificar se está nas configurações atuais ou no update
+          for (const chave of camposObrigatorios) {
+            const existe =
+              updateDto.configuracoes[chave] !== undefined ||
+              integracao.configuracoes.some((c) => c.chave === chave);
+
+            if (!existe) {
+              throw new BadRequestException(
+                `Campo obrigatório '${chave}' não pode ser removido`,
+              );
+            }
+          }
+        }
+
+        // Atualizar ou criar configurações
+        for (const [chave, valor] of Object.entries(updateDto.configuracoes)) {
+          const configExistente = await queryRunner.manager.findOne(
+            IntegracaoConfiguracao,
+            {
+              where: { integracaoId: integracao.id, chave },
+            },
+          );
+
+          if (configExistente) {
+            configExistente.valor =
+              typeof valor === 'object' ? JSON.stringify(valor) : String(valor);
+            await queryRunner.manager.save(configExistente);
+          } else {
+            const novaConfig = this.configuracaoRepository.create({
+              integracaoId: integracao.id,
+              chave,
+              valor:
+                typeof valor === 'object'
+                  ? JSON.stringify(valor)
+                  : String(valor),
+            });
+            await queryRunner.manager.save(novaConfig);
+          }
+        }
+      }
+
+      await queryRunner.commitTransaction();
+      return this.findOne(integracaoAtualizada.id);
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
   }
 
+  /**
+   * Alterna status ativo/inativo
+   */
   async toggleStatus(id: string): Promise<Integracao> {
     const integracao = await this.findOne(id);
     integracao.ativo = !integracao.ativo;
-    return await this.integracaoRepository.save(integracao);
+    await this.integracaoRepository.save(integracao);
+    return this.findOne(id);
   }
 
+  /**
+   * Atualiza status da integração
+   */
   async updateStatus(
     id: string,
     status: StatusIntegracao,
   ): Promise<Integracao> {
     const integracao = await this.findOne(id);
     integracao.status = status;
-    return await this.integracaoRepository.save(integracao);
+    await this.integracaoRepository.save(integracao);
+    return this.findOne(id);
   }
 
+  /**
+   * Remove integração (cascade remove configurações)
+   */
   async remove(id: string): Promise<void> {
     const integracao = await this.findOne(id);
     await this.integracaoRepository.remove(integracao);
   }
 
+  /**
+   * Retorna estatísticas das integrações
+   */
   async getEstatisticas() {
-    const [total, ativos, inativos, porTipo, porStatus] = await Promise.all([
+    const [total, ativos, inativos] = await Promise.all([
       this.integracaoRepository.count(),
       this.integracaoRepository.count({ where: { ativo: true } }),
       this.integracaoRepository.count({ where: { ativo: false } }),
-      this.integracaoRepository
-        .createQueryBuilder('integracao')
-        .select('integracao.tipo_integracao', 'tipo')
-        .addSelect('COUNT(*)', 'total')
-        .groupBy('integracao.tipo_integracao')
-        .getRawMany(),
-      this.integracaoRepository
-        .createQueryBuilder('integracao')
-        .select('integracao.status', 'status')
-        .addSelect('COUNT(*)', 'total')
-        .groupBy('integracao.status')
-        .getRawMany(),
     ]);
+
+    // Contar por template
+    const porTemplate = await this.integracaoRepository
+      .createQueryBuilder('integracao')
+      .select('integracao.templateSlug', 'template')
+      .addSelect('COUNT(*)', 'total')
+      .groupBy('integracao.templateSlug')
+      .getRawMany();
+
+    // Contar por status
+    const porStatus = await this.integracaoRepository
+      .createQueryBuilder('integracao')
+      .select('integracao.status', 'status')
+      .addSelect('COUNT(*)', 'total')
+      .groupBy('integracao.status')
+      .getRawMany();
 
     return {
       total,
       ativos,
       inativos,
-      porTipo,
+      porTemplate,
       porStatus,
     };
   }
 
+  /**
+   * Testa conexão com a integração
+   */
   async testarConexao(
     id: string,
   ): Promise<{ sucesso: boolean; mensagem: string; detalhes?: any }> {
     const integracao = await this.findOne(id);
 
     try {
-      // Simular teste de conexão básico
       if (!integracao.ativo) {
         return {
           sucesso: false,
@@ -202,20 +395,18 @@ export class IntegracoesService {
         };
       }
 
-      if (!integracao.urlBase && !integracao.urlApiExames) {
-        return {
-          sucesso: false,
-          mensagem: 'URL de conexão não configurada',
-        };
-      }
+      // TODO: Implementar lógica específica de teste por template
+      // Por enquanto, retorna sucesso se tiver configurações mínimas
+      const temConfiguracoes = integracao.configuracoes.length > 0;
 
-      // Aqui implementar lógica específica de teste por tipo
       return {
-        sucesso: true,
-        mensagem: 'Teste de conexão simulado - Implementar lógica específica',
+        sucesso: temConfiguracoes,
+        mensagem: temConfiguracoes
+          ? 'Configurações carregadas - Implementar teste real'
+          : 'Nenhuma configuração encontrada',
         detalhes: {
-          url: integracao.urlApiExames || integracao.urlBase,
-          tipo: integracao.tipoIntegracao,
+          template: integracao.templateSlug,
+          totalConfiguracoes: integracao.configuracoes.length,
           timestampTeste: new Date(),
         },
       };
@@ -227,6 +418,9 @@ export class IntegracoesService {
     }
   }
 
+  /**
+   * Sincroniza dados da integração
+   */
   async sincronizar(id: string): Promise<{
     sucesso: boolean;
     dadosSincronizados?: number;
@@ -240,7 +434,7 @@ export class IntegracoesService {
       };
     }
 
-    // Simular sincronização
+    // TODO: Implementar lógica real de sincronização por template
     const agora = new Date();
     integracao.ultimaSincronizacao = agora;
     integracao.tentativasFalhas = 0;
@@ -249,7 +443,7 @@ export class IntegracoesService {
 
     return {
       sucesso: true,
-      dadosSincronizados: 10,
+      dadosSincronizados: 0,
       ultimaSincronizacao: agora,
     };
   }

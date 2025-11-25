@@ -1,0 +1,209 @@
+### ==========================================
+### FLUXO COMPLETO: DO SCHEMA À VINCULAÇÃO
+### Exemplo passo-a-passo de uso do sistema
+### ==========================================
+
+### ============================================
+### PASSO 1: Descobrir schemas disponíveis
+### ============================================
+
+### 1.1 - Listar schemas para laboratórios
+GET {{baseUrl}}/atendimento/integracoes/schemas?tipo=LABORATORIO_APOIO
+Authorization: Bearer {{token}}
+
+### Response esperado: Lista com "hermes-pardini" e outros
+
+###
+
+### 1.2 - Ver detalhes do schema Hermes Pardini
+GET {{baseUrl}}/atendimento/integracoes/schemas/hermes-pardini
+Authorization: Bearer {{token}}
+
+### Response: campos obrigatórios = usuario, senha, ambiente
+### Response: campos opcionais = url_wsdl, timeout
+
+###
+
+### ============================================
+### PASSO 2: Criar integração Hermes Pardini
+### ============================================
+
+### 2.1 - Criar integração (salve o ID retornado)
+# @name criarIntegracao
+POST {{baseUrl}}/atendimento/integracoes
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "template_slug": "hermes-pardini",
+  "codigo_identificacao": "HP-FLOW-001",
+  "nome_instancia": "Hermes Pardini - Fluxo Completo",
+  "descricao": "Integração de exemplo do fluxo completo",
+  "tipos_contexto": ["LABORATORIO_APOIO"],
+  "configuracoes": {
+    "usuario": "hp_user_flow",
+    "senha": "SenhaSegura999!",
+    "ambiente": "homologacao",
+    "url_wsdl": "https://api.hermespardini.com.br/service?wsdl",
+    "timeout": 30
+  }
+}
+
+### Response: Salve o "id" retornado para usar nos próximos passos
+### Exemplo de ID: "123e4567-e89b-12d3-a456-426614174000"
+
+@integracaoId = {{criarIntegracao.response.body.id}}
+
+###
+
+### ============================================
+### PASSO 3: Verificar integração criada
+### ============================================
+
+### 3.1 - Buscar por ID
+GET {{baseUrl}}/atendimento/integracoes/{{integracaoId}}
+Authorization: Bearer {{token}}
+
+### Response: Deve mostrar a integração com configurações
+
+###
+
+### 3.2 - Buscar por código
+GET {{baseUrl}}/atendimento/integracoes/codigo/HP-FLOW-001
+Authorization: Bearer {{token}}
+
+###
+
+### ============================================
+### PASSO 4: Testar conexão
+### ============================================
+
+### 4.1 - Testar se a integração está funcionando
+POST {{baseUrl}}/atendimento/integracoes/{{integracaoId}}/testar-conexao
+Authorization: Bearer {{token}}
+
+### Se sucesso → Status 200, conexão OK
+### Se falha → Status 400, mensagem de erro
+
+###
+
+### ============================================
+### PASSO 5: Criar laboratório vinculado
+### ============================================
+
+### 5.1 - Criar empresa (se ainda não existe)
+POST {{baseUrl}}/relacionamento/empresas
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "cnpj": "12345678000199",
+  "razao_social": "Hermes Pardini Laboratório Ltda",
+  "nome_fantasia": "Hermes Pardini",
+  "tipo_empresa": "LABORATORIO_APOIO"
+}
+
+@empresaId = {{$guid}}
+
+###
+
+### 5.2 - Criar laboratório vinculado à integração
+POST {{baseUrl}}/relacionamento/laboratorios
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "empresa_id": "{{empresaId}}",
+  "integracao_id": "{{integracaoId}}",
+  "codigo_laboratorio": "HP-001"
+}
+
+### Response: Laboratório criado e vinculado à integração
+
+###
+
+### ============================================
+### PASSO 6: Usar laboratório (buscar com configs)
+### ============================================
+
+### 6.1 - Buscar laboratório com integração e configurações
+GET {{baseUrl}}/relacionamento/laboratorios?include=integracao,integracao.configuracoes
+Authorization: Bearer {{token}}
+
+### Response: laboratorio.integracao.configuracoes = [
+###   { chave: 'usuario', valor: 'hp_user_flow' },
+###   { chave: 'senha', valor: '[ENCRYPTED]' },
+###   { chave: 'ambiente', valor: 'homologacao' },
+###   ...
+### ]
+
+###
+
+### ============================================
+### PASSO 7: Atualizar configurações
+### ============================================
+
+### 7.1 - Mudar para produção
+PATCH {{baseUrl}}/atendimento/integracoes/{{integracaoId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "configuracoes": {
+    "ambiente": "producao",
+    "timeout": 60
+  }
+}
+
+###
+
+### 7.2 - Ativar integração
+PATCH {{baseUrl}}/atendimento/integracoes/{{integracaoId}}/status?status=ativa
+Authorization: Bearer {{token}}
+
+###
+
+### ============================================
+### PASSO 8: Sincronizar dados
+### ============================================
+
+### 8.1 - Sincronizar exames, laudos, etc
+POST {{baseUrl}}/atendimento/integracoes/{{integracaoId}}/sincronizar
+Authorization: Bearer {{token}}
+
+### Response: registros_sincronizados, tempo_decorrido_ms
+
+###
+
+### ============================================
+### PASSO 9: Monitorar integração
+### ============================================
+
+### 9.1 - Ver estatísticas
+GET {{baseUrl}}/atendimento/integracoes/estatisticas
+Authorization: Bearer {{token}}
+
+###
+
+### 9.2 - Verificar status atualizado
+GET {{baseUrl}}/atendimento/integracoes/{{integracaoId}}
+Authorization: Bearer {{token}}
+
+### Response: ultima_sincronizacao, tentativas_falhas, ultimo_erro
+
+###
+
+### ============================================
+### RESUMO DO FLUXO
+### ============================================
+
+# 1. GET /schemas → Descobre integrações disponíveis
+# 2. GET /schemas/{slug} → Vê campos necessários
+# 3. POST /integracoes → Cria integração com configs
+# 4. POST /integracoes/{id}/testar-conexao → Testa
+# 5. POST /laboratorios → Vincula laboratório
+# 6. GET /laboratorios?include=integracao → Usa configs
+# 7. PATCH /integracoes/{id} → Atualiza configs
+# 8. PATCH /integracoes/{id}/status → Ativa
+# 9. POST /integracoes/{id}/sincronizar → Sincroniza
+# 10. GET /integracoes/estatisticas → Monitora

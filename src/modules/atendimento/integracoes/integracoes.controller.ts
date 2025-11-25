@@ -23,6 +23,11 @@ import { CreateIntegracaoDto } from './dto/create-integracao.dto';
 import { UpdateIntegracaoDto } from './dto/update-integracao.dto';
 import { TipoIntegracao, StatusIntegracao } from './entities/integracao.entity';
 import { JwtAuthGuard } from '../../autenticacao/auth/guards/jwt-auth.guard';
+import {
+  getAllSchemas,
+  getSchemaBySlug,
+  getSchemasByTipo,
+} from './schemas/index';
 
 @ApiTags('Integrações')
 @ApiBearerAuth()
@@ -89,14 +94,6 @@ export class IntegracoesController {
   })
   findByStatus(@Param('status') status: StatusIntegracao) {
     return this.integracoesService.findByStatus(status);
-  }
-
-  @Get('unidade/:unidadeId')
-  @ApiOperation({ summary: 'Listar integrações por unidade de saúde' })
-  @ApiParam({ name: 'unidadeId', description: 'ID da unidade de saúde' })
-  @ApiResponse({ status: 200, description: 'Lista de integrações da unidade' })
-  findByUnidadeSaude(@Param('unidadeId', ParseUUIDPipe) unidadeId: string) {
-    return this.integracoesService.findByUnidadeSaude(unidadeId);
   }
 
   @Get('codigo/:codigo')
@@ -180,5 +177,54 @@ export class IntegracoesController {
   @ApiResponse({ status: 404, description: 'Integração não encontrada' })
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.integracoesService.remove(id);
+  }
+
+  // ==========================================
+  // SCHEMAS - Endpoints para frontend
+  // ==========================================
+
+  @Get('schemas')
+  @ApiOperation({
+    summary: 'Listar todos os schemas de integrações disponíveis',
+  })
+  @ApiQuery({
+    name: 'tipo',
+    enum: TipoIntegracao,
+    required: false,
+    description: 'Filtrar por tipo de integração',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de schemas disponíveis',
+  })
+  getSchemas(@Query('tipo') tipo?: TipoIntegracao) {
+    if (tipo) {
+      return getSchemasByTipo(tipo);
+    }
+    return getAllSchemas();
+  }
+
+  @Get('schemas/:slug')
+  @ApiOperation({
+    summary: 'Buscar schema de integração por slug',
+  })
+  @ApiParam({
+    name: 'slug',
+    description: 'Slug da integração (ex: hermes-pardini)',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Schema encontrado',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Schema não encontrado',
+  })
+  getSchemaBySlug(@Param('slug') slug: string) {
+    const schema = getSchemaBySlug(slug);
+    if (!schema) {
+      throw new Error('Schema não encontrado');
+    }
+    return schema;
   }
 }

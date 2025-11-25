@@ -1,0 +1,77 @@
+### ==========================================
+### TESTAR E SINCRONIZAR INTEGRAÇÕES
+### Operações de teste e sincronização
+### ==========================================
+
+### Testar conexão com a integração
+POST {{baseUrl}}/atendimento/integracoes/{id}/testar-conexao
+Authorization: Bearer {{token}}
+
+### Expected Response: 200 OK (conexão bem-sucedida)
+# {
+#   "sucesso": true,
+#   "mensagem": "Conexão estabelecida com sucesso",
+#   "detalhes": {
+#     "url": "https://api.hermespardini.com.br/service",
+#     "tempo_resposta_ms": 245,
+#     "status_http": 200
+#   },
+#   "testado_em": "2025-11-25T10:30:00Z"
+# }
+
+### Expected Response: 400 Bad Request (erro de conexão)
+# {
+#   "sucesso": false,
+#   "mensagem": "Falha ao conectar com a integração",
+#   "erro": "Timeout after 30 seconds",
+#   "detalhes": {
+#     "url": "https://api.hermespardini.com.br/service",
+#     "codigo_erro": "TIMEOUT"
+#   },
+#   "testado_em": "2025-11-25T10:30:00Z"
+# }
+
+###
+
+### Sincronizar dados da integração
+POST {{baseUrl}}/atendimento/integracoes/{id}/sincronizar
+Authorization: Bearer {{token}}
+
+### Expected Response: 200 OK (sincronização bem-sucedida)
+# {
+#   "sucesso": true,
+#   "mensagem": "Sincronização concluída com sucesso",
+#   "registros_sincronizados": 150,
+#   "tempo_decorrido_ms": 3500,
+#   "ultima_sincronizacao": "2025-11-25T10:35:00Z"
+# }
+
+### Expected Response: 400 Bad Request (erro na sincronização)
+# {
+#   "sucesso": false,
+#   "mensagem": "Erro durante a sincronização",
+#   "erro": "Authentication failed: invalid credentials",
+#   "tentativas_falhas": 3,
+#   "ultima_tentativa": "2025-11-25T10:35:00Z"
+# }
+
+###
+
+### Testar múltiplas integrações (loop manual)
+# Copie e cole este bloco para cada integração
+
+### Integração 1
+POST {{baseUrl}}/atendimento/integracoes/{id-1}/testar-conexao
+Authorization: Bearer {{token}}
+
+###
+
+### Integração 2
+POST {{baseUrl}}/atendimento/integracoes/{id-2}/testar-conexao
+Authorization: Bearer {{token}}
+
+###
+
+### Integração 3
+POST {{baseUrl}}/atendimento/integracoes/{id-3}/testar-conexao
+Authorization: Bearer {{token}}

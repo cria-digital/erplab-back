@@ -7,22 +7,28 @@ import {
   ManyToOne,
   JoinColumn,
   Index,
+  OneToMany,
 } from 'typeorm';
 import { UnidadeSaude } from '../../../cadastros/unidade-saude/entities/unidade-saude.entity';
+import { IntegracaoConfiguracao } from './integracao-configuracao.entity';
 
+/**
+ * Tipos de contexto onde a integração pode aparecer
+ * Uma integração pode ter múltiplos tipos
+ */
 export enum TipoIntegracao {
   LABORATORIO_APOIO = 'laboratorio_apoio',
+  CONVENIOS = 'convenios',
   TELEMEDICINA = 'telemedicina',
-  GATEWAY_PAGAMENTO = 'gateway_pagamento',
   BANCO = 'banco',
-  PREFEITURA_NFSE = 'prefeitura_nfse',
+  GATEWAY_PAGAMENTO = 'gateway_pagamento',
+  NFSE = 'nfse',
   SEFAZ = 'sefaz',
   RECEITA_FEDERAL = 'receita_federal',
   POWER_BI = 'power_bi',
   PABX = 'pabx',
   CORREIOS = 'correios',
   OCR = 'ocr',
-  CONVENIOS = 'convenios',
   ADQUIRENTES = 'adquirentes',
   PACS = 'pacs',
   EMAIL = 'email',
@@ -31,6 +37,9 @@ export enum TipoIntegracao {
   OUTROS = 'outros',
 }
 
+/**
+ * Status da integração
+ */
 export enum StatusIntegracao {
   ATIVA = 'ativa',
   INATIVA = 'inativa',
@@ -39,71 +48,100 @@ export enum StatusIntegracao {
   MANUTENCAO = 'manutencao',
 }
 
-export enum PadraosComunicacao {
-  REST_API = 'rest_api',
-  SOAP = 'soap',
-  GRAPHQL = 'graphql',
-  WEBHOOK = 'webhook',
-  FTP = 'ftp',
-  SFTP = 'sftp',
-  EMAIL = 'email',
-  DATABASE = 'database',
-  FILE = 'file',
-  MANUAL = 'manual',
-}
-
-export enum FormatoRetorno {
-  JSON = 'json',
-  XML = 'xml',
-  CSV = 'csv',
-  TXT = 'txt',
-  PDF = 'pdf',
-  HTML = 'html',
-  BINARY = 'binary',
-}
-
+/**
+ * Entidade Integracao
+ *
+ * Representa uma INSTÂNCIA configurada de uma integração.
+ * O schema de campos vem do código (schemas/*.ts).
+ * As configurações (valores) ficam na tabela integracao_configuracoes (chave-valor).
+ */
 @Entity('integracoes')
-@Index(['tipoIntegracao', 'unidadeSaudeId'])
+@Index(['templateSlug'])
+@Index(['unidadeSaudeId'])
 @Index(['codigoIdentificacao'])
 @Index(['status'])
+@Index('idx_integracoes_tipos_contexto', { synchronize: false }) // GIN index para array
 export class Integracao {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({
-    type: 'enum',
-    enum: TipoIntegracao,
-    name: 'tipo_integracao',
-  })
-  tipoIntegracao: TipoIntegracao;
+  // ==========================================
+  // IDENTIFICAÇÃO DA INTEGRAÇÃO
+  // ==========================================
 
+  /**
+   * Slug do template/schema no código
+   * Ex: 'hermes-pardini', 'santander-api', 'orizon-tiss'
+   */
   @Column({
     type: 'varchar',
     length: 100,
-    name: 'nome_integracao',
+    name: 'template_slug',
+    comment: 'Slug do schema no código (ex: hermes-pardini)',
   })
-  nomeIntegracao: string;
+  templateSlug: string;
 
+  /**
+   * Código único da INSTÂNCIA
+   * Ex: 'HP-UNIDADE-CENTRO-01', 'SANT-MATRIZ-01'
+   */
+  @Column({
+    type: 'varchar',
+    length: 100,
+    name: 'codigo_identificacao',
+    unique: true,
+    comment: 'Código único da instância da integração',
+  })
+  codigoIdentificacao: string;
+
+  /**
+   * Nome dado a esta instância
+   * Ex: 'Hermes Pardini - Unidade Centro'
+   */
   @Column({
     type: 'varchar',
     length: 255,
-    name: 'descricao_api',
-    nullable: true,
+    name: 'nome_instancia',
+    comment: 'Nome descritivo desta instância',
   })
-  descricaoApi: string;
+  nomeInstancia: string;
 
+  /**
+   * Descrição opcional
+   */
   @Column({
-    type: 'varchar',
-    length: 50,
-    name: 'codigo_identificacao',
-    unique: true,
+    type: 'text',
+    nullable: true,
+    comment: 'Descrição adicional da integração',
   })
-  codigoIdentificacao: string;
+  descricao: string;
+
+  // ==========================================
+  // CONTEXTO
+  // ==========================================
+
+  /**
+   * Array de tipos onde esta integração aparece
+   * Ex: ['laboratorio_apoio', 'convenios']
+   * Permite que Hermes Pardini apareça tanto em Labs quanto em Convênios
+   */
+  @Column({
+    type: 'text',
+    array: true,
+    name: 'tipos_contexto',
+    comment: 'Contextos onde a integração está disponível',
+  })
+  tiposContexto: TipoIntegracao[];
+
+  // ==========================================
+  // RELACIONAMENTOS
+  // ==========================================
 
   @Column({
     type: 'uuid',
     name: 'unidade_saude_id',
     nullable: true,
+    comment: 'Unidade de saúde vinculada',
   })
   unidadeSaudeId: string;
 
@@ -111,226 +149,50 @@ export class Integracao {
   @JoinColumn({ name: 'unidade_saude_id' })
   unidadeSaude: UnidadeSaude;
 
-  // Informações específicas da integração
   @Column({
-    type: 'varchar',
-    length: 500,
-    name: 'url_api_exames',
+    type: 'uuid',
+    name: 'empresa_id',
     nullable: true,
+    comment: 'Empresa vinculada (para multi-tenant futuro)',
   })
-  urlApiExames: string;
+  empresaId: string;
 
-  @Column({
-    type: 'varchar',
-    length: 500,
-    name: 'url_api_guia_exames',
-    nullable: true,
+  /**
+   * Relacionamento com configurações (chave-valor)
+   */
+  @OneToMany(() => IntegracaoConfiguracao, (config) => config.integracao, {
+    cascade: true,
   })
-  urlApiGuiaExames: string;
+  configuracoes: IntegracaoConfiguracao[];
 
-  @Column({
-    type: 'varchar',
-    length: 500,
-    name: 'token_autenticacao',
-    nullable: true,
-  })
-  tokenAutenticacao: string;
+  // ==========================================
+  // CONTROLE E MONITORAMENTO
+  // ==========================================
 
-  @Column({
-    type: 'varchar',
-    length: 500,
-    name: 'chave_api',
-    nullable: true,
-  })
-  chaveApi: string;
-
-  @Column({
-    type: 'enum',
-    enum: PadraosComunicacao,
-    name: 'padrao_comunicacao',
-    nullable: true,
-  })
-  padraoComunicacao: PadraosComunicacao;
-
-  @Column({
-    type: 'enum',
-    enum: FormatoRetorno,
-    name: 'formato_retorno',
-    nullable: true,
-  })
-  formatoRetorno: FormatoRetorno;
-
-  // Campos específicos por tipo
-  @Column({
-    type: 'varchar',
-    length: 100,
-    name: 'nome_laboratorio',
-    nullable: true,
-  })
-  nomeLaboratorio: string;
-
-  @Column({
-    type: 'varchar',
-    length: 100,
-    name: 'nome_prefeitura',
-    nullable: true,
-  })
-  nomePrefeitura: string;
-
-  @Column({
-    type: 'varchar',
-    length: 100,
-    name: 'nome_banco',
-    nullable: true,
-  })
-  nomeBanco: string;
-
-  @Column({
-    type: 'varchar',
-    length: 100,
-    name: 'nome_gateway',
-    nullable: true,
-  })
-  nomeGateway: string;
-
-  @Column({
-    type: 'varchar',
-    length: 100,
-    name: 'nome_convenio',
-    nullable: true,
-  })
-  nomeConvenio: string;
-
-  @Column({
-    type: 'varchar',
-    length: 100,
-    name: 'nome_adquirente',
-    nullable: true,
-  })
-  nomeAdquirente: string;
-
-  @Column({
-    type: 'varchar',
-    length: 100,
-    name: 'nome_concessionaria',
-    nullable: true,
-  })
-  nomeConcessionaria: string;
-
-  // URLs e endpoints adicionais
-  @Column({
-    type: 'varchar',
-    length: 500,
-    name: 'url_base',
-    nullable: true,
-  })
-  urlBase: string;
-
-  @Column({
-    type: 'varchar',
-    length: 500,
-    name: 'url_autenticacao',
-    nullable: true,
-  })
-  urlAutenticacao: string;
-
-  @Column({
-    type: 'varchar',
-    length: 500,
-    name: 'url_consulta',
-    nullable: true,
-  })
-  urlConsulta: string;
-
-  @Column({
-    type: 'varchar',
-    length: 500,
-    name: 'url_envio',
-    nullable: true,
-  })
-  urlEnvio: string;
-
-  @Column({
-    type: 'varchar',
-    length: 500,
-    name: 'url_callback',
-    nullable: true,
-  })
-  urlCallback: string;
-
-  // Credenciais adicionais
-  @Column({
-    type: 'varchar',
-    length: 255,
-    name: 'usuario',
-    nullable: true,
-  })
-  usuario: string;
-
-  @Column({
-    type: 'varchar',
-    length: 255,
-    name: 'senha',
-    nullable: true,
-  })
-  senha: string;
-
-  @Column({
-    type: 'varchar',
-    length: 500,
-    name: 'certificado_digital',
-    nullable: true,
-  })
-  certificadoDigital: string;
-
-  @Column({
-    type: 'varchar',
-    length: 255,
-    name: 'senha_certificado',
-    nullable: true,
-  })
-  senhaCertificado: string;
-
-  // Configurações específicas
-  @Column({
-    type: 'jsonb',
-    name: 'configuracoes_adicionais',
-    nullable: true,
-  })
-  configuracoesAdicionais: any;
-
-  @Column({
-    type: 'jsonb',
-    name: 'headers_customizados',
-    nullable: true,
-  })
-  headersCustomizados: any;
-
-  @Column({
-    type: 'jsonb',
-    name: 'parametros_conexao',
-    nullable: true,
-  })
-  parametrosConexao: any;
-
-  // Controle e monitoramento
   @Column({
     type: 'enum',
     enum: StatusIntegracao,
     default: StatusIntegracao.EM_CONFIGURACAO,
+    comment: 'Status atual da integração',
   })
   status: StatusIntegracao;
 
   @Column({
     type: 'boolean',
     default: true,
+    comment: 'Integração ativa?',
   })
   ativo: boolean;
+
+  // ==========================================
+  // ESTATÍSTICAS
+  // ==========================================
 
   @Column({
     type: 'timestamp',
     name: 'ultima_sincronizacao',
     nullable: true,
+    comment: 'Última sincronização bem-sucedida',
   })
   ultimaSincronizacao: Date;
 
@@ -338,6 +200,7 @@ export class Integracao {
     type: 'timestamp',
     name: 'ultima_tentativa',
     nullable: true,
+    comment: 'Última tentativa de conexão',
   })
   ultimaTentativa: Date;
 
@@ -345,6 +208,7 @@ export class Integracao {
     type: 'int',
     name: 'tentativas_falhas',
     default: 0,
+    comment: 'Contador de tentativas falhadas',
   })
   tentativasFalhas: number;
 
@@ -352,35 +216,15 @@ export class Integracao {
     type: 'text',
     name: 'ultimo_erro',
     nullable: true,
+    comment: 'Última mensagem de erro',
   })
   ultimoErro: string;
 
   @Column({
     type: 'int',
-    name: 'timeout_segundos',
-    default: 30,
-  })
-  timeoutSegundos: number;
-
-  @Column({
-    type: 'int',
-    name: 'intervalo_sincronizacao_minutos',
-    nullable: true,
-  })
-  intervaloSincronizacaoMinutos: number;
-
-  // Limites e controles
-  @Column({
-    type: 'int',
-    name: 'limite_requisicoes_dia',
-    nullable: true,
-  })
-  limiteRequisicoesDia: number;
-
-  @Column({
-    type: 'int',
     name: 'requisicoes_hoje',
     default: 0,
+    comment: 'Contador de requisições do dia',
   })
   requisicoesHoje: number;
 
@@ -388,14 +232,46 @@ export class Integracao {
     type: 'date',
     name: 'data_reset_contador',
     nullable: true,
+    comment: 'Data do último reset do contador',
   })
   dataResetContador: Date;
 
-  // Auditoria
+  // ==========================================
+  // LIMITES E CONFIGURAÇÕES
+  // ==========================================
+
   @Column({
-    type: 'varchar',
-    length: 255,
+    type: 'int',
+    name: 'timeout_segundos',
+    default: 30,
+    comment: 'Timeout padrão em segundos',
+  })
+  timeoutSegundos: number;
+
+  @Column({
+    type: 'int',
+    name: 'intervalo_sincronizacao_minutos',
     nullable: true,
+    comment: 'Intervalo de sincronização automática',
+  })
+  intervaloSincronizacaoMinutos: number;
+
+  @Column({
+    type: 'int',
+    name: 'limite_requisicoes_dia',
+    nullable: true,
+    comment: 'Limite de requisições por dia',
+  })
+  limiteRequisicoesDia: number;
+
+  // ==========================================
+  // AUDITORIA
+  // ==========================================
+
+  @Column({
+    type: 'text',
+    nullable: true,
+    comment: 'Observações gerais',
   })
   observacoes: string;
 

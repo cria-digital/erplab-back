@@ -1,0 +1,161 @@
+### ==========================================
+### CRIAR INTEGRAÇÕES
+### Exemplos de criação de integrações
+### ==========================================
+
+### Criar integração: Hermes Pardini (Laboratório)
+POST {{baseUrl}}/atendimento/integracoes
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "template_slug": "hermes-pardini",
+  "codigo_identificacao": "HP-CENTRO-001",
+  "nome_instancia": "Hermes Pardini - Unidade Centro",
+  "descricao": "Integração com Hermes Pardini para envio de exames da unidade centro",
+  "tipos_contexto": ["LABORATORIO_APOIO"],
+  "unidade_saude_id": null,
+  "configuracoes": {
+    "usuario": "hp_user_centro",
+    "senha": "SenhaSegura123!",
+    "ambiente": "homologacao",
+    "url_wsdl": "https://api.hermespardini.com.br/service?wsdl",
+    "timeout": 30
+  }
+}
+
+### Expected Response: 201 Created
+# {
+#   "id": "uuid-da-integracao",
+#   "template_slug": "hermes-pardini",
+#   "codigo_identificacao": "HP-CENTRO-001",
+#   "nome_instancia": "Hermes Pardini - Unidade Centro",
+#   "tipos_contexto": ["LABORATORIO_APOIO"],
+#   "status": "em_configuracao",
+#   "ativo": true,
+#   "configuracoes": [
+#     { "chave": "usuario", "valor": "hp_user_centro" },
+#     { "chave": "senha", "valor": "[ENCRYPTED]" },
+#     { "chave": "ambiente", "valor": "homologacao" },
+#     { "chave": "url_wsdl", "valor": "https://..." },
+#     { "chave": "timeout", "valor": "30" }
+#   ],
+#   "created_at": "2025-11-25T...",
+#   "updated_at": "2025-11-25T..."
+# }
+
+###
+
+### Criar integração: Hermes Pardini (Múltiplos contextos)
+POST {{baseUrl}}/atendimento/integracoes
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "template_slug": "hermes-pardini",
+  "codigo_identificacao": "HP-MATRIZ-001",
+  "nome_instancia": "Hermes Pardini - Matriz (Lab + Convênio)",
+  "descricao": "Integração usada tanto para laboratório quanto para convênio",
+  "tipos_contexto": ["LABORATORIO_APOIO", "CONVENIOS"],
+  "configuracoes": {
+    "usuario": "hp_user_matriz",
+    "senha": "SenhaSegura456!",
+    "ambiente": "producao",
+    "url_wsdl": "https://api.hermespardini.com.br/service?wsdl",
+    "timeout": 45
+  }
+}
+
+###
+
+### Criar integração: Mínimo obrigatório (apenas campos required)
+POST {{baseUrl}}/atendimento/integracoes
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "template_slug": "hermes-pardini",
+  "codigo_identificacao": "HP-FILIAL-001",
+  "nome_instancia": "Hermes Pardini - Filial Sul",
+  "tipos_contexto": ["LABORATORIO_APOIO"],
+  "configuracoes": {
+    "usuario": "hp_user_filial",
+    "senha": "SenhaSegura789!",
+    "ambiente": "homologacao"
+  }
+}
+
+### Expected Response: 201 Created
+# Campos opcionais (url_wsdl, timeout) usam valores padrão do schema
+
+###
+
+### ERRO: Campos obrigatórios faltando
+POST {{baseUrl}}/atendimento/integracoes
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "template_slug": "hermes-pardini",
+  "codigo_identificacao": "HP-TESTE-001",
+  "nome_instancia": "Hermes Pardini - Teste",
+  "tipos_contexto": ["LABORATORIO_APOIO"],
+  "configuracoes": {
+    "usuario": "hp_user_teste"
+    // Faltou: senha (obrigatório)
+    // Faltou: ambiente (obrigatório)
+  }
+}
+
+### Expected Response: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Campos obrigatórios faltando",
+#   "campos_faltando": ["senha", "ambiente"]
+# }
+
+###
+
+### ERRO: Template slug inválido
+POST {{baseUrl}}/atendimento/integracoes
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "template_slug": "integracao-inexistente",
+  "codigo_identificacao": "TESTE-001",
+  "nome_instancia": "Teste",
+  "tipos_contexto": ["LABORATORIO_APOIO"],
+  "configuracoes": {}
+}
+
+### Expected Response: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Schema 'integracao-inexistente' não encontrado"
+# }
+
+###
+
+### ERRO: Código duplicado
+POST {{baseUrl}}/atendimento/integracoes
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "template_slug": "hermes-pardini",
+  "codigo_identificacao": "HP-CENTRO-001",
+  "nome_instancia": "Duplicado",
+  "tipos_contexto": ["LABORATORIO_APOIO"],
+  "configuracoes": {
+    "usuario": "teste",
+    "senha": "teste",
+    "ambiente": "homologacao"
+  }
+}
+
+### Expected Response: 409 Conflict
+# {
+#   "statusCode": 409,
+#   "message": "Código de identificação já existe"
+# }

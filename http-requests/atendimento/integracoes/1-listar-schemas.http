@@ -1,0 +1,105 @@
+### ==========================================
+### SCHEMAS DE INTEGRAÇÕES
+### Endpoints para descobrir integrações disponíveis
+### ==========================================
+
+### Listar TODOS os schemas disponíveis
+GET {{baseUrl}}/atendimento/integracoes/schemas
+Authorization: Bearer {{token}}
+
+### Expected Response: 200 OK
+# [
+#   {
+#     "slug": "hermes-pardini",
+#     "nome": "Hermes Pardini",
+#     "descricao": "Integração SOAP com Hermes Pardini...",
+#     "versao": "1.0.0",
+#     "tipos_contexto": ["LABORATORIO_APOIO", "CONVENIOS"],
+#     "protocolo": "SOAP",
+#     "ativo": true,
+#     "campos": [
+#       {
+#         "chave": "usuario",
+#         "label": "Usuário",
+#         "tipo": "string",
+#         "obrigatorio": true
+#       },
+#       {
+#         "chave": "senha",
+#         "label": "Senha",
+#         "tipo": "password",
+#         "obrigatorio": true,
+#         "criptografar": true
+#       },
+#       ...
+#     ]
+#   }
+# ]
+
+###
+
+### Listar schemas para LABORATÓRIOS
+GET {{baseUrl}}/atendimento/integracoes/schemas?tipo=LABORATORIO_APOIO
+Authorization: Bearer {{token}}
+
+###
+
+### Listar schemas para CONVÊNIOS
+GET {{baseUrl}}/atendimento/integracoes/schemas?tipo=CONVENIOS
+Authorization: Bearer {{token}}
+
+###
+
+### Listar schemas para TELEMEDICINA
+GET {{baseUrl}}/atendimento/integracoes/schemas?tipo=TELEMEDICINA
+Authorization: Bearer {{token}}
+
+###
+
+### Listar schemas para BANCO
+GET {{baseUrl}}/atendimento/integracoes/schemas?tipo=BANCO
+Authorization: Bearer {{token}}
+
+###
+
+### Listar schemas para GATEWAY_PAGAMENTO
+GET {{baseUrl}}/atendimento/integracoes/schemas?tipo=GATEWAY_PAGAMENTO
+Authorization: Bearer {{token}}
+
+###
+
+### Listar schemas para NFSe
+GET {{baseUrl}}/atendimento/integracoes/schemas?tipo=NFSE
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar schema específico: Hermes Pardini
+GET {{baseUrl}}/atendimento/integracoes/schemas/hermes-pardini
+Authorization: Bearer {{token}}
+
+### Expected Response: 200 OK
+# {
+#   "slug": "hermes-pardini",
+#   "nome": "Hermes Pardini",
+#   "descricao": "Integração SOAP com Hermes Pardini para envio de requisições e recebimento de laudos de exames laboratoriais",
+#   "versao": "1.0.0",
+#   "tipos_contexto": ["LABORATORIO_APOIO", "CONVENIOS"],
+#   "protocolo": "SOAP",
+#   "ativo": true,
+#   "campos": [
+#     { "chave": "usuario", "label": "Usuário", "tipo": "string", "obrigatorio": true },
+#     { "chave": "senha", "label": "Senha", "tipo": "password", "obrigatorio": true, "criptografar": true },
+#     { "chave": "ambiente", "label": "Ambiente", "tipo": "select", "obrigatorio": true, "valorPadrao": "homologacao", "opcoes": [...] },
+#     { "chave": "url_wsdl", "label": "URL do WSDL", "tipo": "url", "obrigatorio": false, "valorPadrao": "https://..." },
+#     { "chave": "timeout", "label": "Timeout (segundos)", "tipo": "number", "obrigatorio": false, "valorPadrao": 30, "min": 5, "max": 300 }
+#   ]
+# }
+
+###
+
+### Buscar schema inexistente (deve retornar 404)
+GET {{baseUrl}}/atendimento/integracoes/schemas/nao-existe
+Authorization: Bearer {{token}}
+
+### Expected Response: 404 Not Found
