@@ -105,6 +105,55 @@ export class IntegracoesController {
     return this.integracoesService.findByCodigo(codigo);
   }
 
+  // ==========================================
+  // SCHEMAS - Endpoints para frontend
+  // ==========================================
+
+  @Get('schemas')
+  @ApiOperation({
+    summary: 'Listar todos os schemas de integrações disponíveis',
+  })
+  @ApiQuery({
+    name: 'tipo',
+    enum: TipoIntegracao,
+    required: false,
+    description: 'Filtrar por tipo de integração',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de schemas disponíveis',
+  })
+  getSchemas(@Query('tipo') tipo?: TipoIntegracao) {
+    if (tipo) {
+      return getSchemasByTipo(tipo);
+    }
+    return getAllSchemas();
+  }
+
+  @Get('schemas/:slug')
+  @ApiOperation({
+    summary: 'Buscar schema de integração por slug',
+  })
+  @ApiParam({
+    name: 'slug',
+    description: 'Slug da integração (ex: hermes-pardini)',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Schema encontrado',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Schema não encontrado',
+  })
+  getSchemaBySlug(@Param('slug') slug: string) {
+    const schema = getSchemaBySlug(slug);
+    if (!schema) {
+      throw new Error('Schema não encontrado');
+    }
+    return schema;
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Buscar integração por ID' })
   @ApiParam({ name: 'id', description: 'ID da integração' })
@@ -177,54 +226,5 @@ export class IntegracoesController {
   @ApiResponse({ status: 404, description: 'Integração não encontrada' })
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.integracoesService.remove(id);
-  }
-
-  // ==========================================
-  // SCHEMAS - Endpoints para frontend
-  // ==========================================
-
-  @Get('schemas')
-  @ApiOperation({
-    summary: 'Listar todos os schemas de integrações disponíveis',
-  })
-  @ApiQuery({
-    name: 'tipo',
-    enum: TipoIntegracao,
-    required: false,
-    description: 'Filtrar por tipo de integração',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Lista de schemas disponíveis',
-  })
-  getSchemas(@Query('tipo') tipo?: TipoIntegracao) {
-    if (tipo) {
-      return getSchemasByTipo(tipo);
-    }
-    return getAllSchemas();
-  }
-
-  @Get('schemas/:slug')
-  @ApiOperation({
-    summary: 'Buscar schema de integração por slug',
-  })
-  @ApiParam({
-    name: 'slug',
-    description: 'Slug da integração (ex: hermes-pardini)',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Schema encontrado',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Schema não encontrado',
-  })
-  getSchemaBySlug(@Param('slug') slug: string) {
-    const schema = getSchemaBySlug(slug);
-    if (!schema) {
-      throw new Error('Schema não encontrado');
-    }
-    return schema;
   }
 }

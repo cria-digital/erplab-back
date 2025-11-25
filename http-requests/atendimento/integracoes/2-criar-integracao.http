@@ -9,12 +9,11 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "template_slug": "hermes-pardini",
-  "codigo_identificacao": "HP-CENTRO-001",
-  "nome_instancia": "Hermes Pardini - Unidade Centro",
+  "templateSlug": "hermes-pardini",
+  "codigoIdentificacao": "HP-CENTRO-001",
+  "nomeInstancia": "Hermes Pardini - Unidade Centro",
   "descricao": "Integração com Hermes Pardini para envio de exames da unidade centro",
-  "tipos_contexto": ["LABORATORIO_APOIO"],
-  "unidade_saude_id": null,
+  "tiposContexto": ["laboratorio_apoio"],
   "configuracoes": {
     "usuario": "hp_user_centro",
     "senha": "SenhaSegura123!",
@@ -52,11 +51,11 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "template_slug": "hermes-pardini",
-  "codigo_identificacao": "HP-MATRIZ-001",
-  "nome_instancia": "Hermes Pardini - Matriz (Lab + Convênio)",
+  "templateSlug": "hermes-pardini",
+  "codigoIdentificacao": "HP-MATRIZ-001",
+  "nomeInstancia": "Hermes Pardini - Matriz (Lab + Convênio)",
   "descricao": "Integração usada tanto para laboratório quanto para convênio",
-  "tipos_contexto": ["LABORATORIO_APOIO", "CONVENIOS"],
+  "tiposContexto": ["laboratorio_apoio", "convenios"],
   "configuracoes": {
     "usuario": "hp_user_matriz",
     "senha": "SenhaSegura456!",
@@ -74,10 +73,10 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "template_slug": "hermes-pardini",
-  "codigo_identificacao": "HP-FILIAL-001",
-  "nome_instancia": "Hermes Pardini - Filial Sul",
-  "tipos_contexto": ["LABORATORIO_APOIO"],
+  "templateSlug": "hermes-pardini",
+  "codigoIdentificacao": "HP-FILIAL-001",
+  "nomeInstancia": "Hermes Pardini - Filial Sul",
+  "tiposContexto": ["laboratorio_apoio"],
   "configuracoes": {
     "usuario": "hp_user_filial",
     "senha": "SenhaSegura789!",
@@ -96,14 +95,12 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "template_slug": "hermes-pardini",
-  "codigo_identificacao": "HP-TESTE-001",
-  "nome_instancia": "Hermes Pardini - Teste",
-  "tipos_contexto": ["LABORATORIO_APOIO"],
+  "templateSlug": "hermes-pardini",
+  "codigoIdentificacao": "HP-TESTE-001",
+  "nomeInstancia": "Hermes Pardini - Teste",
+  "tiposContexto": ["laboratorio_apoio"],
   "configuracoes": {
     "usuario": "hp_user_teste"
-    // Faltou: senha (obrigatório)
-    // Faltou: ambiente (obrigatório)
   }
 }
 
@@ -122,10 +119,10 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "template_slug": "integracao-inexistente",
-  "codigo_identificacao": "TESTE-001",
-  "nome_instancia": "Teste",
-  "tipos_contexto": ["LABORATORIO_APOIO"],
+  "templateSlug": "integracao-inexistente",
+  "codigoIdentificacao": "TESTE-001",
+  "nomeInstancia": "Teste",
+  "tiposContexto": ["laboratorio_apoio"],
   "configuracoes": {}
 }
 
@@ -143,10 +140,10 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "template_slug": "hermes-pardini",
-  "codigo_identificacao": "HP-CENTRO-001",
-  "nome_instancia": "Duplicado",
-  "tipos_contexto": ["LABORATORIO_APOIO"],
+  "templateSlug": "hermes-pardini",
+  "codigoIdentificacao": "HP-CENTRO-001",
+  "nomeInstancia": "Duplicado",
+  "tiposContexto": ["laboratorio_apoio"],
   "configuracoes": {
     "usuario": "teste",
     "senha": "teste",
