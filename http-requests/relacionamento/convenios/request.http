@@ -4,23 +4,6 @@
 ### ==========================================
 
 ### ==========================================
-### AUTENTICAÇÃO
-### ==========================================
-
-### Login para obter token
-# @name login
-POST {{baseUrl}}/auth/login
-Content-Type: application/json
-
-{
-  "email": "diegosoek@gmail.com",
-  "password": "Admin123!"
-}
-
-### Armazenar token (usar após login)
-@token = {{login.response.body.access_token}}
-
-### ==========================================
 ### CRIAR CONVÊNIO COMPLETO (PATCH)
 ### Primeiro crie a empresa tipo CONVENIO via /empresas
 ### Depois use este PATCH para preencher dados específicos
