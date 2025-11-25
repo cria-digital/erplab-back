@@ -18,7 +18,6 @@ describe('IntegracoesController', () => {
     findByCodigo: jest.fn(),
     findByTipo: jest.fn(),
     findByStatus: jest.fn(),
-    findByUnidadeSaude: jest.fn(),
     findAtivos: jest.fn(),
     update: jest.fn(),
     remove: jest.fn(),
@@ -70,13 +69,16 @@ describe('IntegracoesController', () => {
 
   describe('create', () => {
     const createIntegracaoDto: CreateIntegracaoDto = {
-      tipoIntegracao: TipoIntegracao.LABORATORIO_APOIO,
-      nomeIntegracao: 'Laboratório ABC',
-      descricaoApi: 'Integração com laboratório de apoio ABC',
+      templateSlug: 'hermes-pardini',
       codigoIdentificacao: 'LAB001',
-      unidadeSaudeId: 'unidade-uuid-1',
-      urlApiExames: 'https://api.laboratorio-abc.com/exames',
-      tokenAutenticacao: 'token-abc-123',
+      nomeInstancia: 'Laboratório ABC',
+      descricao: 'Integração com laboratório de apoio ABC',
+      tiposContexto: [TipoIntegracao.LABORATORIO_APOIO],
+      configuracoes: {
+        usuario: 'hp_user',
+        senha: 'SenhaSegura123!',
+        ambiente: 'homologacao',
+      },
     };
 
     it('should create a new integration', async () => {
@@ -147,18 +149,6 @@ describe('IntegracoesController', () => {
       const result = await controller.findByStatus(StatusIntegracao.ATIVA);
 
       expect(service.findByStatus).toHaveBeenCalledWith(StatusIntegracao.ATIVA);
-      expect(result).toEqual(integracoes);
-    });
-  });
-
-  describe('findByUnidadeSaude', () => {
-    it('should return integrations by unidade saude', async () => {
-      const integracoes = [mockIntegracao];
-      mockIntegracoesService.findByUnidadeSaude.mockResolvedValue(integracoes);
-
-      const result = await controller.findByUnidadeSaude('unidade-uuid-1');
-
-      expect(service.findByUnidadeSaude).toHaveBeenCalledWith('unidade-uuid-1');
       expect(result).toEqual(integracoes);
     });
   });
@@ -237,8 +227,8 @@ describe('IntegracoesController', () => {
 
   describe('update', () => {
     const updateIntegracaoDto: UpdateIntegracaoDto = {
-      nomeIntegracao: 'Laboratório ABC Atualizado',
-      descricaoApi: 'Descrição atualizada',
+      nomeInstancia: 'Laboratório ABC Atualizado',
+      descricao: 'Descrição atualizada',
     };
 
     it('should update an integration', async () => {
