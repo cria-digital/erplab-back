@@ -1,0 +1,67 @@
+### Vincular integração a um convênio
+POST {{baseUrl}}/relacionamento/convenios/vincular-integracao
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "convenioId": "{{convenioId}}",
+  "integracaoId": "{{integracaoId}}"
+}
+
+###
+
+### Desvincular integração de um convênio (enviar null)
+POST {{baseUrl}}/relacionamento/convenios/vincular-integracao
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "convenioId": "{{convenioId}}",
+  "integracaoId": null
+}
+
+###
+
+### Vincular integrações em LOTE
+POST {{baseUrl}}/relacionamento/convenios/vincular-integracao/lote
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "vinculos": [
+    {
+      "convenioId": "550e8400-e29b-41d4-a716-446655440001",
+      "integracaoId": "550e8400-e29b-41d4-a716-446655440100"
+    },
+    {
+      "convenioId": "550e8400-e29b-41d4-a716-446655440002",
+      "integracaoId": "550e8400-e29b-41d4-a716-446655440100"
+    },
+    {
+      "convenioId": "550e8400-e29b-41d4-a716-446655440003",
+      "integracaoId": "550e8400-e29b-41d4-a716-446655440101"
+    },
+    {
+      "convenioId": "550e8400-e29b-41d4-a716-446655440004",
+      "integracaoId": null
+    }
+  ]
+}
+
+###
+
+### Listar convênios COM integração vinculada
+GET {{baseUrl}}/relacionamento/convenios/com-integracao
+Authorization: Bearer {{token}}
+
+###
+
+### Listar convênios SEM integração vinculada
+GET {{baseUrl}}/relacionamento/convenios/sem-integracao
+Authorization: Bearer {{token}}
+
+###
+
+### Listar convênios por integração específica
+GET {{baseUrl}}/relacionamento/convenios/integracao/{{integracaoId}}
+Authorization: Bearer {{token}}

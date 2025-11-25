@@ -1,10 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource } from 'typeorm';
+import { Repository, DataSource, In } from 'typeorm';
 import { Convenio } from '../entities/convenio.entity';
 import { Empresa } from '../../../cadastros/empresas/entities/empresa.entity';
 import { CreateConvenioDto } from '../dto/create-convenio.dto';
 import { UpdateConvenioDto } from '../dto/update-convenio.dto';
+import {
+  VincularIntegracaoDto,
+  VincularIntegracaoLoteDto,
+} from '../dto/vincular-integracao.dto';
 
 @Injectable()
 export class ConvenioService {
@@ -155,5 +159,89 @@ export class ConvenioService {
       .createQueryBuilder('convenio')
       .whereInIds(empresaIds)
       .getMany();
+  }
+
+  /**
+   * Vincula uma integração a um convênio
+   */
+  async vincularIntegracao(dto: VincularIntegracaoDto): Promise<Convenio> {
+    const convenio = await this.findOne(dto.convenioId);
+    convenio.integracao_id = dto.integracaoId;
+    await this.convenioRepository.save(convenio);
+    return await this.findOne(dto.convenioId);
+  }
+
+  /**
+   * Vincula integrações a múltiplos convênios em lote
+   */
+  async vincularIntegracaoLote(dto: VincularIntegracaoLoteDto): Promise<{
+    sucesso: number;
+    erros: { convenioId: string; erro: string }[];
+  }> {
+    const erros: { convenioId: string; erro: string }[] = [];
+    let sucesso = 0;
+
+    // Validar que todos os convênios existem
+    const convenioIds = dto.vinculos.map((v) => v.convenioId);
+    const convenios = await this.convenioRepository.find({
+      where: { id: In(convenioIds) },
+    });
+
+    const convenioMap = new Map(convenios.map((c) => [c.id, c]));
+
+    // Processar cada vínculo
+    for (const vinculo of dto.vinculos) {
+      const convenio = convenioMap.get(vinculo.convenioId);
+
+      if (!convenio) {
+        erros.push({
+          convenioId: vinculo.convenioId,
+          erro: 'Convênio não encontrado',
+        });
+        continue;
+      }
+
+      try {
+        convenio.integracao_id = vinculo.integracaoId;
+        await this.convenioRepository.save(convenio);
+        sucesso++;
+      } catch (error) {
+        erros.push({
+          convenioId: vinculo.convenioId,
+          erro: error.message || 'Erro ao vincular integração',
+        });
+      }
+    }
+
+    return { sucesso, erros };
+  }
+
+  /**
+   * Lista convênios que possuem integração vinculada
+   */
+  async findComIntegracao(): Promise<Convenio[]> {
+    return await this.convenioRepository
+      .createQueryBuilder('convenio')
+      .where('convenio.integracao_id IS NOT NULL')
+      .getMany();
+  }
+
+  /**
+   * Lista convênios sem integração vinculada
+   */
+  async findSemIntegracao(): Promise<Convenio[]> {
+    return await this.convenioRepository
+      .createQueryBuilder('convenio')
+      .where('convenio.integracao_id IS NULL')
+      .getMany();
+  }
+
+  /**
+   * Lista convênios vinculados a uma integração específica
+   */
+  async findByIntegracao(integracaoId: string): Promise<Convenio[]> {
+    return await this.convenioRepository.find({
+      where: { integracao_id: integracaoId },
+    });
   }
 }

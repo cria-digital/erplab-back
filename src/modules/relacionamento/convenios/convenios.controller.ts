@@ -22,6 +22,10 @@ import { ConvenioService } from './services/convenio.service';
 import { CreateConvenioExamesDto } from '../../exames/exames/dto/create-convenio-exames.dto';
 import { UpdateConvenioExamesDto } from '../../exames/exames/dto/update-convenio-exames.dto';
 import { Convenio } from './entities/convenio.entity';
+import {
+  VincularIntegracaoDto,
+  VincularIntegracaoLoteDto,
+} from './dto/vincular-integracao.dto';
 
 interface ApiResponseType<T = any> {
   message: string;
@@ -284,6 +288,143 @@ export class ConveniosController {
   //     data: convenio,
   //   };
   // }
+
+  // ==========================================
+  // ENDPOINTS DE INTEGRAÇÃO
+  // ==========================================
+
+  @Get('com-integracao')
+  @ApiOperation({
+    summary: 'Listar convênios com integração',
+    description: 'Retorna todos os convênios que possuem integração vinculada.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de convênios com integração',
+    type: [Convenio],
+  })
+  async findComIntegracao(): Promise<ApiResponseType<Convenio[]>> {
+    const convenios = await this.convenioService.findComIntegracao();
+    return {
+      message: 'Convênios com integração encontrados',
+      data: convenios,
+    };
+  }
+
+  @Get('sem-integracao')
+  @ApiOperation({
+    summary: 'Listar convênios sem integração',
+    description:
+      'Retorna todos os convênios que não possuem integração vinculada.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de convênios sem integração',
+    type: [Convenio],
+  })
+  async findSemIntegracao(): Promise<ApiResponseType<Convenio[]>> {
+    const convenios = await this.convenioService.findSemIntegracao();
+    return {
+      message: 'Convênios sem integração encontrados',
+      data: convenios,
+    };
+  }
+
+  @Get('integracao/:integracaoId')
+  @ApiOperation({
+    summary: 'Listar convênios por integração',
+    description:
+      'Retorna todos os convênios vinculados a uma integração específica.',
+  })
+  @ApiParam({
+    name: 'integracaoId',
+    type: String,
+    description: 'ID da integração',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de convênios da integração',
+    type: [Convenio],
+  })
+  async findByIntegracao(
+    @Param('integracaoId') integracaoId: string,
+  ): Promise<ApiResponseType<Convenio[]>> {
+    const convenios = await this.convenioService.findByIntegracao(integracaoId);
+    return {
+      message: 'Convênios da integração encontrados',
+      data: convenios,
+    };
+  }
+
+  @Post('vincular-integracao')
+  @ApiOperation({
+    summary: 'Vincular integração a um convênio',
+    description: 'Vincula ou desvincula uma integração de um convênio.',
+  })
+  @ApiBody({ type: VincularIntegracaoDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Integração vinculada com sucesso',
+    type: Convenio,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Convênio não encontrado',
+  })
+  async vincularIntegracao(
+    @Body() dto: VincularIntegracaoDto,
+  ): Promise<ApiResponseType<Convenio>> {
+    const convenio = await this.convenioService.vincularIntegracao(dto);
+    return {
+      message: dto.integracaoId
+        ? 'Integração vinculada com sucesso'
+        : 'Integração desvinculada com sucesso',
+      data: convenio,
+    };
+  }
+
+  @Post('vincular-integracao/lote')
+  @ApiOperation({
+    summary: 'Vincular integrações em lote',
+    description:
+      'Vincula ou desvincula integrações de múltiplos convênios em uma única operação.',
+  })
+  @ApiBody({ type: VincularIntegracaoLoteDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Operação em lote concluída',
+    schema: {
+      type: 'object',
+      properties: {
+        message: { type: 'string' },
+        data: {
+          type: 'object',
+          properties: {
+            sucesso: { type: 'number', example: 5 },
+            erros: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  convenioId: { type: 'string' },
+                  erro: { type: 'string' },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  })
+  async vincularIntegracaoLote(
+    @Body() dto: VincularIntegracaoLoteDto,
+  ): Promise<ApiResponseType> {
+    const resultado = await this.convenioService.vincularIntegracaoLote(dto);
+    return {
+      message: `Operação concluída: ${resultado.sucesso} sucesso(s), ${resultado.erros.length} erro(s)`,
+      data: resultado,
+    };
+  }
 
   @Get(':id')
   @ApiOperation({
