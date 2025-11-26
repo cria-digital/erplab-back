@@ -1,0 +1,206 @@
+### ============================================
+### ADQUIRENTES - CRUD e Operações
+### ============================================
+
+### Variáveis
+@baseUrl = {{$dotenv BASE_URL}}
+@contentType = application/json
+
+### ============================================
+### AUTENTICAÇÃO
+### ============================================
+
+### Login para obter token
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "diegosoek@gmail.com",
+  "password": "Admin123!"
+}
+
+### Captura o token da resposta
+@token = {{login.response.body.access_token}}
+
+### ============================================
+### LISTAR E BUSCAR
+### ============================================
+
+### Listar todos os adquirentes
+GET {{baseUrl}}/financeiro/adquirentes
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+### Buscar adquirente por ID
+GET {{baseUrl}}/financeiro/adquirentes/{{adquirenteId}}
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+### Buscar adquirentes por status (ativo, inativo, bloqueado, em_analise)
+GET {{baseUrl}}/financeiro/adquirentes/status/ativo
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+### Buscar adquirentes por tipo (cielo, rede, getnet, stone, pagseguro, mercadopago, safrapay, vero, outro)
+GET {{baseUrl}}/financeiro/adquirentes/tipo/cielo
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+### Buscar adquirentes por tipo de cartão (mastercard, visa, elo, american_express, hipercard, diners, outro)
+GET {{baseUrl}}/financeiro/adquirentes/tipo-cartao/visa
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+### Buscar adquirentes por unidade de saúde
+GET {{baseUrl}}/financeiro/adquirentes/unidade/{{unidadeSaudeId}}
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+### ============================================
+### CRIAR ADQUIRENTE
+### ============================================
+
+### Criar adquirente completo (com unidades associadas)
+# @name criarAdquirente
+POST {{baseUrl}}/financeiro/adquirentes
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "codigo_interno": "ADQ001",
+  "nome_adquirente": "PicPay",
+  "descricao": "Adquirente para pagamentos digitais",
+  "conta_bancaria_id": "{{contaBancariaId}}",
+  "tipo_adquirente": "outro",
+  "tipos_cartao_suportados": ["mastercard", "visa"],
+  "opcao_parcelamento": "12x",
+  "taxa_transacao": 1.5,
+  "taxa_parcelamento": 3.0,
+  "percentual_repasse": 10.0,
+  "prazo_recebimento": 5,
+  "permite_parcelamento": true,
+  "parcela_maxima": 12,
+  "valor_minimo_parcela": 50.00,
+  "codigo_estabelecimento": "1234567890",
+  "terminal_id": "TERM001",
+  "contato_comercial": "João Silva",
+  "telefone_suporte": "(11) 3000-0000",
+  "email_suporte": "suporte@picpay.com.br",
+  "observacoes": "Adquirente principal para pagamentos digitais",
+  "integracao_id": null,
+  "unidades_associadas": [
+    {
+      "unidade_saude_id": "{{unidadeSaudeId}}",
+      "ativo": true
+    }
+  ]
+}
+
+### Captura o ID do adquirente criado
+@adquirenteId = {{criarAdquirente.response.body.id}}
+
+### Criar adquirente simples (sem unidades)
+POST {{baseUrl}}/financeiro/adquirentes
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "codigo_interno": "ADQ002",
+  "nome_adquirente": "Cielo",
+  "conta_bancaria_id": "{{contaBancariaId}}",
+  "tipo_adquirente": "cielo",
+  "tipos_cartao_suportados": ["mastercard", "visa", "elo"],
+  "opcao_parcelamento": "12x",
+  "taxa_transacao": 1.2,
+  "percentual_repasse": 8.0,
+  "prazo_recebimento": 30
+}
+
+### ============================================
+### ATUALIZAR ADQUIRENTE
+### ============================================
+
+### Atualizar adquirente
+PATCH {{baseUrl}}/financeiro/adquirentes/{{adquirenteId}}
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "nome_adquirente": "PicPay Atualizado",
+  "taxa_transacao": 1.8,
+  "unidades_associadas": [
+    {
+      "unidade_saude_id": "{{unidadeSaudeId}}",
+      "ativo": true
+    },
+    {
+      "unidade_saude_id": "{{outraUnidadeId}}",
+      "ativo": true
+    }
+  ]
+}
+
+### Atualizar taxas do adquirente
+PATCH {{baseUrl}}/financeiro/adquirentes/{{adquirenteId}}/taxas
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "taxa_transacao": 1.5,
+  "taxa_parcelamento": 2.8,
+  "taxa_antecipacao": 2.0,
+  "percentual_repasse": 12.0
+}
+
+### Alternar status (ativo/inativo)
+PATCH {{baseUrl}}/financeiro/adquirentes/{{adquirenteId}}/toggle-status
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+### ============================================
+### INTEGRAÇÃO
+### ============================================
+
+### Vincular integração ao adquirente
+PATCH {{baseUrl}}/financeiro/adquirentes/{{adquirenteId}}/vincular-integracao/{{integracaoId}}
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+### Desvincular integração do adquirente
+DELETE {{baseUrl}}/financeiro/adquirentes/{{adquirenteId}}/desvincular-integracao
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+### Testar conexão com a integração vinculada
+POST {{baseUrl}}/financeiro/adquirentes/{{adquirenteId}}/testar-conexao
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+### Validar configuração do adquirente
+GET {{baseUrl}}/financeiro/adquirentes/{{adquirenteId}}/validate-configuration
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+### ============================================
+### UNIDADES ASSOCIADAS
+### ============================================
+
+### Adicionar unidade ao adquirente
+POST {{baseUrl}}/financeiro/adquirentes/{{adquirenteId}}/unidades/{{unidadeSaudeId}}
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+### Remover unidade do adquirente
+DELETE {{baseUrl}}/financeiro/adquirentes/{{adquirenteId}}/unidades/{{unidadeSaudeId}}
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+### ============================================
+### EXCLUIR
+### ============================================
+
+### Excluir adquirente
+DELETE {{baseUrl}}/financeiro/adquirentes/{{adquirenteId}}
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}

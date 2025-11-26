@@ -143,10 +143,13 @@ export class IntegracoesService {
    * Busca por tipo de integração
    */
   async findByTipo(tipo: TipoIntegracao): Promise<Integracao[]> {
+    // Converter enum key para valor (LABORATORIO_APOIO -> laboratorio_apoio)
+    const tipoValue = TipoIntegracao[tipo] || tipo.toLowerCase();
+
     return await this.integracaoRepository
       .createQueryBuilder('integracao')
       .leftJoinAndSelect('integracao.configuracoes', 'configuracoes')
-      .where(':tipo = ANY(integracao.tipos_contexto)', { tipo })
+      .where(':tipo = ANY(integracao.tipos_contexto)', { tipo: tipoValue })
       .orderBy('integracao.nome_instancia', 'ASC')
       .getMany();
   }

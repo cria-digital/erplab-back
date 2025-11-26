@@ -29,6 +29,48 @@ Authorization: Bearer {{token}}
 
 ###
 
+### Listar por TIPO: LABORATORIO_APOIO
+GET {{baseUrl}}/atendimento/integracoes/tipo/LABORATORIO_APOIO
+Authorization: Bearer {{token}}
+
+###
+
+### Listar por TIPO: CONVENIOS
+GET {{baseUrl}}/atendimento/integracoes/tipo/CONVENIOS
+Authorization: Bearer {{token}}
+
+###
+
+### Listar por TIPO: TELEMEDICINA
+GET {{baseUrl}}/atendimento/integracoes/tipo/TELEMEDICINA
+Authorization: Bearer {{token}}
+
+###
+
+### Listar por TIPO: BANCO
+GET {{baseUrl}}/atendimento/integracoes/tipo/BANCO
+Authorization: Bearer {{token}}
+
+###
+
+### Listar por TIPO: GATEWAY_PAGAMENTO
+GET {{baseUrl}}/atendimento/integracoes/tipo/GATEWAY_PAGAMENTO
+Authorization: Bearer {{token}}
+
+###
+
+### Listar por TIPO: ADQUIRENTES
+GET {{baseUrl}}/atendimento/integracoes/tipo/ADQUIRENTES
+Authorization: Bearer {{token}}
+
+###
+
+### Listar por TIPO: NFSE
+GET {{baseUrl}}/atendimento/integracoes/tipo/NFSE
+Authorization: Bearer {{token}}
+
+###
+
 ### Buscar por ID (substitua {id} pelo UUID real)
 # @name getIntegracaoById
 GET {{baseUrl}}/atendimento/integracoes/{id}

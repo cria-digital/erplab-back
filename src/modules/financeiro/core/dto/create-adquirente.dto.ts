@@ -10,13 +10,35 @@ import {
   IsBoolean,
   IsArray,
   MaxLength,
+  ValidateNested,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 import {
   TipoAdquirente,
   StatusAdquirente,
   TipoCartao,
   OpcaoParcelamento,
 } from '../entities/adquirente.entity';
+
+export class UnidadeAssociadaDto {
+  @ApiProperty({
+    description: 'ID da unidade de saúde',
+    example: 'uuid',
+  })
+  @IsUUID()
+  @IsNotEmpty()
+  unidade_saude_id: string;
+
+  @ApiProperty({
+    description: 'Se o vínculo está ativo',
+    example: true,
+    default: true,
+    required: false,
+  })
+  @IsBoolean()
+  @IsOptional()
+  ativo?: boolean;
+}
 
 export class CreateAdquirenteDto {
   @ApiProperty({
@@ -238,4 +260,24 @@ export class CreateAdquirenteDto {
   @IsString()
   @IsOptional()
   observacoes?: string;
+
+  @ApiProperty({
+    description: 'ID da integração vinculada',
+    example: 'uuid',
+    required: false,
+  })
+  @IsUUID()
+  @IsOptional()
+  integracao_id?: string;
+
+  @ApiProperty({
+    description: 'Lista de unidades associadas ao adquirente',
+    type: [UnidadeAssociadaDto],
+    required: false,
+  })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => UnidadeAssociadaDto)
+  @IsOptional()
+  unidades_associadas?: UnidadeAssociadaDto[];
 }

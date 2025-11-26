@@ -10,6 +10,8 @@ import {
 } from 'typeorm';
 import { ContaBancaria } from './conta-bancaria.entity';
 import { RestricaoAdquirente } from './restricao-adquirente.entity';
+import { AdquirenteUnidade } from './adquirente-unidade.entity';
+import { Integracao } from '../../../atendimento/integracoes/entities/integracao.entity';
 
 export enum TipoAdquirente {
   CIELO = 'cielo',
@@ -135,6 +137,22 @@ export class Adquirente {
 
   @OneToMany(() => RestricaoAdquirente, (restricao) => restricao.adquirente)
   restricoes: RestricaoAdquirente[];
+
+  // Relacionamento com Integração
+  @Column({ type: 'uuid', nullable: true })
+  integracao_id: string;
+
+  @ManyToOne(() => Integracao, { nullable: true })
+  @JoinColumn({ name: 'integracao_id' })
+  integracao: Integracao;
+
+  // Relacionamento ManyToMany com Unidades via tabela intermediária
+  @OneToMany(
+    () => AdquirenteUnidade,
+    (adquirenteUnidade) => adquirenteUnidade.adquirente,
+    { cascade: true },
+  )
+  unidades_associadas: AdquirenteUnidade[];
 
   @CreateDateColumn()
   created_at: Date;

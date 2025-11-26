@@ -216,4 +216,121 @@ export class AdquirenteController {
   validateConfiguration(@Param('id') id: string) {
     return this.service.validateConfiguration(id);
   }
+
+  @Get('unidade/:unidadeSaudeId')
+  @ApiOperation({ summary: 'Buscar adquirentes por unidade de saúde' })
+  @ApiParam({
+    name: 'unidadeSaudeId',
+    description: 'ID da unidade de saúde',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Adquirentes encontrados com sucesso',
+  })
+  findByUnidade(@Param('unidadeSaudeId') unidadeSaudeId: string) {
+    return this.service.findByUnidade(unidadeSaudeId);
+  }
+
+  @Post(':id/testar-conexao')
+  @ApiOperation({ summary: 'Testar conexão com a integração vinculada' })
+  @ApiParam({
+    name: 'id',
+    description: 'ID do adquirente',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Resultado do teste de conexão',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Adquirente não encontrado',
+  })
+  testarConexao(@Param('id') id: string) {
+    return this.service.testarConexao(id);
+  }
+
+  @Patch(':id/vincular-integracao/:integracaoId')
+  @ApiOperation({ summary: 'Vincular uma integração ao adquirente' })
+  @ApiParam({
+    name: 'id',
+    description: 'ID do adquirente',
+  })
+  @ApiParam({
+    name: 'integracaoId',
+    description: 'ID da integração',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Integração vinculada com sucesso',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Adquirente ou integração não encontrado',
+  })
+  vincularIntegracao(
+    @Param('id') id: string,
+    @Param('integracaoId') integracaoId: string,
+  ) {
+    return this.service.vincularIntegracao(id, integracaoId);
+  }
+
+  @Delete(':id/desvincular-integracao')
+  @ApiOperation({ summary: 'Remover vínculo de integração do adquirente' })
+  @ApiParam({
+    name: 'id',
+    description: 'ID do adquirente',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Integração desvinculada com sucesso',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Adquirente não encontrado',
+  })
+  desvincularIntegracao(@Param('id') id: string) {
+    return this.service.desvincularIntegracao(id);
+  }
+
+  @Post(':id/unidades/:unidadeSaudeId')
+  @ApiOperation({ summary: 'Adicionar unidade ao adquirente' })
+  @ApiParam({
+    name: 'id',
+    description: 'ID do adquirente',
+  })
+  @ApiParam({
+    name: 'unidadeSaudeId',
+    description: 'ID da unidade de saúde',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Unidade adicionada com sucesso',
+  })
+  adicionarUnidade(
+    @Param('id') id: string,
+    @Param('unidadeSaudeId') unidadeSaudeId: string,
+  ) {
+    return this.service.adicionarUnidade(id, unidadeSaudeId);
+  }
+
+  @Delete(':id/unidades/:unidadeSaudeId')
+  @ApiOperation({ summary: 'Remover unidade do adquirente' })
+  @ApiParam({
+    name: 'id',
+    description: 'ID do adquirente',
+  })
+  @ApiParam({
+    name: 'unidadeSaudeId',
+    description: 'ID da unidade de saúde',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Unidade removida com sucesso',
+  })
+  removerUnidade(
+    @Param('id') id: string,
+    @Param('unidadeSaudeId') unidadeSaudeId: string,
+  ) {
+    return this.service.removerUnidade(id, unidadeSaudeId);
+  }
 }

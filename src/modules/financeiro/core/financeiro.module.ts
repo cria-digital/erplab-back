@@ -7,6 +7,7 @@ import { ContaBancaria } from './entities/conta-bancaria.entity';
 import { ContaBancariaUnidade } from './entities/conta-bancaria-unidade.entity';
 import { GatewayPagamento } from './entities/gateway-pagamento.entity';
 import { Adquirente } from './entities/adquirente.entity';
+import { AdquirenteUnidade } from './entities/adquirente-unidade.entity';
 import { RestricaoAdquirente } from './entities/restricao-adquirente.entity';
 import { PlanoContas } from './entities/plano-contas.entity';
 import { ContaContabil } from './entities/conta-contabil.entity';
@@ -30,6 +31,7 @@ import { ContaContabilController } from './conta-contabil.controller';
 // Modules
 import { UnidadeSaudeModule } from '../../cadastros/unidade-saude/unidade-saude.module';
 import { AuditoriaModule } from '../../infraestrutura/auditoria/auditoria.module';
+import { IntegracoesModule } from '../../atendimento/integracoes/integracoes.module';
 
 @Module({
   imports: [
@@ -39,12 +41,14 @@ import { AuditoriaModule } from '../../infraestrutura/auditoria/auditoria.module
       ContaBancariaUnidade,
       GatewayPagamento,
       Adquirente,
+      AdquirenteUnidade,
       RestricaoAdquirente,
       PlanoContas,
       ContaContabil,
     ]),
     UnidadeSaudeModule,
     AuditoriaModule,
+    IntegracoesModule,
   ],
   controllers: [
     BancoController,
