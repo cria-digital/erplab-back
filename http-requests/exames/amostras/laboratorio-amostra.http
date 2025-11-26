@@ -1,0 +1,268 @@
+### ===========================================
+### LABORATORIO-AMOSTRA - Vincular laboratórios a amostras
+### ===========================================
+### Base URL: /api/v1/exames/laboratorios-amostras
+### Relacionamento Many-to-Many entre Amostras e Laboratórios
+### ===========================================
+
+### Vincular laboratório a uma amostra
+POST {{baseUrl}}/exames/laboratorios-amostras
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "laboratorioId": "{{laboratorioId}}",
+  "amostraId": "{{amostraId}}",
+  "validado": false,
+  "observacoes": "Laboratório em processo de certificação para este tipo de amostra"
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "id": "uuid",
+#   "laboratorioId": "uuid",
+#   "amostraId": "uuid",
+#   "validado": false,
+#   "dataValidacao": null,
+#   "observacoes": "Laboratório em processo de certificação...",
+#   "createdAt": "2024-01-15T10:00:00.000Z",
+#   "updatedAt": "2024-01-15T10:00:00.000Z"
+# }
+
+###
+
+### Listar todos os vínculos laboratório-amostra
+GET {{baseUrl}}/exames/laboratorios-amostras
+Authorization: Bearer {{token}}
+
+###
+
+### Listar vínculos com paginação
+GET {{baseUrl}}/exames/laboratorios-amostras?page=1&limit=10
+Authorization: Bearer {{token}}
+
+###
+
+### Filtrar vínculos por laboratório
+GET {{baseUrl}}/exames/laboratorios-amostras?laboratorioId={{laboratorioId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Filtrar vínculos por amostra
+GET {{baseUrl}}/exames/laboratorios-amostras?amostraId={{amostraId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Filtrar vínculos validados
+GET {{baseUrl}}/exames/laboratorios-amostras?validado=true
+Authorization: Bearer {{token}}
+
+###
+
+### Filtrar vínculos não validados (pendentes)
+GET {{baseUrl}}/exames/laboratorios-amostras?validado=false
+Authorization: Bearer {{token}}
+
+###
+
+### Listar apenas vínculos validados
+GET {{baseUrl}}/exames/laboratorios-amostras/validados
+Authorization: Bearer {{token}}
+
+###
+
+### Listar vínculos validados de um laboratório específico
+GET {{baseUrl}}/exames/laboratorios-amostras/validados?laboratorioId={{laboratorioId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar amostras de um laboratório
+GET {{baseUrl}}/exames/laboratorios-amostras/laboratorio/{{laboratorioId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar laboratórios que trabalham com uma amostra
+GET {{baseUrl}}/exames/laboratorios-amostras/amostra/{{amostraId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Obter estatísticas gerais
+GET {{baseUrl}}/exames/laboratorios-amostras/statistics
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "total": 10,
+#   "validados": 6,
+#   "pendentes": 4,
+#   "percentualValidacao": 60.00
+# }
+
+###
+
+### Obter estatísticas de um laboratório específico
+GET {{baseUrl}}/exames/laboratorios-amostras/statistics?laboratorioId={{laboratorioId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar vínculo por ID
+GET {{baseUrl}}/exames/laboratorios-amostras/{{vinculoId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Atualizar vínculo (observações)
+PATCH {{baseUrl}}/exames/laboratorios-amostras/{{vinculoId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "observacoes": "Laboratório certificado em 2024 para processamento desta amostra"
+}
+
+###
+
+### Atualizar vínculo (validação manual com data)
+PATCH {{baseUrl}}/exames/laboratorios-amostras/{{vinculoId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "validado": true,
+  "dataValidacao": "2024-01-15T10:00:00Z",
+  "observacoes": "Validado manualmente após auditoria"
+}
+
+###
+
+### Validar vínculo laboratório-amostra (endpoint dedicado)
+PATCH {{baseUrl}}/exames/laboratorios-amostras/{{vinculoId}}/validar
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "validado": true,
+#   "dataValidacao": "2024-01-15T10:00:00.000Z",
+#   ...
+# }
+
+###
+
+### Invalidar vínculo laboratório-amostra
+PATCH {{baseUrl}}/exames/laboratorios-amostras/{{vinculoId}}/invalidar
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "validado": false,
+#   "dataValidacao": null,
+#   ...
+# }
+
+###
+
+### Remover vínculo
+DELETE {{baseUrl}}/exames/laboratorios-amostras/360a71bd-3fb9-4170-9be1-d945d632d5ed
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 204 No Content
+
+###
+
+### ===========================================
+### TESTES DE ERRO
+### ===========================================
+
+### Tentar criar vínculo duplicado (deve falhar - 409 Conflict)
+POST {{baseUrl}}/exames/laboratorios-amostras
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "laboratorioId": "{{laboratorioId}}",
+  "amostraId": "{{amostraId}}"
+}
+
+### Expected Response
+# Status: 409 Conflict
+# {
+#   "statusCode": 409,
+#   "message": "Este laboratório já está vinculado a esta amostra",
+#   "error": "Conflict"
+# }
+
+###
+
+### Tentar vincular com amostra inexistente (deve falhar - 404)
+POST {{baseUrl}}/exames/laboratorios-amostras
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "laboratorioId": "{{laboratorioId}}",
+  "amostraId": "00000000-0000-0000-0000-000000000000"
+}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Amostra com ID 00000000-0000-0000-0000-000000000000 não encontrada",
+#   "error": "Not Found"
+# }
+
+###
+
+### Tentar vincular com laboratório inexistente (deve falhar - 404)
+POST {{baseUrl}}/exames/laboratorios-amostras
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "laboratorioId": "00000000-0000-0000-0000-000000000000",
+  "amostraId": "{{amostraId}}"
+}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Laboratório com ID 00000000-0000-0000-0000-000000000000 não encontrado",
+#   "error": "Not Found"
+# }
+
+###
+
+### Buscar vínculo inexistente (deve falhar - 404)
+GET {{baseUrl}}/exames/laboratorios-amostras/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+
+###
+
+### ===========================================
+### FLUXO COMPLETO DE TESTE
+### ===========================================
+### 1. Criar amostra (usar criar-amostra.http)
+### 2. Criar empresa tipo LABORATORIO_APOIO (usar cadastros/empresas)
+### 3. Vincular laboratório à amostra (POST acima)
+### 4. Verificar vínculo criado (GET por ID)
+### 5. Validar o vínculo (PATCH .../validar)
+### 6. Verificar estatísticas (GET /statistics)
+### 7. Remover vínculo se necessário (DELETE)
+### ===========================================
