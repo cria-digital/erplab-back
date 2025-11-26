@@ -1,6 +1,7 @@
-### Ativar Amostra
+### Alternar Status da Amostra (toggle ativo/inativo)
 # Substitua {id} pelo UUID da amostra
-PATCH {{baseUrl}}/exames/amostras/{id}/ativar
+# Só funciona para amostras que NÃO estão em revisão
+PATCH {{baseUrl}}/exames/amostras/{id}/toggle-status
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -9,13 +10,14 @@ Authorization: Bearer {{token}}
 #   "id": "uuid",
 #   "codigoInterno": "SANG-EDTA-001",
 #   "nome": "Sangue Total com EDTA",
-#   "ativo": true,
+#   "status": "inativo",  // alternado de "ativo" para "inativo" ou vice-versa
 #   ...
 # }
 
 
-### Desativar Amostra
-PATCH {{baseUrl}}/exames/amostras/{id}/desativar
+### Validar Amostra em Revisão
+# Muda status de "em_revisao" para "ativo"
+PATCH {{baseUrl}}/exames/amostras/{id}/validar
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -24,30 +26,81 @@ Authorization: Bearer {{token}}
 #   "id": "uuid",
 #   "codigoInterno": "SANG-EDTA-001",
 #   "nome": "Sangue Total com EDTA",
-#   "ativo": false,
+#   "status": "ativo",  // mudou de "em_revisao" para "ativo"
 #   ...
 # }
 
 
-### Remover Amostra (Soft Delete)
+### Remover Amostra
 DELETE {{baseUrl}}/exames/amostras/{id}
 Authorization: Bearer {{token}}
 
 ### Expected Response
-# Status: 200 OK
+# Status: 204 No Content
+# (sem corpo na resposta)
+
+
+### Erro - Toggle Status em Amostra em Revisão
+# Amostras em revisão não podem ter toggle de status
+PATCH {{baseUrl}}/exames/amostras/{id}/toggle-status
+Authorization: Bearer {{token}}
+
+### Expected Response (se amostra estiver em revisão)
+# Status: 400 Bad Request
 # {
-#   "message": "Amostra removida com sucesso"
+#   "statusCode": 400,
+#   "message": "Amostra em revisão não pode ter seu status alterado diretamente",
+#   "error": "Bad Request"
 # }
 
 
-### Erro - Tentar Ativar Amostra Inexistente
-PATCH {{baseUrl}}/exames/amostras/00000000-0000-0000-0000-000000000000/ativar
+### Erro - Validar Amostra que Não Está em Revisão
+PATCH {{baseUrl}}/exames/amostras/{id}/validar
+Authorization: Bearer {{token}}
+
+### Expected Response (se amostra NÃO estiver em revisão)
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Apenas amostras em revisão podem ser validadas",
+#   "error": "Bad Request"
+# }
+
+
+### Erro - Amostra Não Encontrada (toggle)
+PATCH {{baseUrl}}/exames/amostras/00000000-0000-0000-0000-000000000000/toggle-status
 Authorization: Bearer {{token}}
 
 ### Expected Response
 # Status: 404 Not Found
 # {
 #   "statusCode": 404,
-#   "message": "Amostra não encontrada",
+#   "message": "Amostra com ID 00000000-0000-0000-0000-000000000000 não encontrada",
+#   "error": "Not Found"
+# }
+
+
+### Erro - Amostra Não Encontrada (validar)
+PATCH {{baseUrl}}/exames/amostras/00000000-0000-0000-0000-000000000000/validar
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Amostra com ID 00000000-0000-0000-0000-000000000000 não encontrada",
+#   "error": "Not Found"
+# }
+
+
+### Erro - Amostra Não Encontrada (remover)
+DELETE {{baseUrl}}/exames/amostras/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Amostra com ID 00000000-0000-0000-0000-000000000000 não encontrada",
 #   "error": "Not Found"
 # }

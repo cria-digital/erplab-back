@@ -5,11 +5,13 @@
 ### - metodologia_id (antes: metodologia VARCHAR)
 ### - grupo_id (antes: grupo VARCHAR)
 ### - unidade_medida_id (antes: unidade_medida VARCHAR)
-### - amostra_id (antes: amostra_biologica VARCHAR)
+### - amostra_id (antes: amostra_biologica VARCHAR) - FK para tabela amostras
+### - amostra_enviar_id (NOVO) - FK para alternativas_campo_formulario (soro, plasma, etc)
 ### - tipo_recipiente_id (antes: tipo_recipiente VARCHAR)
 ### - especialidade_id (antes: especialidade VARCHAR)
 ###
 ### Novos campos adicionados:
+### - amostra_enviar_id (UUID, opcional) - o que enviar ao laboratório após processamento
 ### - regiao_coleta_id (UUID, opcional)
 ### - estabilidade_id (UUID, opcional)
 ### - rejeicao (TEXT, opcional)
@@ -26,6 +28,7 @@
 ###     "grupoId": "uuid-do-grupo",
 ###     "unidadeMedidaId": "uuid-da-unidade-medida",
 ###     "amostraId": "uuid-da-amostra",
+###     "amostraEnviarId": "uuid-da-amostra-enviar",
 ###     "tipoRecipienteId": "uuid-do-tipo-recipiente",
 ###     "regiaoColetaId": "uuid-da-regiao-coleta",
 ###     "estabilidadeId": "uuid-da-estabilidade",
@@ -60,6 +63,7 @@ Authorization: Bearer {{token}}
   "volume_ideal": 5.0,
   "unidade_medida_id": "{{unidadeMedidaId}}",
   "amostra_id": "{{amostraId}}",
+  "amostra_enviar_id": "{{amostraEnviarId}}",
   "tipo_recipiente_id": "{{tipoRecipienteId}}",
   "regiao_coleta_id": "{{regiaoColetaId}}",
   "estabilidade_id": "{{estabilidadeId}}",

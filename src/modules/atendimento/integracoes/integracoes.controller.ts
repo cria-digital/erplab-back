@@ -28,6 +28,7 @@ import {
   getSchemaBySlug,
   getSchemasByTipo,
 } from './schemas/index';
+import { PaginationDto } from '../../infraestrutura/common/dto/pagination.dto';
 
 @ApiTags('Integrações')
 @ApiBearerAuth()
@@ -47,24 +48,63 @@ export class IntegracoesController {
 
   @Get()
   @ApiOperation({ summary: 'Listar todas as integrações' })
-  @ApiResponse({ status: 200, description: 'Lista de integrações' })
-  findAll() {
-    return this.integracoesService.findAll();
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'Número da página (padrão: 1)',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Itens por página (padrão: 10, máximo: 100)',
+  })
+  @ApiResponse({ status: 200, description: 'Lista de integrações paginada' })
+  findAll(@Query() paginationDto: PaginationDto) {
+    return this.integracoesService.findAll(paginationDto);
   }
 
   @Get('ativos')
   @ApiOperation({ summary: 'Listar integrações ativas' })
-  @ApiResponse({ status: 200, description: 'Lista de integrações ativas' })
-  findAtivos() {
-    return this.integracoesService.findAtivos();
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'Número da página (padrão: 1)',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Itens por página (padrão: 10, máximo: 100)',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de integrações ativas paginada',
+  })
+  findAtivos(@Query() paginationDto: PaginationDto) {
+    return this.integracoesService.findAtivos(paginationDto);
   }
 
   @Get('search')
   @ApiOperation({ summary: 'Buscar integrações por termo' })
   @ApiQuery({ name: 'q', description: 'Termo de busca', required: true })
-  @ApiResponse({ status: 200, description: 'Resultados da busca' })
-  search(@Query('q') termo: string) {
-    return this.integracoesService.search(termo);
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'Número da página (padrão: 1)',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Itens por página (padrão: 10, máximo: 100)',
+  })
+  @ApiResponse({ status: 200, description: 'Resultados da busca paginada' })
+  search(@Query('q') termo: string, @Query() paginationDto: PaginationDto) {
+    return this.integracoesService.search(termo, paginationDto);
   }
 
   @Get('estatisticas')
@@ -77,23 +117,53 @@ export class IntegracoesController {
   @Get('tipo/:tipo')
   @ApiOperation({ summary: 'Listar integrações por tipo' })
   @ApiParam({ name: 'tipo', enum: TipoIntegracao })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'Número da página (padrão: 1)',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Itens por página (padrão: 10, máximo: 100)',
+  })
   @ApiResponse({
     status: 200,
-    description: 'Lista de integrações do tipo especificado',
+    description: 'Lista de integrações do tipo especificado paginada',
   })
-  findByTipo(@Param('tipo') tipo: TipoIntegracao) {
-    return this.integracoesService.findByTipo(tipo);
+  findByTipo(
+    @Param('tipo') tipo: TipoIntegracao,
+    @Query() paginationDto: PaginationDto,
+  ) {
+    return this.integracoesService.findByTipo(tipo, paginationDto);
   }
 
   @Get('status/:status')
   @ApiOperation({ summary: 'Listar integrações por status' })
   @ApiParam({ name: 'status', enum: StatusIntegracao })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'Número da página (padrão: 1)',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Itens por página (padrão: 10, máximo: 100)',
+  })
   @ApiResponse({
     status: 200,
-    description: 'Lista de integrações com o status especificado',
+    description: 'Lista de integrações com o status especificado paginada',
   })
-  findByStatus(@Param('status') status: StatusIntegracao) {
-    return this.integracoesService.findByStatus(status);
+  findByStatus(
+    @Param('status') status: StatusIntegracao,
+    @Query() paginationDto: PaginationDto,
+  ) {
+    return this.integracoesService.findByStatus(status, paginationDto);
   }
 
   @Get('codigo/:codigo')

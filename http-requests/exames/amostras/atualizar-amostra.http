@@ -1,14 +1,11 @@
-### Atualizar Informações Básicas da Amostra
+### Atualizar Nome da Amostra
 # Substitua {id} pelo UUID da amostra
 PATCH {{baseUrl}}/exames/amostras/{id}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "nome": "Sangue Total com EDTA K3",
-  "descricao": "Amostra de sangue total coletado em tubo com anticoagulante EDTA K3 - Atualizado",
-  "volumeMinimo": 2,
-  "volumeIdeal": 4
+  "nome": "Sangue Total com EDTA K3 - Atualizado"
 }
 
 ### Expected Response
@@ -16,148 +13,96 @@ Authorization: Bearer {{token}}
 # {
 #   "id": "uuid",
 #   "codigoInterno": "SANG-EDTA-001",
-#   "nome": "Sangue Total com EDTA K3",
-#   "descricao": "Amostra de sangue total coletado em tubo com anticoagulante EDTA K3 - Atualizado",
-#   "volumeMinimo": 2,
-#   "volumeIdeal": 4,
+#   "nome": "Sangue Total com EDTA K3 - Atualizado",
+#   "descricao": "...",
+#   "status": "ativo",
 #   ...
 # }
 
 
-### Atualizar Condições de Armazenamento
+### Atualizar Descrição da Amostra
 PATCH {{baseUrl}}/exames/amostras/{id}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "temperaturaArmazenamento": "congelado",
-  "temperaturaMin": -20,
-  "temperaturaMax": -10,
-  "prazoValidadeHoras": 720,
-  "condicoesArmazenamento": "Manter congelado a -20°C. Não descongelar.",
-  "sensibilidadeLuz": true
+  "descricao": "Amostra de sangue total coletado em tubo com anticoagulante EDTA K3. Utilizado para hemograma completo, tipagem sanguínea, contagem de plaquetas e outros exames hematológicos. Descrição atualizada."
 }
 
-### Expected Response
-# Status: 200 OK
-# { ... amostra atualizada ... }
 
-
-### Atualizar Preparo do Paciente
+### Atualizar Código Interno
 PATCH {{baseUrl}}/exames/amostras/{id}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "requerJejum": true,
-  "tempoJejum": 12,
-  "instrucoesPreparo Paciente": "Jejum de 12 horas. Suspender medicamentos conforme orientação médica.",
-  "restricoes": "Não consumir álcool 48h antes. Evitar atividade física intensa 24h antes."
+  "codigoInterno": "SANG-EDTA-002"
 }
 
-### Expected Response
-# Status: 200 OK
-# { ... amostra atualizada ... }
 
-
-### Atualizar Instruções de Coleta
+### Atualizar Múltiplos Campos
 PATCH {{baseUrl}}/exames/amostras/{id}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "instrucoesColeta": "Coletar sangue venoso por punção. Homogeneizar imediatamente após coleta por inversão suave 8-10 vezes. NÃO agitar vigorosamente.",
-  "materiaisNecessarios": ["Tubo EDTA K3", "Agulha calibre 21G", "Sistema a vácuo", "Álcool 70%", "Algodão estéril", "Garrote", "Luvas descartáveis"],
-  "recipientePadrao": "Tubo EDTA K3 (tampa roxa/lilás) 5mL"
+  "nome": "Sangue Total EDTA - Versão 2",
+  "descricao": "Versão atualizada da amostra de sangue com EDTA",
+  "status": "ativo"
 }
 
-### Expected Response
-# Status: 200 OK
-# { ... amostra atualizada ... }
 
-
-### Atualizar Parâmetros de Centrifugação
+### Atualizar Status para Inativo
 PATCH {{baseUrl}}/exames/amostras/{id}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "requerCentrifugacao": true,
-  "tempoCentrifugacao": 15,
-  "rotacaoCentrifugacao": 3500
+  "status": "inativo"
 }
 
-### Expected Response
-# Status: 200 OK
-# { ... amostra atualizada ... }
 
-
-### Atualizar Instruções de Transporte
+### Atualizar Status para Em Revisão
 PATCH {{baseUrl}}/exames/amostras/{id}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "instrucoesTransporte": "Transportar em caixa térmica com gelo reciclável. Manter entre 2-8°C durante todo o transporte.",
-  "temperaturaTransporte": "refrigerado",
-  "embalagemEspecial": true,
-  "observacoesTransporte": "Proteger de luz solar. Não inclinar. Entregar no laboratório em até 4 horas."
+  "status": "em_revisao"
 }
 
-### Expected Response
-# Status: 200 OK
-# { ... amostra atualizada ... }
 
-
-### Atualizar Configurações de Etiqueta
-PATCH {{baseUrl}}/exames/amostras/{id}
+### Erro - Amostra Não Encontrada
+PATCH {{baseUrl}}/exames/amostras/00000000-0000-0000-0000-000000000000
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "corEtiqueta": "#8B00FF",
-  "codigoBarras": true,
-  "templateEtiqueta": "SANGUE-EDTA-K3"
+  "nome": "Nome Qualquer"
 }
 
 ### Expected Response
-# Status: 200 OK
-# { ... amostra atualizada ... }
-
-
-### Erro - Validação: Volume Mínimo Maior que Volume Ideal
-PATCH {{baseUrl}}/exames/amostras/{id}
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-  "volumeMinimo": 10,
-  "volumeIdeal": 5
-}
-
-### Expected Response
-# Status: 400 Bad Request
+# Status: 404 Not Found
 # {
-#   "statusCode": 400,
-#   "message": "Volume mínimo não pode ser maior que volume ideal",
-#   "error": "Bad Request"
+#   "statusCode": 404,
+#   "message": "Amostra com ID 00000000-0000-0000-0000-000000000000 não encontrada",
+#   "error": "Not Found"
 # }
 
 
-### Erro - Validação: Temperatura Inválida
+### Erro - Status Inválido
 PATCH {{baseUrl}}/exames/amostras/{id}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "temperaturaMin": 10,
-  "temperaturaMax": 5
+  "status": "status_invalido"
 }
 
 ### Expected Response
 # Status: 400 Bad Request
 # {
 #   "statusCode": 400,
-#   "message": "Temperatura mínima deve ser menor que temperatura máxima",
+#   "message": ["status must be one of the following values: ativo, inativo, em_revisao"],
 #   "error": "Bad Request"
 # }

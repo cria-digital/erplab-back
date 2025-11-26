@@ -15,6 +15,10 @@ import {
 } from './entities/integracao.entity';
 import { IntegracaoConfiguracao } from './entities/integracao-configuracao.entity';
 import { getSchemaBySlug } from './schemas/index';
+import {
+  PaginationDto,
+  PaginatedResultDto,
+} from '../../infraestrutura/common/dto/pagination.dto';
 
 @Injectable()
 export class IntegracoesService {
@@ -119,50 +123,92 @@ export class IntegracoesService {
   }
 
   /**
-   * Lista todas as integrações com configurações
+   * Lista todas as integrações com configurações e paginação
    */
-  async findAll(): Promise<Integracao[]> {
-    return await this.integracaoRepository.find({
+  async findAll(
+    paginationDto?: PaginationDto,
+  ): Promise<PaginatedResultDto<Integracao>> {
+    const page = paginationDto?.page || 1;
+    const limit = paginationDto?.limit || 10;
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await this.integracaoRepository.findAndCount({
       relations: ['configuracoes'],
       order: { nomeInstancia: 'ASC' },
+      skip,
+      take: limit,
     });
+
+    return new PaginatedResultDto(data, total, page, limit);
   }
 
   /**
-   * Lista integrações ativas
+   * Lista integrações ativas com paginação
    */
-  async findAtivos(): Promise<Integracao[]> {
-    return await this.integracaoRepository.find({
+  async findAtivos(
+    paginationDto?: PaginationDto,
+  ): Promise<PaginatedResultDto<Integracao>> {
+    const page = paginationDto?.page || 1;
+    const limit = paginationDto?.limit || 10;
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await this.integracaoRepository.findAndCount({
       where: { ativo: true },
       relations: ['configuracoes'],
       order: { nomeInstancia: 'ASC' },
+      skip,
+      take: limit,
     });
+
+    return new PaginatedResultDto(data, total, page, limit);
   }
 
   /**
-   * Busca por tipo de integração
+   * Busca por tipo de integração com paginação
    */
-  async findByTipo(tipo: TipoIntegracao): Promise<Integracao[]> {
+  async findByTipo(
+    tipo: TipoIntegracao,
+    paginationDto?: PaginationDto,
+  ): Promise<PaginatedResultDto<Integracao>> {
+    const page = paginationDto?.page || 1;
+    const limit = paginationDto?.limit || 10;
+    const skip = (page - 1) * limit;
+
     // Converter enum key para valor (LABORATORIO_APOIO -> laboratorio_apoio)
     const tipoValue = TipoIntegracao[tipo] || tipo.toLowerCase();
 
-    return await this.integracaoRepository
+    const [data, total] = await this.integracaoRepository
       .createQueryBuilder('integracao')
       .leftJoinAndSelect('integracao.configuracoes', 'configuracoes')
       .where(':tipo = ANY(integracao.tipos_contexto)', { tipo: tipoValue })
       .orderBy('integracao.nome_instancia', 'ASC')
-      .getMany();
+      .skip(skip)
+      .take(limit)
+      .getManyAndCount();
+
+    return new PaginatedResultDto(data, total, page, limit);
   }
 
   /**
-   * Busca por status
+   * Busca por status com paginação
    */
-  async findByStatus(status: StatusIntegracao): Promise<Integracao[]> {
-    return await this.integracaoRepository.find({
+  async findByStatus(
+    status: StatusIntegracao,
+    paginationDto?: PaginationDto,
+  ): Promise<PaginatedResultDto<Integracao>> {
+    const page = paginationDto?.page || 1;
+    const limit = paginationDto?.limit || 10;
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await this.integracaoRepository.findAndCount({
       where: { status },
       relations: ['configuracoes'],
       order: { nomeInstancia: 'ASC' },
+      skip,
+      take: limit,
     });
+
+    return new PaginatedResultDto(data, total, page, limit);
   }
 
   /**
@@ -184,10 +230,17 @@ export class IntegracoesService {
   }
 
   /**
-   * Busca por termo (nome, descrição, código)
+   * Busca por termo (nome, descrição, código) com paginação
    */
-  async search(termo: string): Promise<Integracao[]> {
-    return await this.integracaoRepository
+  async search(
+    termo: string,
+    paginationDto?: PaginationDto,
+  ): Promise<PaginatedResultDto<Integracao>> {
+    const page = paginationDto?.page || 1;
+    const limit = paginationDto?.limit || 10;
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await this.integracaoRepository
       .createQueryBuilder('integracao')
       .leftJoinAndSelect('integracao.configuracoes', 'configuracoes')
       .where('integracao.nome_instancia ILIKE :termo', { termo: `%${termo}%` })
@@ -196,7 +249,11 @@ export class IntegracoesService {
         termo: `%${termo}%`,
       })
       .orderBy('integracao.nome_instancia', 'ASC')
-      .getMany();
+      .skip(skip)
+      .take(limit)
+      .getManyAndCount();
+
+    return new PaginatedResultDto(data, total, page, limit);
   }
 
   /**

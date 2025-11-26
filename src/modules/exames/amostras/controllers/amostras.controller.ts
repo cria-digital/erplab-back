@@ -7,122 +7,185 @@ import {
   Param,
   Delete,
   Query,
+  HttpCode,
+  HttpStatus,
   ParseUUIDPipe,
-  ParseIntPipe,
-  ParseEnumPipe,
-  ParseBoolPipe,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiQuery, ApiParam } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+  ApiQuery,
+  ApiParam,
+} from '@nestjs/swagger';
 import { AmostrasService } from '../services/amostras.service';
 import { CreateAmostraDto } from '../dto/create-amostra.dto';
 import { UpdateAmostraDto } from '../dto/update-amostra.dto';
-import { TipoAmostra } from '../entities/amostra.entity';
+import { StatusAmostra } from '../entities/amostra.entity';
 
 @ApiTags('Amostras')
+@ApiBearerAuth()
 @Controller('exames/amostras')
 export class AmostrasController {
   constructor(private readonly amostrasService: AmostrasService) {}
 
   @Post()
   @ApiOperation({ summary: 'Criar nova amostra' })
+  @ApiResponse({ status: 201, description: 'Amostra criada com sucesso' })
+  @ApiResponse({ status: 400, description: 'Dados inválidos' })
+  @ApiResponse({
+    status: 409,
+    description: 'Amostra com este código já existe',
+  })
   create(@Body() createAmostraDto: CreateAmostraDto) {
-    // TODO: Pegar usuarioId do token JWT
-    const usuarioId = '00000000-0000-0000-0000-000000000000';
-    return this.amostrasService.create(createAmostraDto, usuarioId);
+    return this.amostrasService.create(createAmostraDto);
   }
 
   @Get()
-  @ApiOperation({ summary: 'Listar amostras com paginação e filtros' })
-  @ApiQuery({ name: 'page', required: false, example: 1 })
-  @ApiQuery({ name: 'limit', required: false, example: 10 })
-  @ApiQuery({ name: 'search', required: false, description: 'Buscar por nome' })
+  @ApiOperation({ summary: 'Listar todas as amostras' })
   @ApiQuery({
-    name: 'tipoAmostra',
+    name: 'page',
     required: false,
-    enum: TipoAmostra,
-    description: 'Filtrar por tipo de amostra',
+    description: 'Número da página',
+    example: 1,
   })
-  @ApiQuery({ name: 'ativo', required: false, type: Boolean })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Itens por página',
+    example: 10,
+  })
+  @ApiQuery({
+    name: 'search',
+    required: false,
+    description: 'Termo de busca',
+  })
+  @ApiQuery({
+    name: 'status',
+    required: false,
+    enum: StatusAmostra,
+    description: 'Filtrar por status',
+  })
+  @ApiResponse({ status: 200, description: 'Lista de amostras' })
   findAll(
-    @Query('page', new ParseIntPipe({ optional: true })) page?: number,
-    @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
     @Query('search') search?: string,
-    @Query('tipoAmostra', new ParseEnumPipe(TipoAmostra, { optional: true }))
-    tipoAmostra?: TipoAmostra,
-    @Query('ativo', new ParseBoolPipe({ optional: true })) ativo?: boolean,
+    @Query('status') status?: StatusAmostra,
   ) {
     return this.amostrasService.findAll(
-      page,
-      limit,
+      page ? parseInt(page) : 1,
+      limit ? parseInt(limit) : 10,
       search,
-      tipoAmostra,
-      ativo,
+      status,
     );
   }
 
-  @Get('ativas')
-  @ApiOperation({ summary: 'Listar apenas amostras ativas' })
-  findAtivas() {
-    return this.amostrasService.findAtivas();
+  @Get('statistics')
+  @ApiOperation({ summary: 'Obter estatísticas das amostras' })
+  @ApiResponse({ status: 200, description: 'Estatísticas das amostras' })
+  getStatistics() {
+    return this.amostrasService.getStatistics();
   }
 
-  @Get('stats')
-  @ApiOperation({ summary: 'Estatísticas de amostras' })
-  getStats() {
-    return this.amostrasService.getStats();
-  }
-
-  @Get('tipo/:tipo')
-  @ApiOperation({ summary: 'Buscar amostras por tipo' })
-  @ApiParam({ name: 'tipo', enum: TipoAmostra })
-  findByTipo(@Param('tipo', new ParseEnumPipe(TipoAmostra)) tipo: TipoAmostra) {
-    return this.amostrasService.findByTipo(tipo);
+  @Get('status/:status')
+  @ApiOperation({ summary: 'Buscar amostras por status' })
+  @ApiParam({
+    name: 'status',
+    enum: StatusAmostra,
+    description: 'Status da amostra',
+  })
+  @ApiResponse({ status: 200, description: 'Lista de amostras por status' })
+  findByStatus(@Param('status') status: StatusAmostra) {
+    return this.amostrasService.findByStatus(status);
   }
 
   @Get('codigo/:codigo')
   @ApiOperation({ summary: 'Buscar amostra por código interno' })
+  @ApiParam({
+    name: 'codigo',
+    description: 'Código interno da amostra',
+    example: 'AMO001',
+  })
+  @ApiResponse({ status: 200, description: 'Amostra encontrada' })
+  @ApiResponse({ status: 404, description: 'Amostra não encontrada' })
   findByCodigo(@Param('codigo') codigo: string) {
     return this.amostrasService.findByCodigo(codigo);
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Buscar amostra por ID' })
+  @ApiOperation({ summary: 'Obter amostra por ID' })
+  @ApiParam({
+    name: 'id',
+    description: 'ID da amostra',
+    format: 'uuid',
+  })
+  @ApiResponse({ status: 200, description: 'Amostra encontrada' })
+  @ApiResponse({ status: 404, description: 'Amostra não encontrada' })
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.amostrasService.findOne(id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Atualizar amostra' })
+  @ApiParam({
+    name: 'id',
+    description: 'ID da amostra',
+    format: 'uuid',
+  })
+  @ApiResponse({ status: 200, description: 'Amostra atualizada com sucesso' })
+  @ApiResponse({ status: 404, description: 'Amostra não encontrada' })
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateAmostraDto: UpdateAmostraDto,
   ) {
-    // TODO: Pegar usuarioId do token JWT
-    const usuarioId = '00000000-0000-0000-0000-000000000000';
-    return this.amostrasService.update(id, updateAmostraDto, usuarioId);
+    return this.amostrasService.update(id, updateAmostraDto);
+  }
+
+  @Patch(':id/toggle-status')
+  @ApiOperation({ summary: 'Alternar status da amostra (ativo/inativo)' })
+  @ApiParam({
+    name: 'id',
+    description: 'ID da amostra',
+    format: 'uuid',
+  })
+  @ApiResponse({ status: 200, description: 'Status alterado com sucesso' })
+  @ApiResponse({ status: 400, description: 'Amostra em revisão' })
+  @ApiResponse({ status: 404, description: 'Amostra não encontrada' })
+  toggleStatus(@Param('id', ParseUUIDPipe) id: string) {
+    return this.amostrasService.toggleStatus(id);
+  }
+
+  @Patch(':id/validar')
+  @ApiOperation({ summary: 'Validar amostra em revisão' })
+  @ApiParam({
+    name: 'id',
+    description: 'ID da amostra',
+    format: 'uuid',
+  })
+  @ApiResponse({ status: 200, description: 'Amostra validada com sucesso' })
+  @ApiResponse({ status: 400, description: 'Amostra não está em revisão' })
+  @ApiResponse({ status: 404, description: 'Amostra não encontrada' })
+  validar(@Param('id', ParseUUIDPipe) id: string) {
+    return this.amostrasService.validar(id);
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Remover amostra (soft delete)' })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Remover amostra' })
+  @ApiParam({
+    name: 'id',
+    description: 'ID da amostra',
+    format: 'uuid',
+  })
+  @ApiResponse({ status: 204, description: 'Amostra removida com sucesso' })
+  @ApiResponse({
+    status: 400,
+    description: 'Amostra vinculada a laboratórios',
+  })
+  @ApiResponse({ status: 404, description: 'Amostra não encontrada' })
   remove(@Param('id', ParseUUIDPipe) id: string) {
-    // TODO: Pegar usuarioId do token JWT
-    const usuarioId = '00000000-0000-0000-0000-000000000000';
-    return this.amostrasService.remove(id, usuarioId);
-  }
-
-  @Patch(':id/ativar')
-  @ApiOperation({ summary: 'Ativar amostra' })
-  activate(@Param('id', ParseUUIDPipe) id: string) {
-    // TODO: Pegar usuarioId do token JWT
-    const usuarioId = '00000000-0000-0000-0000-000000000000';
-    return this.amostrasService.activate(id, usuarioId);
-  }
-
-  @Patch(':id/desativar')
-  @ApiOperation({ summary: 'Desativar amostra' })
-  deactivate(@Param('id', ParseUUIDPipe) id: string) {
-    // TODO: Pegar usuarioId do token JWT
-    const usuarioId = '00000000-0000-0000-0000-000000000000';
-    return this.amostrasService.deactivate(id, usuarioId);
+    return this.amostrasService.remove(id);
   }
 }

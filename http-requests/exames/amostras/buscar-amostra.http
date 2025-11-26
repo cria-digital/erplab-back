@@ -10,83 +10,45 @@ Authorization: Bearer {{token}}
 #   "codigoInterno": "SANG-EDTA-001",
 #   "nome": "Sangue Total com EDTA",
 #   "descricao": "...",
-#   "tipoAmostra": "sangue",
-#   "recipientePadrao": "Tubo com EDTA (tampa roxa)",
-#   "volumeMinimo": 3,
-#   "volumeIdeal": 5,
-#   "requerJejum": true,
-#   "tempoJejum": 8,
-#   "temperaturaArmazenamento": "refrigerado",
-#   "prazoValidadeHoras": 48,
-#   "ativo": true,
-#   ...
+#   "status": "ativo",
+#   "laboratorioAmostras": [
+#     {
+#       "id": "uuid",
+#       "laboratorioId": "uuid",
+#       "validado": true,
+#       "dataValidacao": "2025-01-15T...",
+#       "observacoes": "Laboratório homologado",
+#       "laboratorio": {
+#         "id": "uuid",
+#         "empresa": { "nomeFantasia": "Lab Apoio XYZ" }
+#       }
+#     }
+#   ],
+#   "createdAt": "...",
+#   "updatedAt": "..."
 # }
 
 
-### Buscar por Código Interno
+### Buscar Amostra por Código Interno
 GET {{baseUrl}}/exames/amostras/codigo/SANG-EDTA-001
 Authorization: Bearer {{token}}
 
 ### Expected Response
 # Status: 200 OK
-# { ... dados da amostra ... }
-
-
-### Buscar Amostras por Tipo
-GET {{baseUrl}}/exames/amostras/tipo/sangue
-Authorization: Bearer {{token}}
-
-### Expected Response
-# Status: 200 OK
-# [ ... array de amostras do tipo sangue ... ]
-
-
-### Buscar Amostras por Tipo - Urina
-GET {{baseUrl}}/exames/amostras/tipo/urina
-Authorization: Bearer {{token}}
-
-
-### Buscar Amostras por Tipo - Fezes
-GET {{baseUrl}}/exames/amostras/tipo/fezes
-Authorization: Bearer {{token}}
-
-
-### Buscar Amostras por Tipo - Soro
-GET {{baseUrl}}/exames/amostras/tipo/soro
-Authorization: Bearer {{token}}
-
-
-### Buscar Amostras por Tipo - Plasma
-GET {{baseUrl}}/exames/amostras/tipo/plasma
-Authorization: Bearer {{token}}
-
-
-### Buscar Amostras por Tipo - Swab
-GET {{baseUrl}}/exames/amostras/tipo/swab
-Authorization: Bearer {{token}}
-
-
-### Obter Estatísticas de Amostras
-GET {{baseUrl}}/exames/amostras/stats
-Authorization: Bearer {{token}}
-
-### Expected Response
-# Status: 200 OK
 # {
-#   "total": 50,
-#   "ativas": 45,
-#   "inativas": 5,
-#   "porTipo": {
-#     "sangue": 15,
-#     "urina": 10,
-#     "fezes": 8,
-#     "soro": 12,
-#     "plasma": 5
-#   }
+#   "id": "uuid",
+#   "codigoInterno": "SANG-EDTA-001",
+#   "nome": "Sangue Total com EDTA",
+#   ...
 # }
 
 
-### Erro - Amostra Não Encontrada
+### Buscar Amostra por Código - Urina
+GET {{baseUrl}}/exames/amostras/codigo/URINA-T1-001
+Authorization: Bearer {{token}}
+
+
+### Erro - ID Não Encontrado
 GET {{baseUrl}}/exames/amostras/00000000-0000-0000-0000-000000000000
 Authorization: Bearer {{token}}
 
@@ -94,6 +56,32 @@ Authorization: Bearer {{token}}
 # Status: 404 Not Found
 # {
 #   "statusCode": 404,
-#   "message": "Amostra não encontrada",
+#   "message": "Amostra com ID 00000000-0000-0000-0000-000000000000 não encontrada",
 #   "error": "Not Found"
+# }
+
+
+### Erro - Código Não Encontrado
+GET {{baseUrl}}/exames/amostras/codigo/CODIGO-INEXISTENTE
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Amostra com código CODIGO-INEXISTENTE não encontrada",
+#   "error": "Not Found"
+# }
+
+
+### Erro - ID com Formato Inválido
+GET {{baseUrl}}/exames/amostras/id-invalido
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Validation failed (uuid is expected)",
+#   "error": "Bad Request"
 # }

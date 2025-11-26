@@ -1,4 +1,4 @@
-### Listar Todas as Amostras
+### Listar Todas as Amostras (Paginado)
 GET {{baseUrl}}/exames/amostras
 Authorization: Bearer {{token}}
 
@@ -10,26 +10,27 @@ Authorization: Bearer {{token}}
 #       "id": "uuid",
 #       "codigoInterno": "SANG-EDTA-001",
 #       "nome": "Sangue Total com EDTA",
-#       "tipoAmostra": "sangue",
-#       "ativo": true,
-#       ...
+#       "descricao": "...",
+#       "status": "ativo",
+#       "laboratorioAmostras": [
+#         {
+#           "id": "uuid",
+#           "laboratorioId": "uuid",
+#           "validado": true,
+#           "laboratorio": {
+#             "id": "uuid",
+#             "empresa": { "nomeFantasia": "Lab Apoio XYZ" }
+#           }
+#         }
+#       ],
+#       "createdAt": "...",
+#       "updatedAt": "..."
 #     }
 #   ],
-#   "meta": {
-#     "total": 10,
-#     "page": 1,
-#     "limit": 10
-#   }
+#   "total": 10,
+#   "page": 1,
+#   "totalPages": 1
 # }
-
-
-### Listar Apenas Amostras Ativas
-GET {{baseUrl}}/exames/amostras/ativas
-Authorization: Bearer {{token}}
-
-### Expected Response
-# Status: 200 OK
-# [ ... array de amostras ativas ... ]
 
 
 ### Listar com Paginação
@@ -40,28 +41,68 @@ Authorization: Bearer {{token}}
 # Status: 200 OK
 # {
 #   "data": [ ... ],
-#   "meta": {
-#     "total": 50,
-#     "page": 1,
-#     "limit": 5,
-#     "totalPages": 10
-#   }
+#   "total": 50,
+#   "page": 1,
+#   "totalPages": 10
 # }
 
 
-### Filtrar por Tipo de Amostra
-GET {{baseUrl}}/exames/amostras?tipoAmostra=sangue
+### Filtrar por Status (ativo, inativo, em_revisao)
+GET {{baseUrl}}/exames/amostras?status=ativo
 Authorization: Bearer {{token}}
 
 ### Expected Response
 # Status: 200 OK
-# Retorna apenas amostras do tipo sangue
+# Retorna apenas amostras com status "ativo"
 
 
-### Buscar por Termo (nome ou código)
-GET {{baseUrl}}/exames/amostras?search=EDTA
+### Filtrar por Status - Em Revisão
+GET {{baseUrl}}/exames/amostras?status=em_revisao
+Authorization: Bearer {{token}}
+
+
+### Filtrar por Status - Inativo
+GET {{baseUrl}}/exames/amostras?status=inativo
+Authorization: Bearer {{token}}
+
+
+### Buscar por Termo (nome, código ou descrição)
+GET {{baseUrl}}/exames/amostras?search=sangue
 Authorization: Bearer {{token}}
 
 ### Expected Response
 # Status: 200 OK
-# Retorna amostras que contenham "EDTA" no nome ou código
+# Retorna amostras que contenham "sangue" no nome, código ou descrição
+
+
+### Combinar Filtros (busca + status + paginação)
+GET {{baseUrl}}/exames/amostras?search=urina&status=ativo&page=1&limit=10
+Authorization: Bearer {{token}}
+
+
+### Listar Amostras por Status (endpoint específico)
+GET {{baseUrl}}/exames/amostras/status/ativo
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# Retorna array de amostras com status "ativo"
+
+
+### Listar Amostras em Revisão (endpoint específico)
+GET {{baseUrl}}/exames/amostras/status/em_revisao
+Authorization: Bearer {{token}}
+
+
+### Obter Estatísticas das Amostras
+GET {{baseUrl}}/exames/amostras/statistics
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "total": 50,
+#   "ativos": 40,
+#   "inativos": 5,
+#   "emRevisao": 5
+# }

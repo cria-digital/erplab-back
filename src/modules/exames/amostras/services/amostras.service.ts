@@ -5,34 +5,23 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like } from 'typeorm';
-import { Amostra, TipoAmostra } from '../entities/amostra.entity';
+import { Repository, DataSource } from 'typeorm';
+import { Amostra, StatusAmostra } from '../entities/amostra.entity';
+import { LaboratorioAmostra } from '../entities/laboratorio-amostra.entity';
 import { CreateAmostraDto } from '../dto/create-amostra.dto';
 import { UpdateAmostraDto } from '../dto/update-amostra.dto';
-
-export interface PaginatedAmostraResult {
-  data: Amostra[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-}
 
 @Injectable()
 export class AmostrasService {
   constructor(
     @InjectRepository(Amostra)
     private readonly amostraRepository: Repository<Amostra>,
+    @InjectRepository(LaboratorioAmostra)
+    private readonly laboratorioAmostraRepository: Repository<LaboratorioAmostra>,
+    private readonly dataSource: DataSource,
   ) {}
 
-  /**
-   * Criar nova amostra
-   */
-  async create(
-    createAmostraDto: CreateAmostraDto,
-    usuarioId: string,
-  ): Promise<Amostra> {
-    // Verificar se código já existe
+  async create(createAmostraDto: CreateAmostraDto): Promise<Amostra> {
     const existingAmostra = await this.amostraRepository.findOne({
       where: { codigoInterno: createAmostraDto.codigoInterno },
     });
@@ -43,68 +32,65 @@ export class AmostrasService {
       );
     }
 
-    // Validações
-    this.validateAmostraData(createAmostraDto);
-
-    const amostra = this.amostraRepository.create({
-      ...createAmostraDto,
-      criadoPor: usuarioId,
-      atualizadoPor: usuarioId,
-    });
-
-    return this.amostraRepository.save(amostra);
+    const amostra = this.amostraRepository.create(createAmostraDto);
+    return await this.amostraRepository.save(amostra);
   }
 
-  /**
-   * Listar amostras com paginação e filtros
-   */
   async findAll(
-    page: number = 1,
-    limit: number = 10,
+    page = 1,
+    limit = 10,
     search?: string,
-    tipoAmostra?: TipoAmostra,
-    ativo?: boolean,
-  ): Promise<PaginatedAmostraResult> {
-    const skip = (page - 1) * limit;
+    status?: StatusAmostra,
+  ): Promise<{
+    data: Amostra[];
+    total: number;
+    page: number;
+    totalPages: number;
+  }> {
+    const query = this.amostraRepository.createQueryBuilder('amostra');
 
-    const where: any = {};
+    // Trazer os vínculos com laboratórios e dados da empresa (nome)
+    query.leftJoinAndSelect(
+      'amostra.laboratorioAmostras',
+      'laboratorioAmostras',
+    );
+    query.leftJoinAndSelect('laboratorioAmostras.laboratorio', 'laboratorio');
+    query.leftJoinAndSelect('laboratorio.empresa', 'empresa');
 
     if (search) {
-      where.nome = Like(`%${search}%`);
+      query.where(
+        '(amostra.nome ILIKE :search OR amostra.codigo_interno ILIKE :search OR amostra.descricao ILIKE :search)',
+        { search: `%${search}%` },
+      );
     }
 
-    if (tipoAmostra) {
-      where.tipoAmostra = tipoAmostra;
+    if (status) {
+      query.andWhere('amostra.status = :status', { status });
     }
 
-    if (ativo !== undefined) {
-      where.ativo = ativo;
-    }
+    query.orderBy('amostra.nome', 'ASC');
 
-    const [data, total] = await this.amostraRepository.findAndCount({
-      where,
-      order: {
-        nome: 'ASC',
-      },
-      skip,
-      take: limit,
-    });
+    const [data, total] = await query
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
 
     return {
       data,
       total,
       page,
-      limit,
       totalPages: Math.ceil(total / limit),
     };
   }
 
-  /**
-   * Buscar amostra por ID
-   */
   async findOne(id: string): Promise<Amostra> {
     const amostra = await this.amostraRepository.findOne({
       where: { id },
+      relations: [
+        'laboratorioAmostras',
+        'laboratorioAmostras.laboratorio',
+        'laboratorioAmostras.laboratorio.empresa',
+      ],
     });
 
     if (!amostra) {
@@ -114,12 +100,14 @@ export class AmostrasService {
     return amostra;
   }
 
-  /**
-   * Buscar amostra por código interno
-   */
   async findByCodigo(codigoInterno: string): Promise<Amostra> {
     const amostra = await this.amostraRepository.findOne({
       where: { codigoInterno },
+      relations: [
+        'laboratorioAmostras',
+        'laboratorioAmostras.laboratorio',
+        'laboratorioAmostras.laboratorio.empresa',
+      ],
     });
 
     if (!amostra) {
@@ -131,181 +119,90 @@ export class AmostrasService {
     return amostra;
   }
 
-  /**
-   * Buscar amostras por tipo
-   */
-  async findByTipo(tipoAmostra: TipoAmostra): Promise<Amostra[]> {
-    return this.amostraRepository.find({
-      where: { tipoAmostra, ativo: true },
-      order: { nome: 'ASC' },
-    });
-  }
-
-  /**
-   * Buscar amostras ativas
-   */
-  async findAtivas(): Promise<Amostra[]> {
-    return this.amostraRepository.find({
-      where: { ativo: true },
-      order: { nome: 'ASC' },
-    });
-  }
-
-  /**
-   * Atualizar amostra
-   */
   async update(
     id: string,
     updateAmostraDto: UpdateAmostraDto,
-    usuarioId: string,
   ): Promise<Amostra> {
     const amostra = await this.findOne(id);
 
-    // Verificar conflito de código
-    if (
-      updateAmostraDto.codigoInterno &&
-      updateAmostraDto.codigoInterno !== amostra.codigoInterno
-    ) {
-      const existingAmostra = await this.amostraRepository.findOne({
-        where: { codigoInterno: updateAmostraDto.codigoInterno },
-      });
+    Object.assign(amostra, updateAmostraDto);
 
-      if (existingAmostra) {
-        throw new ConflictException(
-          `Amostra com código ${updateAmostraDto.codigoInterno} já existe`,
-        );
-      }
+    return await this.amostraRepository.save(amostra);
+  }
+
+  async remove(id: string): Promise<void> {
+    const amostra = await this.findOne(id);
+
+    // Usar transação para garantir atomicidade:
+    // 1. Remover todos os vínculos com laboratórios
+    // 2. Remover a amostra
+    await this.dataSource.transaction(async (manager) => {
+      // Remover todos os vínculos da amostra com laboratórios
+      await manager.delete(LaboratorioAmostra, { amostraId: id });
+
+      // Remover a amostra
+      await manager.remove(amostra);
+    });
+  }
+
+  async toggleStatus(id: string): Promise<Amostra> {
+    const amostra = await this.findOne(id);
+
+    if (amostra.status === StatusAmostra.ATIVO) {
+      amostra.status = StatusAmostra.INATIVO;
+    } else if (amostra.status === StatusAmostra.INATIVO) {
+      amostra.status = StatusAmostra.ATIVO;
+    } else {
+      throw new BadRequestException(
+        'Amostra em revisão não pode ter seu status alterado diretamente',
+      );
     }
 
-    // Validações
-    this.validateAmostraData({ ...amostra, ...updateAmostraDto });
+    return await this.amostraRepository.save(amostra);
+  }
 
-    Object.assign(amostra, {
-      ...updateAmostraDto,
-      atualizadoPor: usuarioId,
+  async validar(id: string): Promise<Amostra> {
+    const amostra = await this.findOne(id);
+
+    if (amostra.status !== StatusAmostra.EM_REVISAO) {
+      throw new BadRequestException(
+        'Apenas amostras em revisão podem ser validadas',
+      );
+    }
+
+    amostra.status = StatusAmostra.ATIVO;
+    return await this.amostraRepository.save(amostra);
+  }
+
+  async findByStatus(status: StatusAmostra): Promise<Amostra[]> {
+    return await this.amostraRepository.find({
+      where: { status },
+      order: { nome: 'ASC' },
     });
-
-    return this.amostraRepository.save(amostra);
   }
 
-  /**
-   * Remover amostra (soft delete)
-   */
-  async remove(id: string, usuarioId: string): Promise<void> {
-    const amostra = await this.findOne(id);
-
-    amostra.ativo = false;
-    amostra.atualizadoPor = usuarioId;
-
-    await this.amostraRepository.save(amostra);
-  }
-
-  /**
-   * Ativar amostra
-   */
-  async activate(id: string, usuarioId: string): Promise<Amostra> {
-    const amostra = await this.findOne(id);
-
-    amostra.ativo = true;
-    amostra.atualizadoPor = usuarioId;
-
-    return this.amostraRepository.save(amostra);
-  }
-
-  /**
-   * Desativar amostra
-   */
-  async deactivate(id: string, usuarioId: string): Promise<Amostra> {
-    const amostra = await this.findOne(id);
-
-    amostra.ativo = false;
-    amostra.atualizadoPor = usuarioId;
-
-    return this.amostraRepository.save(amostra);
-  }
-
-  /**
-   * Estatísticas de amostras
-   */
-  async getStats() {
-    const [total, ativas, inativas, porTipo] = await Promise.all([
+  async getStatistics(): Promise<{
+    total: number;
+    ativos: number;
+    inativos: number;
+    emRevisao: number;
+  }> {
+    const [total, ativos, inativos, emRevisao] = await Promise.all([
       this.amostraRepository.count(),
-      this.amostraRepository.count({ where: { ativo: true } }),
-      this.amostraRepository.count({ where: { ativo: false } }),
-      this.amostraRepository
-        .createQueryBuilder('amostra')
-        .select('amostra.tipo_amostra', 'tipo')
-        .addSelect('COUNT(*)', 'quantidade')
-        .groupBy('amostra.tipo_amostra')
-        .getRawMany(),
+      this.amostraRepository.count({ where: { status: StatusAmostra.ATIVO } }),
+      this.amostraRepository.count({
+        where: { status: StatusAmostra.INATIVO },
+      }),
+      this.amostraRepository.count({
+        where: { status: StatusAmostra.EM_REVISAO },
+      }),
     ]);
 
     return {
       total,
-      ativas,
-      inativas,
-      porTipo: porTipo.reduce(
-        (acc, item) => {
-          acc[item.tipo] = parseInt(item.quantidade);
-          return acc;
-        },
-        {} as Record<string, number>,
-      ),
+      ativos,
+      inativos,
+      emRevisao,
     };
-  }
-
-  /**
-   * Validar dados da amostra
-   */
-  private validateAmostraData(data: Partial<Amostra>): void {
-    // Volume mínimo <= Volume ideal
-    if (
-      data.volumeMinimo !== undefined &&
-      data.volumeIdeal !== undefined &&
-      data.volumeMinimo > data.volumeIdeal
-    ) {
-      throw new BadRequestException(
-        'Volume mínimo não pode ser maior que volume ideal',
-      );
-    }
-
-    // Temperatura mínima < Temperatura máxima
-    if (
-      data.temperaturaMin !== undefined &&
-      data.temperaturaMax !== undefined &&
-      data.temperaturaMin >= data.temperaturaMax
-    ) {
-      throw new BadRequestException(
-        'Temperatura mínima deve ser menor que temperatura máxima',
-      );
-    }
-
-    // Se requer jejum, tempo deve ser > 0
-    if (data.requerJejum && (!data.tempoJejum || data.tempoJejum <= 0)) {
-      throw new BadRequestException(
-        'Tempo de jejum deve ser maior que zero quando jejum é obrigatório',
-      );
-    }
-
-    // Se requer centrifugação, tempo e rotação obrigatórios
-    if (data.requerCentrifugacao) {
-      if (!data.tempoCentrifugacao || data.tempoCentrifugacao <= 0) {
-        throw new BadRequestException(
-          'Tempo de centrifugação obrigatório quando centrifugação é necessária',
-        );
-      }
-      if (!data.rotacaoCentrifugacao || data.rotacaoCentrifugacao <= 0) {
-        throw new BadRequestException(
-          'Rotação de centrifugação obrigatória quando centrifugação é necessária',
-        );
-      }
-    }
-
-    // Prazo validade > 0
-    if (data.prazoValidadeHoras !== undefined && data.prazoValidadeHoras <= 0) {
-      throw new BadRequestException(
-        'Prazo de validade deve ser maior que zero',
-      );
-    }
   }
 }

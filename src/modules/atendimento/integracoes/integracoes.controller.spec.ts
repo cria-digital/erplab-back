@@ -6,6 +6,7 @@ import { IntegracoesService } from './integracoes.service';
 import { CreateIntegracaoDto } from './dto/create-integracao.dto';
 import { UpdateIntegracaoDto } from './dto/update-integracao.dto';
 import { TipoIntegracao, StatusIntegracao } from './entities/integracao.entity';
+import { PaginationDto } from '../../infraestrutura/common/dto/pagination.dto';
 
 describe('IntegracoesController', () => {
   let controller: IntegracoesController;
@@ -102,66 +103,129 @@ describe('IntegracoesController', () => {
   });
 
   describe('findAll', () => {
-    it('should return all integrations', async () => {
-      const integracoes = [mockIntegracao];
-      mockIntegracoesService.findAll.mockResolvedValue(integracoes);
+    it('should return all integrations paginated', async () => {
+      const paginationDto: PaginationDto = { page: 1, limit: 10 };
+      const paginatedResult = {
+        data: [mockIntegracao],
+        meta: {
+          total: 1,
+          page: 1,
+          limit: 10,
+          totalPages: 1,
+          hasPrevPage: false,
+          hasNextPage: false,
+        },
+      };
+      mockIntegracoesService.findAll.mockResolvedValue(paginatedResult);
 
-      const result = await controller.findAll();
+      const result = await controller.findAll(paginationDto);
 
-      expect(service.findAll).toHaveBeenCalled();
-      expect(result).toEqual(integracoes);
+      expect(service.findAll).toHaveBeenCalledWith(paginationDto);
+      expect(result).toEqual(paginatedResult);
     });
   });
 
   describe('findAtivos', () => {
-    it('should return active integrations', async () => {
-      const integracoes = [mockIntegracao];
-      mockIntegracoesService.findAtivos.mockResolvedValue(integracoes);
+    it('should return active integrations paginated', async () => {
+      const paginationDto: PaginationDto = { page: 1, limit: 10 };
+      const paginatedResult = {
+        data: [mockIntegracao],
+        meta: {
+          total: 1,
+          page: 1,
+          limit: 10,
+          totalPages: 1,
+          hasPrevPage: false,
+          hasNextPage: false,
+        },
+      };
+      mockIntegracoesService.findAtivos.mockResolvedValue(paginatedResult);
 
-      const result = await controller.findAtivos();
+      const result = await controller.findAtivos(paginationDto);
 
-      expect(service.findAtivos).toHaveBeenCalled();
-      expect(result).toEqual(integracoes);
+      expect(service.findAtivos).toHaveBeenCalledWith(paginationDto);
+      expect(result).toEqual(paginatedResult);
     });
   });
 
   describe('findByTipo', () => {
-    it('should return integrations by type', async () => {
-      const integracoes = [mockIntegracao];
-      mockIntegracoesService.findByTipo.mockResolvedValue(integracoes);
+    it('should return integrations by type paginated', async () => {
+      const paginationDto: PaginationDto = { page: 1, limit: 10 };
+      const paginatedResult = {
+        data: [mockIntegracao],
+        meta: {
+          total: 1,
+          page: 1,
+          limit: 10,
+          totalPages: 1,
+          hasPrevPage: false,
+          hasNextPage: false,
+        },
+      };
+      mockIntegracoesService.findByTipo.mockResolvedValue(paginatedResult);
 
       const result = await controller.findByTipo(
         TipoIntegracao.LABORATORIO_APOIO,
+        paginationDto,
       );
 
       expect(service.findByTipo).toHaveBeenCalledWith(
         TipoIntegracao.LABORATORIO_APOIO,
+        paginationDto,
       );
-      expect(result).toEqual(integracoes);
+      expect(result).toEqual(paginatedResult);
     });
   });
 
   describe('findByStatus', () => {
-    it('should return integrations by status', async () => {
-      const integracoes = [mockIntegracao];
-      mockIntegracoesService.findByStatus.mockResolvedValue(integracoes);
+    it('should return integrations by status paginated', async () => {
+      const paginationDto: PaginationDto = { page: 1, limit: 10 };
+      const paginatedResult = {
+        data: [mockIntegracao],
+        meta: {
+          total: 1,
+          page: 1,
+          limit: 10,
+          totalPages: 1,
+          hasPrevPage: false,
+          hasNextPage: false,
+        },
+      };
+      mockIntegracoesService.findByStatus.mockResolvedValue(paginatedResult);
 
-      const result = await controller.findByStatus(StatusIntegracao.ATIVA);
+      const result = await controller.findByStatus(
+        StatusIntegracao.ATIVA,
+        paginationDto,
+      );
 
-      expect(service.findByStatus).toHaveBeenCalledWith(StatusIntegracao.ATIVA);
-      expect(result).toEqual(integracoes);
+      expect(service.findByStatus).toHaveBeenCalledWith(
+        StatusIntegracao.ATIVA,
+        paginationDto,
+      );
+      expect(result).toEqual(paginatedResult);
     });
   });
 
   describe('search', () => {
-    it('should search integrations', async () => {
-      const integracoes = [mockIntegracao];
-      mockIntegracoesService.search.mockResolvedValue(integracoes);
+    it('should search integrations paginated', async () => {
+      const paginationDto: PaginationDto = { page: 1, limit: 10 };
+      const paginatedResult = {
+        data: [mockIntegracao],
+        meta: {
+          total: 1,
+          page: 1,
+          limit: 10,
+          totalPages: 1,
+          hasPrevPage: false,
+          hasNextPage: false,
+        },
+      };
+      mockIntegracoesService.search.mockResolvedValue(paginatedResult);
 
-      const result = await controller.search('ABC');
+      const result = await controller.search('ABC', paginationDto);
 
-      expect(service.search).toHaveBeenCalledWith('ABC');
-      expect(result).toEqual(integracoes);
+      expect(service.search).toHaveBeenCalledWith('ABC', paginationDto);
+      expect(result).toEqual(paginatedResult);
     });
   });
 

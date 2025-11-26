@@ -193,13 +193,23 @@ export class CreateExameDto {
   unidade_medida_id?: string;
 
   @ApiProperty({
-    description: 'ID da alternativa do campo amostra',
+    description: 'ID da amostra biológica necessária (tabela amostras)',
     example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
     required: false,
   })
   @IsString()
   @IsOptional()
   amostra_id?: string;
+
+  @ApiProperty({
+    description:
+      'ID da alternativa do campo amostra a enviar (soro, plasma, etc)',
+    example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  amostra_enviar_id?: string;
 
   @ApiProperty({
     description: 'ID da alternativa do campo tipo_recipiente',

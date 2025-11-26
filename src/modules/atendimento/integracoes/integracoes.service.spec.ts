@@ -37,6 +37,7 @@ describe('IntegracoesService', () => {
     save: jest.fn(),
     find: jest.fn(),
     findOne: jest.fn(),
+    findAndCount: jest.fn(),
     remove: jest.fn(),
     createQueryBuilder: jest.fn(() => ({
       where: jest.fn().mockReturnThis(),
@@ -47,8 +48,11 @@ describe('IntegracoesService', () => {
       select: jest.fn().mockReturnThis(),
       addSelect: jest.fn().mockReturnThis(),
       groupBy: jest.fn().mockReturnThis(),
+      skip: jest.fn().mockReturnThis(),
+      take: jest.fn().mockReturnThis(),
       getRawMany: jest.fn(),
       getMany: jest.fn(),
+      getManyAndCount: jest.fn(),
       getOne: jest.fn(),
       getCount: jest.fn(),
     })),
@@ -106,16 +110,21 @@ describe('IntegracoesService', () => {
   });
 
   describe('findAll', () => {
-    it('should return an array of integrations', async () => {
-      mockRepository.find.mockResolvedValue([mockIntegracao]);
+    it('should return paginated array of integrations', async () => {
+      mockRepository.findAndCount.mockResolvedValue([[mockIntegracao], 1]);
 
-      const result = await service.findAll();
+      const result = await service.findAll({ page: 1, limit: 10 });
 
-      expect(mockRepository.find).toHaveBeenCalledWith({
+      expect(mockRepository.findAndCount).toHaveBeenCalledWith({
         relations: ['configuracoes'],
         order: { nomeInstancia: 'ASC' },
+        skip: 0,
+        take: 10,
       });
-      expect(result).toEqual([mockIntegracao]);
+      expect(result.data).toEqual([mockIntegracao]);
+      expect(result.meta.total).toBe(1);
+      expect(result.meta.page).toBe(1);
+      expect(result.meta.limit).toBe(10);
     });
   });
 
@@ -164,17 +173,20 @@ describe('IntegracoesService', () => {
   });
 
   describe('findAtivos', () => {
-    it('should return only active integrations', async () => {
-      mockRepository.find.mockResolvedValue([mockIntegracao]);
+    it('should return only active integrations paginated', async () => {
+      mockRepository.findAndCount.mockResolvedValue([[mockIntegracao], 1]);
 
-      const result = await service.findAtivos();
+      const result = await service.findAtivos({ page: 1, limit: 10 });
 
-      expect(mockRepository.find).toHaveBeenCalledWith({
+      expect(mockRepository.findAndCount).toHaveBeenCalledWith({
         where: { ativo: true },
         relations: ['configuracoes'],
         order: { nomeInstancia: 'ASC' },
+        skip: 0,
+        take: 10,
       });
-      expect(result).toEqual([mockIntegracao]);
+      expect(result.data).toEqual([mockIntegracao]);
+      expect(result.meta.total).toBe(1);
     });
   });
 

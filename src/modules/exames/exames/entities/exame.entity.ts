@@ -18,6 +18,7 @@ import { LaboratorioApoio } from './laboratorio-apoio.entity';
 import { AlternativaCampoFormulario } from '../../../infraestrutura/campos-formulario/entities/alternativa-campo-formulario.entity';
 import { Telemedicina } from '../../../relacionamento/telemedicina/entities/telemedicina.entity';
 import { UnidadeSaude } from '../../../cadastros/unidade-saude/entities/unidade-saude.entity';
+import { Amostra } from '../../amostras/entities/amostra.entity';
 
 @Entity('exames')
 @Index(['codigo_interno'])
@@ -189,9 +190,15 @@ export class Exame {
   // Material e preparo
   @Column({
     nullable: true,
-    comment: 'FK para alternativa do campo amostra',
+    comment: 'FK para tabela amostras (amostra biológica necessária)',
   })
   amostra_id: string;
+
+  @Column({
+    nullable: true,
+    comment: 'FK para alternativa do campo amostra_enviar (soro, plasma, etc)',
+  })
+  amostra_enviar_id: string;
 
   @Column({
     nullable: true,
@@ -435,9 +442,13 @@ export class Exame {
   @JoinColumn({ name: 'unidade_medida_id' })
   unidadeMedidaAlternativa?: AlternativaCampoFormulario;
 
-  @ManyToOne(() => AlternativaCampoFormulario, { eager: false })
+  @ManyToOne(() => Amostra, { eager: false })
   @JoinColumn({ name: 'amostra_id' })
-  amostraAlternativa?: AlternativaCampoFormulario;
+  amostra?: Amostra;
+
+  @ManyToOne(() => AlternativaCampoFormulario, { eager: false })
+  @JoinColumn({ name: 'amostra_enviar_id' })
+  amostraEnviarAlternativa?: AlternativaCampoFormulario;
 
   @ManyToOne(() => AlternativaCampoFormulario, { eager: false })
   @JoinColumn({ name: 'tipo_recipiente_id' })
