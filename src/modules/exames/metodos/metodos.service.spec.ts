@@ -170,7 +170,11 @@ describe('MetodosService', () => {
       expect(result).toEqual(metodo);
       expect(mockRepository.findOne).toHaveBeenCalledWith({
         where: { id: 'uuid' },
-        relations: ['laboratorioMetodos', 'laboratorioMetodos.laboratorio'],
+        relations: [
+          'laboratorioMetodos',
+          'laboratorioMetodos.laboratorio',
+          'laboratorioMetodos.laboratorio.empresa',
+        ],
       });
     });
 
@@ -196,7 +200,11 @@ describe('MetodosService', () => {
       expect(result).toEqual(metodo);
       expect(mockRepository.findOne).toHaveBeenCalledWith({
         where: { codigoInterno: 'MET001' },
-        relations: ['laboratorioMetodos', 'laboratorioMetodos.laboratorio'],
+        relations: [
+          'laboratorioMetodos',
+          'laboratorioMetodos.laboratorio',
+          'laboratorioMetodos.laboratorio.empresa',
+        ],
       });
     });
 

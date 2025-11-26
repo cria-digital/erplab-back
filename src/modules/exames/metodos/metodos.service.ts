@@ -49,9 +49,10 @@ export class MetodosService {
   }> {
     const query = this.metodoRepository.createQueryBuilder('metodo');
 
-    // Trazer os vínculos com laboratórios
+    // Trazer os vínculos com laboratórios e dados da empresa (nome)
     query.leftJoinAndSelect('metodo.laboratorioMetodos', 'laboratorioMetodos');
     query.leftJoinAndSelect('laboratorioMetodos.laboratorio', 'laboratorio');
+    query.leftJoinAndSelect('laboratorio.empresa', 'empresa');
 
     if (search) {
       query.where(
@@ -82,7 +83,11 @@ export class MetodosService {
   async findOne(id: string): Promise<Metodo> {
     const metodo = await this.metodoRepository.findOne({
       where: { id },
-      relations: ['laboratorioMetodos', 'laboratorioMetodos.laboratorio'],
+      relations: [
+        'laboratorioMetodos',
+        'laboratorioMetodos.laboratorio',
+        'laboratorioMetodos.laboratorio.empresa',
+      ],
     });
 
     if (!metodo) {
@@ -95,7 +100,11 @@ export class MetodosService {
   async findByCodigo(codigoInterno: string): Promise<Metodo> {
     const metodo = await this.metodoRepository.findOne({
       where: { codigoInterno },
-      relations: ['laboratorioMetodos', 'laboratorioMetodos.laboratorio'],
+      relations: [
+        'laboratorioMetodos',
+        'laboratorioMetodos.laboratorio',
+        'laboratorioMetodos.laboratorio.empresa',
+      ],
     });
 
     if (!metodo) {
