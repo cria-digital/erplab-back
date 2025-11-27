@@ -1,27 +1,104 @@
 ### ==========================================
 ### LISTAR INTEGRAÇÕES
-### Buscar integrações cadastradas
+### Buscar integrações cadastradas com filtros e paginação
 ### ==========================================
 
-### Listar TODAS as integrações
+### ==========================================
+### LISTAGEM COM FILTROS COMBINADOS (NOVO!)
+### Endpoint principal com todos os filtros disponíveis
+### ==========================================
+
+### Listar TODAS as integrações (sem filtros, página 1, limite 20)
 GET {{baseUrl}}/atendimento/integracoes
 Authorization: Bearer {{token}}
 
 ### Expected Response: 200 OK
-# [
-#   {
-#     "id": "uuid-123",
-#     "template_slug": "hermes-pardini",
-#     "codigo_identificacao": "HP-CENTRO-001",
-#     "nome_instancia": "Hermes Pardini - Unidade Centro",
-#     "tipos_contexto": ["LABORATORIO_APOIO"],
-#     "status": "ativa",
-#     "ativo": true,
-#     "configuracoes": [...]
-#   }
-# ]
+# {
+#   "data": [...],
+#   "total": 10,
+#   "page": 1,
+#   "limit": 20,
+#   "totalPages": 1
+# }
 
 ###
+
+### Listar com paginação customizada
+GET {{baseUrl}}/atendimento/integracoes?page=1&limit=10
+Authorization: Bearer {{token}}
+
+###
+
+### Filtrar por termo de busca (searchTerm)
+### Busca em: nome_instancia, descricao, codigo_identificacao
+GET {{baseUrl}}/atendimento/integracoes?searchTerm=pardini
+Authorization: Bearer {{token}}
+
+###
+
+### Filtrar por status
+### Valores: ativa, inativa, em_configuracao, erro, manutencao
+GET {{baseUrl}}/atendimento/integracoes?status=ativa
+Authorization: Bearer {{token}}
+
+###
+
+### Filtrar por tipo/contexto
+### Valores: laboratorio_apoio, convenios, telemedicina, banco, gateway_pagamento, nfse, etc
+GET {{baseUrl}}/atendimento/integracoes?tipo=laboratorio_apoio
+Authorization: Bearer {{token}}
+
+###
+
+### Filtrar por ativo (true/false)
+GET {{baseUrl}}/atendimento/integracoes?ativo=true
+Authorization: Bearer {{token}}
+
+###
+
+### Filtrar por templateSlug
+GET {{baseUrl}}/atendimento/integracoes?templateSlug=hermes-pardini
+Authorization: Bearer {{token}}
+
+###
+
+### ==========================================
+### COMBINAÇÃO DE FILTROS (Exemplos práticos)
+### ==========================================
+
+### Buscar integrações ativas de laboratório apoio
+GET {{baseUrl}}/atendimento/integracoes?searchTerm=pardini&status=ativa&page=1&limit=10
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar por tipo e status com paginação
+GET {{baseUrl}}/atendimento/integracoes?tipo=laboratorio_apoio&status=ativa&page=1&limit=20
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar por termo + tipo + ativo
+GET {{baseUrl}}/atendimento/integracoes?searchTerm=centro&tipo=laboratorio_apoio&ativo=true
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar apenas inativos para revisão
+GET {{baseUrl}}/atendimento/integracoes?ativo=false&status=inativa
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar integrações em configuração
+GET {{baseUrl}}/atendimento/integracoes?status=em_configuracao&page=1&limit=50
+Authorization: Bearer {{token}}
+
+###
+
+### ==========================================
+### ENDPOINTS ESPECÍFICOS (mantidos para retrocompatibilidade)
+### ==========================================
 
 ### Listar apenas integrações ATIVAS
 GET {{baseUrl}}/atendimento/integracoes/ativos
@@ -71,6 +148,10 @@ Authorization: Bearer {{token}}
 
 ###
 
+### ==========================================
+### BUSCAS ESPECÍFICAS
+### ==========================================
+
 ### Buscar por ID (substitua {id} pelo UUID real)
 # @name getIntegracaoById
 GET {{baseUrl}}/atendimento/integracoes/{id}
@@ -84,7 +165,7 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Buscar por termo (nome, descrição, código)
+### Buscar por termo (endpoint legado - usar searchTerm no principal)
 GET {{baseUrl}}/atendimento/integracoes/search?q=hermes
 Authorization: Bearer {{token}}
 
@@ -96,7 +177,7 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Buscar por status
+### Buscar por status (endpoint legado)
 GET {{baseUrl}}/atendimento/integracoes/status/ativa
 Authorization: Bearer {{token}}
 
@@ -114,11 +195,9 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Buscar por unidade de saúde (substitua {unidadeId})
-GET {{baseUrl}}/atendimento/integracoes/unidade/{unidadeId}
-Authorization: Bearer {{token}}
-
-###
+### ==========================================
+### ESTATÍSTICAS
+### ==========================================
 
 ### Obter estatísticas
 GET {{baseUrl}}/atendimento/integracoes/estatisticas
@@ -127,18 +206,8 @@ Authorization: Bearer {{token}}
 ### Expected Response: 200 OK
 # {
 #   "total": 10,
-#   "ativas": 8,
-#   "inativas": 2,
-#   "em_configuracao": 3,
-#   "por_template": {
-#     "hermes-pardini": 5,
-#     "santander": 3,
-#     "nfse": 2
-#   },
-#   "por_contexto": {
-#     "LABORATORIO_APOIO": 5,
-#     "CONVENIOS": 4,
-#     "BANCO": 3,
-#     "NFSE": 2
-#   }
+#   "ativos": 8,
+#   "inativos": 2,
+#   "porTemplate": [...],
+#   "porStatus": [...]
 # }

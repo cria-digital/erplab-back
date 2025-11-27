@@ -111,20 +111,31 @@ describe('IntegracoesService', () => {
 
   describe('findAll', () => {
     it('should return paginated array of integrations', async () => {
-      mockRepository.findAndCount.mockResolvedValue([[mockIntegracao], 1]);
+      const mockQueryBuilder = {
+        where: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
+        orWhere: jest.fn().mockReturnThis(),
+        leftJoinAndSelect: jest.fn().mockReturnThis(),
+        orderBy: jest.fn().mockReturnThis(),
+        select: jest.fn().mockReturnThis(),
+        addSelect: jest.fn().mockReturnThis(),
+        groupBy: jest.fn().mockReturnThis(),
+        skip: jest.fn().mockReturnThis(),
+        take: jest.fn().mockReturnThis(),
+        getRawMany: jest.fn(),
+        getMany: jest.fn(),
+        getManyAndCount: jest.fn().mockResolvedValue([[mockIntegracao], 1]),
+        getOne: jest.fn(),
+        getCount: jest.fn(),
+      };
+      mockRepository.createQueryBuilder.mockReturnValue(mockQueryBuilder);
 
       const result = await service.findAll({ page: 1, limit: 10 });
 
-      expect(mockRepository.findAndCount).toHaveBeenCalledWith({
-        relations: ['configuracoes'],
-        order: { nomeInstancia: 'ASC' },
-        skip: 0,
-        take: 10,
-      });
       expect(result.data).toEqual([mockIntegracao]);
-      expect(result.meta.total).toBe(1);
-      expect(result.meta.page).toBe(1);
-      expect(result.meta.limit).toBe(10);
+      expect(result.total).toBe(1);
+      expect(result.page).toBe(1);
+      expect(result.limit).toBe(10);
     });
   });
 
@@ -186,7 +197,7 @@ describe('IntegracoesService', () => {
         take: 10,
       });
       expect(result.data).toEqual([mockIntegracao]);
-      expect(result.meta.total).toBe(1);
+      expect(result.total).toBe(1);
     });
   });
 

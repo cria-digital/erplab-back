@@ -15,10 +15,31 @@ import {
 } from './entities/integracao.entity';
 import { IntegracaoConfiguracao } from './entities/integracao-configuracao.entity';
 import { getSchemaBySlug } from './schemas/index';
-import {
-  PaginationDto,
-  PaginatedResultDto,
-} from '../../infraestrutura/common/dto/pagination.dto';
+import { IntegracaoFiltersDto } from './dto/integracao-filters.dto';
+import { PaginationDto } from '../../infraestrutura/common/dto/pagination.dto';
+
+export interface PaginatedResult<T> {
+  data: T[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+function toPaginatedResult<T>(
+  data: T[],
+  total: number,
+  page: number,
+  limit: number,
+): PaginatedResult<T> {
+  return {
+    data,
+    total,
+    page,
+    limit,
+    totalPages: Math.ceil(total / limit) || 0,
+  };
+}
 
 @Injectable()
 export class IntegracoesService {
@@ -123,23 +144,71 @@ export class IntegracoesService {
   }
 
   /**
-   * Lista todas as integrações com configurações e paginação
+   * Lista todas as integrações com configurações, paginação e filtros
    */
   async findAll(
-    paginationDto?: PaginationDto,
-  ): Promise<PaginatedResultDto<Integracao>> {
-    const page = paginationDto?.page || 1;
-    const limit = paginationDto?.limit || 10;
+    filters: IntegracaoFiltersDto = {},
+  ): Promise<PaginatedResult<Integracao>> {
+    const {
+      page = 1,
+      limit = 20,
+      searchTerm,
+      status,
+      tipo,
+      ativo,
+      templateSlug,
+    } = filters;
     const skip = (page - 1) * limit;
 
-    const [data, total] = await this.integracaoRepository.findAndCount({
-      relations: ['configuracoes'],
-      order: { nomeInstancia: 'ASC' },
-      skip,
-      take: limit,
-    });
+    let query = this.integracaoRepository
+      .createQueryBuilder('integracao')
+      .leftJoinAndSelect('integracao.configuracoes', 'configuracoes');
 
-    return new PaginatedResultDto(data, total, page, limit);
+    // Filtro por termo de busca (nome, descrição ou código)
+    if (searchTerm) {
+      query = query.andWhere(
+        '(integracao.nome_instancia ILIKE :termo OR integracao.descricao ILIKE :termo OR integracao.codigo_identificacao ILIKE :termo)',
+        { termo: `%${searchTerm}%` },
+      );
+    }
+
+    // Filtro por status
+    if (status) {
+      query = query.andWhere('integracao.status = :status', { status });
+    }
+
+    // Filtro por tipo/contexto
+    if (tipo) {
+      query = query.andWhere(':tipo = ANY(integracao.tipos_contexto)', {
+        tipo,
+      });
+    }
+
+    // Filtro por ativo
+    if (ativo !== undefined) {
+      query = query.andWhere('integracao.ativo = :ativo', { ativo });
+    }
+
+    // Filtro por template
+    if (templateSlug) {
+      query = query.andWhere('integracao.template_slug = :templateSlug', {
+        templateSlug,
+      });
+    }
+
+    const [data, total] = await query
+      .orderBy('integracao.nomeInstancia', 'ASC')
+      .skip(skip)
+      .take(limit)
+      .getManyAndCount();
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit) || 0,
+    };
   }
 
   /**
@@ -147,9 +216,9 @@ export class IntegracoesService {
    */
   async findAtivos(
     paginationDto?: PaginationDto,
-  ): Promise<PaginatedResultDto<Integracao>> {
+  ): Promise<PaginatedResult<Integracao>> {
     const page = paginationDto?.page || 1;
-    const limit = paginationDto?.limit || 10;
+    const limit = paginationDto?.limit || 20;
     const skip = (page - 1) * limit;
 
     const [data, total] = await this.integracaoRepository.findAndCount({
@@ -160,7 +229,7 @@ export class IntegracoesService {
       take: limit,
     });
 
-    return new PaginatedResultDto(data, total, page, limit);
+    return toPaginatedResult(data, total, page, limit);
   }
 
   /**
@@ -169,9 +238,9 @@ export class IntegracoesService {
   async findByTipo(
     tipo: TipoIntegracao,
     paginationDto?: PaginationDto,
-  ): Promise<PaginatedResultDto<Integracao>> {
+  ): Promise<PaginatedResult<Integracao>> {
     const page = paginationDto?.page || 1;
-    const limit = paginationDto?.limit || 10;
+    const limit = paginationDto?.limit || 20;
     const skip = (page - 1) * limit;
 
     // Converter enum key para valor (LABORATORIO_APOIO -> laboratorio_apoio)
@@ -181,12 +250,12 @@ export class IntegracoesService {
       .createQueryBuilder('integracao')
       .leftJoinAndSelect('integracao.configuracoes', 'configuracoes')
       .where(':tipo = ANY(integracao.tipos_contexto)', { tipo: tipoValue })
-      .orderBy('integracao.nome_instancia', 'ASC')
+      .orderBy('integracao.nomeInstancia', 'ASC')
       .skip(skip)
       .take(limit)
       .getManyAndCount();
 
-    return new PaginatedResultDto(data, total, page, limit);
+    return toPaginatedResult(data, total, page, limit);
   }
 
   /**
@@ -195,9 +264,9 @@ export class IntegracoesService {
   async findByStatus(
     status: StatusIntegracao,
     paginationDto?: PaginationDto,
-  ): Promise<PaginatedResultDto<Integracao>> {
+  ): Promise<PaginatedResult<Integracao>> {
     const page = paginationDto?.page || 1;
-    const limit = paginationDto?.limit || 10;
+    const limit = paginationDto?.limit || 20;
     const skip = (page - 1) * limit;
 
     const [data, total] = await this.integracaoRepository.findAndCount({
@@ -208,7 +277,7 @@ export class IntegracoesService {
       take: limit,
     });
 
-    return new PaginatedResultDto(data, total, page, limit);
+    return toPaginatedResult(data, total, page, limit);
   }
 
   /**
@@ -235,9 +304,9 @@ export class IntegracoesService {
   async search(
     termo: string,
     paginationDto?: PaginationDto,
-  ): Promise<PaginatedResultDto<Integracao>> {
+  ): Promise<PaginatedResult<Integracao>> {
     const page = paginationDto?.page || 1;
-    const limit = paginationDto?.limit || 10;
+    const limit = paginationDto?.limit || 20;
     const skip = (page - 1) * limit;
 
     const [data, total] = await this.integracaoRepository
@@ -248,12 +317,12 @@ export class IntegracoesService {
       .orWhere('integracao.codigo_identificacao ILIKE :termo', {
         termo: `%${termo}%`,
       })
-      .orderBy('integracao.nome_instancia', 'ASC')
+      .orderBy('integracao.nomeInstancia', 'ASC')
       .skip(skip)
       .take(limit)
       .getManyAndCount();
 
-    return new PaginatedResultDto(data, total, page, limit);
+    return toPaginatedResult(data, total, page, limit);
   }
 
   /**

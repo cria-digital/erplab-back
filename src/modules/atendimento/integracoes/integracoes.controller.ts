@@ -29,6 +29,7 @@ import {
   getSchemasByTipo,
 } from './schemas/index';
 import { PaginationDto } from '../../infraestrutura/common/dto/pagination.dto';
+import { IntegracaoFiltersDto } from './dto/integracao-filters.dto';
 
 @ApiTags('Integrações')
 @ApiBearerAuth()
@@ -47,7 +48,11 @@ export class IntegracoesController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Listar todas as integrações' })
+  @ApiOperation({
+    summary: 'Listar integrações',
+    description:
+      'Lista todas as integrações com filtros opcionais e paginação.',
+  })
   @ApiQuery({
     name: 'page',
     required: false,
@@ -58,11 +63,57 @@ export class IntegracoesController {
     name: 'limit',
     required: false,
     type: Number,
-    description: 'Itens por página (padrão: 10, máximo: 100)',
+    description: 'Itens por página (padrão: 20, máximo: 100)',
   })
-  @ApiResponse({ status: 200, description: 'Lista de integrações paginada' })
-  findAll(@Query() paginationDto: PaginationDto) {
-    return this.integracoesService.findAll(paginationDto);
+  @ApiQuery({
+    name: 'searchTerm',
+    required: false,
+    type: String,
+    description: 'Termo de busca (nome, descrição ou código)',
+  })
+  @ApiQuery({
+    name: 'status',
+    required: false,
+    enum: StatusIntegracao,
+    description: 'Filtrar por status da integração',
+  })
+  @ApiQuery({
+    name: 'tipo',
+    required: false,
+    enum: TipoIntegracao,
+    description: 'Filtrar por tipo/contexto da integração',
+  })
+  @ApiQuery({
+    name: 'ativo',
+    required: false,
+    type: Boolean,
+    description: 'Filtrar por status ativo/inativo',
+  })
+  @ApiQuery({
+    name: 'templateSlug',
+    required: false,
+    type: String,
+    description: 'Filtrar por template/slug da integração (ex: hermes-pardini)',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de integrações paginada',
+    schema: {
+      type: 'object',
+      properties: {
+        data: {
+          type: 'array',
+          items: { $ref: '#/components/schemas/Integracao' },
+        },
+        total: { type: 'number', example: 0 },
+        page: { type: 'number', example: 1 },
+        limit: { type: 'number', example: 20 },
+        totalPages: { type: 'number', example: 0 },
+      },
+    },
+  })
+  findAll(@Query() filters: IntegracaoFiltersDto) {
+    return this.integracoesService.findAll(filters);
   }
 
   @Get('ativos')
