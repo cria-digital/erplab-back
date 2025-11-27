@@ -41,40 +41,6 @@ export class KitConvenio {
   @Column({ name: 'convenio_id', type: 'uuid' })
   convenioId: string;
 
-  @Column({
-    name: 'valor_convenio',
-    type: 'decimal',
-    precision: 10,
-    scale: 2,
-    nullable: true,
-    comment: 'Valor do kit para este convênio específico',
-  })
-  valorConvenio: number;
-
-  @Column({
-    name: 'disponivel',
-    type: 'boolean',
-    default: true,
-    comment: 'Indica se o kit está disponível para este convênio',
-  })
-  disponivel: boolean;
-
-  @Column({
-    name: 'requer_autorizacao',
-    type: 'boolean',
-    default: false,
-    comment: 'Indica se requer autorização do convênio para este kit',
-  })
-  requerAutorizacao: boolean;
-
-  @Column({
-    name: 'observacoes',
-    type: 'text',
-    nullable: true,
-    comment: 'Observações específicas do kit para este convênio',
-  })
-  observacoes: string;
-
   @CreateDateColumn({
     name: 'created_at',
     comment: 'Data/hora de criação do registro',

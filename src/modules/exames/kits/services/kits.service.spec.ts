@@ -3,7 +3,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository, DataSource, QueryRunner } from 'typeorm';
 import { NotFoundException, ConflictException } from '@nestjs/common';
 import { KitsService } from './kits.service';
-import { Kit, StatusKitEnum, TipoKitEnum } from '../entities/kit.entity';
+import { Kit, StatusKitEnum } from '../entities/kit.entity';
 import { KitExame } from '../entities/kit-exame.entity';
 import { KitUnidade } from '../entities/kit-unidade.entity';
 import { KitConvenio } from '../entities/kit-convenio.entity';
@@ -130,13 +130,10 @@ describe('KitsService', () => {
       codigoInterno: 'KIT001',
       nomeKit: 'Kit Check-up Básico',
       descricao: 'Kit básico para check-up',
-      tipoKit: TipoKitEnum.CHECK_UP,
       statusKit: StatusKitEnum.ATIVO,
       empresaId: 'empresa-uuid',
       prazoPadraoEntrega: 3,
-      valorTotal: 350.0,
       precoKit: 400.0,
-      observacoes: 'Kit especial',
       exames: [
         {
           exameId: 'exame-uuid',
@@ -148,17 +145,11 @@ describe('KitsService', () => {
       unidades: [
         {
           unidadeId: 'unidade-uuid',
-          disponivel: true,
-          observacoes: 'Disponível',
         },
       ],
       convenios: [
         {
           convenioId: 'convenio-uuid',
-          valorConvenio: 300.0,
-          disponivel: true,
-          requerAutorizacao: false,
-          observacoes: 'Aceito',
         },
       ],
     };
@@ -166,7 +157,6 @@ describe('KitsService', () => {
     const mockKit = {
       id: 'kit-uuid',
       ...createKitDto,
-      dataCriacao: new Date(),
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -205,9 +195,6 @@ describe('KitsService', () => {
       kitExameRepository.create = jest.fn().mockReturnValue({
         kitId: mockKit.id,
         exameId: mockExame.id,
-        codigoTuss: mockExame.codigo_tuss,
-        nomeExame: mockExame.nome,
-        prazoEntrega: mockExame.prazo_entrega_dias,
         quantidade: 1,
         ordemInsercao: 1,
         observacoes: 'Jejum 12h',
@@ -216,17 +203,11 @@ describe('KitsService', () => {
       kitUnidadeRepository.create = jest.fn().mockReturnValue({
         kitId: mockKit.id,
         unidadeId: mockUnidade.id,
-        disponivel: true,
-        observacoes: 'Disponível',
       });
 
       kitConvenioRepository.create = jest.fn().mockReturnValue({
         kitId: mockKit.id,
         convenioId: mockConvenio.id,
-        valorConvenio: 300.0,
-        disponivel: true,
-        requerAutorizacao: false,
-        observacoes: 'Aceito',
       });
 
       // Act
@@ -351,6 +332,8 @@ describe('KitsService', () => {
       expect(kitRepository.find).toHaveBeenCalledWith({
         relations: [
           'empresa',
+          'criadoPor',
+          'atualizadoPor',
           'kitExames',
           'kitExames.exame',
           'kitUnidades',
@@ -390,6 +373,8 @@ describe('KitsService', () => {
         where: { id: 'kit-uuid' },
         relations: [
           'empresa',
+          'criadoPor',
+          'atualizadoPor',
           'kitExames',
           'kitExames.exame',
           'kitUnidades',
@@ -439,6 +424,8 @@ describe('KitsService', () => {
         where: { codigoInterno: 'KIT001' },
         relations: [
           'empresa',
+          'criadoPor',
+          'atualizadoPor',
           'kitExames',
           'kitExames.exame',
           'kitUnidades',
@@ -483,10 +470,7 @@ describe('KitsService', () => {
         { id: '2', nomeKit: 'Kit 2' },
       ]);
       expect(kitUnidadeRepository.find).toHaveBeenCalledWith({
-        where: {
-          unidadeId: 'unidade-uuid',
-          disponivel: true,
-        },
+        where: { unidadeId: 'unidade-uuid' },
         relations: [
           'kit',
           'kit.empresa',
@@ -520,10 +504,7 @@ describe('KitsService', () => {
         { id: '2', nomeKit: 'Kit 2' },
       ]);
       expect(kitConvenioRepository.find).toHaveBeenCalledWith({
-        where: {
-          convenioId: 'convenio-uuid',
-          disponivel: true,
-        },
+        where: { convenioId: 'convenio-uuid' },
         relations: [
           'kit',
           'kit.empresa',
@@ -553,6 +534,8 @@ describe('KitsService', () => {
         where: { statusKit: StatusKitEnum.ATIVO },
         relations: [
           'empresa',
+          'criadoPor',
+          'atualizadoPor',
           'kitExames',
           'kitExames.exame',
           'kitUnidades',
@@ -713,13 +696,10 @@ describe('KitsService', () => {
       codigoInterno: 'KIT001',
       nomeKit: 'Kit Original',
       descricao: 'Descrição original',
-      tipoKit: TipoKitEnum.CHECK_UP,
       statusKit: StatusKitEnum.ATIVO,
       empresaId: 'empresa-uuid',
       prazoPadraoEntrega: 3,
-      valorTotal: 350.0,
       precoKit: 400.0,
-      observacoes: 'Observações',
       kitExames: [
         {
           exameId: 'exame-uuid',
@@ -731,17 +711,11 @@ describe('KitsService', () => {
       kitUnidades: [
         {
           unidadeId: 'unidade-uuid',
-          disponivel: true,
-          observacoes: 'Disponível',
         },
       ],
       kitConvenios: [
         {
           convenioId: 'convenio-uuid',
-          valorConvenio: 300.0,
-          disponivel: true,
-          requerAutorizacao: false,
-          observacoes: 'Aceito',
         },
       ],
     };
@@ -803,7 +777,6 @@ describe('KitsService', () => {
       const createKitDto: CreateKitDto = {
         codigoInterno: 'KIT001',
         nomeKit: 'Kit Test',
-        tipoKit: TipoKitEnum.CHECK_UP,
         empresaId: 'empresa-uuid',
       };
 
@@ -828,7 +801,6 @@ describe('KitsService', () => {
       const createKitDto: CreateKitDto = {
         codigoInterno: 'KIT001',
         nomeKit: 'Kit Test',
-        tipoKit: TipoKitEnum.CHECK_UP,
         empresaId: 'empresa-uuid',
         // statusKit não fornecido
       };
@@ -864,7 +836,6 @@ describe('KitsService', () => {
       const createKitDto: CreateKitDto = {
         codigoInterno: 'KIT001',
         nomeKit: 'Kit Test',
-        tipoKit: TipoKitEnum.CHECK_UP,
         empresaId: 'empresa-uuid',
       };
 
@@ -883,7 +854,6 @@ describe('KitsService', () => {
         expect.objectContaining({
           codigoInterno: 'KIT001',
           nomeKit: 'Kit Test',
-          tipoKit: TipoKitEnum.CHECK_UP,
           empresaId: 'empresa-uuid',
         }),
       );

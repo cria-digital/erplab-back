@@ -3,7 +3,7 @@ import { KitsController } from './kits.controller';
 import { KitsService } from '../services/kits.service';
 import { CreateKitDto } from '../dto/create-kit.dto';
 import { UpdateKitDto } from '../dto/update-kit.dto';
-import { Kit, StatusKitEnum, TipoKitEnum } from '../entities/kit.entity';
+import { Kit, StatusKitEnum } from '../entities/kit.entity';
 import { NotFoundException, ConflictException } from '@nestjs/common';
 
 describe('KitsController', () => {
@@ -48,26 +48,26 @@ describe('KitsController', () => {
       codigoInterno: 'KIT001',
       nomeKit: 'Kit Check-up Básico',
       descricao: 'Kit básico para check-up',
-      tipoKit: TipoKitEnum.CHECK_UP,
       statusKit: StatusKitEnum.ATIVO,
       empresaId: 'empresa-uuid',
       prazoPadraoEntrega: 3,
-      valorTotal: 350.0,
       precoKit: 400.0,
-      observacoes: 'Kit especial',
     };
 
-    const mockKit: Partial<Kit> = {
+    const mockKit = {
       id: 'kit-uuid',
       ...createKitDto,
       empresa: null,
+      criadoPor: null,
+      criadoPorId: null,
+      atualizadoPor: null,
+      atualizadoPorId: null,
       kitExames: [],
       kitUnidades: [],
       kitConvenios: [],
-      dataCriacao: new Date(),
       createdAt: new Date(),
       updatedAt: new Date(),
-    } as Kit;
+    } as unknown as Kit;
 
     it('deve criar um kit com sucesso', async () => {
       // Arrange
@@ -511,7 +511,7 @@ describe('KitsController', () => {
       const kitId = 'kit-uuid';
       const invalidUpdateDto = {
         nomeKit: '', // Campo vazio
-        valorTotal: -100, // Valor negativo
+        precoKit: -100, // Valor negativo
       };
 
       mockKitsService.update.mockRejectedValue(new Error('Validation failed'));

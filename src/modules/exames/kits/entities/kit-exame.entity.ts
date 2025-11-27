@@ -43,33 +43,6 @@ export class KitExame {
   exameId: string;
 
   @Column({
-    name: 'codigo_tuss',
-    type: 'varchar',
-    length: 20,
-    nullable: true,
-    comment:
-      'Código TUSS do exame no kit (vinculado ao cadastro de exames, puxando Código TUSS)',
-  })
-  codigoTuss: string;
-
-  @Column({
-    name: 'nome_exame',
-    type: 'varchar',
-    length: 255,
-    nullable: true,
-    comment: 'Nome do exame (puxado do cadastro de exames)',
-  })
-  nomeExame: string;
-
-  @Column({
-    name: 'prazo_entrega',
-    type: 'int',
-    nullable: true,
-    comment: 'Prazo de entrega do exame em dias',
-  })
-  prazoEntrega: number;
-
-  @Column({
     name: 'quantidade',
     type: 'int',
     default: 1,

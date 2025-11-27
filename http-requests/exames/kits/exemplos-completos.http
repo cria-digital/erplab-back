@@ -13,12 +13,9 @@ Authorization: Bearer {{token}}
   "codigoInterno": "KIT-CHECKUP-EXEC-001",
   "nomeKit": "Kit Check-up Executivo Completo",
   "descricao": "Kit premium para check-up executivo preventivo incluindo exames cardiológicos, hepáticos, renais, hormonais e metabólicos",
-  "tipoKit": "CHECK_UP",
   "prazoPadraoEntrega": 5,
   "empresaId": "uuid-da-empresa",
-  "valorTotal": 950.00,
-  "precoKit": 780.00,
-  "observacoes": "Kit recomendado para executivos acima de 40 anos. Inclui PSA para homens e CA125 para mulheres."
+  "precoKit": 780.00
 }
 
 
@@ -31,12 +28,9 @@ Authorization: Bearer {{token}}
   "codigoInterno": "KIT-OCUP-MOT-001",
   "nomeKit": "Kit Ocupacional - Motorista Profissional",
   "descricao": "Kit completo para exames ocupacionais de motoristas profissionais conforme NR7 e requisitos do DETRAN",
-  "tipoKit": "OCUPACIONAL",
   "prazoPadraoEntrega": 3,
   "empresaId": "uuid-da-empresa",
-  "valorTotal": 380.00,
-  "precoKit": 320.00,
-  "observacoes": "Inclui acuidade visual, audiometria, teste de visão cromática e exames laboratoriais."
+  "precoKit": 320.00
 }
 
 
@@ -49,12 +43,9 @@ Authorization: Bearer {{token}}
   "codigoInterno": "KIT-PRE-OP-001",
   "nomeKit": "Kit Pré-Operatório - Cirurgia Geral",
   "descricao": "Kit de exames para avaliação pré-operatória em cirurgias de médio porte",
-  "tipoKit": "COM_DESCRICAO",
   "prazoPadraoEntrega": 2,
   "empresaId": "uuid-da-empresa",
-  "valorTotal": 320.00,
-  "precoKit": 280.00,
-  "observacoes": "Kit padrão solicitado para avaliação pré-anestésica. Adicionar ECG e RX tórax se necessário."
+  "precoKit": 280.00
 }
 
 
@@ -67,12 +58,9 @@ Authorization: Bearer {{token}}
   "codigoInterno": "KIT-PRENATAL-T1-001",
   "nomeKit": "Kit Pré-Natal - 1º Trimestre",
   "descricao": "Kit completo de exames para primeira consulta pré-natal (até 12 semanas)",
-  "tipoKit": "PRE_NATAL",
   "prazoPadraoEntrega": 5,
   "empresaId": "uuid-da-empresa",
-  "valorTotal": 580.00,
-  "precoKit": 490.00,
-  "observacoes": "Kit conforme protocolo do Ministério da Saúde para gestantes de baixo risco."
+  "precoKit": 490.00
 }
 
 
@@ -85,12 +73,9 @@ Authorization: Bearer {{token}}
   "codigoInterno": "KIT-PEDIATRIA-001",
   "nomeKit": "Kit Pediatria - Avaliação Anual",
   "descricao": "Kit de exames para avaliação pediátrica anual (3 a 12 anos)",
-  "tipoKit": "PERSONALIZADO",
   "prazoPadraoEntrega": 3,
   "empresaId": "uuid-da-empresa",
-  "valorTotal": 180.00,
-  "precoKit": 150.00,
-  "observacoes": "Kit básico para consultas pediátricas de rotina."
+  "precoKit": 150.00
 }
 
 
@@ -103,12 +88,9 @@ Authorization: Bearer {{token}}
   "codigoInterno": "KIT-DIABETES-001",
   "nomeKit": "Kit Diabetes - Controle Trimestral",
   "descricao": "Kit para monitoramento trimestral de pacientes diabéticos tipo 1 e 2",
-  "tipoKit": "PERSONALIZADO",
   "prazoPadraoEntrega": 3,
   "empresaId": "uuid-da-empresa",
-  "valorTotal": 280.00,
-  "precoKit": 240.00,
-  "observacoes": "Recomendado para acompanhamento endocrinológico de diabetes."
+  "precoKit": 240.00
 }
 
 
@@ -121,12 +103,9 @@ Authorization: Bearer {{token}}
   "codigoInterno": "KIT-CARDIO-001",
   "nomeKit": "Kit Cardiológico Completo",
   "descricao": "Kit de exames para avaliação cardiovascular completa",
-  "tipoKit": "COM_DESCRICAO",
   "prazoPadraoEntrega": 4,
   "empresaId": "uuid-da-empresa",
-  "valorTotal": 520.00,
-  "precoKit": 450.00,
-  "observacoes": "Inclui perfil lipídico, enzimas cardíacas, coagulograma e marcadores inflamatórios."
+  "precoKit": 450.00
 }
 
 
@@ -139,12 +118,9 @@ Authorization: Bearer {{token}}
   "codigoInterno": "KIT-HORMONAL-FEM-001",
   "nomeKit": "Kit Hormonal Feminino",
   "descricao": "Kit de dosagens hormonais para avaliação ginecológica e reprodutiva",
-  "tipoKit": "PERSONALIZADO",
   "prazoPadraoEntrega": 7,
   "empresaId": "uuid-da-empresa",
-  "valorTotal": 680.00,
-  "precoKit": 580.00,
-  "observacoes": "Coletar no 3º dia do ciclo menstrual para melhor avaliação."
+  "precoKit": 580.00
 }
 
 
@@ -157,12 +133,9 @@ Authorization: Bearer {{token}}
   "codigoInterno": "KIT-HEPATICO-001",
   "nomeKit": "Kit Avaliação Hepática",
   "descricao": "Kit para avaliação completa da função hepática",
-  "tipoKit": "COM_DESCRICAO",
   "prazoPadraoEntrega": 2,
   "empresaId": "uuid-da-empresa",
-  "valorTotal": 220.00,
-  "precoKit": 190.00,
-  "observacoes": "Recomendado para monitoramento de hepatopatias e uso de medicações hepatotóxicas."
+  "precoKit": 190.00
 }
 
 
@@ -193,13 +166,5 @@ Authorization: Bearer {{token}}
 #   "ativos": 9,
 #   "inativos": 0,
 #   "emRevisao": 0,
-#   "porTipo": {
-#     "CHECK_UP": 1,
-#     "OCUPACIONAL": 1,
-#     "PRE_NATAL": 1,
-#     "COM_DESCRICAO": 3,
-#     "PERSONALIZADO": 3
-#   },
-#   "valorTotalKits": 3810.00,
 #   "precoMedioKit": 342.22
 # }

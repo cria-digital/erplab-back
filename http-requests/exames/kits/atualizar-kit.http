@@ -34,19 +34,18 @@ Authorization: Bearer {{token}}
 # { "statusKit": "EM_REVISAO", ... }
 
 
-### Atualizar Valores do Kit
+### Atualizar Preço do Kit
 PATCH {{baseUrl}}/exames/kits/{id}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "valorTotal": 400.00,
   "precoKit": 320.00
 }
 
 ### Expected Response
 # Status: 200 OK
-# { "valorTotal": 400.00, "precoKit": 320.00, ... }
+# { "precoKit": 320.00, ... }
 
 
 ### Atualizar Prazo de Entrega
@@ -63,34 +62,67 @@ Authorization: Bearer {{token}}
 # { "prazoPadraoEntrega": 5, ... }
 
 
-### Atualizar Observações
+### Atualizar Exames do Kit
 PATCH {{baseUrl}}/exames/kits/{id}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "observacoes": "Observações atualizadas sobre o kit. Recomendado para pacientes acima de 40 anos."
+  "exames": [
+    {
+      "exameId": "uuid-hemograma",
+      "quantidade": 1,
+      "ordemInsercao": 1
+    },
+    {
+      "exameId": "uuid-glicemia",
+      "quantidade": 1,
+      "ordemInsercao": 2
+    },
+    {
+      "exameId": "uuid-colesterol-total",
+      "quantidade": 1,
+      "ordemInsercao": 3,
+      "observacoes": "Novo exame adicionado"
+    }
+  ]
 }
 
 ### Expected Response
 # Status: 200 OK
-# { "observacoes": "Observações atualizadas...", ... }
+# { "kitExames": [...], ... }
 
 
-### Erro - Preço do Kit Maior que Valor Total
+### Atualizar Unidades do Kit
 PATCH {{baseUrl}}/exames/kits/{id}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "valorTotal": 100.00,
-  "precoKit": 200.00
+  "unidades": [
+    { "unidadeId": "uuid-unidade-1" },
+    { "unidadeId": "uuid-unidade-2" },
+    { "unidadeId": "uuid-unidade-3" }
+  ]
 }
 
 ### Expected Response
-# Status: 400 Bad Request
-# {
-#   "statusCode": 400,
-#   "message": "Preço do kit não pode ser maior que o valor total",
-#   "error": "Bad Request"
-# }
+# Status: 200 OK
+# { "kitUnidades": [...], ... }
+
+
+### Atualizar Convênios do Kit
+PATCH {{baseUrl}}/exames/kits/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "convenios": [
+    { "convenioId": "uuid-convenio-1" },
+    { "convenioId": "uuid-convenio-2" }
+  ]
+}
+
+### Expected Response
+# Status: 200 OK
+# { "kitConvenios": [...], ... }

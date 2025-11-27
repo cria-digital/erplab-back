@@ -12,14 +12,7 @@ import { KitExame } from './kit-exame.entity';
 import { KitUnidade } from './kit-unidade.entity';
 import { KitConvenio } from './kit-convenio.entity';
 import { Empresa } from '../../../cadastros/empresas/entities/empresa.entity';
-
-export enum TipoKitEnum {
-  CHECK_UP = 'CHECK_UP',
-  OCUPACIONAL = 'OCUPACIONAL',
-  PRE_NATAL = 'PRE_NATAL',
-  COM_DESCRICAO = 'COM_DESCRICAO',
-  PERSONALIZADO = 'PERSONALIZADO',
-}
+import { Usuario } from '../../../autenticacao/usuarios/entities/usuario.entity';
 
 export enum StatusKitEnum {
   ATIVO = 'ATIVO',
@@ -57,15 +50,6 @@ export class Kit {
     comment: 'Descrição detalhada do kit',
   })
   descricao: string;
-
-  @Column({
-    name: 'tipo_kit',
-    type: 'enum',
-    enum: TipoKitEnum,
-    comment:
-      'Tipo de kit (Check-up, Ocupacional, Pré-Natal, com descrição para categorização)',
-  })
-  tipoKit: TipoKitEnum;
 
   @Column({
     name: 'status_kit',
@@ -119,14 +103,6 @@ export class Kit {
   })
   precoKit: number;
 
-  @Column({
-    name: 'observacoes',
-    type: 'text',
-    nullable: true,
-    comment: 'Observações específicas para cada exame no kit',
-  })
-  observacoes: string;
-
   @OneToMany(() => KitExame, (kitExame) => kitExame.kit, {
     cascade: true,
     eager: false,
@@ -145,13 +121,35 @@ export class Kit {
   })
   kitConvenios: KitConvenio[];
 
-  @Column({
-    name: 'data_criacao',
-    type: 'timestamp',
+  @ManyToOne(() => Usuario, {
     nullable: true,
-    comment: 'Data de criação do cadastro',
+    eager: false,
   })
-  dataCriacao: Date;
+  @JoinColumn({ name: 'criado_por_id' })
+  criadoPor: Usuario;
+
+  @Column({
+    name: 'criado_por_id',
+    type: 'uuid',
+    nullable: true,
+    comment: 'ID do usuário que criou o kit',
+  })
+  criadoPorId: string;
+
+  @ManyToOne(() => Usuario, {
+    nullable: true,
+    eager: false,
+  })
+  @JoinColumn({ name: 'atualizado_por_id' })
+  atualizadoPor: Usuario;
+
+  @Column({
+    name: 'atualizado_por_id',
+    type: 'uuid',
+    nullable: true,
+    comment: 'ID do usuário que atualizou o kit por último',
+  })
+  atualizadoPorId: string;
 
   @CreateDateColumn({
     name: 'created_at',

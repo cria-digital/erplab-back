@@ -57,14 +57,10 @@ export class KitsService {
         codigoInterno: createKitDto.codigoInterno,
         nomeKit: createKitDto.nomeKit,
         descricao: createKitDto.descricao,
-        tipoKit: createKitDto.tipoKit,
         statusKit: createKitDto.statusKit || StatusKitEnum.ATIVO,
         empresaId: createKitDto.empresaId,
         prazoPadraoEntrega: createKitDto.prazoPadraoEntrega,
-        valorTotal: createKitDto.valorTotal,
         precoKit: createKitDto.precoKit,
-        observacoes: createKitDto.observacoes,
-        dataCriacao: new Date(),
       });
 
       const savedKit = await queryRunner.manager.save(kit);
@@ -85,9 +81,6 @@ export class KitsService {
           const kitExame = this.kitExameRepository.create({
             kitId: savedKit.id,
             exameId: exame.id,
-            codigoTuss: exame.codigo_tuss,
-            nomeExame: exame.nome,
-            prazoEntrega: exame.prazo_entrega_dias,
             quantidade: exameDto.quantidade || 1,
             ordemInsercao: exameDto.ordemInsercao,
             observacoes: exameDto.observacoes,
@@ -113,8 +106,6 @@ export class KitsService {
           const kitUnidade = this.kitUnidadeRepository.create({
             kitId: savedKit.id,
             unidadeId: unidade.id,
-            disponivel: unidadeDto.disponivel ?? true,
-            observacoes: unidadeDto.observacoes,
           });
 
           await queryRunner.manager.save(kitUnidade);
@@ -137,10 +128,6 @@ export class KitsService {
           const kitConvenio = this.kitConvenioRepository.create({
             kitId: savedKit.id,
             convenioId: convenio.id,
-            valorConvenio: convenioDto.valorConvenio,
-            disponivel: convenioDto.disponivel ?? true,
-            requerAutorizacao: convenioDto.requerAutorizacao ?? false,
-            observacoes: convenioDto.observacoes,
           });
 
           await queryRunner.manager.save(kitConvenio);
@@ -162,6 +149,8 @@ export class KitsService {
     return this.kitRepository.find({
       relations: [
         'empresa',
+        'criadoPor',
+        'atualizadoPor',
         'kitExames',
         'kitExames.exame',
         'kitUnidades',
@@ -183,6 +172,8 @@ export class KitsService {
       where: { id },
       relations: [
         'empresa',
+        'criadoPor',
+        'atualizadoPor',
         'kitExames',
         'kitExames.exame',
         'kitUnidades',
@@ -209,6 +200,8 @@ export class KitsService {
       where: { codigoInterno: codigo },
       relations: [
         'empresa',
+        'criadoPor',
+        'atualizadoPor',
         'kitExames',
         'kitExames.exame',
         'kitUnidades',
@@ -227,10 +220,7 @@ export class KitsService {
 
   async findByUnidade(unidadeId: string): Promise<Kit[]> {
     const kitUnidades = await this.kitUnidadeRepository.find({
-      where: {
-        unidadeId,
-        disponivel: true,
-      },
+      where: { unidadeId },
       relations: ['kit', 'kit.empresa', 'kit.kitExames', 'kit.kitExames.exame'],
     });
 
@@ -239,10 +229,7 @@ export class KitsService {
 
   async findByConvenio(convenioId: string): Promise<Kit[]> {
     const kitConvenios = await this.kitConvenioRepository.find({
-      where: {
-        convenioId,
-        disponivel: true,
-      },
+      where: { convenioId },
       relations: ['kit', 'kit.empresa', 'kit.kitExames', 'kit.kitExames.exame'],
     });
 
@@ -254,6 +241,8 @@ export class KitsService {
       where: { statusKit: StatusKitEnum.ATIVO },
       relations: [
         'empresa',
+        'criadoPor',
+        'atualizadoPor',
         'kitExames',
         'kitExames.exame',
         'kitUnidades',
@@ -279,13 +268,10 @@ export class KitsService {
       Object.assign(kit, {
         nomeKit: updateKitDto.nomeKit ?? kit.nomeKit,
         descricao: updateKitDto.descricao ?? kit.descricao,
-        tipoKit: updateKitDto.tipoKit ?? kit.tipoKit,
         statusKit: updateKitDto.statusKit ?? kit.statusKit,
         prazoPadraoEntrega:
           updateKitDto.prazoPadraoEntrega ?? kit.prazoPadraoEntrega,
-        valorTotal: updateKitDto.valorTotal ?? kit.valorTotal,
         precoKit: updateKitDto.precoKit ?? kit.precoKit,
-        observacoes: updateKitDto.observacoes ?? kit.observacoes,
       });
 
       await queryRunner.manager.save(kit);
@@ -310,9 +296,6 @@ export class KitsService {
           const kitExame = this.kitExameRepository.create({
             kitId: id,
             exameId: exame.id,
-            codigoTuss: exame.codigo_tuss,
-            nomeExame: exame.nome,
-            prazoEntrega: exame.prazo_entrega_dias,
             quantidade: exameDto.quantidade || 1,
             ordemInsercao: exameDto.ordemInsercao,
             observacoes: exameDto.observacoes,
@@ -340,8 +323,6 @@ export class KitsService {
           const kitUnidade = this.kitUnidadeRepository.create({
             kitId: id,
             unidadeId: unidade.id,
-            disponivel: unidadeDto.disponivel ?? true,
-            observacoes: unidadeDto.observacoes,
           });
 
           await queryRunner.manager.save(kitUnidade);
@@ -366,10 +347,6 @@ export class KitsService {
           const kitConvenio = this.kitConvenioRepository.create({
             kitId: id,
             convenioId: convenio.id,
-            valorConvenio: convenioDto.valorConvenio,
-            disponivel: convenioDto.disponivel ?? true,
-            requerAutorizacao: convenioDto.requerAutorizacao ?? false,
-            observacoes: convenioDto.observacoes,
           });
 
           await queryRunner.manager.save(kitConvenio);
@@ -411,13 +388,10 @@ export class KitsService {
       codigoInterno: novoCodigoInterno,
       nomeKit: `${kitOriginal.nomeKit} (Cópia)`,
       descricao: kitOriginal.descricao,
-      tipoKit: kitOriginal.tipoKit,
       statusKit: StatusKitEnum.EM_REVISAO,
       empresaId: kitOriginal.empresaId,
       prazoPadraoEntrega: kitOriginal.prazoPadraoEntrega,
-      valorTotal: kitOriginal.valorTotal,
       precoKit: kitOriginal.precoKit,
-      observacoes: kitOriginal.observacoes,
       exames: kitOriginal.kitExames.map((ke) => ({
         exameId: ke.exameId,
         quantidade: ke.quantidade,
@@ -426,15 +400,9 @@ export class KitsService {
       })),
       unidades: kitOriginal.kitUnidades.map((ku) => ({
         unidadeId: ku.unidadeId,
-        disponivel: ku.disponivel,
-        observacoes: ku.observacoes,
       })),
       convenios: kitOriginal.kitConvenios.map((kc) => ({
         convenioId: kc.convenioId,
-        valorConvenio: kc.valorConvenio,
-        disponivel: kc.disponivel,
-        requerAutorizacao: kc.requerAutorizacao,
-        observacoes: kc.observacoes,
       })),
     };
 

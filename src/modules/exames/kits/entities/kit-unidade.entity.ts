@@ -41,22 +41,6 @@ export class KitUnidade {
   @Column({ name: 'unidade_id', type: 'uuid' })
   unidadeId: string;
 
-  @Column({
-    name: 'disponivel',
-    type: 'boolean',
-    default: true,
-    comment: 'Indica se o kit está disponível nesta unidade',
-  })
-  disponivel: boolean;
-
-  @Column({
-    name: 'observacoes',
-    type: 'text',
-    nullable: true,
-    comment: 'Observações específicas do kit para esta unidade',
-  })
-  observacoes: string;
-
   @CreateDateColumn({
     name: 'created_at',
     comment: 'Data/hora de criação do registro',
