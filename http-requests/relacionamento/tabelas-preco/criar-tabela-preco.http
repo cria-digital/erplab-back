@@ -1,0 +1,197 @@
+### =====================================================
+### CRIAR TABELA DE PREÇOS
+### =====================================================
+
+### Criar Tabela de Preços - Básico (apenas campos obrigatórios)
+POST {{baseUrl}}/relacionamento/tabelas-preco
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo_interno": "TAB001",
+  "nome": "Tabela Convênio Unimed",
+  "tipo_tabela": "servico"
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "id": "uuid",
+#   "codigo_interno": "TAB001",
+#   "nome": "Tabela Convênio Unimed",
+#   "tipo_tabela": "servico",
+#   "observacoes": null,
+#   "ativo": true,
+#   "empresa_id": null,
+#   "created_at": "2025-11-29T...",
+#   "updated_at": "2025-11-29T..."
+# }
+
+###
+
+### Criar Tabela de Preços - Completo (todos os campos)
+POST {{baseUrl}}/relacionamento/tabelas-preco
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo_interno": "TAB002",
+  "nome": "Tabela Materiais e Medicamentos",
+  "tipo_tabela": "material_medicamento",
+  "observacoes": "Tabela para materiais especiais e medicamentos de alto custo",
+  "ativo": true
+}
+
+### Expected Response
+# Status: 201 Created
+
+###
+
+### Criar Tabela de Preços - Com Itens (criação em lote)
+POST {{baseUrl}}/relacionamento/tabelas-preco
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo_interno": "TAB003",
+  "nome": "Tabela Bradesco Saúde",
+  "tipo_tabela": "servico",
+  "observacoes": "Tabela negociada para 2024",
+  "itens": [
+    {
+      "exame_id": "{{exameId1}}",
+      "valor": 150.00,
+      "codigo_convenio": "BRA001",
+      "moeda": "BRL",
+      "quantidade_filme": 0,
+      "filme_separado": false,
+      "porte": 1,
+      "custo_operacional": 50.00
+    },
+    {
+      "exame_id": "{{exameId2}}",
+      "valor": 250.00,
+      "codigo_convenio": "BRA002",
+      "moeda": "BRL",
+      "quantidade_filme": 2.5,
+      "filme_separado": true,
+      "porte": 2,
+      "custo_operacional": 80.00
+    }
+  ]
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "id": "uuid",
+#   "codigo_interno": "TAB003",
+#   "nome": "Tabela Bradesco Saúde",
+#   "tipo_tabela": "servico",
+#   "itens": [
+#     { "id": "uuid", "exame_id": "...", "valor": 150.00, ... },
+#     { "id": "uuid", "exame_id": "...", "valor": 250.00, ... }
+#   ],
+#   ...
+# }
+
+###
+
+### =====================================================
+### VALIDAÇÕES - Erros Esperados
+### =====================================================
+
+### Criar Tabela - Código interno duplicado
+POST {{baseUrl}}/relacionamento/tabelas-preco
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo_interno": "TAB001",
+  "nome": "Tabela Duplicada",
+  "tipo_tabela": "servico"
+}
+
+### Expected Response
+# Status: 409 Conflict
+# {
+#   "statusCode": 409,
+#   "message": "Já existe uma tabela de preços com este código interno"
+# }
+
+###
+
+### Criar Tabela - Campo obrigatório faltando (codigo_interno)
+POST {{baseUrl}}/relacionamento/tabelas-preco
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Tabela Sem Código",
+  "tipo_tabela": "servico"
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": ["Código interno é obrigatório"]
+# }
+
+###
+
+### Criar Tabela - Campo obrigatório faltando (nome)
+POST {{baseUrl}}/relacionamento/tabelas-preco
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo_interno": "TAB_TESTE",
+  "tipo_tabela": "servico"
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": ["Nome da tabela é obrigatório"]
+# }
+
+###
+
+### Criar Tabela - Tipo inválido
+POST {{baseUrl}}/relacionamento/tabelas-preco
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo_interno": "TAB_TESTE2",
+  "nome": "Tabela Teste",
+  "tipo_tabela": "tipo_invalido"
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": ["Tipo de tabela deve ser: servico, material_medicamento"]
+# }
+
+###
+
+### Criar Tabela - Sem autenticação
+POST {{baseUrl}}/relacionamento/tabelas-preco
+Content-Type: {{contentType}}
+
+{
+  "codigo_interno": "TAB_SEM_AUTH",
+  "nome": "Tabela Sem Auth",
+  "tipo_tabela": "servico"
+}
+
+### Expected Response
+# Status: 401 Unauthorized
+# {
+#   "statusCode": 401,
+#   "message": "Unauthorized"
+# }

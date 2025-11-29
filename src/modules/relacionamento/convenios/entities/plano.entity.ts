@@ -9,7 +9,6 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { Convenio } from './convenio.entity';
-import { TabelaPreco } from './tabela-preco.entity';
 import { ProcedimentoAutorizado } from './procedimento-autorizado.entity';
 import { Restricao } from './restricao.entity';
 
@@ -119,9 +118,6 @@ export class Plano {
   })
   @JoinColumn({ name: 'convenio_id' })
   convenio: Convenio;
-
-  @OneToMany(() => TabelaPreco, (tabelaPreco) => tabelaPreco.plano)
-  tabelas_preco: TabelaPreco[];
 
   @OneToMany(() => ProcedimentoAutorizado, (procedimento) => procedimento.plano)
   procedimentos_autorizados: ProcedimentoAutorizado[];

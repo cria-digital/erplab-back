@@ -1,0 +1,182 @@
+### =====================================================
+### ATUALIZAR TABELA DE PREÇOS
+### =====================================================
+
+### Atualizar Nome da Tabela
+PATCH {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Tabela Convênio Unimed - Atualizada"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "codigo_interno": "TAB001",
+#   "nome": "Tabela Convênio Unimed - Atualizada",
+#   ...
+# }
+
+###
+
+### Atualizar Código Interno
+PATCH {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo_interno": "TAB001-V2"
+}
+
+### Expected Response
+# Status: 200 OK
+
+###
+
+### Atualizar Tipo de Tabela
+PATCH {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipo_tabela": "material_medicamento"
+}
+
+### Expected Response
+# Status: 200 OK
+
+###
+
+### Atualizar Observações
+PATCH {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "observacoes": "Tabela atualizada em novembro/2025. Válida para atendimentos ambulatoriais."
+}
+
+### Expected Response
+# Status: 200 OK
+
+###
+
+### Atualizar Múltiplos Campos
+PATCH {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Tabela Bradesco Saúde 2025",
+  "observacoes": "Reajuste anual aprovado",
+  "tipo_tabela": "servico"
+}
+
+### Expected Response
+# Status: 200 OK
+
+###
+
+### Desativar Tabela (Toggle Status)
+PATCH {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}/toggle-status
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "ativo": false,
+#   ...
+# }
+
+###
+
+### Ativar Tabela (Toggle Status)
+PATCH {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}/toggle-status
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "ativo": true,
+#   ...
+# }
+
+###
+
+### =====================================================
+### VALIDAÇÕES - Erros Esperados
+### =====================================================
+
+### Atualizar - Tabela Não Encontrada
+PATCH {{baseUrl}}/relacionamento/tabelas-preco/00000000-0000-0000-0000-000000000000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Nome Qualquer"
+}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Tabela de preços não encontrada"
+# }
+
+###
+
+### Atualizar - Código Duplicado
+PATCH {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo_interno": "TAB002"
+}
+
+### Expected Response
+# Status: 409 Conflict
+# {
+#   "statusCode": 409,
+#   "message": "Já existe uma tabela de preços com este código interno"
+# }
+
+###
+
+### Atualizar - Tipo Inválido
+PATCH {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipo_tabela": "tipo_invalido"
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": ["Tipo de tabela deve ser: servico, material_medicamento"]
+# }
+
+###
+
+### Atualizar Sem Autenticação
+PATCH {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}
+Content-Type: {{contentType}}
+
+{
+  "nome": "Teste"
+}
+
+### Expected Response
+# Status: 401 Unauthorized
+# {
+#   "statusCode": 401,
+#   "message": "Unauthorized"
+# }

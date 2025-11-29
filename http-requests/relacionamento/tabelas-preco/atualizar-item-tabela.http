@@ -1,0 +1,187 @@
+### =====================================================
+### ATUALIZAR ITEM DA TABELA DE PREÇOS
+### =====================================================
+
+### Atualizar Valor do Item
+PATCH {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}/itens/{{itemId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "valor": 180.00
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "valor": 180.00,
+#   ...
+# }
+
+###
+
+### Atualizar Código do Convênio
+PATCH {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}/itens/{{itemId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo_convenio": "CON002-NOVO"
+}
+
+### Expected Response
+# Status: 200 OK
+
+###
+
+### Atualizar Informações de Filme
+PATCH {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}/itens/{{itemId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "quantidade_filme": 3.0,
+  "filme_separado": true
+}
+
+### Expected Response
+# Status: 200 OK
+
+###
+
+### Atualizar Porte e Custo Operacional
+PATCH {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}/itens/{{itemId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "porte": 3,
+  "custo_operacional": 100.00
+}
+
+### Expected Response
+# Status: 200 OK
+
+###
+
+### Atualizar Múltiplos Campos
+PATCH {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}/itens/{{itemId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "valor": 200.00,
+  "codigo_convenio": "CON003",
+  "moeda": "BRL",
+  "quantidade_filme": 1.5,
+  "filme_separado": false,
+  "porte": 2,
+  "custo_operacional": 75.00
+}
+
+### Expected Response
+# Status: 200 OK
+
+###
+
+### Desativar Item (Toggle Status)
+PATCH {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}/itens/{{itemId}}/toggle-status
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "ativo": false,
+#   ...
+# }
+
+###
+
+### Ativar Item (Toggle Status)
+PATCH {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}/itens/{{itemId}}/toggle-status
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "ativo": true,
+#   ...
+# }
+
+###
+
+### =====================================================
+### VALIDAÇÕES - Erros Esperados
+### =====================================================
+
+### Atualizar Item - Não Encontrado
+PATCH {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}/itens/00000000-0000-0000-0000-000000000000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "valor": 100.00
+}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Item da tabela de preços não encontrado"
+# }
+
+###
+
+### Atualizar Item - Valor Negativo
+PATCH {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}/itens/{{itemId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "valor": -50.00
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": ["Valor não pode ser negativo"]
+# }
+
+###
+
+### Atualizar Item - Custo Operacional Negativo
+PATCH {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}/itens/{{itemId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "custo_operacional": -10.00
+}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": ["Custo operacional não pode ser negativo"]
+# }
+
+###
+
+### Atualizar Item Sem Autenticação
+PATCH {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}/itens/{{itemId}}
+Content-Type: {{contentType}}
+
+{
+  "valor": 150.00
+}
+
+### Expected Response
+# Status: 401 Unauthorized
+# {
+#   "statusCode": 401,
+#   "message": "Unauthorized"
+# }

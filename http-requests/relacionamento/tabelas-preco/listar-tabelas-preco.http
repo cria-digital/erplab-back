@@ -1,0 +1,93 @@
+### =====================================================
+### LISTAR TABELAS DE PREÇOS
+### =====================================================
+
+### Listar Todas as Tabelas de Preços
+GET {{baseUrl}}/relacionamento/tabelas-preco
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid",
+#     "codigo_interno": "TAB001",
+#     "nome": "Tabela Convênio Unimed",
+#     "tipo_tabela": "servico",
+#     "observacoes": null,
+#     "ativo": true,
+#     "created_at": "2025-11-29T...",
+#     "updated_at": "2025-11-29T..."
+#   },
+#   ...
+# ]
+
+###
+
+### Listar Tabelas Ativas
+GET {{baseUrl}}/relacionamento/tabelas-preco?ativo=true
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# Array com apenas tabelas ativas
+
+###
+
+### Listar Tabelas por Tipo (Serviço)
+GET {{baseUrl}}/relacionamento/tabelas-preco?tipo_tabela=servico
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# Array com tabelas do tipo "servico"
+
+###
+
+### Listar Tabelas por Tipo (Material/Medicamento)
+GET {{baseUrl}}/relacionamento/tabelas-preco?tipo_tabela=material_medicamento
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# Array com tabelas do tipo "material_medicamento"
+
+###
+
+### Buscar por Nome (search)
+GET {{baseUrl}}/relacionamento/tabelas-preco?search=unimed
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# Array com tabelas que contêm "unimed" no nome ou código
+
+###
+
+### Listar com Paginação
+GET {{baseUrl}}/relacionamento/tabelas-preco?page=1&limit=10
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [...],
+#   "meta": {
+#     "total": 20,
+#     "page": 1,
+#     "limit": 10,
+#     "totalPages": 2
+#   }
+# }
+
+###
+
+### Listar Sem Autenticação
+GET {{baseUrl}}/relacionamento/tabelas-preco
+
+### Expected Response
+# Status: 401 Unauthorized
+# {
+#   "statusCode": 401,
+#   "message": "Unauthorized"
+# }

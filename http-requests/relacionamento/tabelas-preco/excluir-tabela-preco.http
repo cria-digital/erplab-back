@@ -1,0 +1,64 @@
+### =====================================================
+### EXCLUIR TABELA DE PREÇOS
+### =====================================================
+
+### Excluir Tabela de Preços
+DELETE {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK ou 204 No Content
+# {
+#   "message": "Tabela de preços excluída com sucesso"
+# }
+
+###
+
+### Excluir - Tabela Não Encontrada
+DELETE {{baseUrl}}/relacionamento/tabelas-preco/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Tabela de preços não encontrada"
+# }
+
+###
+
+### Excluir - UUID Inválido
+DELETE {{baseUrl}}/relacionamento/tabelas-preco/id-invalido
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "ID deve ser um UUID válido"
+# }
+
+###
+
+### Excluir - Tabela em Uso (vinculada a convênio)
+DELETE {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaEmUsoId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 409 Conflict
+# {
+#   "statusCode": 409,
+#   "message": "Não é possível excluir tabela vinculada a convênios"
+# }
+
+###
+
+### Excluir Sem Autenticação
+DELETE {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}
+
+### Expected Response
+# Status: 401 Unauthorized
+# {
+#   "statusCode": 401,
+#   "message": "Unauthorized"
+# }

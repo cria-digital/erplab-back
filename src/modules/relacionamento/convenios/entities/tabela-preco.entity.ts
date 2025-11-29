@@ -4,78 +4,106 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { Plano } from './plano.entity';
+import { TabelaPrecoItem } from './tabela-preco-item.entity';
+import { Empresa } from '../../../cadastros/empresas/entities/empresa.entity';
 
-export enum TipoTabela {
-  TUSS = 'tuss',
-  CBHPM = 'cbhpm',
-  PROPRIA = 'propria',
-  BRASINDICE = 'brasindice',
-  SIMPRO = 'simpro',
+/**
+ * Tipo de tabela de preços
+ * - servico: Tabela de serviços/exames
+ * - material_medicamento: Tabela de materiais e medicamentos (evolução futura)
+ */
+export enum TipoTabelaPreco {
+  SERVICO = 'servico',
+  MATERIAL_MEDICAMENTO = 'material_medicamento',
 }
 
+/**
+ * Tabela de Preços
+ *
+ * Cadastro independente de tabelas de preços que posteriormente
+ * são vinculadas aos convênios. Um convênio pode usar até 2 tabelas:
+ * - Tabela de serviço (principal)
+ * - Tabela base (fallback - se não encontrar preço na principal, busca aqui)
+ *
+ * Conforme Figma: chunk_020 páginas 17-20 e chunk_021 páginas 1-4
+ */
 @Entity('tabelas_preco')
 export class TabelaPreco {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'uuid' })
-  plano_id: string;
+  @Column({
+    type: 'varchar',
+    length: 50,
+    unique: true,
+    comment: 'Código interno da tabela',
+  })
+  codigo_interno: string;
 
-  @Column({ type: 'varchar', length: 50 })
-  codigo_tabela: string;
+  @Column({
+    type: 'varchar',
+    length: 255,
+    comment: 'Nome da tabela',
+  })
+  nome: string;
 
-  @Column({ type: 'varchar', length: 255 })
-  descricao: string;
+  @Column({
+    type: 'enum',
+    enum: TipoTabelaPreco,
+    default: TipoTabelaPreco.SERVICO,
+    comment: 'Tipo de tabela: servico ou material_medicamento',
+  })
+  tipo_tabela: TipoTabelaPreco;
 
-  @Column({ type: 'enum', enum: TipoTabela })
-  tipo_tabela: TipoTabela;
-
-  @Column({ type: 'varchar', length: 20, nullable: true })
-  versao: string;
-
-  @Column({ type: 'varchar', length: 20, nullable: true })
-  edicao: string;
-
-  @Column({ type: 'date' })
-  data_vigencia: Date;
-
-  @Column({ type: 'decimal', precision: 5, scale: 2, default: 0 })
-  percentual_desconto: number;
-
-  @Column({ type: 'decimal', precision: 5, scale: 2, default: 0 })
-  percentual_acrescimo: number;
-
-  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
-  valor_ch: number;
-
-  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
-  valor_uco: number;
-
-  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
-  valor_porte_anestesico: number;
-
-  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
-  valor_filme: number;
-
-  @Column({ type: 'boolean', default: true })
-  ativa: boolean;
-
-  @Column({ type: 'text', nullable: true })
+  @Column({
+    type: 'text',
+    nullable: true,
+    comment: 'Observações gerais da tabela',
+  })
   observacoes: string;
 
-  @CreateDateColumn()
+  @Column({
+    type: 'boolean',
+    default: true,
+    comment: 'Tabela ativa?',
+  })
+  ativo: boolean;
+
+  // ==========================================
+  // MULTI-TENANT
+  // ==========================================
+
+  @Column({
+    type: 'uuid',
+    nullable: true,
+    comment: 'FK → empresas (multi-tenant)',
+  })
+  empresa_id: string;
+
+  @ManyToOne(() => Empresa, { nullable: true })
+  @JoinColumn({ name: 'empresa_id' })
+  empresa: Empresa;
+
+  // ==========================================
+  // RELACIONAMENTOS
+  // ==========================================
+
+  @OneToMany(() => TabelaPrecoItem, (item) => item.tabelaPreco, {
+    cascade: true,
+  })
+  itens: TabelaPrecoItem[];
+
+  // ==========================================
+  // CONTROLE
+  // ==========================================
+
+  @CreateDateColumn({ name: 'created_at' })
   created_at: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updated_at: Date;
-
-  @ManyToOne(() => Plano, (plano) => plano.tabelas_preco, {
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn({ name: 'plano_id' })
-  plano: Plano;
 }

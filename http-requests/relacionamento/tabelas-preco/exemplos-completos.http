@@ -1,0 +1,260 @@
+### =====================================================
+### TABELA DE PREÇOS - FLUXO COMPLETO
+### =====================================================
+### Este arquivo demonstra o fluxo completo de uso
+### da funcionalidade de Tabelas de Preços
+### =====================================================
+
+### =====================================================
+### PASSO 1: Autenticação
+### =====================================================
+
+### 1.1 - Login para obter token
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "diegosoek@gmail.com",
+  "password": "Admin123!"
+}
+
+### Guarde o token retornado em {{token}}
+
+###
+
+### =====================================================
+### PASSO 2: Criar Tabela de Preços
+### =====================================================
+
+### 2.1 - Criar nova tabela de serviços
+POST {{baseUrl}}/relacionamento/tabelas-preco
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo_interno": "TAB-UNIMED-2024",
+  "nome": "Tabela Unimed São Paulo 2024",
+  "tipo_tabela": "servico",
+  "observacoes": "Tabela negociada para o ano de 2024. Válida de 01/01/2024 a 31/12/2024."
+}
+
+### Guarde o ID retornado em {{tabelaPrecoId}}
+
+###
+
+### =====================================================
+### PASSO 3: Adicionar Itens à Tabela
+### =====================================================
+
+### 3.1 - Adicionar primeiro exame (Hemograma)
+POST {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}/itens
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "exame_id": "{{exameHemogramaId}}",
+  "valor": 45.00,
+  "codigo_convenio": "40304361",
+  "moeda": "BRL",
+  "porte": 1,
+  "custo_operacional": 15.00
+}
+
+###
+
+### 3.2 - Adicionar segundo exame (Glicemia)
+POST {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}/itens
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "exame_id": "{{exameGlicemiaId}}",
+  "valor": 12.50,
+  "codigo_convenio": "40301630",
+  "moeda": "BRL",
+  "porte": 0,
+  "custo_operacional": 5.00
+}
+
+###
+
+### 3.3 - Adicionar exame de imagem (Raio-X Tórax)
+POST {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}/itens
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "exame_id": "{{exameRaioXId}}",
+  "valor": 85.00,
+  "codigo_convenio": "40808025",
+  "moeda": "BRL",
+  "quantidade_filme": 2,
+  "filme_separado": true,
+  "porte": 2,
+  "custo_operacional": 30.00
+}
+
+###
+
+### =====================================================
+### PASSO 4: Consultar Tabela e Itens
+### =====================================================
+
+### 4.1 - Buscar tabela completa com itens
+GET {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}
+Authorization: Bearer {{token}}
+
+###
+
+### 4.2 - Listar apenas os itens da tabela
+GET {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}/itens
+Authorization: Bearer {{token}}
+
+###
+
+### 4.3 - Buscar tabela por código interno
+GET {{baseUrl}}/relacionamento/tabelas-preco/codigo/TAB-UNIMED-2024
+Authorization: Bearer {{token}}
+
+###
+
+### =====================================================
+### PASSO 5: Atualizar Valores
+### =====================================================
+
+### 5.1 - Reajustar valor de um exame
+PATCH {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}/itens/{{itemId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "valor": 50.00,
+  "custo_operacional": 18.00
+}
+
+###
+
+### 5.2 - Atualizar observações da tabela
+PATCH {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "observacoes": "Tabela negociada para 2024. Reajuste de 10% aplicado em Jun/2024."
+}
+
+###
+
+### =====================================================
+### PASSO 6: Gerenciar Status
+### =====================================================
+
+### 6.1 - Desativar um item específico
+PATCH {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}/itens/{{itemId}}/toggle-status
+Authorization: Bearer {{token}}
+
+###
+
+### 6.2 - Desativar a tabela inteira
+PATCH {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}/toggle-status
+Authorization: Bearer {{token}}
+
+###
+
+### =====================================================
+### PASSO 7: Criar Tabela de Materiais/Medicamentos
+### =====================================================
+
+### 7.1 - Criar tabela de materiais
+POST {{baseUrl}}/relacionamento/tabelas-preco
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo_interno": "TAB-MAT-2024",
+  "nome": "Tabela de Materiais e Medicamentos 2024",
+  "tipo_tabela": "material_medicamento",
+  "observacoes": "Materiais e medicamentos especiais"
+}
+
+###
+
+### =====================================================
+### PASSO 8: Importação em Lote
+### =====================================================
+
+### 8.1 - Criar tabela com itens em lote
+POST {{baseUrl}}/relacionamento/tabelas-preco
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo_interno": "TAB-BRADESCO-2024",
+  "nome": "Tabela Bradesco Saúde 2024",
+  "tipo_tabela": "servico",
+  "observacoes": "Importação completa da planilha de preços",
+  "itens": [
+    {
+      "exame_id": "{{exameId1}}",
+      "valor": 35.00,
+      "codigo_convenio": "BRD001"
+    },
+    {
+      "exame_id": "{{exameId2}}",
+      "valor": 48.00,
+      "codigo_convenio": "BRD002"
+    },
+    {
+      "exame_id": "{{exameId3}}",
+      "valor": 125.00,
+      "codigo_convenio": "BRD003",
+      "quantidade_filme": 1,
+      "filme_separado": true,
+      "porte": 2
+    }
+  ]
+}
+
+###
+
+### =====================================================
+### PASSO 9: Listagens e Filtros
+### =====================================================
+
+### 9.1 - Listar todas as tabelas
+GET {{baseUrl}}/relacionamento/tabelas-preco
+Authorization: Bearer {{token}}
+
+###
+
+### 9.2 - Listar apenas tabelas ativas
+GET {{baseUrl}}/relacionamento/tabelas-preco?ativo=true
+Authorization: Bearer {{token}}
+
+###
+
+### 9.3 - Listar tabelas de serviço
+GET {{baseUrl}}/relacionamento/tabelas-preco?tipo_tabela=servico
+Authorization: Bearer {{token}}
+
+###
+
+### 9.4 - Buscar por nome
+GET {{baseUrl}}/relacionamento/tabelas-preco?search=unimed
+Authorization: Bearer {{token}}
+
+###
+
+### =====================================================
+### PASSO 10: Limpeza (opcional)
+### =====================================================
+
+### 10.1 - Excluir item da tabela
+DELETE {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}/itens/{{itemId}}
+Authorization: Bearer {{token}}
+
+###
+
+### 10.2 - Excluir tabela completa
+DELETE {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}
+Authorization: Bearer {{token}}

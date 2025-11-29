@@ -1,0 +1,86 @@
+### =====================================================
+### EXCLUIR ITEM DA TABELA DE PREÇOS
+### =====================================================
+
+### Excluir Item
+DELETE {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}/itens/{{itemId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK ou 204 No Content
+# {
+#   "message": "Item excluído com sucesso"
+# }
+
+###
+
+### Excluir Múltiplos Itens (Batch)
+DELETE {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}/itens/batch
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "ids": [
+    "{{itemId1}}",
+    "{{itemId2}}",
+    "{{itemId3}}"
+  ]
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "deleted": 3,
+#   "message": "3 itens excluídos com sucesso"
+# }
+
+###
+
+### Excluir Item - Não Encontrado
+DELETE {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}/itens/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Item da tabela de preços não encontrado"
+# }
+
+###
+
+### Excluir Item - UUID Inválido
+DELETE {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}/itens/id-invalido
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "ID deve ser um UUID válido"
+# }
+
+###
+
+### Excluir Item - Tabela Não Encontrada
+DELETE {{baseUrl}}/relacionamento/tabelas-preco/00000000-0000-0000-0000-000000000000/itens/{{itemId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Tabela de preços não encontrada"
+# }
+
+###
+
+### Excluir Item Sem Autenticação
+DELETE {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}/itens/{{itemId}}
+
+### Expected Response
+# Status: 401 Unauthorized
+# {
+#   "statusCode": 401,
+#   "message": "Unauthorized"
+# }

@@ -1,0 +1,106 @@
+### =====================================================
+### LISTAR ITENS DA TABELA DE PREÇOS
+### =====================================================
+
+### Listar Todos os Itens de uma Tabela
+GET {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}/itens
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid",
+#     "tabela_preco_id": "uuid",
+#     "exame_id": "uuid",
+#     "exame": {
+#       "id": "uuid",
+#       "codigo_interno": "HEM001",
+#       "nome": "Hemograma Completo"
+#     },
+#     "codigo_convenio": "CON001",
+#     "moeda": "BRL",
+#     "quantidade_filme": 0,
+#     "filme_separado": false,
+#     "porte": 1,
+#     "valor": 150.00,
+#     "custo_operacional": 50.00,
+#     "ativo": true,
+#     "created_at": "2025-11-29T...",
+#     "updated_at": "2025-11-29T..."
+#   },
+#   ...
+# ]
+
+###
+
+### Listar Itens Ativos
+GET {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}/itens?ativo=true
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# Array com apenas itens ativos
+
+###
+
+### Listar Itens Inativos
+GET {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}/itens?ativo=false
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# Array com apenas itens inativos
+
+###
+
+### Buscar Itens por Nome do Exame
+GET {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}/itens?search=hemograma
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# Array com itens que contêm "hemograma" no nome do exame
+
+###
+
+### Listar Itens com Paginação
+GET {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}/itens?page=1&limit=10
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [...],
+#   "meta": {
+#     "total": 50,
+#     "page": 1,
+#     "limit": 10,
+#     "totalPages": 5
+#   }
+# }
+
+###
+
+### Listar Itens - Tabela Não Encontrada
+GET {{baseUrl}}/relacionamento/tabelas-preco/00000000-0000-0000-0000-000000000000/itens
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Tabela de preços não encontrada"
+# }
+
+###
+
+### Listar Itens Sem Autenticação
+GET {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}/itens
+
+### Expected Response
+# Status: 401 Unauthorized
+# {
+#   "statusCode": 401,
+#   "message": "Unauthorized"
+# }

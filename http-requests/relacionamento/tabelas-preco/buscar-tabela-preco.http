@@ -1,0 +1,96 @@
+### =====================================================
+### BUSCAR TABELA DE PREÇOS
+### =====================================================
+
+### Buscar por ID
+GET {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "codigo_interno": "TAB001",
+#   "nome": "Tabela Convênio Unimed",
+#   "tipo_tabela": "servico",
+#   "observacoes": "Tabela principal para convênio Unimed",
+#   "ativo": true,
+#   "empresa_id": null,
+#   "itens": [
+#     {
+#       "id": "uuid",
+#       "exame_id": "uuid",
+#       "codigo_convenio": "UNI001",
+#       "moeda": "BRL",
+#       "quantidade_filme": 0,
+#       "filme_separado": false,
+#       "porte": 1,
+#       "valor": 150.00,
+#       "custo_operacional": 50.00,
+#       "ativo": true
+#     }
+#   ],
+#   "created_at": "2025-11-29T...",
+#   "updated_at": "2025-11-29T..."
+# }
+
+###
+
+### Buscar por Código Interno
+GET {{baseUrl}}/relacionamento/tabelas-preco/codigo/TAB001
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# { ... tabela de preços ... }
+
+###
+
+### Buscar por ID - Não Encontrado
+GET {{baseUrl}}/relacionamento/tabelas-preco/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Tabela de preços não encontrada"
+# }
+
+###
+
+### Buscar por Código - Não Encontrado
+GET {{baseUrl}}/relacionamento/tabelas-preco/codigo/CODIGO_INEXISTENTE
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Tabela de preços não encontrada"
+# }
+
+###
+
+### Buscar por ID - UUID Inválido
+GET {{baseUrl}}/relacionamento/tabelas-preco/id-invalido
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "ID deve ser um UUID válido"
+# }
+
+###
+
+### Buscar Sem Autenticação
+GET {{baseUrl}}/relacionamento/tabelas-preco/{{tabelaPrecoId}}
+
+### Expected Response
+# Status: 401 Unauthorized
+# {
+#   "statusCode": 401,
+#   "message": "Unauthorized"
+# }

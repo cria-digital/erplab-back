@@ -11,6 +11,7 @@ import {
 } from 'typeorm';
 import { Plano } from './plano.entity';
 import { Instrucao } from './instrucao.entity';
+import { TabelaPreco } from './tabela-preco.entity';
 import { Empresa } from '../../../cadastros/empresas/entities/empresa.entity';
 import { AlternativaCampoFormulario } from '../../../infraestrutura/campos-formulario/entities/alternativa-campo-formulario.entity';
 import { Integracao } from '../../../atendimento/integracoes/entities/integracao.entity';
@@ -167,37 +168,44 @@ export class Convenio {
   instrucoes_faturamento: string;
 
   // ==========================================
-  // CAMPOS DO FIGMA - Seção: Tabelas
+  // CAMPOS DO FIGMA - Seção: Tabelas de Preços
+  // Um convênio pode usar até 2 tabelas:
+  // - Tabela de serviço (principal)
+  // - Tabela base (fallback - busca aqui se não encontrar na principal)
   // ==========================================
 
   @Column({
     type: 'uuid',
     nullable: true,
-    comment: 'FK → Tabela de serviços',
+    comment: 'FK → tabelas_preco (Tabela de serviços principal)',
   })
   tabela_servico_id: string;
 
-  @ManyToOne(() => AlternativaCampoFormulario, { nullable: true })
+  @ManyToOne(() => TabelaPreco, { nullable: true })
   @JoinColumn({ name: 'tabela_servico_id' })
-  tabelaServico: AlternativaCampoFormulario;
-
-  @Column({ type: 'uuid', nullable: true, comment: 'FK → Tabela base' })
-  tabela_base_id: string;
-
-  @ManyToOne(() => AlternativaCampoFormulario, { nullable: true })
-  @JoinColumn({ name: 'tabela_base_id' })
-  tabelaBase: AlternativaCampoFormulario;
+  tabelaServico: TabelaPreco;
 
   @Column({
     type: 'uuid',
     nullable: true,
-    comment: 'FK → Tabela de materiais',
+    comment: 'FK → tabelas_preco (Tabela base/fallback)',
+  })
+  tabela_base_id: string;
+
+  @ManyToOne(() => TabelaPreco, { nullable: true })
+  @JoinColumn({ name: 'tabela_base_id' })
+  tabelaBase: TabelaPreco;
+
+  @Column({
+    type: 'uuid',
+    nullable: true,
+    comment: 'FK → tabelas_preco (Tabela de materiais - evolução futura)',
   })
   tabela_material_id: string;
 
-  @ManyToOne(() => AlternativaCampoFormulario, { nullable: true })
+  @ManyToOne(() => TabelaPreco, { nullable: true })
   @JoinColumn({ name: 'tabela_material_id' })
-  tabelaMaterial: AlternativaCampoFormulario;
+  tabelaMaterial: TabelaPreco;
 
   @Column({
     type: 'varchar',
