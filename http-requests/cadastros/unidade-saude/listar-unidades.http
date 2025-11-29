@@ -26,8 +26,9 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Listar Apenas Ativas
-GET {{baseUrl}}/cadastros/unidades-saude?ativo=true
+### Incluir Unidades Inativas na Listagem
+# Use este filtro para ver unidades desativadas e poder reativá-las
+GET {{baseUrl}}/cadastros/unidades-saude?incluirInativos=true
 Authorization: Bearer {{token}}
 
 ###
@@ -45,7 +46,14 @@ Authorization: Bearer {{token}}
 ###
 
 ### Combinação de Filtros
-GET {{baseUrl}}/cadastros/unidades-saude?page=1&limit=10&ativo=true&cidade=São Roque&estado=SP
+GET {{baseUrl}}/cadastros/unidades-saude?page=1&limit=10&cidade=São Roque&estado=SP
+Authorization: Bearer {{token}}
+
+###
+
+### Combinação de Filtros com Inativos
+# Buscar todas as unidades (ativas e inativas) de São Paulo
+GET {{baseUrl}}/cadastros/unidades-saude?page=1&limit=10&incluirInativos=true&estado=SP
 Authorization: Bearer {{token}}
 
 ### Expected Response com Filtros

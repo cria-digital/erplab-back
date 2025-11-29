@@ -91,10 +91,11 @@ export class UnidadeSaudeController {
     description: 'Busca por nome, fantasia, CNPJ ou razão social',
   })
   @ApiQuery({
-    name: 'ativo',
+    name: 'incluirInativos',
     required: false,
     type: Boolean,
-    description: 'Filtrar por status ativo/inativo',
+    description: 'Incluir unidades inativas na listagem (default: false)',
+    example: true,
   })
   @ApiQuery({
     name: 'cidade',
@@ -130,7 +131,7 @@ export class UnidadeSaudeController {
     @Query('page') page?: number,
     @Query('limit') limit?: number,
     @Query('search') search?: string,
-    @Query('ativo') ativo?: boolean,
+    @Query('incluirInativos') incluirInativos?: string,
     @Query('cidade') cidade?: string,
     @Query('estado') estado?: string,
   ) {
@@ -138,7 +139,7 @@ export class UnidadeSaudeController {
       page: page ? Number(page) : 1,
       limit: limit ? Number(limit) : 10,
       search,
-      ativo,
+      incluirInativos: incluirInativos === 'true',
       cidade,
       estado,
     };

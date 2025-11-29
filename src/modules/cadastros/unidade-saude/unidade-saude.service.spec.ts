@@ -402,10 +402,10 @@ describe('UnidadeSaudeService', () => {
       });
     });
 
-    it('deve aplicar filtro por status ativo', async () => {
+    it('deve aplicar filtro por status ativo (padrão quando incluirInativos é false)', async () => {
       mockUnidadeSaudeRepository.findAndCount.mockResolvedValue([[], 0]);
 
-      await service.findAll({ ativo: true });
+      await service.findAll({ incluirInativos: false });
 
       expect(mockUnidadeSaudeRepository.findAndCount).toHaveBeenCalledWith({
         where: { ativo: true },
@@ -1119,7 +1119,7 @@ describe('UnidadeSaudeService', () => {
 
       await service.findAll({
         search: 'clinica',
-        ativo: true,
+        incluirInativos: false,
         cidade: 'Brasília',
         estado: 'DF',
       });
@@ -1147,14 +1147,14 @@ describe('UnidadeSaudeService', () => {
       expect(result.totalPages).toBe(3); // Math.ceil(25/10)
     });
 
-    it('deve aplicar filtro apenas por ativo false', async () => {
+    it('deve incluir inativos quando incluirInativos é true', async () => {
       mockUnidadeSaudeRepository.findAndCount.mockResolvedValue([[], 0]);
 
-      await service.findAll({ ativo: false });
+      await service.findAll({ incluirInativos: true });
 
       expect(mockUnidadeSaudeRepository.findAndCount).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: { ativo: false },
+          where: {},
         }),
       );
     });

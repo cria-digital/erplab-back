@@ -7,8 +7,8 @@ Authorization: Bearer {{token}}
   "codigoInterno": "KIT-CHECKUP-001",
   "nomeKit": "Kit Check-up Básico",
   "descricao": "Kit de exames para check-up básico preventivo incluindo hemograma, glicemia, colesterol e função renal",
+  "statusKit": "ATIVO",
   "prazoPadraoEntrega": 3,
-  "empresaId": "uuid-da-empresa",
   "precoKit": 280.00,
   "exames": [
     {
@@ -69,8 +69,8 @@ Authorization: Bearer {{token}}
   "codigoInterno": "KIT-OCUP-ADM-001",
   "nomeKit": "Kit Exames Ocupacionais - Admissional",
   "descricao": "Kit de exames para admissão conforme NR7 - função administrativa",
+  "statusKit": "ATIVO",
   "prazoPadraoEntrega": 2,
-  "empresaId": "uuid-da-empresa",
   "precoKit": 150.00,
   "exames": [
     {
@@ -107,8 +107,8 @@ Authorization: Bearer {{token}}
   "codigoInterno": "KIT-PRENATAL-001",
   "nomeKit": "Kit Pré-Natal Completo",
   "descricao": "Kit completo de exames para acompanhamento pré-natal - 1º trimestre",
+  "statusKit": "ATIVO",
   "prazoPadraoEntrega": 5,
-  "empresaId": "uuid-da-empresa",
   "precoKit": 450.00,
   "exames": [
     {
@@ -155,7 +155,8 @@ Authorization: Bearer {{token}}
 }
 
 
-### Criar Kit Personalizado
+### Criar Kit Personalizado - Em Revisão
+# Status disponíveis: ATIVO, INATIVO, EM_REVISAO
 POST {{baseUrl}}/exames/kits
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
@@ -164,8 +165,8 @@ Authorization: Bearer {{token}}
   "codigoInterno": "KIT-CUSTOM-001",
   "nomeKit": "Kit Personalizado - Diabetes",
   "descricao": "Kit personalizado para acompanhamento de pacientes diabéticos",
+  "statusKit": "EM_REVISAO",
   "prazoPadraoEntrega": 3,
-  "empresaId": "uuid-da-empresa",
   "precoKit": 240.00,
   "exames": [
     {
@@ -205,8 +206,7 @@ Authorization: Bearer {{token}}
 
 {
   "codigoInterno": "KIT-CHECKUP-001",
-  "nomeKit": "Outro Kit",
-  "empresaId": "uuid-da-empresa"
+  "nomeKit": "Outro Kit"
 }
 
 ### Expected Response
@@ -218,21 +218,22 @@ Authorization: Bearer {{token}}
 # }
 
 
-### Erro - Empresa Não Encontrada
+### Kit Mínimo (apenas campos obrigatórios)
 POST {{baseUrl}}/exames/kits
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "codigoInterno": "KIT-TEST-999",
-  "nomeKit": "Kit Teste",
-  "empresaId": "00000000-0000-0000-0000-000000000000"
+  "codigoInterno": "KIT-MINIMO-001",
+  "nomeKit": "Kit Mínimo"
 }
 
 ### Expected Response
-# Status: 404 Not Found
+# Status: 201 Created
 # {
-#   "statusCode": 404,
-#   "message": "Empresa não encontrada",
-#   "error": "Not Found"
+#   "id": "uuid",
+#   "codigoInterno": "KIT-MINIMO-001",
+#   "nomeKit": "Kit Mínimo",
+#   "statusKit": "ATIVO",
+#   "empresaId": null
 # }

@@ -70,7 +70,7 @@ export class Kit {
   prazoPadraoEntrega: number;
 
   @ManyToOne(() => Empresa, {
-    nullable: false,
+    nullable: true,
     eager: false,
   })
   @JoinColumn({ name: 'empresa_id' })
@@ -79,7 +79,8 @@ export class Kit {
   @Column({
     name: 'empresa_id',
     type: 'uuid',
-    comment: 'ID da empresa associada ao kit',
+    nullable: true,
+    comment: 'ID da empresa associada ao kit (opcional por enquanto)',
   })
   empresaId: string;
 

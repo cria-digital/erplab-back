@@ -22,7 +22,7 @@ export interface PaginationParams {
   page?: number;
   limit?: number;
   search?: string;
-  ativo?: boolean;
+  incluirInativos?: boolean;
   cidade?: string;
   estado?: string;
 }
@@ -195,7 +195,7 @@ export class UnidadeSaudeService {
       page = 1,
       limit = 10,
       search,
-      ativo = true,
+      incluirInativos = false,
       cidade,
       estado,
     } = params;
@@ -205,8 +205,11 @@ export class UnidadeSaudeService {
     let where: any = {};
 
     // Por padrão, lista apenas unidades ativas (soft delete)
-    // Para listar inativas, passar explicitamente ativo=false
-    where.ativo = ativo;
+    // Para incluir inativas, passar incluirInativos=true
+    if (!incluirInativos) {
+      where.ativo = true;
+    }
+    // Se incluirInativos=true, não adiciona filtro de ativo (retorna todas)
 
     if (cidade) {
       where.cidade = ILike(`%${cidade}%`);

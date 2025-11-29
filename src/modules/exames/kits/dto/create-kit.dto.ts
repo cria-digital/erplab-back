@@ -110,13 +110,13 @@ export class CreateKitDto {
   @IsOptional()
   statusKit?: StatusKitEnum;
 
-  @ApiProperty({
-    description: 'ID da empresa proprietária do kit',
+  @ApiPropertyOptional({
+    description: 'ID da empresa proprietária do kit (opcional por enquanto)',
     example: '123e4567-e89b-12d3-a456-426614174000',
   })
   @IsUUID()
-  @IsNotEmpty()
-  empresaId: string;
+  @IsOptional()
+  empresaId?: string;
 
   @ApiPropertyOptional({
     description: 'Prazo padrão de entrega em dias',
