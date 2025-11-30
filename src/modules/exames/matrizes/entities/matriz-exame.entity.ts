@@ -13,39 +13,17 @@ import { TipoExame } from '../../exames/entities/tipo-exame.entity';
 import { Exame } from '../../exames/entities/exame.entity';
 import { CampoMatriz } from './campo-matriz.entity';
 
-export enum TipoMatriz {
-  AUDIOMETRIA = 'audiometria',
-  DENSITOMETRIA = 'densitometria',
-  ELETROCARDIOGRAMA = 'eletrocardiograma',
-  HEMOGRAMA = 'hemograma',
-  ESPIROMETRIA = 'espirometria',
-  ACUIDADE_VISUAL = 'acuidade_visual',
-  PERSONALIZADA = 'personalizada',
-}
-
-export enum StatusMatriz {
-  ATIVO = 'ativo',
-  INATIVO = 'inativo',
-  EM_DESENVOLVIMENTO = 'em_desenvolvimento',
-}
-
 /**
  * Entidade que representa uma Matriz de Exame
  *
  * Matrizes são templates/formulários padronizados para tipos específicos de exames.
- * Cada matriz define:
- * - Campos/parâmetros que devem ser preenchidos
- * - Valores de referência
- * - Fórmulas de cálculo (quando aplicável)
- * - Layout de visualização/impressão
- *
- * Exemplos: Audiometria, Densitometria, Eletrocardiograma, Hemograma
+ * Conforme Figma: Tipo de exame, Exame vinculado, Nome da matriz, Código interno
  */
 @Entity('matrizes_exames')
 @Index(['codigoInterno'])
 @Index(['nome'])
-@Index(['tipoMatriz'])
 @Index(['tipoExameId'])
+@Index(['exameId'])
 export class MatrizExame {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -55,7 +33,7 @@ export class MatrizExame {
     type: 'varchar',
     length: 50,
     unique: true,
-    comment: 'Código interno único da matriz (ex: MTZ-AUDIO-001)',
+    comment: 'Código interno único da matriz (ex: HEM123)',
   })
   codigoInterno: string;
 
@@ -63,167 +41,58 @@ export class MatrizExame {
     name: 'nome',
     type: 'varchar',
     length: 255,
-    comment: 'Nome da matriz (ex: Audiometria Tonal Padrão)',
+    comment: 'Nome da matriz (ex: Hemograma 1)',
   })
   nome: string;
 
-  @Column({
-    name: 'descricao',
-    type: 'text',
-    nullable: true,
-    comment: 'Descrição detalhada da matriz e sua finalidade',
-  })
-  descricao: string;
-
-  @Column({
-    name: 'tipo_matriz',
-    type: 'enum',
-    enum: TipoMatriz,
-    comment: 'Tipo/categoria da matriz',
-  })
-  tipoMatriz: TipoMatriz;
-
-  // Relacionamento com TipoExame
+  // Tipo de Exame (EXTERNO, IMAGEM, LABORATORIAL, AUDIOMETRIA)
   @Column({
     name: 'tipo_exame_id',
     type: 'uuid',
-    nullable: true,
-    comment: 'ID do tipo de exame ao qual esta matriz pertence',
+    comment: 'ID do tipo de exame (FK para tipos_exame)',
   })
   tipoExameId: string;
 
-  @ManyToOne(() => TipoExame, { nullable: true })
+  @ManyToOne(() => TipoExame)
   @JoinColumn({ name: 'tipo_exame_id' })
   tipoExame: TipoExame;
 
-  // Relacionamento com Exame (pode ser vinculada a exames específicos)
+  // Exame Vinculado
   @Column({
     name: 'exame_id',
     type: 'uuid',
-    nullable: true,
-    comment: 'ID do exame específico (opcional, para matrizes exclusivas)',
+    comment: 'ID do exame vinculado (FK para exames)',
   })
   exameId: string;
 
-  @ManyToOne(() => Exame, { nullable: true })
+  @ManyToOne(() => Exame)
   @JoinColumn({ name: 'exame_id' })
   exame: Exame;
 
+  // Template importado (caminho/nome do arquivo)
   @Column({
-    name: 'versao',
+    name: 'template_arquivo',
     type: 'varchar',
-    length: 20,
-    default: '1.0',
-    comment: 'Versão da matriz (para controle de mudanças)',
+    length: 500,
+    nullable: true,
+    comment: 'Caminho ou nome do arquivo de template importado',
   })
-  versao: string;
+  templateArquivo: string;
 
+  // Dados do template em JSON (para preview)
   @Column({
-    name: 'padrao_sistema',
-    type: 'boolean',
-    default: false,
-    comment: 'Se é uma matriz padrão do sistema (não pode ser deletada)',
-  })
-  padraoSistema: boolean;
-
-  // Configurações de visualização e cálculo
-  @Column({
-    name: 'tem_calculo_automatico',
-    type: 'boolean',
-    default: false,
-    comment: 'Se possui cálculos automáticos entre campos',
-  })
-  temCalculoAutomatico: boolean;
-
-  @Column({
-    name: 'formulas_calculo',
+    name: 'template_dados',
     type: 'jsonb',
     nullable: true,
-    comment: 'Fórmulas de cálculo em JSON (campo_destino: formula)',
+    comment: 'Conteúdo do template em JSON para preview da matriz',
   })
-  formulasCalculo: Record<string, string>;
-
-  @Column({
-    name: 'layout_visualizacao',
-    type: 'jsonb',
-    nullable: true,
-    comment: 'Configurações de layout para visualização (grid, posicionamento)',
-  })
-  layoutVisualizacao: Record<string, any>;
-
-  @Column({
-    name: 'template_impressao',
-    type: 'text',
-    nullable: true,
-    comment: 'Template HTML/Handlebars para impressão do laudo',
-  })
-  templateImpressao: string;
-
-  // Validações e regras
-  @Column({
-    name: 'requer_assinatura_digital',
-    type: 'boolean',
-    default: true,
-    comment: 'Se requer assinatura digital do responsável técnico',
-  })
-  requerAssinaturaDigital: boolean;
-
-  @Column({
-    name: 'permite_edicao_apos_liberacao',
-    type: 'boolean',
-    default: false,
-    comment: 'Se permite edição após liberação do resultado',
-  })
-  permiteEdicaoAposLiberacao: boolean;
-
-  @Column({
-    name: 'regras_validacao',
-    type: 'jsonb',
-    nullable: true,
-    comment: 'Regras de validação customizadas em JSON',
-  })
-  regrasValidacao: Record<string, any>;
-
-  // Instruções e observações
-  @Column({
-    name: 'instrucoes_preenchimento',
-    type: 'text',
-    nullable: true,
-    comment: 'Instruções para preenchimento da matriz',
-  })
-  instrucoesPreenchimento: string;
-
-  @Column({
-    name: 'observacoes',
-    type: 'text',
-    nullable: true,
-    comment: 'Observações gerais sobre a matriz',
-  })
-  observacoes: string;
-
-  @Column({
-    name: 'referencias_bibliograficas',
-    type: 'text',
-    nullable: true,
-    comment: 'Referências bibliográficas e normas técnicas',
-  })
-  referenciasBibliograficas: string;
-
-  // Status e controle
-  @Column({
-    name: 'status',
-    type: 'enum',
-    enum: StatusMatriz,
-    default: StatusMatriz.ATIVO,
-    comment: 'Status da matriz',
-  })
-  status: StatusMatriz;
+  templateDados: Record<string, any>;
 
   @Column({
     name: 'ativo',
     type: 'boolean',
     default: true,
-    comment: 'Se a matriz está ativa (soft delete)',
+    comment: 'Se a matriz está ativa',
   })
   ativo: boolean;
 

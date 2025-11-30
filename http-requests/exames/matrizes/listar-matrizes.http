@@ -2,22 +2,38 @@
 GET {{baseUrl}}/exames/matrizes
 Authorization: Bearer {{token}}
 
+### Listar com Paginacao
+GET {{baseUrl}}/exames/matrizes?page=1&limit=10
+Authorization: Bearer {{token}}
+
+### Filtrar por Termo de Busca
+GET {{baseUrl}}/exames/matrizes?search=Hemograma
+Authorization: Bearer {{token}}
+
+### Filtrar por Tipo de Exame
+GET {{baseUrl}}/exames/matrizes?tipoExameId=f47ac10b-58cc-4372-a567-0e02b2c3d479
+Authorization: Bearer {{token}}
+
+### Filtrar por Status Ativo
+GET {{baseUrl}}/exames/matrizes?ativo=true
+Authorization: Bearer {{token}}
+
+### Filtrar por Status Inativo
+GET {{baseUrl}}/exames/matrizes?ativo=false
+Authorization: Bearer {{token}}
+
+### Filtros Combinados
+GET {{baseUrl}}/exames/matrizes?page=1&limit=20&search=Audio&tipoExameId=f47ac10b-58cc-4372-a567-0e02b2c3d479&ativo=true
+Authorization: Bearer {{token}}
+
 ### Listar Apenas Matrizes Ativas
 GET {{baseUrl}}/exames/matrizes/ativas
 Authorization: Bearer {{token}}
 
-### Listar Matrizes Padrão do Sistema
-GET {{baseUrl}}/exames/matrizes/padrao
+### Buscar Matrizes por Tipo de Exame
+GET {{baseUrl}}/exames/matrizes/tipo-exame/f47ac10b-58cc-4372-a567-0e02b2c3d479
 Authorization: Bearer {{token}}
 
-### Filtrar por Tipo de Matriz
-GET {{baseUrl}}/exames/matrizes/tipo/audiometria
-Authorization: Bearer {{token}}
-
-### Listar com Paginação
-GET {{baseUrl}}/exames/matrizes?page=1&limit=10
-Authorization: Bearer {{token}}
-
-### Obter Estatísticas
+### Obter Estatisticas
 GET {{baseUrl}}/exames/matrizes/stats
 Authorization: Bearer {{token}}

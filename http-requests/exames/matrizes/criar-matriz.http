@@ -1,56 +1,73 @@
-### Criar Matriz - Audiometria
+### Criar Matriz Simples
 POST {{baseUrl}}/exames/matrizes
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "codigoInterno": "MAT-AUDIO-001",
-  "nome": "Matriz de Audiometria",
-  "descricao": "Template para exame de audiometria ocupacional",
-  "tipoMatriz": "audiometria",
-  "status": "ativo",
-  "versao": "1.0",
-  "padraoSistema": false,
-  "temCalculoAutomatico": false,
-  "requerAssinaturaDigital": true
+  "codigoInterno": "HEM001",
+  "nome": "Hemograma Completo",
+  "tipoExameId": "6b9524b5-fe30-40f2-95b7-db8166912e8d",
+  "exameId": "f47ac10b-58cc-4372-a567-0e02b2c3d480"
 }
 
-### Criar Matriz - Hemograma
+### Criar Matriz com Template
 POST {{baseUrl}}/exames/matrizes
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "codigoInterno": "MAT-HEMO-001",
-  "nome": "Matriz de Hemograma Completo",
-  "descricao": "Template para hemograma com valores de referência",
-  "tipoMatriz": "hemograma",
-  "status": "ativo",
-  "versao": "2.0",
-  "padraoSistema": true,
-  "temCalculoAutomatico": true,
-  "formulasCalculo": {
-    "vhcm": "hgb / rbc * 10",
-    "hcm": "hgb / rbc"
+  "codigoInterno": "DENSI001",
+  "nome": "Densitometria Ossea",
+  "tipoExameId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+  "exameId": "f47ac10b-58cc-4372-a567-0e02b2c3d481",
+  "templateArquivo": "template-densitometria-ossea.pdf",
+  "templateDados": {
+    "titulo": "DENSITOMETRIA OSSEA",
+    "campos": [
+      { "nome": "COLUNA LOMBAR (BMD)", "valor": "xxxxx" },
+      { "nome": "FEMUR DIREITO (BMD)", "valor": "xxxxx" }
+    ]
   }
 }
 
-### Criar Matriz - Densitometria Óssea
+### Criar Matriz com Campos
 POST {{baseUrl}}/exames/matrizes
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "codigoInterno": "MAT-DENSI-001",
-  "nome": "Matriz de Densitometria Óssea",
-  "descricao": "Template para densitometria óssea com cálculo de T-Score e Z-Score",
-  "tipoMatriz": "densitometria",
-  "status": "ativo",
-  "versao": "1.5",
-  "padraoSistema": false,
-  "temCalculoAutomatico": true,
-  "formulasCalculo": {
-    "tscore": "(dmo - dmo_jovem) / dp_jovem",
-    "zscore": "(dmo - dmo_idade) / dp_idade"
-  }
+  "codigoInterno": "AUDIO001",
+  "nome": "Audiometria Ocupacional",
+  "tipoExameId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+  "exameId": "f47ac10b-58cc-4372-a567-0e02b2c3d482",
+  "campos": [
+    {
+      "codigoCampo": "orelha_direita_500hz",
+      "label": "Orelha Direita 500Hz",
+      "tipoCampo": "decimal",
+      "unidadeMedida": "dB",
+      "obrigatorio": true,
+      "ordemExibicao": 1
+    },
+    {
+      "codigoCampo": "orelha_direita_1000hz",
+      "label": "Orelha Direita 1000Hz",
+      "tipoCampo": "decimal",
+      "unidadeMedida": "dB",
+      "obrigatorio": true,
+      "ordemExibicao": 2
+    }
+  ]
+}
+
+### Erro - Codigo Interno Duplicado (Conflict 409)
+POST {{baseUrl}}/exames/matrizes
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoInterno": "HEM001",
+  "nome": "Outro Hemograma",
+  "tipoExameId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+  "exameId": "f47ac10b-58cc-4372-a567-0e02b2c3d480"
 }

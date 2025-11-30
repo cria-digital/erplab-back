@@ -1,27 +1,74 @@
-### Atualizar Informações da Matriz
-PATCH {{baseUrl}}/exames/matrizes/{id}
+### Atualizar Nome da Matriz
+PATCH {{baseUrl}}/exames/matrizes/f47ac10b-58cc-4372-a567-0e02b2c3d479
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "nome": "Matriz de Audiometria Atualizada",
-  "descricao": "Nova descrição",
-  "versao": "1.1"
+  "nome": "Hemograma Completo Atualizado"
 }
 
-### Atualizar Status
-PATCH {{baseUrl}}/exames/matrizes/{id}
+### Atualizar Codigo Interno
+PATCH {{baseUrl}}/exames/matrizes/f47ac10b-58cc-4372-a567-0e02b2c3d479
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "status": "em_revisao"
+  "codigoInterno": "HEM002"
+}
+
+### Atualizar Template
+PATCH {{baseUrl}}/exames/matrizes/f47ac10b-58cc-4372-a567-0e02b2c3d479
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "templateArquivo": "novo-template.pdf",
+  "templateDados": {
+    "titulo": "NOVO TEMPLATE",
+    "campos": [
+      { "nome": "Campo 1", "valor": "xxx" }
+    ]
+  }
+}
+
+### Atualizar Campos da Matriz (substitui todos os campos)
+PATCH {{baseUrl}}/exames/matrizes/f47ac10b-58cc-4372-a567-0e02b2c3d479
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "campos": [
+    {
+      "codigoCampo": "hemoglobina",
+      "label": "Hemoglobina",
+      "tipoCampo": "decimal",
+      "unidadeMedida": "g_dL",
+      "valorReferenciaMin": 13.0,
+      "valorReferenciaMax": 17.0,
+      "obrigatorio": true,
+      "ordemExibicao": 1
+    },
+    {
+      "codigoCampo": "hematocrito",
+      "label": "Hematocrito",
+      "tipoCampo": "decimal",
+      "unidadeMedida": "percentual",
+      "valorReferenciaMin": 40,
+      "valorReferenciaMax": 54,
+      "obrigatorio": true,
+      "ordemExibicao": 2
+    }
+  ]
 }
 
 ### Ativar Matriz
-PATCH {{baseUrl}}/exames/matrizes/{id}/ativar
+PATCH {{baseUrl}}/exames/matrizes/f47ac10b-58cc-4372-a567-0e02b2c3d479/ativar
 Authorization: Bearer {{token}}
 
 ### Desativar Matriz
-PATCH {{baseUrl}}/exames/matrizes/{id}/desativar
+PATCH {{baseUrl}}/exames/matrizes/f47ac10b-58cc-4372-a567-0e02b2c3d479/desativar
+Authorization: Bearer {{token}}
+
+### Remover Matriz (Soft Delete)
+DELETE {{baseUrl}}/exames/matrizes/f47ac10b-58cc-4372-a567-0e02b2c3d479
 Authorization: Bearer {{token}}

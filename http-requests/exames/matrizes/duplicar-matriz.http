@@ -1,20 +1,31 @@
 ### Duplicar Matriz
-POST {{baseUrl}}/exames/matrizes/{id}/duplicar
+POST {{baseUrl}}/exames/matrizes/f47ac10b-58cc-4372-a567-0e02b2c3d479/duplicar
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "novoCodigoInterno": "MAT-AUDIO-002",
-  "novoNome": "Matriz de Audiometria - Cópia",
-  "novaVersao": "1.0"
+  "codigoInterno": "HEM002",
+  "nome": "Hemograma Completo - Copia"
 }
 
 ### Expected Response
 # Status: 201 Created
 # {
 #   "id": "novo-uuid",
-#   "codigoInterno": "MAT-AUDIO-002",
-#   "nome": "Matriz de Audiometria - Cópia",
-#   "versao": "1.0",
+#   "codigoInterno": "HEM002",
+#   "nome": "Hemograma Completo - Copia",
+#   "tipoExameId": "...",
+#   "exameId": "...",
+#   "ativo": true,
 #   "campos": [ ... todos os campos copiados ... ]
 # }
+
+### Erro - Codigo Ja Existe (Conflict 409)
+POST {{baseUrl}}/exames/matrizes/f47ac10b-58cc-4372-a567-0e02b2c3d479/duplicar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoInterno": "HEM001",
+  "nome": "Matriz Duplicada"
+}

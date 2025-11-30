@@ -1,50 +1,179 @@
-### Adicionar Campo à Matriz
-POST {{baseUrl}}/exames/matrizes/{matrizId}/campos
+### ===========================================
+### GESTAO DE CAMPOS VIA UPDATE DE MATRIZ
+### ===========================================
+###
+### NOTA: Os campos sao gerenciados diretamente na matriz.
+### Ao atualizar campos via PATCH /matrizes/:id, todos os
+### campos existentes sao substituidos pelos novos.
+###
+
+### Criar Matriz com Campos Iniciais
+POST {{baseUrl}}/exames/matrizes
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "codigoCampo": "hemoglobina",
-  "label": "Hemoglobina",
-  "tipoCampo": "decimal",
-  "unidadeMedida": "g/dL",
-  "valorReferenciaMin": 12.0,
-  "valorReferenciaMax": 16.0,
-  "obrigatorio": true,
-  "ordemExibicao": 1,
-  "linha": 1,
-  "coluna": 1,
-  "largura": 12
+  "codigoInterno": "TEST-CAMPOS-001",
+  "nome": "Teste de Campos",
+  "tipoExameId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+  "exameId": "f47ac10b-58cc-4372-a567-0e02b2c3d480",
+  "campos": [
+    {
+      "codigoCampo": "campo1",
+      "label": "Campo 1",
+      "tipoCampo": "texto",
+      "obrigatorio": true,
+      "ordemExibicao": 1
+    },
+    {
+      "codigoCampo": "campo2",
+      "label": "Campo 2",
+      "tipoCampo": "numero",
+      "obrigatorio": false,
+      "ordemExibicao": 2
+    }
+  ]
 }
 
-### Listar Campos da Matriz
-GET {{baseUrl}}/exames/matrizes/{matrizId}/campos
-Authorization: Bearer {{token}}
-
-### Atualizar Campo
-PATCH {{baseUrl}}/exames/matrizes/{matrizId}/campos/{campoId}
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-  "label": "Hemoglobina (Hb)",
-  "valorReferenciaMin": 13.0,
-  "valorReferenciaMax": 17.0
-}
-
-### Remover Campo
-DELETE {{baseUrl}}/exames/matrizes/{matrizId}/campos/{campoId}
-Authorization: Bearer {{token}}
-
-### Reordenar Campos
-PATCH {{baseUrl}}/exames/matrizes/{matrizId}/campos/reorder
+### Adicionar Novos Campos (substitui todos os campos existentes)
+PATCH {{baseUrl}}/exames/matrizes/{id}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
   "campos": [
-    { "campoId": "uuid-1", "ordemExibicao": 1 },
-    { "campoId": "uuid-2", "ordemExibicao": 2 },
-    { "campoId": "uuid-3", "ordemExibicao": 3 }
+    {
+      "codigoCampo": "campo1",
+      "label": "Campo 1",
+      "tipoCampo": "texto",
+      "obrigatorio": true,
+      "ordemExibicao": 1
+    },
+    {
+      "codigoCampo": "campo2",
+      "label": "Campo 2",
+      "tipoCampo": "numero",
+      "obrigatorio": false,
+      "ordemExibicao": 2
+    },
+    {
+      "codigoCampo": "campo3",
+      "label": "Campo 3 - Novo",
+      "tipoCampo": "decimal",
+      "obrigatorio": true,
+      "ordemExibicao": 3
+    }
+  ]
+}
+
+### Atualizar Campo Existente (deve incluir todos os campos)
+PATCH {{baseUrl}}/exames/matrizes/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "campos": [
+    {
+      "codigoCampo": "campo1",
+      "label": "Campo 1 - Atualizado",
+      "tipoCampo": "texto",
+      "obrigatorio": true,
+      "ordemExibicao": 1
+    },
+    {
+      "codigoCampo": "campo2",
+      "label": "Campo 2",
+      "tipoCampo": "numero",
+      "obrigatorio": true,
+      "ordemExibicao": 2
+    },
+    {
+      "codigoCampo": "campo3",
+      "label": "Campo 3",
+      "tipoCampo": "decimal",
+      "obrigatorio": true,
+      "ordemExibicao": 3
+    }
+  ]
+}
+
+### Remover Campo (nao incluir na lista)
+PATCH {{baseUrl}}/exames/matrizes/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "campos": [
+    {
+      "codigoCampo": "campo1",
+      "label": "Campo 1 - Atualizado",
+      "tipoCampo": "texto",
+      "obrigatorio": true,
+      "ordemExibicao": 1
+    },
+    {
+      "codigoCampo": "campo3",
+      "label": "Campo 3",
+      "tipoCampo": "decimal",
+      "obrigatorio": true,
+      "ordemExibicao": 2
+    }
+  ]
+}
+
+### Reordenar Campos
+PATCH {{baseUrl}}/exames/matrizes/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "campos": [
+    {
+      "codigoCampo": "campo3",
+      "label": "Campo 3 - Agora Primeiro",
+      "tipoCampo": "decimal",
+      "obrigatorio": true,
+      "ordemExibicao": 1
+    },
+    {
+      "codigoCampo": "campo1",
+      "label": "Campo 1 - Agora Segundo",
+      "tipoCampo": "texto",
+      "obrigatorio": true,
+      "ordemExibicao": 2
+    }
+  ]
+}
+
+### Exemplo de Campo Completo com Todas as Opcoes
+PATCH {{baseUrl}}/exames/matrizes/{id}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "campos": [
+    {
+      "codigoCampo": "hemoglobina",
+      "label": "Hemoglobina",
+      "tipoCampo": "decimal",
+      "placeholder": "Digite o valor",
+      "descricao": "Concentracao de hemoglobina no sangue",
+      "unidadeMedida": "g_dL",
+      "valorReferenciaMin": 12.0,
+      "valorReferenciaMax": 17.0,
+      "textoReferencia": "Homens: 13-17 g/dL | Mulheres: 12-16 g/dL",
+      "obrigatorio": true,
+      "valorMin": 0,
+      "valorMax": 25,
+      "ordemExibicao": 1,
+      "linha": 1,
+      "coluna": 1,
+      "largura": 6,
+      "visivel": true,
+      "somenteleitura": false,
+      "destacarAlterado": true,
+      "grupo": "serie_vermelha",
+      "secao": "Eritrograma"
+    }
   ]
 }

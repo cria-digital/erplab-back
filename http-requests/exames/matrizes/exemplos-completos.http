@@ -1,78 +1,127 @@
-### Matriz Completa - Hemograma com Campos
+### ===========================================
+### EXEMPLO: Fluxo Completo de Matriz de Exame
+### ===========================================
+
+### 1. Criar Matriz de Hemograma com Campos
 POST {{baseUrl}}/exames/matrizes
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "codigoInterno": "MAT-HEMO-COMPLETO-001",
-  "nome": "Matriz Hemograma Completo",
-  "descricao": "Template completo de hemograma com todos os parâmetros",
-  "tipoMatriz": "hemograma",
-  "status": "ativo",
-  "versao": "3.0",
-  "padraoSistema": true,
-  "temCalculoAutomatico": true,
-  "requerAssinaturaDigital": true,
+  "codigoInterno": "HEM-COMPLETO-001",
+  "nome": "Hemograma Completo Padrao",
+  "tipoExameId": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+  "exameId": "f47ac10b-58cc-4372-a567-0e02b2c3d480",
+  "templateDados": {
+    "titulo": "HEMOGRAMA COMPLETO",
+    "secoes": ["Serie Vermelha", "Serie Branca", "Plaquetas"]
+  },
   "campos": [
     {
       "codigoCampo": "hemacias",
-      "label": "Hemácias",
+      "label": "Hemacias",
       "tipoCampo": "decimal",
-      "unidadeMedida": "milhões/mm³",
+      "unidadeMedida": "personalizada",
+      "unidadeMedidaCustomizada": "milhoes/mm3",
       "valorReferenciaMin": 4.5,
       "valorReferenciaMax": 6.0,
       "obrigatorio": true,
-      "ordemExibicao": 1
+      "ordemExibicao": 1,
+      "secao": "Serie Vermelha"
     },
     {
       "codigoCampo": "hemoglobina",
       "label": "Hemoglobina",
       "tipoCampo": "decimal",
-      "unidadeMedida": "g/dL",
+      "unidadeMedida": "g_dL",
       "valorReferenciaMin": 13.0,
       "valorReferenciaMax": 17.0,
       "obrigatorio": true,
-      "ordemExibicao": 2
+      "ordemExibicao": 2,
+      "secao": "Serie Vermelha"
     },
     {
       "codigoCampo": "hematocrito",
-      "label": "Hematócrito",
+      "label": "Hematocrito",
       "tipoCampo": "decimal",
-      "unidadeMedida": "%",
+      "unidadeMedida": "percentual",
       "valorReferenciaMin": 40,
       "valorReferenciaMax": 54,
       "obrigatorio": true,
-      "ordemExibicao": 3
+      "ordemExibicao": 3,
+      "secao": "Serie Vermelha"
     },
     {
-      "codigoCampo": "vcm",
-      "label": "VCM (Volume Corpuscular Médio)",
-      "tipoCampo": "calculado",
-      "unidadeMedida": "fL",
-      "valorReferenciaMin": 80,
-      "valorReferenciaMax": 100,
-      "formulaCalculo": "hematocrito / hemacias * 10",
-      "ordemExibicao": 4
+      "codigoCampo": "leucocitos",
+      "label": "Leucocitos",
+      "tipoCampo": "numero",
+      "unidadeMedida": "personalizada",
+      "unidadeMedidaCustomizada": "/mm3",
+      "valorReferenciaMin": 4000,
+      "valorReferenciaMax": 11000,
+      "obrigatorio": true,
+      "ordemExibicao": 4,
+      "secao": "Serie Branca"
+    },
+    {
+      "codigoCampo": "plaquetas",
+      "label": "Plaquetas",
+      "tipoCampo": "numero",
+      "unidadeMedida": "personalizada",
+      "unidadeMedidaCustomizada": "mil/mm3",
+      "valorReferenciaMin": 150,
+      "valorReferenciaMax": 400,
+      "obrigatorio": true,
+      "ordemExibicao": 5,
+      "secao": "Plaquetas"
     }
   ]
 }
 
-### Duplicar Matriz para Criar Variação
+### 2. Listar Todas as Matrizes
+GET {{baseUrl}}/exames/matrizes
+Authorization: Bearer {{token}}
+
+### 3. Buscar Matriz por Codigo
+GET {{baseUrl}}/exames/matrizes/codigo/HEM-COMPLETO-001
+Authorization: Bearer {{token}}
+
+### 4. Duplicar Matriz para Pediatria
 POST {{baseUrl}}/exames/matrizes/{id}/duplicar
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "novoCodigoInterno": "MAT-HEMO-PEDIATRIA-001",
-  "novoNome": "Matriz Hemograma - Pediatria",
-  "novaVersao": "1.0",
-  "alterarValoresReferencia": true
+  "codigoInterno": "HEM-PEDIATRIA-001",
+  "nome": "Hemograma Completo - Pediatria"
 }
 
-### Buscar Todas as Matrizes Criadas
-GET {{baseUrl}}/exames/matrizes
+### 5. Atualizar Valores de Referencia da Copia
+PATCH {{baseUrl}}/exames/matrizes/{id}
+Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
-### Obter Estatísticas
+{
+  "campos": [
+    {
+      "codigoCampo": "hemacias",
+      "label": "Hemacias",
+      "tipoCampo": "decimal",
+      "unidadeMedida": "personalizada",
+      "unidadeMedidaCustomizada": "milhoes/mm3",
+      "valorReferenciaMin": 4.0,
+      "valorReferenciaMax": 5.5,
+      "textoReferencia": "Valores de referencia para criancas",
+      "obrigatorio": true,
+      "ordemExibicao": 1
+    }
+  ]
+}
+
+### 6. Obter Estatisticas
 GET {{baseUrl}}/exames/matrizes/stats
+Authorization: Bearer {{token}}
+
+### 7. Desativar Matriz Antiga
+PATCH {{baseUrl}}/exames/matrizes/{id}/desativar
 Authorization: Bearer {{token}}

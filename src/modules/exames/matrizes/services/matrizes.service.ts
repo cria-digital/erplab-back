@@ -2,15 +2,10 @@ import {
   Injectable,
   NotFoundException,
   ConflictException,
-  BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource, Like } from 'typeorm';
-import {
-  MatrizExame,
-  TipoMatriz,
-  StatusMatriz,
-} from '../entities/matriz-exame.entity';
+import { MatrizExame } from '../entities/matriz-exame.entity';
 import { CampoMatriz } from '../entities/campo-matriz.entity';
 import { CreateMatrizDto } from '../dto/create-matriz.dto';
 import { UpdateMatrizDto } from '../dto/update-matriz.dto';
@@ -100,8 +95,7 @@ export class MatrizesService {
     page: number = 1,
     limit: number = 10,
     search?: string,
-    tipoMatriz?: TipoMatriz,
-    status?: StatusMatriz,
+    tipoExameId?: string,
     ativo?: boolean,
   ): Promise<PaginatedMatrizResult> {
     const skip = (page - 1) * limit;
@@ -112,12 +106,8 @@ export class MatrizesService {
       where.nome = Like(`%${search}%`);
     }
 
-    if (tipoMatriz) {
-      where.tipoMatriz = tipoMatriz;
-    }
-
-    if (status) {
-      where.status = status;
+    if (tipoExameId) {
+      where.tipoExameId = tipoExameId;
     }
 
     if (ativo !== undefined) {
@@ -126,7 +116,7 @@ export class MatrizesService {
 
     const [data, total] = await this.matrizRepository.findAndCount({
       where,
-      relations: ['campos'],
+      relations: ['campos', 'tipoExame', 'exame'],
       order: {
         nome: 'ASC',
       },
@@ -165,7 +155,7 @@ export class MatrizesService {
   async findByCodigo(codigoInterno: string): Promise<MatrizExame> {
     const matriz = await this.matrizRepository.findOne({
       where: { codigoInterno },
-      relations: ['campos'],
+      relations: ['campos', 'tipoExame', 'exame'],
     });
 
     if (!matriz) {
@@ -178,24 +168,13 @@ export class MatrizesService {
   }
 
   /**
-   * Buscar matrizes por tipo
+   * Buscar matrizes por tipo de exame
    */
-  async findByTipo(tipoMatriz: TipoMatriz): Promise<MatrizExame[]> {
+  async findByTipoExame(tipoExameId: string): Promise<MatrizExame[]> {
     return this.matrizRepository.find({
-      where: { tipoMatriz, ativo: true },
-      relations: ['campos'],
+      where: { tipoExameId, ativo: true },
+      relations: ['campos', 'tipoExame', 'exame'],
       order: { nome: 'ASC' },
-    });
-  }
-
-  /**
-   * Buscar matrizes padrão do sistema
-   */
-  async findPadrao(): Promise<MatrizExame[]> {
-    return this.matrizRepository.find({
-      where: { padraoSistema: true, ativo: true },
-      relations: ['campos'],
-      order: { tipoMatriz: 'ASC', nome: 'ASC' },
     });
   }
 
@@ -204,8 +183,8 @@ export class MatrizesService {
    */
   async findAtivas(): Promise<MatrizExame[]> {
     return this.matrizRepository.find({
-      where: { ativo: true, status: StatusMatriz.ATIVO },
-      relations: ['campos'],
+      where: { ativo: true },
+      relations: ['campos', 'tipoExame', 'exame'],
       order: { nome: 'ASC' },
     });
   }
@@ -219,13 +198,6 @@ export class MatrizesService {
     usuarioId: string,
   ): Promise<MatrizExame> {
     const matriz = await this.findOne(id);
-
-    // Se é matriz padrão, não permite algumas alterações
-    if (matriz.padraoSistema && updateMatrizDto.padraoSistema === false) {
-      throw new BadRequestException(
-        'Não é possível desmarcar matriz padrão do sistema',
-      );
-    }
 
     // Verificar conflito de código
     if (
@@ -295,12 +267,6 @@ export class MatrizesService {
   async remove(id: string, usuarioId: string): Promise<void> {
     const matriz = await this.findOne(id);
 
-    if (matriz.padraoSistema) {
-      throw new BadRequestException(
-        'Não é possível remover matriz padrão do sistema',
-      );
-    }
-
     matriz.ativo = false;
     matriz.atualizadoPor = usuarioId;
 
@@ -314,7 +280,6 @@ export class MatrizesService {
     const matriz = await this.findOne(id);
 
     matriz.ativo = true;
-    matriz.status = StatusMatriz.ATIVO;
     matriz.atualizadoPor = usuarioId;
 
     await this.matrizRepository.save(matriz);
@@ -328,14 +293,7 @@ export class MatrizesService {
   async deactivate(id: string, usuarioId: string): Promise<MatrizExame> {
     const matriz = await this.findOne(id);
 
-    if (matriz.padraoSistema) {
-      throw new BadRequestException(
-        'Não é possível desativar matriz padrão do sistema',
-      );
-    }
-
     matriz.ativo = false;
-    matriz.status = StatusMatriz.INATIVO;
     matriz.atualizadoPor = usuarioId;
 
     await this.matrizRepository.save(matriz);
@@ -344,7 +302,7 @@ export class MatrizesService {
   }
 
   /**
-   * Duplicar matriz (criar nova versão ou cópia)
+   * Duplicar matriz (criar cópia)
    */
   async duplicate(
     id: string,
@@ -372,15 +330,15 @@ export class MatrizesService {
     try {
       // Criar nova matriz (cópia)
       const novaMatriz = this.matrizRepository.create({
-        ...matrizOriginal,
-        id: undefined,
         codigoInterno: novoCodigoInterno,
         nome: novoNome,
-        padraoSistema: false, // Cópia nunca é padrão
+        tipoExameId: matrizOriginal.tipoExameId,
+        exameId: matrizOriginal.exameId,
+        templateArquivo: matrizOriginal.templateArquivo,
+        templateDados: matrizOriginal.templateDados,
+        ativo: true,
         criadoPor: usuarioId,
         atualizadoPor: usuarioId,
-        criadoEm: undefined,
-        atualizadoEm: undefined,
       });
 
       const savedMatriz = await queryRunner.manager.save(novaMatriz);
@@ -419,15 +377,15 @@ export class MatrizesService {
    * Estatísticas de matrizes
    */
   async getStats() {
-    const [total, ativas, inativas, porTipo] = await Promise.all([
+    const [total, ativas, inativas, porTipoExame] = await Promise.all([
       this.matrizRepository.count(),
       this.matrizRepository.count({ where: { ativo: true } }),
       this.matrizRepository.count({ where: { ativo: false } }),
       this.matrizRepository
         .createQueryBuilder('matriz')
-        .select('matriz.tipo_matriz', 'tipo')
+        .select('matriz.tipo_exame_id', 'tipoExameId')
         .addSelect('COUNT(*)', 'quantidade')
-        .groupBy('matriz.tipo_matriz')
+        .groupBy('matriz.tipo_exame_id')
         .getRawMany(),
     ]);
 
@@ -435,9 +393,9 @@ export class MatrizesService {
       total,
       ativas,
       inativas,
-      porTipo: porTipo.reduce(
+      porTipoExame: porTipoExame.reduce(
         (acc, item) => {
-          acc[item.tipo] = parseInt(item.quantidade);
+          acc[item.tipoExameId] = parseInt(item.quantidade);
           return acc;
         },
         {} as Record<string, number>,

@@ -23,7 +23,6 @@ import {
 import { MatrizesService } from '../services/matrizes.service';
 import { CreateMatrizDto } from '../dto/create-matriz.dto';
 import { UpdateMatrizDto } from '../dto/update-matriz.dto';
-import { TipoMatriz, StatusMatriz } from '../entities/matriz-exame.entity';
 
 @ApiTags('Matrizes de Exames')
 @Controller('exames/matrizes')
@@ -35,7 +34,7 @@ export class MatrizesController {
   @ApiOperation({
     summary: 'Criar nova matriz',
     description:
-      'Cria uma nova matriz de exame com seus campos. Matrizes são templates/formulários padronizados para tipos específicos de exames.',
+      'Cria uma nova matriz de exame. Conforme Figma: Tipo de exame, Exame vinculado, Nome da matriz, Código interno.',
   })
   @ApiResponse({
     status: 201,
@@ -53,7 +52,7 @@ export class MatrizesController {
   @ApiOperation({
     summary: 'Listar matrizes',
     description:
-      'Lista todas as matrizes com paginação e filtros opcionais por tipo, status e termo de busca',
+      'Lista todas as matrizes com paginação e filtros opcionais por tipo de exame e termo de busca',
   })
   @ApiQuery({
     name: 'page',
@@ -74,16 +73,10 @@ export class MatrizesController {
     description: 'Termo de busca no nome',
   })
   @ApiQuery({
-    name: 'tipoMatriz',
+    name: 'tipoExameId',
     required: false,
-    enum: TipoMatriz,
-    description: 'Filtrar por tipo de matriz',
-  })
-  @ApiQuery({
-    name: 'status',
-    required: false,
-    enum: StatusMatriz,
-    description: 'Filtrar por status',
+    type: String,
+    description: 'Filtrar por ID do tipo de exame',
   })
   @ApiQuery({
     name: 'ativo',
@@ -99,16 +92,14 @@ export class MatrizesController {
     @Query('page') page?: number,
     @Query('limit') limit?: number,
     @Query('search') search?: string,
-    @Query('tipoMatriz') tipoMatriz?: TipoMatriz,
-    @Query('status') status?: StatusMatriz,
+    @Query('tipoExameId') tipoExameId?: string,
     @Query('ativo') ativo?: boolean,
   ) {
     return this.matrizesService.findAll(
       page ? +page : 1,
       limit ? +limit : 10,
       search,
-      tipoMatriz,
-      status,
+      tipoExameId,
       ativo,
     );
   }
@@ -116,7 +107,7 @@ export class MatrizesController {
   @Get('ativas')
   @ApiOperation({
     summary: 'Listar matrizes ativas',
-    description: 'Retorna apenas matrizes ativas e com status ATIVO',
+    description: 'Retorna apenas matrizes ativas',
   })
   @ApiResponse({
     status: 200,
@@ -126,24 +117,11 @@ export class MatrizesController {
     return this.matrizesService.findAtivas();
   }
 
-  @Get('padrao')
-  @ApiOperation({
-    summary: 'Listar matrizes padrão do sistema',
-    description:
-      'Retorna matrizes predefinidas do sistema (Audiometria, Hemograma, etc)',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Lista de matrizes padrão',
-  })
-  findPadrao() {
-    return this.matrizesService.findPadrao();
-  }
-
   @Get('stats')
   @ApiOperation({
     summary: 'Estatísticas de matrizes',
-    description: 'Retorna estatísticas agregadas (total, por tipo, etc)',
+    description:
+      'Retorna estatísticas agregadas (total, por tipo de exame, etc)',
   })
   @ApiResponse({
     status: 200,
@@ -153,22 +131,22 @@ export class MatrizesController {
     return this.matrizesService.getStats();
   }
 
-  @Get('tipo/:tipo')
+  @Get('tipo-exame/:tipoExameId')
   @ApiOperation({
-    summary: 'Buscar matrizes por tipo',
-    description: 'Retorna todas as matrizes ativas de um tipo específico',
+    summary: 'Buscar matrizes por tipo de exame',
+    description:
+      'Retorna todas as matrizes ativas de um tipo de exame específico',
   })
   @ApiParam({
-    name: 'tipo',
-    enum: TipoMatriz,
-    description: 'Tipo de matriz',
+    name: 'tipoExameId',
+    description: 'ID do tipo de exame',
   })
   @ApiResponse({
     status: 200,
-    description: 'Matrizes do tipo especificado',
+    description: 'Matrizes do tipo de exame especificado',
   })
-  findByTipo(@Param('tipo') tipo: TipoMatriz) {
-    return this.matrizesService.findByTipo(tipo);
+  findByTipoExame(@Param('tipoExameId', ParseUUIDPipe) tipoExameId: string) {
+    return this.matrizesService.findByTipoExame(tipoExameId);
   }
 
   @Get('codigo/:codigo')
@@ -179,7 +157,7 @@ export class MatrizesController {
   @ApiParam({
     name: 'codigo',
     description: 'Código interno da matriz',
-    example: 'MTZ-AUDIO-001',
+    example: 'HEM123',
   })
   @ApiResponse({
     status: 200,
@@ -232,10 +210,6 @@ export class MatrizesController {
     status: 404,
     description: 'Matriz não encontrada',
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Não é possível modificar matriz padrão do sistema',
-  })
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateMatrizDto: UpdateMatrizDto,
@@ -248,8 +222,7 @@ export class MatrizesController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
     summary: 'Remover matriz',
-    description:
-      'Remove uma matriz (soft delete). Matrizes padrão do sistema não podem ser removidas.',
+    description: 'Remove uma matriz (soft delete).',
   })
   @ApiParam({
     name: 'id',
@@ -262,10 +235,6 @@ export class MatrizesController {
   @ApiResponse({
     status: 404,
     description: 'Matriz não encontrada',
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'Não é possível remover matriz padrão do sistema',
   })
   remove(@Param('id', ParseUUIDPipe) id: string, @Request() req: any) {
     return this.matrizesService.remove(id, req.user.id);
@@ -291,8 +260,7 @@ export class MatrizesController {
   @Patch(':id/desativar')
   @ApiOperation({
     summary: 'Desativar matriz',
-    description:
-      'Desativa uma matriz. Matrizes padrão do sistema não podem ser desativadas.',
+    description: 'Desativa uma matriz.',
   })
   @ApiParam({
     name: 'id',
@@ -301,10 +269,6 @@ export class MatrizesController {
   @ApiResponse({
     status: 200,
     description: 'Matriz desativada com sucesso',
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'Não é possível desativar matriz padrão do sistema',
   })
   deactivate(@Param('id', ParseUUIDPipe) id: string, @Request() req: any) {
     return this.matrizesService.deactivate(id, req.user.id);
