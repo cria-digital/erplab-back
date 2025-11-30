@@ -1,176 +1,107 @@
-### Criar Analisador Hematologico
+### Criar Equipamento - Raio-X
 POST {{baseUrl}}/configuracoes/estrutura/equipamentos
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "patrimonio": "PAT-2024-001",
-  "nome": "Analisador Hematologico BC-6800",
-  "marca": "Mindray",
-  "modelo": "BC-6800",
-  "numeroSerie": "BC6800-2024-001",
-  "setorId": "{{setorId}}",
-  "salaId": "{{salaId}}",
-  "fornecedorId": "{{fornecedorId}}",
+  "codigoInterno": "EQ001",
   "unidadeId": "{{unidadeId}}",
-  "dataAquisicao": "2024-01-15",
-  "valorAquisicao": 185000.00,
-  "situacao": "ativo",
-  "dataUltimaManutencao": "2024-09-15",
-  "dataProximaManutencao": "2025-03-15",
-  "periodicidadeManutencaoDias": 180,
-  "observacoes": "Equipamento de alta performance para análises hematológicas completas"
+  "nome": "Raio-X",
+  "numeracao": "1592653986625698526",
+  "salaId": "{{salaId}}"
 }
 
 ### Expected Response
 # Status: 201 Created
 # {
 #   "id": "uuid-do-equipamento",
-#   "patrimonio": "PAT-2024-001",
-#   "nome": "Analisador Hematologico BC-6800",
-#   "situacao": "ativo",
-#   "criadoEm": "2025-10-09T10:00:00.000Z"
+#   "codigoInterno": "EQ001",
+#   "unidadeId": "uuid-da-unidade",
+#   "nome": "Raio-X",
+#   "numeracao": "1592653986625698526",
+#   "salaId": "uuid-da-sala",
+#   "ativo": true,
+#   "criadoEm": "2025-11-30T10:00:00.000Z"
 # }
 
 ###
 
-### Criar Centrifuga
+### Criar Equipamento - Ultrassom
 POST {{baseUrl}}/configuracoes/estrutura/equipamentos
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "patrimonio": "PAT-2024-002",
-  "nome": "Centrifuga Refrigerada CR-3000",
-  "marca": "Eppendorf",
-  "modelo": "5810R",
-  "numeroSerie": "EP5810R-2024-005",
-  "setorId": "{{setorId}}",
-  "salaId": "{{salaId}}",
-  "fornecedorId": "{{fornecedorId}}",
+  "codigoInterno": "EQ002",
   "unidadeId": "{{unidadeId}}",
-  "dataAquisicao": "2024-02-20",
-  "valorAquisicao": 32000.00,
-  "situacao": "ativo",
-  "dataUltimaManutencao": "2024-10-01",
-  "dataProximaManutencao": "2025-04-01",
-  "periodicidadeManutencaoDias": 180,
-  "observacoes": "Centrifuga refrigerada com capacidade para 4x250ml, velocidade maxima 14.000 RPM"
+  "nome": "Ultrassom",
+  "numeracao": "US-2024-001",
+  "salaId": "{{salaId}}"
 }
 
 ###
 
-### Criar Microscopio
+### Criar Equipamento - Analisador Hematologico
 POST {{baseUrl}}/configuracoes/estrutura/equipamentos
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "patrimonio": "PAT-2024-003",
-  "nome": "Microscopio Optico Binocular",
-  "marca": "Olympus",
-  "modelo": "CX23",
-  "numeroSerie": "OLY-CX23-2024-010",
-  "setorId": "{{setorId}}",
-  "salaId": "{{salaId}}",
+  "codigoInterno": "EQ003",
   "unidadeId": "{{unidadeId}}",
-  "dataAquisicao": "2024-03-10",
-  "valorAquisicao": 8500.00,
-  "situacao": "ativo",
-  "dataUltimaManutencao": "2024-09-10",
-  "dataProximaManutencao": "2025-03-10",
-  "periodicidadeManutencaoDias": 180,
-  "observacoes": "Microscopio binocular com iluminacao LED, objetivas 4x, 10x, 40x e 100x"
+  "nome": "Analisador Hematologico",
+  "numeracao": "HEM-2024-001"
 }
 
 ###
 
-### Criar Autoclave
+### Criar Equipamento - Centrifuga
 POST {{baseUrl}}/configuracoes/estrutura/equipamentos
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "patrimonio": "PAT-2024-004",
-  "nome": "Autoclave Vertical 75L",
-  "marca": "Phoenix",
-  "modelo": "AV-75",
-  "numeroSerie": "PHX-AV75-2024-003",
-  "setorId": "{{setorId}}",
-  "salaId": "{{salaId}}",
-  "fornecedorId": "{{fornecedorId}}",
+  "codigoInterno": "EQ004",
   "unidadeId": "{{unidadeId}}",
-  "dataAquisicao": "2024-01-25",
-  "valorAquisicao": 12500.00,
-  "situacao": "ativo",
-  "dataUltimaManutencao": "2024-10-05",
-  "dataProximaManutencao": "2025-01-05",
-  "periodicidadeManutencaoDias": 90,
-  "observacoes": "Autoclave vertical com capacidade de 75 litros, temperatura ate 134C, com controle digital"
+  "nome": "Centrifuga",
+  "numeracao": "CENT-001",
+  "salaId": "{{salaId}}"
 }
 
 ###
 
-### Criar equipamento em manutencao
+### Criar Equipamento Inativo
 POST {{baseUrl}}/configuracoes/estrutura/equipamentos
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "patrimonio": "PAT-2023-025",
-  "nome": "Analisador Bioquimico BS-200",
-  "marca": "Mindray",
-  "modelo": "BS-200",
-  "numeroSerie": "BS200-2023-015",
-  "setorId": "{{setorId}}",
+  "codigoInterno": "EQ005",
   "unidadeId": "{{unidadeId}}",
-  "dataAquisicao": "2023-06-10",
-  "valorAquisicao": 95000.00,
-  "situacao": "manutencao",
-  "dataUltimaManutencao": "2024-10-01",
-  "observacoes": "Equipamento em manutencao corretiva - problema no sistema de reagentes"
-}
-
-###
-
-### Criar equipamento inativo
-POST {{baseUrl}}/configuracoes/estrutura/equipamentos
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-  "patrimonio": "PAT-2022-018",
-  "nome": "Centrifuga Antiga CF-100",
-  "marca": "Fanem",
-  "modelo": "CF-100",
-  "numeroSerie": "FAM-CF100-2022-001",
-  "setorId": "{{setorId}}",
-  "unidadeId": "{{unidadeId}}",
-  "dataAquisicao": "2022-03-10",
-  "valorAquisicao": 8000.00,
-  "situacao": "inativo",
-  "observacoes": "Equipamento desativado - substituido por modelo mais moderno"
-}
-
-###
-
-### Criar equipamento descartado
-POST {{baseUrl}}/configuracoes/estrutura/equipamentos
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-  "patrimonio": "PAT-2020-005",
   "nome": "Microscopio Antigo",
-  "marca": "Zeiss",
-  "modelo": "Standard",
-  "numeroSerie": "ZEI-STD-2020-003",
-  "setorId": "{{setorId}}",
-  "unidadeId": "{{unidadeId}}",
-  "dataAquisicao": "2020-01-10",
-  "valorAquisicao": 5000.00,
-  "situacao": "descartado",
-  "observacoes": "Equipamento descartado por obsolescencia"
+  "numeracao": "MIC-OLD-001",
+  "ativo": false
 }
+
+###
+
+### Erro - Codigo Interno Duplicado (Conflict 409)
+POST {{baseUrl}}/configuracoes/estrutura/equipamentos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoInterno": "EQ001",
+  "unidadeId": "{{unidadeId}}",
+  "nome": "Outro Equipamento"
+}
+
+### Expected Response
+# Status: 409 Conflict
+# {
+#   "statusCode": 409,
+#   "message": "Equipamento com código interno EQ001 já existe",
+#   "error": "Conflict"
+# }
 
 ###

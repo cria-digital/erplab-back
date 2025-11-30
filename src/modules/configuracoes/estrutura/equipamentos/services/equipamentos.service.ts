@@ -1,10 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import {
-  Equipamento,
-  SituacaoEquipamento,
-} from '../entities/equipamento.entity';
+import { Equipamento } from '../entities/equipamento.entity';
 import { CreateEquipamentoDto } from '../dto/create-equipamento.dto';
 import { UpdateEquipamentoDto } from '../dto/update-equipamento.dto';
 
@@ -17,36 +18,41 @@ export class EquipamentosService {
 
   async create(
     createEquipamentoDto: CreateEquipamentoDto,
-    criadoPor: string,
   ): Promise<Equipamento> {
-    const equipamento = this.equipamentoRepository.create({
-      ...createEquipamentoDto,
-      criadoPor,
-      atualizadoPor: criadoPor,
+    // Verificar se código interno já existe
+    const existente = await this.equipamentoRepository.findOne({
+      where: { codigoInterno: createEquipamentoDto.codigoInterno },
     });
 
+    if (existente) {
+      throw new ConflictException(
+        `Equipamento com código interno ${createEquipamentoDto.codigoInterno} já existe`,
+      );
+    }
+
+    const equipamento = this.equipamentoRepository.create(createEquipamentoDto);
     return await this.equipamentoRepository.save(equipamento);
   }
 
   async findAll(): Promise<Equipamento[]> {
     return await this.equipamentoRepository.find({
-      relations: ['sala', 'setor', 'fornecedor', 'unidade'],
-      order: { nome: 'ASC' },
+      relations: ['sala', 'unidade'],
+      order: { codigoInterno: 'ASC' },
     });
   }
 
   async findAllAtivos(): Promise<Equipamento[]> {
     return await this.equipamentoRepository.find({
       where: { ativo: true },
-      relations: ['sala', 'setor', 'fornecedor', 'unidade'],
-      order: { nome: 'ASC' },
+      relations: ['sala', 'unidade'],
+      order: { codigoInterno: 'ASC' },
     });
   }
 
   async findOne(id: string): Promise<Equipamento> {
     const equipamento = await this.equipamentoRepository.findOne({
       where: { id },
-      relations: ['sala', 'setor', 'fornecedor', 'unidade'],
+      relations: ['sala', 'unidade'],
     });
 
     if (!equipamento) {
@@ -56,98 +62,66 @@ export class EquipamentosService {
     return equipamento;
   }
 
-  async findByPatrimonio(patrimonio: string): Promise<Equipamento> {
+  async findByCodigoInterno(codigoInterno: string): Promise<Equipamento> {
     const equipamento = await this.equipamentoRepository.findOne({
-      where: { patrimonio },
-      relations: ['sala', 'setor', 'fornecedor', 'unidade'],
+      where: { codigoInterno },
+      relations: ['sala', 'unidade'],
     });
 
     if (!equipamento) {
       throw new NotFoundException(
-        `Equipamento com patrimônio ${patrimonio} não encontrado`,
+        `Equipamento com código ${codigoInterno} não encontrado`,
       );
     }
 
     return equipamento;
   }
 
-  async findBySituacao(situacao: SituacaoEquipamento): Promise<Equipamento[]> {
-    return await this.equipamentoRepository.find({
-      where: { situacao },
-      relations: ['sala', 'setor', 'fornecedor', 'unidade'],
-      order: { nome: 'ASC' },
-    });
-  }
-
   async findByUnidade(unidadeId: string): Promise<Equipamento[]> {
     return await this.equipamentoRepository.find({
       where: { unidadeId },
-      relations: ['sala', 'setor', 'fornecedor'],
-      order: { nome: 'ASC' },
+      relations: ['sala'],
+      order: { codigoInterno: 'ASC' },
     });
   }
 
   async findBySala(salaId: string): Promise<Equipamento[]> {
     return await this.equipamentoRepository.find({
       where: { salaId },
-      relations: ['sala', 'setor', 'fornecedor', 'unidade'],
-      order: { nome: 'ASC' },
+      relations: ['sala', 'unidade'],
+      order: { codigoInterno: 'ASC' },
     });
-  }
-
-  async findBySetor(setorId: string): Promise<Equipamento[]> {
-    return await this.equipamentoRepository.find({
-      where: { setorId },
-      relations: ['sala', 'setor', 'fornecedor', 'unidade'],
-      order: { nome: 'ASC' },
-    });
-  }
-
-  async findManutencaoVencida(): Promise<Equipamento[]> {
-    const hoje = new Date();
-
-    return await this.equipamentoRepository
-      .createQueryBuilder('equipamento')
-      .where('equipamento.data_proxima_manutencao < :hoje', { hoje })
-      .andWhere('equipamento.situacao = :situacao', {
-        situacao: SituacaoEquipamento.ATIVO,
-      })
-      .leftJoinAndSelect('equipamento.sala', 'sala')
-      .leftJoinAndSelect('equipamento.setor', 'setor')
-      .leftJoinAndSelect('equipamento.unidade', 'unidade')
-      .orderBy('equipamento.data_proxima_manutencao', 'ASC')
-      .getMany();
   }
 
   async update(
     id: string,
     updateEquipamentoDto: UpdateEquipamentoDto,
-    atualizadoPor: string,
   ): Promise<Equipamento> {
     const equipamento = await this.findOne(id);
 
-    Object.assign(equipamento, updateEquipamentoDto, { atualizadoPor });
+    // Verificar se novo código interno já existe (se estiver sendo alterado)
+    if (
+      updateEquipamentoDto.codigoInterno &&
+      updateEquipamentoDto.codigoInterno !== equipamento.codigoInterno
+    ) {
+      const existente = await this.equipamentoRepository.findOne({
+        where: { codigoInterno: updateEquipamentoDto.codigoInterno },
+      });
 
+      if (existente) {
+        throw new ConflictException(
+          `Equipamento com código interno ${updateEquipamentoDto.codigoInterno} já existe`,
+        );
+      }
+    }
+
+    Object.assign(equipamento, updateEquipamentoDto);
     return await this.equipamentoRepository.save(equipamento);
   }
 
-  async updateSituacao(
-    id: string,
-    situacao: SituacaoEquipamento,
-    atualizadoPor: string,
-  ): Promise<Equipamento> {
-    const equipamento = await this.findOne(id);
-    equipamento.situacao = situacao;
-    equipamento.atualizadoPor = atualizadoPor;
-
-    return await this.equipamentoRepository.save(equipamento);
-  }
-
-  async toggleAtivo(id: string, atualizadoPor: string): Promise<Equipamento> {
+  async toggleAtivo(id: string): Promise<Equipamento> {
     const equipamento = await this.findOne(id);
     equipamento.ativo = !equipamento.ativo;
-    equipamento.atualizadoPor = atualizadoPor;
-
     return await this.equipamentoRepository.save(equipamento);
   }
 
@@ -163,25 +137,19 @@ export class EquipamentosService {
     });
     const inativos = total - ativos;
 
-    const porSituacao = await this.equipamentoRepository
+    const porUnidade = await this.equipamentoRepository
       .createQueryBuilder('equipamento')
-      .select('equipamento.situacao', 'situacao')
+      .leftJoin('equipamento.unidade', 'unidade')
+      .select('unidade.nome', 'unidade')
       .addSelect('COUNT(*)', 'quantidade')
-      .groupBy('equipamento.situacao')
+      .groupBy('unidade.nome')
       .getRawMany();
-
-    const manutencaoVencida = await this.equipamentoRepository.count({
-      where: {
-        situacao: SituacaoEquipamento.ATIVO,
-      },
-    });
 
     return {
       total,
       ativos,
       inativos,
-      porSituacao,
-      manutencaoVencida,
+      porUnidade,
     };
   }
 }

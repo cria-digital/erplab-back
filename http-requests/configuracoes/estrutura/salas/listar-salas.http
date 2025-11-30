@@ -7,15 +7,12 @@ Authorization: Bearer {{token}}
 # [
 #   {
 #     "id": "uuid-1",
-#     "codigoSala": "SALA-COL-001",
-#     "nome": "Sala de Coleta 1",
-#     "tipoSala": "coleta",
-#     "andar": "1",
-#     "area": 12.5,
-#     "capacidadePessoas": 3,
-#     "setorId": "uuid-setor",
+#     "codigoInterno": "SALA001",
+#     "unidadeId": "uuid-unidade",
+#     "setor": "Hematologia",
+#     "nome": "Sala de Coleta 01",
 #     "ativo": true,
-#     "criadoEm": "2025-10-09T10:00:00.000Z"
+#     "criadoEm": "2025-11-30T10:00:00.000Z"
 #   }
 # ]
 
@@ -36,44 +33,12 @@ Authorization: Bearer {{token}}
 # {
 #   "total": 50,
 #   "ativas": 47,
-#   "inativas": 3
+#   "inativas": 3,
+#   "porSetor": [
+#     { "setor": "Hematologia", "quantidade": 10 },
+#     { "setor": "Bioquimica", "quantidade": 8 }
+#   ]
 # }
-
-###
-
-### Listar por tipo - Salas de coleta
-GET {{baseUrl}}/configuracoes/estrutura/salas/tipo/coleta
-Authorization: Bearer {{token}}
-
-###
-
-### Listar por tipo - Salas de analise
-GET {{baseUrl}}/configuracoes/estrutura/salas/tipo/analise
-Authorization: Bearer {{token}}
-
-###
-
-### Listar por tipo - Salas de exame
-GET {{baseUrl}}/configuracoes/estrutura/salas/tipo/exame
-Authorization: Bearer {{token}}
-
-###
-
-### Listar por tipo - Salas administrativas
-GET {{baseUrl}}/configuracoes/estrutura/salas/tipo/administrativa
-Authorization: Bearer {{token}}
-
-###
-
-### Listar por tipo - Salas de espera
-GET {{baseUrl}}/configuracoes/estrutura/salas/tipo/espera
-Authorization: Bearer {{token}}
-
-###
-
-### Listar por tipo - Outros
-GET {{baseUrl}}/configuracoes/estrutura/salas/tipo/outros
-Authorization: Bearer {{token}}
 
 ###
 
@@ -83,20 +48,38 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Listar por setor
-GET {{baseUrl}}/configuracoes/estrutura/salas/setor/{{setorId}}
+### Listar por setor (busca por nome do setor)
+GET {{baseUrl}}/configuracoes/estrutura/salas/setor/Hematologia
 Authorization: Bearer {{token}}
 
 ###
 
-### Buscar sala por codigo
-GET {{baseUrl}}/configuracoes/estrutura/salas/codigo/SALA-COL-001
+### Listar por setor - Bioquimica
+GET {{baseUrl}}/configuracoes/estrutura/salas/setor/Bioquimica
 Authorization: Bearer {{token}}
 
 ###
 
-### Buscar sala por codigo - Sala 2
-GET {{baseUrl}}/configuracoes/estrutura/salas/codigo/SALA-COL-002
+### Listar por setor - Microbiologia
+GET {{baseUrl}}/configuracoes/estrutura/salas/setor/Microbiologia
 Authorization: Bearer {{token}}
+
+###
+
+### Listar por setor - Imagem
+GET {{baseUrl}}/configuracoes/estrutura/salas/setor/Imagem
+Authorization: Bearer {{token}}
+
+###
+
+### Deletar sala
+DELETE {{baseUrl}}/configuracoes/estrutura/salas/{{salaId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Sala removida com sucesso"
+# }
 
 ###

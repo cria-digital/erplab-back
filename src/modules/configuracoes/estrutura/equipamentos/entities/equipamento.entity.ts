@@ -8,50 +8,63 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 import { UnidadeSaude } from '../../../../cadastros/unidade-saude/entities/unidade-saude.entity';
 import { Sala } from '../../salas/entities/sala.entity';
-import { Setor } from '../../setores/entities/setor.entity';
-import { Fornecedor } from '../../../../relacionamento/fornecedores/entities/fornecedor.entity';
-
-export enum SituacaoEquipamento {
-  ATIVO = 'ativo',
-  MANUTENCAO = 'manutencao',
-  INATIVO = 'inativo',
-  DESCARTADO = 'descartado',
-}
 
 /**
- * Entidade que representa um Equipamento
+ * Entidade que representa um Equipamento/Imobilizado
  *
- * Define os equipamentos utilizados no laboratório:
- * - Equipamentos laboratoriais (analisadores, centrífugas, etc)
- * - Equipamentos de imagem (ultrassom, raio-x)
- * - Equipamentos de informática (computadores, impressoras)
- * - Controle de manutenção e calibração
+ * Estrutura simplificada conforme Figma:
+ * - Código interno (gerado: EQ001, EQ002...)
+ * - Unidade (FK)
+ * - Nome do equipamento
+ * - Numeração (número de série/patrimônio)
+ * - Localização (FK para sala)
  */
 @Entity('equipamentos')
-@Index(['patrimonio'])
+@Index(['codigoInterno'])
 @Index(['nome'])
-@Index(['salaId'])
-@Index(['setorId'])
-@Index(['fornecedorId'])
-@Index(['situacao'])
 @Index(['unidadeId'])
-@Index(['empresaId'])
+@Index(['salaId'])
 export class Equipamento {
+  @ApiProperty({ description: 'ID único do equipamento' })
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  // Identificação
+  @ApiProperty({
+    description: 'Código interno único do equipamento (ex: EQ001)',
+    example: 'EQ001',
+  })
   @Column({
-    name: 'patrimonio',
+    name: 'codigo_interno',
     type: 'varchar',
     length: 50,
     unique: true,
-    comment: 'Número do patrimônio/tombamento (ex: PATR-001)',
+    comment: 'Código interno único do equipamento (ex: EQ001)',
   })
-  patrimonio: string;
+  codigoInterno: string;
 
+  @ApiProperty({
+    description: 'ID da unidade de saúde',
+    example: 'uuid-da-unidade',
+  })
+  @Column({
+    name: 'unidade_id',
+    type: 'uuid',
+    comment: 'ID da unidade de saúde',
+  })
+  unidadeId: string;
+
+  @ApiProperty({ description: 'Unidade de saúde do equipamento' })
+  @ManyToOne(() => UnidadeSaude)
+  @JoinColumn({ name: 'unidade_id' })
+  unidade: UnidadeSaude;
+
+  @ApiProperty({
+    description: 'Nome/descrição do equipamento',
+    example: 'Raio-X',
+  })
   @Column({
     name: 'nome',
     type: 'varchar',
@@ -60,34 +73,25 @@ export class Equipamento {
   })
   nome: string;
 
+  @ApiProperty({
+    description: 'Numeração/número de série do equipamento',
+    example: '1592653986625698526',
+    required: false,
+  })
   @Column({
-    name: 'marca',
+    name: 'numeracao',
     type: 'varchar',
     length: 100,
     nullable: true,
-    comment: 'Marca do equipamento (ex: Roche, Siemens)',
+    comment: 'Numeração/número de série do equipamento',
   })
-  marca: string;
+  numeracao: string;
 
-  @Column({
-    name: 'modelo',
-    type: 'varchar',
-    length: 100,
-    nullable: true,
-    comment: 'Modelo do equipamento',
+  @ApiProperty({
+    description: 'ID da sala onde está localizado',
+    example: 'uuid-da-sala',
+    required: false,
   })
-  modelo: string;
-
-  @Column({
-    name: 'numero_serie',
-    type: 'varchar',
-    length: 100,
-    nullable: true,
-    comment: 'Número de série do equipamento',
-  })
-  numeroSerie: string;
-
-  // Localização
   @Column({
     name: 'sala_id',
     type: 'uuid',
@@ -96,97 +100,15 @@ export class Equipamento {
   })
   salaId: string;
 
+  @ApiProperty({ description: 'Sala onde o equipamento está localizado' })
   @ManyToOne(() => Sala, { nullable: true })
   @JoinColumn({ name: 'sala_id' })
   sala: Sala;
 
-  @Column({
-    name: 'setor_id',
-    type: 'uuid',
-    nullable: true,
-    comment: 'ID do setor responsável',
+  @ApiProperty({
+    description: 'Se o registro está ativo',
+    example: true,
   })
-  setorId: string;
-
-  @ManyToOne(() => Setor, { nullable: true })
-  @JoinColumn({ name: 'setor_id' })
-  setor: Setor;
-
-  // Aquisição
-  @Column({
-    name: 'fornecedor_id',
-    type: 'uuid',
-    nullable: true,
-    comment: 'ID do fornecedor',
-  })
-  fornecedorId: string;
-
-  @ManyToOne(() => Fornecedor, { nullable: true })
-  @JoinColumn({ name: 'fornecedor_id' })
-  fornecedor: Fornecedor;
-
-  @Column({
-    name: 'data_aquisicao',
-    type: 'date',
-    nullable: true,
-    comment: 'Data de aquisição do equipamento',
-  })
-  dataAquisicao: Date;
-
-  @Column({
-    name: 'valor_aquisicao',
-    type: 'decimal',
-    precision: 10,
-    scale: 2,
-    nullable: true,
-    comment: 'Valor pago na aquisição',
-  })
-  valorAquisicao: number;
-
-  // Manutenção
-  @Column({
-    name: 'data_ultima_manutencao',
-    type: 'date',
-    nullable: true,
-    comment: 'Data da última manutenção realizada',
-  })
-  dataUltimaManutencao: Date;
-
-  @Column({
-    name: 'data_proxima_manutencao',
-    type: 'date',
-    nullable: true,
-    comment: 'Data prevista para próxima manutenção',
-  })
-  dataProximaManutencao: Date;
-
-  @Column({
-    name: 'periodicidade_manutencao_dias',
-    type: 'integer',
-    nullable: true,
-    comment: 'Periodicidade da manutenção em dias',
-  })
-  periodicidadeManutencaoDias: number;
-
-  // Status
-  @Column({
-    name: 'situacao',
-    type: 'enum',
-    enum: SituacaoEquipamento,
-    default: SituacaoEquipamento.ATIVO,
-    comment: 'Situação atual do equipamento',
-  })
-  situacao: SituacaoEquipamento;
-
-  @Column({
-    name: 'observacoes',
-    type: 'text',
-    nullable: true,
-    comment: 'Observações gerais sobre o equipamento',
-  })
-  observacoes: string;
-
-  // Controle
   @Column({
     name: 'ativo',
     type: 'boolean',
@@ -195,46 +117,14 @@ export class Equipamento {
   })
   ativo: boolean;
 
-  @Column({
-    name: 'unidade_id',
-    type: 'uuid',
-    comment: 'ID da unidade de saúde',
-  })
-  unidadeId: string;
-
-  @ManyToOne(() => UnidadeSaude)
-  @JoinColumn({ name: 'unidade_id' })
-  unidade: UnidadeSaude;
-
-  @Column({
-    name: 'empresa_id',
-    type: 'uuid',
-    nullable: true,
-    comment: 'ID da empresa (multi-tenant)',
-  })
-  empresaId: string;
-
-  // Auditoria
-  @Column({
-    name: 'criado_por',
-    type: 'uuid',
-    comment: 'ID do usuário que criou o registro',
-  })
-  criadoPor: string;
-
-  @Column({
-    name: 'atualizado_por',
-    type: 'uuid',
-    comment: 'ID do usuário que atualizou o registro',
-  })
-  atualizadoPor: string;
-
+  @ApiProperty({ description: 'Data de criação do registro' })
   @CreateDateColumn({
     name: 'criado_em',
     comment: 'Data de criação do registro',
   })
   criadoEm: Date;
 
+  @ApiProperty({ description: 'Data da última atualização' })
   @UpdateDateColumn({
     name: 'atualizado_em',
     comment: 'Data da última atualização',

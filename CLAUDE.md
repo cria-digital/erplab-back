@@ -43,6 +43,18 @@
    - Atualizar `INVENTARIO_TELAS.md` com telas processadas
    - Manter histórico de decisões arquiteturais
 
+6. **📄 Consulta ao Figma (FIGMA_INVENTARIO.md)**
+   - **Localização dos PDFs**: `/home/diego/Projects/erplab/pdf_chunks/` (26 arquivos)
+   - **Documento de referência**: `FIGMA_INVENTARIO.md` na raiz do projeto
+   - **Processo de consulta**:
+     1. Ler o documento `FIGMA_INVENTARIO.md` primeiro
+     2. Verificar se o chunk solicitado já foi catalogado
+     3. Se não catalogado, ler o PDF correspondente em `/home/diego/Projects/erplab/pdf_chunks/chunk_XXX_pYYY-ZZZ.pdf`
+     4. Após implementar, atualizar o `FIGMA_INVENTARIO.md` com os detalhes das telas e caminhos dos arquivos criados
+   - **Estrutura do documento**:
+     - Cada chunk tem: páginas, status (catalogado/não catalogado), conteúdo detalhado
+     - Telas implementadas incluem caminhos dos arquivos (entidades, migrations, etc.)
+
 ### Regras de Ouro
 
 - ❌ **NUNCA implementar sem consultar Diego**

@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Sala, TipoSala } from '../entities/sala.entity';
+import { Sala } from '../entities/sala.entity';
 import { CreateSalaDto } from '../dto/create-sala.dto';
 import { UpdateSalaDto } from '../dto/update-sala.dto';
 
@@ -24,7 +24,7 @@ export class SalasService {
 
   async findAll(): Promise<Sala[]> {
     return await this.salaRepository.find({
-      relations: ['setor', 'unidade'],
+      relations: ['unidade'],
       order: { nome: 'ASC' },
     });
   }
@@ -32,7 +32,7 @@ export class SalasService {
   async findAllAtivas(): Promise<Sala[]> {
     return await this.salaRepository.find({
       where: { ativo: true },
-      relations: ['setor', 'unidade'],
+      relations: ['unidade'],
       order: { nome: 'ASC' },
     });
   }
@@ -40,7 +40,7 @@ export class SalasService {
   async findOne(id: string): Promise<Sala> {
     const sala = await this.salaRepository.findOne({
       where: { id },
-      relations: ['setor', 'unidade'],
+      relations: ['unidade'],
     });
 
     if (!sala) {
@@ -50,41 +50,33 @@ export class SalasService {
     return sala;
   }
 
-  async findByCodigo(codigoSala: string): Promise<Sala> {
+  async findByCodigo(codigoInterno: string): Promise<Sala> {
     const sala = await this.salaRepository.findOne({
-      where: { codigoSala },
-      relations: ['setor', 'unidade'],
+      where: { codigoInterno },
+      relations: ['unidade'],
     });
 
     if (!sala) {
       throw new NotFoundException(
-        `Sala com código ${codigoSala} não encontrada`,
+        `Sala com código ${codigoInterno} não encontrada`,
       );
     }
 
     return sala;
   }
 
-  async findByTipo(tipoSala: TipoSala): Promise<Sala[]> {
-    return await this.salaRepository.find({
-      where: { tipoSala },
-      relations: ['setor', 'unidade'],
-      order: { nome: 'ASC' },
-    });
-  }
-
   async findByUnidade(unidadeId: string): Promise<Sala[]> {
     return await this.salaRepository.find({
       where: { unidadeId },
-      relations: ['setor', 'unidade'],
+      relations: ['unidade'],
       order: { nome: 'ASC' },
     });
   }
 
-  async findBySetor(setorId: string): Promise<Sala[]> {
+  async findBySetor(setor: string): Promise<Sala[]> {
     return await this.salaRepository.find({
-      where: { setorId },
-      relations: ['setor', 'unidade'],
+      where: { setor },
+      relations: ['unidade'],
       order: { nome: 'ASC' },
     });
   }
@@ -119,18 +111,18 @@ export class SalasService {
     const ativas = await this.salaRepository.count({ where: { ativo: true } });
     const inativas = total - ativas;
 
-    const porTipo = await this.salaRepository
+    const porSetor = await this.salaRepository
       .createQueryBuilder('sala')
-      .select('sala.tipo_sala', 'tipo')
+      .select('sala.setor', 'setor')
       .addSelect('COUNT(*)', 'quantidade')
-      .groupBy('sala.tipo_sala')
+      .groupBy('sala.setor')
       .getRawMany();
 
     return {
       total,
       ativas,
       inativas,
-      porTipo,
+      porSetor,
     };
   }
 }

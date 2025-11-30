@@ -1,54 +1,45 @@
 ### Buscar equipamento por ID
-GET {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos/{{equipamentoId}}
 Authorization: Bearer {{token}}
 
 ### Expected Response
 # Status: 200 OK
 # {
-#   "id": "550e8400-e29b-41d4-a716-446655440000",
-#   "patrimonio": "PAT-2024-001",
-#   "nome": "Analisador Hematologico BC-6800",
-#   "marca": "Mindray",
-#   "modelo": "BC-6800",
-#   "numeroSerie": "BC6800-2024-001",
-#   "setorId": "uuid-setor",
-#   "salaId": "uuid-sala",
-#   "fornecedorId": "uuid-fornecedor",
-#   "unidadeId": "uuid-unidade",
-#   "dataAquisicao": "2024-01-15",
-#   "valorAquisicao": 185000.00,
-#   "situacao": "ativo",
-#   "dataUltimaManutencao": "2024-09-15",
-#   "dataProximaManutencao": "2025-03-15",
-#   "periodicidadeManutencaoDias": 180,
-#   "observacoes": "Equipamento de alta performance...",
+#   "id": "uuid-do-equipamento",
+#   "codigoInterno": "EQ100",
+#   "unidadeId": "uuid-da-unidade",
+#   "nome": "Raio-X",
+#   "numeracao": "1592653986625698526",
+#   "salaId": "uuid-da-sala",
 #   "ativo": true,
-#   "criadoEm": "2025-10-09T10:00:00.000Z",
-#   "atualizadoEm": "2025-10-09T10:00:00.000Z"
+#   "criadoEm": "2025-11-30T10:00:00.000Z",
+#   "atualizadoEm": "2025-11-30T10:00:00.000Z",
+#   "unidade": {
+#     "id": "uuid-da-unidade",
+#     "nome": "Unidade São Roque"
+#   },
+#   "sala": {
+#     "id": "uuid-da-sala",
+#     "nome": "Sala de Imagem"
+#   }
 # }
 
 ###
 
-### Buscar equipamento por patrimonio
-GET {{baseUrl}}/configuracoes/estrutura/equipamentos/patrimonio/PAT-2024-001
+### Buscar equipamento por codigo interno
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos/codigo/EQ100
 Authorization: Bearer {{token}}
 
 ###
 
-### Buscar equipamento por patrimonio - Centrifuga
-GET {{baseUrl}}/configuracoes/estrutura/equipamentos/patrimonio/PAT-2024-002
+### Buscar equipamento por codigo interno - EQ099
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos/codigo/EQ099
 Authorization: Bearer {{token}}
 
 ###
 
-### Buscar equipamento por patrimonio - Microscopio
-GET {{baseUrl}}/configuracoes/estrutura/equipamentos/patrimonio/PAT-2024-003
-Authorization: Bearer {{token}}
-
-###
-
-### Buscar equipamento por patrimonio - Autoclave
-GET {{baseUrl}}/configuracoes/estrutura/equipamentos/patrimonio/PAT-2024-004
+### Buscar equipamento por codigo interno - EQ001
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos/codigo/EQ001
 Authorization: Bearer {{token}}
 
 ###
@@ -67,15 +58,15 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Buscar equipamento por patrimonio inexistente (deve retornar 404)
-GET {{baseUrl}}/configuracoes/estrutura/equipamentos/patrimonio/PAT-INEXISTENTE
+### Buscar equipamento por codigo inexistente (deve retornar 404)
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos/codigo/CODIGO-INEXISTENTE
 Authorization: Bearer {{token}}
 
 ### Expected Response
 # Status: 404 Not Found
 # {
 #   "statusCode": 404,
-#   "message": "Equipamento com patrimônio PAT-INEXISTENTE não encontrado",
+#   "message": "Equipamento com código CODIGO-INEXISTENTE não encontrado",
 #   "error": "Not Found"
 # }
 

@@ -21,7 +21,6 @@ import { JwtAuthGuard } from '../../../../autenticacao/auth/guards/jwt-auth.guar
 import { SalasService } from '../services/salas.service';
 import { CreateSalaDto } from '../dto/create-sala.dto';
 import { UpdateSalaDto } from '../dto/update-sala.dto';
-import { TipoSala } from '../entities/sala.entity';
 
 @ApiTags('Estrutura - Salas')
 @ApiBearerAuth()
@@ -63,15 +62,6 @@ export class SalasController {
     return await this.salasService.getEstatisticas();
   }
 
-  @Get('tipo/:tipo')
-  @ApiOperation({ summary: 'Buscar salas por tipo' })
-  @ApiParam({ name: 'tipo', enum: TipoSala })
-  @ApiResponse({ status: 200, description: 'Salas encontradas' })
-  @ApiResponse({ status: 401, description: 'Não autorizado' })
-  async findByTipo(@Param('tipo') tipo: TipoSala) {
-    return await this.salasService.findByTipo(tipo);
-  }
-
   @Get('unidade/:unidadeId')
   @ApiOperation({ summary: 'Buscar salas por unidade' })
   @ApiParam({ name: 'unidadeId', type: 'string' })
@@ -82,18 +72,17 @@ export class SalasController {
     return await this.salasService.findByUnidade(unidadeId);
   }
 
-  @Get('setor/:setorId')
+  @Get('setor/:setor')
   @ApiOperation({ summary: 'Buscar salas por setor' })
-  @ApiParam({ name: 'setorId', type: 'string' })
+  @ApiParam({ name: 'setor', type: 'string', description: 'Nome do setor' })
   @ApiResponse({ status: 200, description: 'Salas encontradas' })
-  @ApiResponse({ status: 400, description: 'UUID inválido' })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
-  async findBySetor(@Param('setorId', ParseUUIDPipe) setorId: string) {
-    return await this.salasService.findBySetor(setorId);
+  async findBySetor(@Param('setor') setor: string) {
+    return await this.salasService.findBySetor(setor);
   }
 
   @Get('codigo/:codigo')
-  @ApiOperation({ summary: 'Buscar sala por código' })
+  @ApiOperation({ summary: 'Buscar sala por código interno' })
   @ApiParam({ name: 'codigo', type: 'string' })
   @ApiResponse({ status: 200, description: 'Sala encontrada' })
   @ApiResponse({ status: 404, description: 'Sala não encontrada' })

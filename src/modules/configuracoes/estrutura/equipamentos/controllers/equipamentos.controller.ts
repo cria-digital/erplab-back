@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   UseGuards,
-  Request,
   ParseUUIDPipe,
 } from '@nestjs/common';
 import {
@@ -21,7 +20,6 @@ import { JwtAuthGuard } from '../../../../autenticacao/auth/guards/jwt-auth.guar
 import { EquipamentosService } from '../services/equipamentos.service';
 import { CreateEquipamentoDto } from '../dto/create-equipamento.dto';
 import { UpdateEquipamentoDto } from '../dto/update-equipamento.dto';
-import { SituacaoEquipamento } from '../entities/equipamento.entity';
 
 @ApiTags('Estrutura - Equipamentos')
 @ApiBearerAuth()
@@ -35,14 +33,9 @@ export class EquipamentosController {
   @ApiResponse({ status: 201, description: 'Equipamento criado com sucesso' })
   @ApiResponse({ status: 400, description: 'Dados inválidos' })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
-  async create(
-    @Body() createEquipamentoDto: CreateEquipamentoDto,
-    @Request() req,
-  ) {
-    return await this.equipamentosService.create(
-      createEquipamentoDto,
-      req.user.userId,
-    );
+  @ApiResponse({ status: 409, description: 'Código interno já existe' })
+  async create(@Body() createEquipamentoDto: CreateEquipamentoDto) {
+    return await this.equipamentosService.create(createEquipamentoDto);
   }
 
   @Get()
@@ -72,26 +65,6 @@ export class EquipamentosController {
     return await this.equipamentosService.getEstatisticas();
   }
 
-  @Get('manutencao-vencida')
-  @ApiOperation({ summary: 'Listar equipamentos com manutenção vencida' })
-  @ApiResponse({
-    status: 200,
-    description: 'Lista de equipamentos com manutenção vencida',
-  })
-  @ApiResponse({ status: 401, description: 'Não autorizado' })
-  async findManutencaoVencida() {
-    return await this.equipamentosService.findManutencaoVencida();
-  }
-
-  @Get('situacao/:situacao')
-  @ApiOperation({ summary: 'Buscar equipamentos por situação' })
-  @ApiParam({ name: 'situacao', enum: SituacaoEquipamento })
-  @ApiResponse({ status: 200, description: 'Equipamentos encontrados' })
-  @ApiResponse({ status: 401, description: 'Não autorizado' })
-  async findBySituacao(@Param('situacao') situacao: SituacaoEquipamento) {
-    return await this.equipamentosService.findBySituacao(situacao);
-  }
-
   @Get('unidade/:unidadeId')
   @ApiOperation({ summary: 'Buscar equipamentos por unidade' })
   @ApiParam({ name: 'unidadeId', type: 'string' })
@@ -112,24 +85,14 @@ export class EquipamentosController {
     return await this.equipamentosService.findBySala(salaId);
   }
 
-  @Get('setor/:setorId')
-  @ApiOperation({ summary: 'Buscar equipamentos por setor' })
-  @ApiParam({ name: 'setorId', type: 'string' })
-  @ApiResponse({ status: 200, description: 'Equipamentos encontrados' })
-  @ApiResponse({ status: 400, description: 'UUID inválido' })
-  @ApiResponse({ status: 401, description: 'Não autorizado' })
-  async findBySetor(@Param('setorId', ParseUUIDPipe) setorId: string) {
-    return await this.equipamentosService.findBySetor(setorId);
-  }
-
-  @Get('patrimonio/:patrimonio')
-  @ApiOperation({ summary: 'Buscar equipamento por patrimônio' })
-  @ApiParam({ name: 'patrimonio', type: 'string' })
+  @Get('codigo/:codigoInterno')
+  @ApiOperation({ summary: 'Buscar equipamento por código interno' })
+  @ApiParam({ name: 'codigoInterno', type: 'string' })
   @ApiResponse({ status: 200, description: 'Equipamento encontrado' })
   @ApiResponse({ status: 404, description: 'Equipamento não encontrado' })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
-  async findByPatrimonio(@Param('patrimonio') patrimonio: string) {
-    return await this.equipamentosService.findByPatrimonio(patrimonio);
+  async findByCodigoInterno(@Param('codigoInterno') codigoInterno: string) {
+    return await this.equipamentosService.findByCodigoInterno(codigoInterno);
   }
 
   @Get(':id')
@@ -152,39 +115,13 @@ export class EquipamentosController {
   })
   @ApiResponse({ status: 400, description: 'UUID inválido ou dados inválidos' })
   @ApiResponse({ status: 404, description: 'Equipamento não encontrado' })
+  @ApiResponse({ status: 409, description: 'Código interno já existe' })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateEquipamentoDto: UpdateEquipamentoDto,
-    @Request() req,
   ) {
-    return await this.equipamentosService.update(
-      id,
-      updateEquipamentoDto,
-      req.user.userId,
-    );
-  }
-
-  @Patch(':id/situacao')
-  @ApiOperation({ summary: 'Atualizar situação do equipamento' })
-  @ApiParam({ name: 'id', type: 'string' })
-  @ApiResponse({
-    status: 200,
-    description: 'Situação do equipamento atualizada com sucesso',
-  })
-  @ApiResponse({ status: 400, description: 'UUID inválido' })
-  @ApiResponse({ status: 404, description: 'Equipamento não encontrado' })
-  @ApiResponse({ status: 401, description: 'Não autorizado' })
-  async updateSituacao(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body('situacao') situacao: SituacaoEquipamento,
-    @Request() req,
-  ) {
-    return await this.equipamentosService.updateSituacao(
-      id,
-      situacao,
-      req.user.userId,
-    );
+    return await this.equipamentosService.update(id, updateEquipamentoDto);
   }
 
   @Patch(':id/toggle-ativo')
@@ -197,8 +134,8 @@ export class EquipamentosController {
   @ApiResponse({ status: 400, description: 'UUID inválido' })
   @ApiResponse({ status: 404, description: 'Equipamento não encontrado' })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
-  async toggleAtivo(@Param('id', ParseUUIDPipe) id: string, @Request() req) {
-    return await this.equipamentosService.toggleAtivo(id, req.user.userId);
+  async toggleAtivo(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.equipamentosService.toggleAtivo(id);
   }
 
   @Delete(':id')

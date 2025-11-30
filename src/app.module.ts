@@ -47,9 +47,7 @@ import { ContasPagarModule } from './modules/financeiro/core/contas-pagar/contas
 
 // Configurações - Estrutura Física
 import { SalasModule } from './modules/configuracoes/estrutura/salas/salas.module';
-import { SetoresModule } from './modules/configuracoes/estrutura/setores/setores.module';
 import { EquipamentosModule } from './modules/configuracoes/estrutura/equipamentos/equipamentos.module';
-import { ImobilizadosModule } from './modules/configuracoes/estrutura/imobilizados/imobilizados.module';
 import { EtiquetasAmostraModule } from './modules/configuracoes/estrutura/etiquetas-amostra/etiquetas-amostra.module';
 
 // Configurações - Campos de Formulário
@@ -116,9 +114,7 @@ import { SeedModule } from './database/seeds/seed.module';
 
     // 7. Configurações - Estrutura Física
     SalasModule,
-    SetoresModule,
     EquipamentosModule,
-    ImobilizadosModule,
     EtiquetasAmostraModule,
     ConfiguracoesCamposFormularioModule,
 

@@ -1,307 +1,110 @@
-### Criar Sala de Coleta
+### Criar Sala - Hematologia
 POST {{baseUrl}}/configuracoes/estrutura/salas
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "codigoSala": "SALA-COL-001",
-  "nome": "Sala de Coleta 1",
-  "tipo": "coleta",
-  "setorId": "{{setorId}}",
-  "andar": "1",
-  "capacidade": 3,
-  "area": 12.5,
-  "status": "disponivel",
-  "temArCondicionado": true,
-  "temExaustor": false,
-  "temPia": true,
-  "temGeladeira": true,
-  "temFreezer": false,
-  "nivelBiosseguranca": "NB2",
-  "capacidadeAgendamento": 20,
-  "horarioFuncionamento": {
-    "segunda": { "abertura": "07:00", "fechamento": "17:00" },
-    "terca": { "abertura": "07:00", "fechamento": "17:00" },
-    "quarta": { "abertura": "07:00", "fechamento": "17:00" },
-    "quinta": { "abertura": "07:00", "fechamento": "17:00" },
-    "sexta": { "abertura": "07:00", "fechamento": "17:00" },
-    "sabado": { "abertura": "08:00", "fechamento": "12:00" }
-  },
-  "observacoes": "Sala equipada com cadeira de coleta ergonomica, garrote automatico, suporte para tubos, e sistema de etiquetagem"
+  "codigoInterno": "SALA001",
+  "unidadeId": "{{unidadeId}}",
+  "setor": "Hematologia",
+  "nome": "Sala de Coleta 01"
 }
 
 ### Expected Response
 # Status: 201 Created
 # {
 #   "id": "uuid-da-sala",
-#   "codigoSala": "SALA-COL-001",
-#   "nome": "Sala de Coleta 1",
-#   "tipo": "coleta",
-#   "status": "disponivel",
-#   "createdAt": "2025-10-09T10:00:00.000Z"
+#   "codigoInterno": "SALA001",
+#   "unidadeId": "uuid-da-unidade",
+#   "setor": "Hematologia",
+#   "nome": "Sala de Coleta 01",
+#   "ativo": true,
+#   "criadoEm": "2025-11-30T10:00:00.000Z"
 # }
 
 ###
 
-### Criar Sala de Atendimento Medico
+### Criar Sala - Bioquimica
 POST {{baseUrl}}/configuracoes/estrutura/salas
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "codigoSala": "SALA-ATD-101",
-  "nome": "Consultorio Medico 101",
-  "tipo": "atendimento",
-  "setorId": "{{setorId}}",
-  "andar": "1",
-  "capacidade": 5,
-  "area": 18.0,
-  "status": "disponivel",
-  "temArCondicionado": true,
-  "temExaustor": false,
-  "temPia": true,
-  "temGeladeira": false,
-  "temFreezer": false,
-  "nivelBiosseguranca": "NB1",
-  "capacidadeAgendamento": 30,
-  "horarioFuncionamento": {
-    "segunda": { "abertura": "08:00", "fechamento": "18:00" },
-    "terca": { "abertura": "08:00", "fechamento": "18:00" },
-    "quarta": { "abertura": "08:00", "fechamento": "18:00" },
-    "quinta": { "abertura": "08:00", "fechamento": "18:00" },
-    "sexta": { "abertura": "08:00", "fechamento": "18:00" }
-  },
-  "observacoes": "Consultorio medico equipado com mesa de exame, negatoscopio, balanca antropometrica e esfigmomanometro"
+  "codigoInterno": "SALA002",
+  "unidadeId": "{{unidadeId}}",
+  "setor": "Bioquimica",
+  "nome": "Laboratorio Bioquimico"
 }
 
 ###
 
-### Criar Laboratorio de Analises Clinicas
+### Criar Sala - Imagem
 POST {{baseUrl}}/configuracoes/estrutura/salas
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "codigoSala": "LAB-AC-201",
-  "nome": "Laboratorio de Analises Clinicas",
-  "tipo": "laboratorio",
-  "setorId": "{{setorId}}",
-  "andar": "2",
-  "capacidade": 8,
-  "area": 45.0,
-  "status": "disponivel",
-  "temArCondicionado": true,
-  "temExaustor": true,
-  "temPia": true,
-  "temGeladeira": true,
-  "temFreezer": true,
-  "nivelBiosseguranca": "NB2",
-  "observacoes": "Laboratorio com bancadas de granito, capelas de fluxo laminar, centrifugas, analisadores automatizados, microscópios e sistema de exaustão"
+  "codigoInterno": "IMG-001",
+  "unidadeId": "{{unidadeId}}",
+  "setor": "Imagem",
+  "nome": "Sala de Ultrassom"
 }
 
 ###
 
-### Criar Sala de Exame
+### Criar Sala - Microbiologia
 POST {{baseUrl}}/configuracoes/estrutura/salas
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "codigoSala": "SALA-EXA-102",
-  "nome": "Sala de Ultrassom",
-  "tipo": "exame",
-  "setorId": "{{setorId}}",
-  "andar": "1",
-  "capacidade": 4,
-  "area": 15.0,
-  "status": "disponivel",
-  "temArCondicionado": true,
-  "temExaustor": false,
-  "temPia": true,
-  "temGeladeira": false,
-  "temFreezer": false,
-  "nivelBiosseguranca": "NB1",
-  "capacidadeAgendamento": 25,
-  "horarioFuncionamento": {
-    "segunda": { "abertura": "07:00", "fechamento": "19:00" },
-    "terca": { "abertura": "07:00", "fechamento": "19:00" },
-    "quarta": { "abertura": "07:00", "fechamento": "19:00" },
-    "quinta": { "abertura": "07:00", "fechamento": "19:00" },
-    "sexta": { "abertura": "07:00", "fechamento": "19:00" },
-    "sabado": { "abertura": "08:00", "fechamento": "14:00" }
-  },
-  "observacoes": "Sala equipada com aparelho de ultrassom doppler colorido, maca de exame, e sistema de impressao de laudos"
+  "codigoInterno": "MICRO001",
+  "unidadeId": "{{unidadeId}}",
+  "setor": "Microbiologia",
+  "nome": "Laboratorio de Microbiologia"
 }
 
 ###
 
-### Criar Sala de Espera
+### Criar Sala - Administrativa
 POST {{baseUrl}}/configuracoes/estrutura/salas
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "codigoSala": "SALA-ESP-001",
-  "nome": "Sala de Espera Principal",
-  "tipo": "espera",
-  "setorId": "{{setorId}}",
-  "andar": "Terreo",
-  "capacidade": 40,
-  "area": 60.0,
-  "status": "disponivel",
-  "temArCondicionado": true,
-  "temExaustor": false,
-  "temPia": false,
-  "temGeladeira": false,
-  "temFreezer": false,
-  "observacoes": "Sala de espera com cadeiras estofadas, TV, revisteiro, bebedouro, banheiros adaptados e sistema de chamada eletronica"
+  "codigoInterno": "ADM001",
+  "unidadeId": "{{unidadeId}}",
+  "setor": "Administrativo",
+  "nome": "Recepcao Principal"
 }
 
 ###
 
-### Criar Almoxarifado
+### Criar Sala Inativa
 POST {{baseUrl}}/configuracoes/estrutura/salas
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "codigoSala": "ALM-001",
-  "nome": "Almoxarifado Central",
-  "tipo": "almoxarifado",
-  "setorId": "{{setorId}}",
-  "andar": "Subsolo",
-  "capacidade": 5,
-  "area": 35.0,
-  "status": "disponivel",
-  "temArCondicionado": true,
-  "temExaustor": false,
-  "temPia": false,
-  "temGeladeira": false,
-  "temFreezer": false,
-  "observacoes": "Almoxarifado com estantes metálicas, controle de estoque informatizado, sistema de entrada/saída por código de barras"
+  "codigoInterno": "SALA003",
+  "unidadeId": "{{unidadeId}}",
+  "setor": "Hematologia",
+  "nome": "Sala de Coleta 03",
+  "ativo": false
 }
 
 ###
 
-### Criar Sala de Expurgo
+### Erro - Codigo Interno Duplicado (Conflict 409)
 POST {{baseUrl}}/configuracoes/estrutura/salas
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "codigoSala": "EXP-001",
-  "nome": "Expurgo",
-  "tipo": "expurgo",
-  "setorId": "{{setorId}}",
-  "andar": "1",
-  "capacidade": 2,
-  "area": 10.0,
-  "status": "disponivel",
-  "temArCondicionado": false,
-  "temExaustor": true,
-  "temPia": true,
-  "temGeladeira": false,
-  "temFreezer": false,
-  "nivelBiosseguranca": "NB2",
-  "observacoes": "Sala de expurgo com lavadora ultrassônica, autoclave de bancada, tanque de desinfecção, e sistema de exaustão forçada"
-}
-
-###
-
-### Criar Sala de Esterilizacao
-POST {{baseUrl}}/configuracoes/estrutura/salas
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-  "codigoSala": "EST-001",
-  "nome": "Central de Esterilizacao",
-  "tipo": "esterilizacao",
-  "setorId": "{{setorId}}",
-  "andar": "1",
-  "capacidade": 3,
-  "area": 20.0,
-  "status": "disponivel",
-  "temArCondicionado": true,
-  "temExaustor": true,
-  "temPia": true,
-  "temGeladeira": false,
-  "temFreezer": false,
-  "nivelBiosseguranca": "NB2",
-  "observacoes": "Central de esterilização com autoclaves horizontais, seladora termica, bancadas de inox, e sistema de rastreabilidade de materiais"
-}
-
-###
-
-### Criar Sala Administrativa
-POST {{baseUrl}}/configuracoes/estrutura/salas
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-  "codigoSala": "ADM-301",
-  "nome": "Sala Administrativa - Gerencia",
-  "tipo": "administrativo",
-  "setorId": "{{setorId}}",
-  "andar": "3",
-  "capacidade": 10,
-  "area": 25.0,
-  "status": "disponivel",
-  "temArCondicionado": true,
-  "temExaustor": false,
-  "temPia": false,
-  "temGeladeira": false,
-  "temFreezer": false,
-  "observacoes": "Sala administrativa com estações de trabalho, armários, sala de reunião integrada, e infraestrutura de rede"
-}
-
-###
-
-### Criar sala em manutencao
-POST {{baseUrl}}/configuracoes/estrutura/salas
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-  "codigoSala": "SALA-COL-002",
-  "nome": "Sala de Coleta 2",
-  "tipo": "coleta",
-  "setorId": "{{setorId}}",
-  "andar": "1",
-  "capacidade": 3,
-  "area": 12.0,
-  "status": "manutencao",
-  "temArCondicionado": true,
-  "temExaustor": false,
-  "temPia": true,
-  "temGeladeira": true,
-  "temFreezer": false,
-  "nivelBiosseguranca": "NB2",
-  "observacoes": "Sala em manutenção - Reforma do sistema hidráulico e pintura. Previsão de retorno: 20/10/2025"
-}
-
-###
-
-### Criar sala inativa
-POST {{baseUrl}}/configuracoes/estrutura/salas
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-  "codigoSala": "SALA-ATD-103",
-  "nome": "Consultorio 103",
-  "tipo": "atendimento",
-  "setorId": "{{setorId}}",
-  "andar": "1",
-  "capacidade": 4,
-  "area": 16.0,
-  "status": "inativa",
-  "temArCondicionado": true,
-  "temExaustor": false,
-  "temPia": true,
-  "temGeladeira": false,
-  "temFreezer": false,
-  "observacoes": "Sala temporariamente desativada - Aguardando contratação de novo profissional"
+  "codigoInterno": "SALA001",
+  "unidadeId": "{{unidadeId}}",
+  "setor": "Hematologia",
+  "nome": "Outra Sala"
 }
 
 ###

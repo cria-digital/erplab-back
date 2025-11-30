@@ -7,13 +7,13 @@ Authorization: Bearer {{token}}
 # [
 #   {
 #     "id": "uuid-1",
-#     "patrimonio": "PAT-2024-001",
-#     "nome": "Analisador Hematologico BC-6800",
-#     "marca": "Mindray",
-#     "modelo": "BC-6800",
-#     "situacao": "ativo",
-#     "setorId": "uuid-setor",
-#     "criadoEm": "2025-10-09T10:00:00.000Z"
+#     "codigoInterno": "EQ100",
+#     "unidadeId": "uuid-unidade",
+#     "nome": "Raio-X",
+#     "numeracao": "1592653986625698526",
+#     "salaId": "uuid-sala",
+#     "ativo": true,
+#     "criadoEm": "2025-11-30T10:00:00.000Z"
 #   }
 # ]
 
@@ -25,38 +25,26 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Listar equipamentos por situacao - Ativos
-GET {{baseUrl}}/configuracoes/estrutura/equipamentos/situacao/ativo
+### Obter estatisticas de equipamentos
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos/estatisticas
 Authorization: Bearer {{token}}
 
-###
-
-### Listar equipamentos por situacao - Em Manutencao
-GET {{baseUrl}}/configuracoes/estrutura/equipamentos/situacao/manutencao
-Authorization: Bearer {{token}}
-
-###
-
-### Listar equipamentos por situacao - Inativos
-GET {{baseUrl}}/configuracoes/estrutura/equipamentos/situacao/inativo
-Authorization: Bearer {{token}}
-
-###
-
-### Listar equipamentos por situacao - Descartados
-GET {{baseUrl}}/configuracoes/estrutura/equipamentos/situacao/descartado
-Authorization: Bearer {{token}}
+### Expected Response
+# Status: 200 OK
+# {
+#   "total": 100,
+#   "ativos": 95,
+#   "inativos": 5,
+#   "porUnidade": [
+#     { "unidade": "São Roque", "quantidade": 60 },
+#     { "unidade": "Jardins", "quantidade": 40 }
+#   ]
+# }
 
 ###
 
 ### Listar por unidade
 GET {{baseUrl}}/configuracoes/estrutura/equipamentos/unidade/{{unidadeId}}
-Authorization: Bearer {{token}}
-
-###
-
-### Listar por setor
-GET {{baseUrl}}/configuracoes/estrutura/equipamentos/setor/{{setorId}}
 Authorization: Bearer {{token}}
 
 ###
@@ -67,35 +55,14 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Buscar equipamento por patrimonio
-GET {{baseUrl}}/configuracoes/estrutura/equipamentos/patrimonio/PAT-2024-001
-Authorization: Bearer {{token}}
-
-###
-
-### Listar equipamentos com manutencao vencida
-GET {{baseUrl}}/configuracoes/estrutura/equipamentos/manutencao-vencida
-Authorization: Bearer {{token}}
-
-###
-
-### Obter estatisticas de equipamentos
-GET {{baseUrl}}/configuracoes/estrutura/equipamentos/estatisticas
+### Deletar equipamento
+DELETE {{baseUrl}}/configuracoes/estrutura/equipamentos/{{equipamentoId}}
 Authorization: Bearer {{token}}
 
 ### Expected Response
 # Status: 200 OK
 # {
-#   "total": 50,
-#   "ativos": 45,
-#   "inativos": 5,
-#   "porSituacao": [
-#     { "situacao": "ativo", "quantidade": 42 },
-#     { "situacao": "manutencao", "quantidade": 5 },
-#     { "situacao": "inativo", "quantidade": 2 },
-#     { "situacao": "descartado", "quantidade": 1 }
-#   ],
-#   "manutencaoVencida": 3
+#   "message": "Equipamento removido com sucesso"
 # }
 
 ###

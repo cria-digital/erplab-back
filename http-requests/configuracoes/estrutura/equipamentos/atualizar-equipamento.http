@@ -1,152 +1,80 @@
-### Atualizar equipamento completo
-PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000
+### Atualizar nome do equipamento
+PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/{{equipamentoId}}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "nome": "Analisador Hematologico BC-6800 Plus",
-  "modelo": "BC-6800 Plus",
-  "salaId": "{{salaId}}",
-  "situacao": "ativo",
-  "dataUltimaManutencao": "2024-10-15",
-  "dataProximaManutencao": "2025-04-15",
-  "observacoes": "Equipamento atualizado com novo software v3.5 - performance aprimorada"
+  "nome": "Raio-X Digital Atualizado"
 }
 
 ### Expected Response
 # Status: 200 OK
 # {
-#   "id": "550e8400-e29b-41d4-a716-446655440000",
-#   "nome": "Analisador Hematologico BC-6800 Plus",
-#   "modelo": "BC-6800 Plus",
-#   "situacao": "ativo",
-#   "atualizadoEm": "2025-10-09T15:30:00.000Z"
+#   "id": "uuid-do-equipamento",
+#   "codigoInterno": "EQ100",
+#   "nome": "Raio-X Digital Atualizado",
+#   "atualizadoEm": "2025-11-30T15:30:00.000Z"
 # }
 
 ###
 
-### Atualizar situacao - Colocar em manutencao
-PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000/situacao
+### Atualizar numeracao
+PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/{{equipamentoId}}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "situacao": "manutencao"
+  "numeracao": "NOVO-1592653986625698526"
 }
 
 ###
 
-### Atualizar situacao - Retornar como ativo
-PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000/situacao
+### Atualizar localizacao (sala)
+PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/{{equipamentoId}}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "situacao": "ativo"
+  "salaId": "{{novaSalaId}}"
 }
 
 ###
 
-### Atualizar situacao - Marcar como inativo
-PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000/situacao
+### Atualizar varios campos
+PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/{{equipamentoId}}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "situacao": "inativo"
+  "nome": "Ultrassom Portatil",
+  "numeracao": "US-PORT-001",
+  "salaId": "{{salaId}}"
 }
 
 ###
 
-### Atualizar situacao - Marcar como descartado
-PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000/situacao
+### Toggle status ativo/inativo
+PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/{{equipamentoId}}/toggle-ativo
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid-do-equipamento",
+#   "ativo": false,
+#   ...
+# }
+
+###
+
+### Remover sala (equipamento sem localizacao)
+PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/{{equipamentoId}}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "situacao": "descartado"
+  "salaId": null
 }
-
-###
-
-### Atualizar datas de manutencao
-PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-  "dataUltimaManutencao": "2024-10-20",
-  "dataProximaManutencao": "2025-04-20",
-  "periodicidadeManutencaoDias": 180,
-  "observacoes": "Manutencao preventiva trimestral realizada"
-}
-
-###
-
-### Atualizar setor e sala
-PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-  "setorId": "{{novoSetorId}}",
-  "salaId": "{{novaSalaId}}",
-  "observacoes": "Equipamento transferido para Setor de Hematologia - Sala 203"
-}
-
-###
-
-### Atualizar apenas observacoes
-PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-  "observacoes": "Observacao importante: Equipamento operando perfeitamente. Ultimo resultado de controle de qualidade: 99.8% de acuracia"
-}
-
-###
-
-### Atualizar fornecedor
-PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-  "fornecedorId": "{{novoFornecedorId}}",
-  "observacoes": "Fornecedor alterado para novo representante autorizado Mindray"
-}
-
-###
-
-### Remover sala (equipamento sem sala especifica)
-PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-  "salaId": null,
-  "observacoes": "Equipamento removido da sala - em transito para nova localizacao"
-}
-
-###
-
-### Atualizar modelo (caso de upgrade)
-PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-  "modelo": "BC-6800 Elite",
-  "observacoes": "Modelo atualizado apos upgrade de hardware - agora versao Elite com modulo adicional"
-}
-
-###
-
-### Alternar status ativo/inativo
-PATCH {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000/toggle-ativo
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
 
 ###
 
@@ -165,18 +93,6 @@ Authorization: Bearer {{token}}
 #   "statusCode": 404,
 #   "message": "Equipamento com ID 00000000-0000-0000-0000-000000000000 não encontrado",
 #   "error": "Not Found"
-# }
-
-###
-
-### Deletar equipamento
-DELETE {{baseUrl}}/configuracoes/estrutura/equipamentos/550e8400-e29b-41d4-a716-446655440000
-Authorization: Bearer {{token}}
-
-### Expected Response
-# Status: 200 OK
-# {
-#   "message": "Equipamento removido com sucesso"
 # }
 
 ###
