@@ -17,11 +17,13 @@ import { Empresa } from '../../cadastros/empresas/entities/empresa.entity';
 import { ConvenioService } from './services/convenio.service';
 import { PlanoService } from './services/plano.service';
 import { InstrucaoService } from './services/instrucao.service';
+import { TabelaPrecoService } from './services/tabela-preco.service';
 
 // Controllers
 import { ConvenioController } from './controllers/convenio.controller';
 import { PlanoController } from './controllers/plano.controller';
 import { InstrucaoController } from './controllers/instrucao.controller';
+import { TabelaPrecoController } from './controllers/tabela-preco.controller';
 
 @Module({
   imports: [
@@ -36,8 +38,23 @@ import { InstrucaoController } from './controllers/instrucao.controller';
       Empresa,
     ]),
   ],
-  providers: [ConvenioService, PlanoService, InstrucaoService],
-  controllers: [ConvenioController, PlanoController, InstrucaoController],
-  exports: [ConvenioService, PlanoService, InstrucaoService],
+  providers: [
+    ConvenioService,
+    PlanoService,
+    InstrucaoService,
+    TabelaPrecoService,
+  ],
+  controllers: [
+    ConvenioController,
+    PlanoController,
+    InstrucaoController,
+    TabelaPrecoController,
+  ],
+  exports: [
+    ConvenioService,
+    PlanoService,
+    InstrucaoService,
+    TabelaPrecoService,
+  ],
 })
 export class ConveniosModule {}
