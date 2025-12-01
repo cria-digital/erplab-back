@@ -53,6 +53,9 @@ import { EtiquetasAmostraModule } from './modules/configuracoes/estrutura/etique
 // Configurações - Campos de Formulário
 import { CamposFormularioModule as ConfiguracoesCamposFormularioModule } from './modules/configuracoes/campos-formulario/campos-formulario.module';
 
+// Configurações - Documentação
+import { CabecalhosRodapesModule } from './modules/configuracoes/documentacao/cabecalhos-rodapes/cabecalhos-rodapes.module';
+
 // Infraestrutura
 import { AuditoriaModule } from './modules/infraestrutura/auditoria/auditoria.module';
 import { CommonModule } from './modules/infraestrutura/common/common.module';
@@ -117,6 +120,9 @@ import { SeedModule } from './database/seeds/seed.module';
     EquipamentosModule,
     EtiquetasAmostraModule,
     ConfiguracoesCamposFormularioModule,
+
+    // 7.1. Configurações - Documentação
+    CabecalhosRodapesModule,
 
     // 8. Infraestrutura
     AuditoriaModule,

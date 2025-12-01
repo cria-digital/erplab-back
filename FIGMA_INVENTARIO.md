@@ -400,10 +400,150 @@ Este documento cataloga o conteúdo de cada arquivo PDF do Figma para referênci
 ## chunk_022_p421-440.pdf
 
 **Páginas**: 421-440
-**Status**: Não catalogado
+**Status**: Catalogado (30/11/2025)
 **Conteúdo**:
 
-- [ ] A ser preenchido
+### Página 1 - DOCUMENTACAO - FORMULARIOS DE ATENDIMENTO (Divisor de seção)
+
+- Título da seção: "DOCUMENTAÇÃO - FORMULÁRIOS DE ATENDIMENTO"
+- Indicação: NOVA TELA
+
+### Página 2 - Cabeçalhos/Rodapés (Tela de listagem)
+
+- Menu lateral completo com navegação
+- Filtros superiores:
+  - Selecione uma unidade (dropdown)
+  - Toggle: Cabeçalho / Rodapé
+  - Botão: IMPORTAR IMAGEM
+  - Botão: ADICIONAR (verde)
+- Grid de listagem:
+  - Colunas: Unidade, Tipo, Imagem, Excluir, Baixar
+  - Exemplos: São Roque, Jardins, Navegantes (cada uma com cabeçalho e rodapé)
+- Paginação: 06 de 06 registros
+
+### Página 3 - Formulários de Atendimento (Tela de listagem)
+
+- Menu lateral com "Formulários de atendimento" selecionado
+- Filtros superiores:
+  - Selecione uma unidade (dropdown)
+  - Botão: IMPORTAR FORMULÁRIO
+  - Campo texto: Observação
+  - Botão: ADICIONAR (verde)
+- Grid de listagem:
+  - Colunas: Unidade, Documento, Observação, Excluir, Baixar
+  - Documento: Nome_da_documento.pdf
+  - Observação: "Formulário para loren ipson loren"
+- Paginação: 06 de 06 registros
+
+### Página 4 - BANCOS (Divisor de seção verde)
+
+- Título da seção: "BANCOS"
+
+### Página 5 - ADQUIRENTES (Divisor de seção verde)
+
+- Título da seção: "ADQUIRENTES"
+
+### Página 6 - HIERARQUIA CFO (Divisor de seção verde)
+
+- Título da seção: "HIERARQUIA CFO - Classe Financeira Orçamentária"
+
+### Página 7 - CADASTROS FINANCEIRO (Divisor de seção verde)
+
+- Título da seção: "CADASTROS FINANCEIRO"
+
+### Páginas 8-10 - BANCOS (Indicações de desenvolvimento)
+
+- Página 8: BANCOS - PRONTO PARA DESENVOLVER
+- Página 9: CADASTRAR BANCOS - PRONTO PARA DESENVOLVER
+- Página 10: VISUALIZAR BANCOS - PRONTO PARA DESENVOLVER
+
+### Páginas 11-13 - ADQUIRENTES (Indicações de desenvolvimento)
+
+- Página 11: ADQUIRENTES - PRONTO PARA DESENVOLVER
+- Página 12: CADASTRAR ADQUIRENTES - PRONTO PARA DESENVOLVER
+- Página 13: VISUALIZAR ADQUIRENTES - PRONTO PARA DESENVOLVER
+
+### Páginas 14-16 - HIERARQUIA CFO (Indicações de desenvolvimento)
+
+- Página 14: HIERARQUIA CFO - PRONTO PARA DESENVOLVER
+- Página 15: CADASTRAR HIERARQUIA CFO - PRONTO PARA DESENVOLVER
+- Página 16: VISUALIZAR HIERARQUIA CFO - PRONTO PARA DESENVOLVER
+
+### Página 17 - Bancos/Contas Bancárias (Tela de listagem)
+
+- Contador: "10 Bancos" (ícone de banco)
+- Filtros: Status (todos), Unidade (todas), Pesquisar
+- Grid de listagem:
+  - Colunas: Cód interno, Banco, Descrição, Unidade Associada, Status, Excluir, Editar, Visualizar
+  - Status possíveis: Ativo (verde), Inativo (cinza), Suspenso (laranja)
+  - Exemplos: BAN001-BAN004, bancos 237-Bradesco e 033-Santander
+- Paginação: 04 de 10 registros
+
+### Página 18 - Cadastrar Bancos (Tela de cadastro - Aba Informações Gerais)
+
+- Abas: INFORMAÇÕES GERAIS | INTEGRAÇÃO
+- Seção "Informações iniciais":
+  - Código interno\* (ex: BAN001, auto-gerado)
+  - Banco\* (select - lista de bancos do BACEN)
+  - Descrição\* (texto livre - ex: "Conta principal para pagamentos de fornecedores")
+  - Status do banco (select)
+- Seção "Informações da conta":
+  - Agência\* (número)
+  - Conta corrente\* (número)
+  - Dígito verificador\* (número com tooltip)
+  - Tipo de conta\* (select)
+  - Chave PIX (texto)
+  - Unidades Associadas\* (multi-select + botão ADICIONAR)
+- Botão: NOVA CONTA (para adicionar múltiplas contas)
+- Botões: CANCELAR | FINALIZAR
+
+### Página 19 - Cadastrar Bancos (Tela de cadastro - Aba Integração)
+
+- Abas: INFORMAÇÕES GERAIS | INTEGRAÇÃO (selecionada)
+- Seção "Vincular integração":
+  - Integração\* (select)
+  - Botão: TESTAR CONEXÃO
+  - Validade de configuração da API\* (data --/--/----)
+  - Contingência\* (texto - "Digite a chave de uma API alternativa")
+- Botões: CANCELAR | FINALIZAR
+
+### Página 20 - Observação sobre Visualização
+
+- Nota: "A tela de visualização vai funcionar como as demais telas de visualização"
+
+### Implementações realizadas baseadas neste chunk:
+
+#### Cabeçalhos/Rodapés (Implementado - 30/11/2025)
+
+- **Entidade**: `src/modules/configuracoes/documentacao/cabecalhos-rodapes/entities/cabecalho-rodape.entity.ts`
+- **Campos**: id, unidadeId, tipo (CABECALHO/RODAPE), nomeArquivo, caminhoArquivo, mimeType, tamanho, ativo, criadoEm, atualizadoEm
+- **Migration**: `src/database/migrations/1764512737722-CreateCabecalhosRodapesTable.ts`
+- **Service**: `src/modules/configuracoes/documentacao/cabecalhos-rodapes/services/cabecalhos-rodapes.service.ts`
+- **Controller**: `src/modules/configuracoes/documentacao/cabecalhos-rodapes/controllers/cabecalhos-rodapes.controller.ts`
+- **Module**: `src/modules/configuracoes/documentacao/cabecalhos-rodapes/cabecalhos-rodapes.module.ts`
+- **Funcionalidades**: Upload de imagem (JPG, PNG, GIF, WEBP), Download, Exclusão
+- **Validações**: Tamanho máximo 1MB, formatos de imagem apenas
+- **Constraint**: UNIQUE(unidade_id, tipo) - Uma unidade só pode ter 1 cabeçalho e 1 rodapé
+- **Armazenamento**: Local em `uploads/cabecalhos-rodapes/{unidadeId}/`
+
+#### Formulários de Atendimento (PENDENTE)
+
+- **Entidade necessária**: `FormularioAtendimento`
+- **Campos identificados**:
+  - id, unidadeId, nomeDocumento, caminhoArquivo, observacao, criadoEm, atualizadoEm
+- **Funcionalidades**: Upload de PDF, Download, Exclusão
+- **Relacionamento**: ManyToOne com UnidadeSaude
+
+#### Bancos/Contas Bancárias (Ajustes necessários)
+
+- O sistema já tem módulo de Bancos (seeder com 270 bancos BACEN)
+- **Falta implementar**: Contas Bancárias por unidade
+- **Entidade necessária**: `ContaBancaria`
+- **Campos identificados**:
+  - id, codigoInterno (BAN001), bancoId (FK), descricao, status (ATIVO/INATIVO/SUSPENSO)
+  - agencia, contaCorrente, digitoVerificador, tipoConta, chavePix
+  - unidadesAssociadas (ManyToMany com UnidadeSaude)
+  - integracaoId, validadeApiConfig, chaveContingencia
 
 ---
 
@@ -463,4 +603,4 @@ Este documento cataloga o conteúdo de cada arquivo PDF do Figma para referênci
 ## Última atualização
 
 **Data**: 30/11/2025
-**Chunks catalogados**: 1 de 26
+**Chunks catalogados**: 2 de 26

@@ -1,0 +1,90 @@
+### Criar cabeçalho (upload de imagem)
+# NOTA: Use uma ferramenta como Postman ou Insomnia para testar upload de arquivos
+# Este arquivo serve como documentação dos endpoints
+
+POST {{baseUrl}}/configuracoes/documentacao/cabecalhos-rodapes
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name="unidadeId"
+
+{{unidadeId}}
+------WebKitFormBoundary
+Content-Disposition: form-data; name="tipo"
+
+CABECALHO
+------WebKitFormBoundary
+Content-Disposition: form-data; name="arquivo"; filename="logo-cabecalho.png"
+Content-Type: image/png
+
+< ./test-images/logo-cabecalho.png
+------WebKitFormBoundary--
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "id": "uuid-gerado",
+#   "unidadeId": "uuid-da-unidade",
+#   "tipo": "CABECALHO",
+#   "nomeArquivo": "logo-cabecalho.png",
+#   "caminhoArquivo": "uploads/cabecalhos-rodapes/{unidadeId}/cabecalho.png",
+#   "mimeType": "image/png",
+#   "tamanho": 102400,
+#   "ativo": true,
+#   "criadoEm": "2025-11-30T..."
+# }
+
+###
+
+### Criar rodapé (upload de imagem)
+POST {{baseUrl}}/configuracoes/documentacao/cabecalhos-rodapes
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name="unidadeId"
+
+{{unidadeId}}
+------WebKitFormBoundary
+Content-Disposition: form-data; name="tipo"
+
+RODAPE
+------WebKitFormBoundary
+Content-Disposition: form-data; name="arquivo"; filename="logo-rodape.png"
+Content-Type: image/png
+
+< ./test-images/logo-rodape.png
+------WebKitFormBoundary--
+
+### Expected Response
+# Status: 201 Created
+
+###
+
+### Erro: Arquivo muito grande (> 1MB)
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Arquivo muito grande. Tamanho máximo permitido: 1MB"
+# }
+
+###
+
+### Erro: Tipo de arquivo inválido
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Tipo de arquivo não permitido. Formatos aceitos: JPG, PNG, GIF, WEBP"
+# }
+
+###
+
+### Erro: Já existe para esta unidade e tipo
+# Status: 409 Conflict
+# {
+#   "statusCode": 409,
+#   "message": "Já existe um cabecalho cadastrado para esta unidade. Exclua o existente antes de adicionar um novo."
+# }
+
+###

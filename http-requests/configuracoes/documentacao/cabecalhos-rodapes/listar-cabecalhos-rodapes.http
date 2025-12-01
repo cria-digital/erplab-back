@@ -1,0 +1,79 @@
+### Listar todos os cabeçalhos e rodapés
+GET {{baseUrl}}/configuracoes/documentacao/cabecalhos-rodapes
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid",
+#     "unidadeId": "uuid",
+#     "tipo": "CABECALHO",
+#     "nomeArquivo": "logo.png",
+#     "mimeType": "image/png",
+#     "tamanho": 102400,
+#     "unidade": { "id": "uuid", "nome": "São Roque" }
+#   }
+# ]
+
+###
+
+### Filtrar por unidade
+GET {{baseUrl}}/configuracoes/documentacao/cabecalhos-rodapes?unidadeId={{unidadeId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Filtrar por tipo CABECALHO
+GET {{baseUrl}}/configuracoes/documentacao/cabecalhos-rodapes?tipo=CABECALHO
+Authorization: Bearer {{token}}
+
+###
+
+### Filtrar por tipo RODAPE
+GET {{baseUrl}}/configuracoes/documentacao/cabecalhos-rodapes?tipo=RODAPE
+Authorization: Bearer {{token}}
+
+###
+
+### Filtrar por unidade e tipo
+GET {{baseUrl}}/configuracoes/documentacao/cabecalhos-rodapes?unidadeId={{unidadeId}}&tipo=CABECALHO
+Authorization: Bearer {{token}}
+
+###
+
+### Listar cabeçalhos/rodapés de uma unidade específica
+GET {{baseUrl}}/configuracoes/documentacao/cabecalhos-rodapes/unidade/{{unidadeId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   { "tipo": "CABECALHO", ... },
+#   { "tipo": "RODAPE", ... }
+# ]
+
+###
+
+### Buscar por ID
+GET {{baseUrl}}/configuracoes/documentacao/cabecalhos-rodapes/{{cabecalhoRodapeId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Obter estatísticas
+GET {{baseUrl}}/configuracoes/documentacao/cabecalhos-rodapes/estatisticas
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "total": 10,
+#   "cabecalhos": 5,
+#   "rodapes": 5,
+#   "porUnidade": [
+#     { "unidade": "São Roque", "cabecalhos": 1, "rodapes": 1 }
+#   ]
+# }
+
+###

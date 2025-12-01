@@ -1,0 +1,33 @@
+### Download da imagem do cabeçalho/rodapé
+GET {{baseUrl}}/configuracoes/documentacao/cabecalhos-rodapes/{{cabecalhoRodapeId}}/download
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# Content-Type: image/png (ou image/jpeg, etc)
+# Content-Disposition: attachment; filename="nome_original.png"
+# [Arquivo binário da imagem]
+
+###
+
+### Excluir cabeçalho/rodapé
+DELETE {{baseUrl}}/configuracoes/documentacao/cabecalhos-rodapes/{{cabecalhoRodapeId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 204 No Content
+
+###
+
+### Excluir ID inexistente (deve retornar 404)
+DELETE {{baseUrl}}/configuracoes/documentacao/cabecalhos-rodapes/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Cabeçalho/Rodapé com ID 00000000-0000-0000-0000-000000000000 não encontrado"
+# }
+
+###
