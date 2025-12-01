@@ -1,0 +1,57 @@
+### Listar todos os formulários de atendimento
+GET {{baseUrl}}/configuracoes/documentacao/formularios-atendimento
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid",
+#     "unidadeId": "uuid",
+#     "nomeDocumento": "termo-consentimento.pdf",
+#     "observacao": "Formulário de consentimento para exame",
+#     "mimeType": "application/pdf",
+#     "tamanho": 102400,
+#     "ativo": true,
+#     "criadoEm": "2025-12-01T..."
+#   }
+# ]
+
+###
+
+### Filtrar por unidade
+GET {{baseUrl}}/configuracoes/documentacao/formularios-atendimento?unidadeId={{unidadeId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Listar formulários de uma unidade específica
+GET {{baseUrl}}/configuracoes/documentacao/formularios-atendimento/unidade/{{unidadeId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   { "nomeDocumento": "termo-consentimento.pdf", ... },
+#   { "nomeDocumento": "autorizacao-coleta.pdf", ... }
+# ]
+
+###
+
+### Buscar por ID
+GET {{baseUrl}}/configuracoes/documentacao/formularios-atendimento/{{formularioId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Obter estatísticas
+GET {{baseUrl}}/configuracoes/documentacao/formularios-atendimento/estatisticas
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "total": 10
+# }
+
+###

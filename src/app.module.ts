@@ -55,6 +55,7 @@ import { CamposFormularioModule as ConfiguracoesCamposFormularioModule } from '.
 
 // Configurações - Documentação
 import { CabecalhosRodapesModule } from './modules/configuracoes/documentacao/cabecalhos-rodapes/cabecalhos-rodapes.module';
+import { FormulariosAtendimentoModule } from './modules/configuracoes/documentacao/formularios-atendimento/formularios-atendimento.module';
 
 // Infraestrutura
 import { AuditoriaModule } from './modules/infraestrutura/auditoria/auditoria.module';
@@ -123,6 +124,7 @@ import { SeedModule } from './database/seeds/seed.module';
 
     // 7.1. Configurações - Documentação
     CabecalhosRodapesModule,
+    FormulariosAtendimentoModule,
 
     // 8. Infraestrutura
     AuditoriaModule,

@@ -1,0 +1,43 @@
+### Download do formulário
+GET {{baseUrl}}/configuracoes/documentacao/formularios-atendimento/{{formularioId}}/download
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# Content-Type: application/pdf
+# Content-Disposition: attachment; filename="termo-consentimento.pdf"
+# [binary content]
+
+###
+
+### Erro: Formulário não encontrado
+# GET {{baseUrl}}/configuracoes/documentacao/formularios-atendimento/uuid-inexistente/download
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Formulário de atendimento com ID uuid-inexistente não encontrado"
+# }
+
+###
+
+### Excluir formulário
+DELETE {{baseUrl}}/configuracoes/documentacao/formularios-atendimento/{{formularioId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Formulário removido com sucesso"
+# }
+
+###
+
+### Erro: Formulário não encontrado ao excluir
+# DELETE {{baseUrl}}/configuracoes/documentacao/formularios-atendimento/uuid-inexistente
+# Status: 404 Not Found
+# {
+#   "statusCode": 404,
+#   "message": "Formulário de atendimento com ID uuid-inexistente não encontrado"
+# }
+
+###

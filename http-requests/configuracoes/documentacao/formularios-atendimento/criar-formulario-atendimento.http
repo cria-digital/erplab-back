@@ -1,0 +1,86 @@
+### Upload de formulário de atendimento (PDF)
+# NOTA: Use uma ferramenta como Postman ou Insomnia para testar upload de arquivos
+# Este arquivo serve como documentação dos endpoints
+
+POST {{baseUrl}}/configuracoes/documentacao/formularios-atendimento
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name="unidadeId"
+
+{{unidadeId}}
+------WebKitFormBoundary
+Content-Disposition: form-data; name="observacao"
+
+Termo de consentimento para exame de sangue
+------WebKitFormBoundary
+Content-Disposition: form-data; name="arquivo"; filename="termo-consentimento.pdf"
+Content-Type: application/pdf
+
+< ./test-files/termo-consentimento.pdf
+------WebKitFormBoundary--
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "id": "uuid-gerado",
+#   "unidadeId": "uuid-da-unidade",
+#   "nomeDocumento": "termo-consentimento.pdf",
+#   "caminhoArquivo": "uploads/formularios-atendimento/{unidadeId}/{uuid}.pdf",
+#   "observacao": "Termo de consentimento para exame de sangue",
+#   "mimeType": "application/pdf",
+#   "tamanho": 102400,
+#   "ativo": true,
+#   "criadoEm": "2025-12-01T..."
+# }
+
+###
+
+### Upload sem observação
+POST {{baseUrl}}/configuracoes/documentacao/formularios-atendimento
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name="unidadeId"
+
+{{unidadeId}}
+------WebKitFormBoundary
+Content-Disposition: form-data; name="arquivo"; filename="autorizacao-coleta.pdf"
+Content-Type: application/pdf
+
+< ./test-files/autorizacao-coleta.pdf
+------WebKitFormBoundary--
+
+### Expected Response
+# Status: 201 Created
+
+###
+
+### Erro: Arquivo muito grande (> 1MB)
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Arquivo muito grande. Tamanho máximo permitido: 1MB"
+# }
+
+###
+
+### Erro: Tipo de arquivo inválido (não PDF)
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Tipo de arquivo não permitido. Formato aceito: PDF"
+# }
+
+###
+
+### Erro: Arquivo não enviado
+# Status: 400 Bad Request
+# {
+#   "statusCode": 400,
+#   "message": "Arquivo é obrigatório"
+# }
+
+###
