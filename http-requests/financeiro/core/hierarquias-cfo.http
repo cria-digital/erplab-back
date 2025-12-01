@@ -1,0 +1,286 @@
+### =============================================
+### HIERARQUIA CFO - CRUD e operacoes
+### =============================================
+
+### Listar todas as hierarquias CFO (paginado)
+GET {{baseUrl}}/financeiro/hierarquias-cfo
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [
+#     {
+#       "id": "uuid",
+#       "codigo_interno": "CFO-001",
+#       "descricao": "Hierarquia CFO Padrao",
+#       "ativo": true,
+#       "classes": [...]
+#     }
+#   ],
+#   "meta": {
+#     "page": 1,
+#     "limit": 10,
+#     "total": 5,
+#     "totalPages": 1,
+#     "hasPrevPage": false,
+#     "hasNextPage": false
+#   }
+# }
+
+###
+
+### Listar com paginacao personalizada
+GET {{baseUrl}}/financeiro/hierarquias-cfo?page=1&limit=5
+Authorization: Bearer {{token}}
+
+###
+
+### Listar apenas ativas
+GET {{baseUrl}}/financeiro/hierarquias-cfo?ativo=true
+Authorization: Bearer {{token}}
+
+###
+
+### Listar apenas inativas
+GET {{baseUrl}}/financeiro/hierarquias-cfo?ativo=false
+Authorization: Bearer {{token}}
+
+###
+
+### Pesquisar por descricao ou codigo
+GET {{baseUrl}}/financeiro/hierarquias-cfo?pesquisar=padrao
+Authorization: Bearer {{token}}
+
+###
+
+### Filtros combinados com paginacao
+GET {{baseUrl}}/financeiro/hierarquias-cfo?ativo=true&pesquisar=CFO&page=1&limit=20
+Authorization: Bearer {{token}}
+
+###
+
+### Obter estatisticas (total, ativas, inativas)
+GET {{baseUrl}}/financeiro/hierarquias-cfo/estatisticas
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "total": 5,
+#   "ativas": 4,
+#   "inativas": 1
+# }
+
+###
+
+### Buscar hierarquia por ID
+GET {{baseUrl}}/financeiro/hierarquias-cfo/{{hierarquiaCfoId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar hierarquia em formato de arvore
+GET {{baseUrl}}/financeiro/hierarquias-cfo/{{hierarquiaCfoId}}/arvore
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "codigo_interno": "CFO-001",
+#   "descricao": "Hierarquia CFO Padrao",
+#   "ativo": true,
+#   "arvore": [
+#     {
+#       "tipo": "TITULO",
+#       "nomeClasse": "Atos Cirurgicos Gerais",
+#       "filhos": [
+#         {
+#           "tipo": "NIVEL",
+#           "nivelClassificacao": 1,
+#           "nomeClasse": "Biopsias",
+#           "filhos": [...]
+#         }
+#       ]
+#     }
+#   ]
+# }
+
+###
+
+### =============================================
+### CRIAR HIERARQUIA
+### =============================================
+
+### Criar hierarquia simples (sem classes)
+POST {{baseUrl}}/financeiro/hierarquias-cfo
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "codigo_interno": "CFO-001",
+  "descricao": "Hierarquia CFO Padrao"
+}
+
+###
+
+### Criar hierarquia completa (com classes)
+POST {{baseUrl}}/financeiro/hierarquias-cfo
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "codigo_interno": "CFO-002",
+  "descricao": "Hierarquia CFO Completa",
+  "ativo": true,
+  "classes": [
+    {
+      "tipo": "TITULO",
+      "codigo_hierarquico": "1",
+      "nome_classe": "Atos Cirurgicos Gerais",
+      "ordem": 0
+    },
+    {
+      "tipo": "NIVEL",
+      "nivel_classificacao": 1,
+      "codigo_hierarquico": "1.1",
+      "codigo_contabil": "3.1.1.01",
+      "nome_classe": "Biopsias",
+      "ordem": 1
+    },
+    {
+      "tipo": "NIVEL",
+      "nivel_classificacao": 2,
+      "codigo_hierarquico": "1.1.1",
+      "codigo_contabil": "3.1.1.01.01",
+      "nome_classe": "Biopsia de Pele",
+      "ordem": 2
+    },
+    {
+      "tipo": "NIVEL",
+      "nivel_classificacao": 3,
+      "codigo_hierarquico": "1.1.1.1",
+      "codigo_contabil": "3.1.1.01.01.01",
+      "nome_classe": "Biopsia Simples",
+      "ordem": 3
+    },
+    {
+      "tipo": "NIVEL",
+      "nivel_classificacao": 3,
+      "codigo_hierarquico": "1.1.1.2",
+      "codigo_contabil": "3.1.1.01.01.02",
+      "nome_classe": "Biopsia Complexa",
+      "ordem": 4
+    },
+    {
+      "tipo": "NIVEL",
+      "nivel_classificacao": 1,
+      "codigo_hierarquico": "1.2",
+      "codigo_contabil": "3.1.2.01",
+      "nome_classe": "Suturas",
+      "ordem": 5
+    }
+  ]
+}
+
+###
+
+### =============================================
+### ATUALIZAR HIERARQUIA
+### =============================================
+
+### Atualizar descricao da hierarquia
+PATCH {{baseUrl}}/financeiro/hierarquias-cfo/{{hierarquiaCfoId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "descricao": "Hierarquia CFO Atualizada"
+}
+
+###
+
+### Atualizar hierarquia com novas classes (substitui todas)
+PATCH {{baseUrl}}/financeiro/hierarquias-cfo/{{hierarquiaCfoId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "classes": [
+    {
+      "tipo": "TITULO",
+      "codigo_hierarquico": "1",
+      "nome_classe": "Novo Titulo",
+      "ordem": 0
+    },
+    {
+      "tipo": "NIVEL",
+      "nivel_classificacao": 1,
+      "codigo_hierarquico": "1.1",
+      "nome_classe": "Novo Nivel 1",
+      "ordem": 1
+    }
+  ]
+}
+
+###
+
+### =============================================
+### TOGGLE STATUS
+### =============================================
+
+### Alternar status da hierarquia (ativo/inativo)
+PATCH {{baseUrl}}/financeiro/hierarquias-cfo/{{hierarquiaCfoId}}/toggle-status
+Authorization: Bearer {{token}}
+
+###
+
+### =============================================
+### GERENCIAR CLASSES
+### =============================================
+
+### Adicionar classe a hierarquia existente
+POST {{baseUrl}}/financeiro/hierarquias-cfo/{{hierarquiaCfoId}}/classes
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "tipo": "NIVEL",
+  "nivel_classificacao": 2,
+  "codigo_hierarquico": "1.1.2",
+  "codigo_contabil": "3.1.1.02",
+  "nome_classe": "Nova Classe Nivel 2",
+  "ordem": 10
+}
+
+###
+
+### Atualizar classe existente
+PATCH {{baseUrl}}/financeiro/hierarquias-cfo/{{hierarquiaCfoId}}/classes/{{classeCfoId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "nome_classe": "Nome Atualizado",
+  "codigo_contabil": "3.1.1.99"
+}
+
+###
+
+### Remover classe da hierarquia
+DELETE {{baseUrl}}/financeiro/hierarquias-cfo/{{hierarquiaCfoId}}/classes/{{classeCfoId}}
+Authorization: Bearer {{token}}
+
+###
+
+### =============================================
+### EXCLUIR HIERARQUIA
+### =============================================
+
+### Excluir hierarquia (exclui classes em cascata)
+DELETE {{baseUrl}}/financeiro/hierarquias-cfo/{{hierarquiaCfoId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 204 No Content
