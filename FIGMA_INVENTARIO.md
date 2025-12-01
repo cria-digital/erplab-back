@@ -149,20 +149,346 @@ Este documento cataloga o conteúdo de cada arquivo PDF do Figma para referênci
 ## chunk_015_p281-300.pdf
 
 **Páginas**: 281-300
-**Status**: Não catalogado
+**Status**: ✅ Catalogado (01/12/2025)
 **Conteúdo**:
 
-- [ ] A ser preenchido
+### Página 1 - Cadastrar Usuários (Aba Perfis e Permissões)
+
+- Abas: INFORMAÇÕES GERAIS | PERFIS E PERMISSÕES | SEGURANÇA | HISTÓRICO
+- Seção "Configurações de perfil e módulos de acesso":
+  - Perfil\*: Dropdown (ex: FINANCEIRO)
+- Grid de módulos de acesso:
+  - Colunas: Módulo, Unidades, Cadastrar, Visualizar, Editar, Excluir, Restrição de acesso, Horário permitido
+  - Módulos listados: FINANCEIRO, AGENDAMENTO, LAUDOS, GED, FATURAMENTO, MÓDULO ABC/DEF/GHI/JKL/MNO
+  - Restrição de acesso: HORÁRIO COMERCIAL / HORÁRIO ESPECÍFICO (dropdown)
+  - Horário permitido: Campo de intervalo (09:00 - 18:00)
+- Paginação: 10 de 50 registros
+- Seção "Permissões Específicas":
+  - Lista dupla com transfer (Disponíveis → Selecionadas)
+  - Botões: Selecionar todos / Remover todos
+  - Ex: LIBERAR LAUDOS, PODE FECHAR CAIXA
+- Seção "Restrições Específicas":
+  - Lista dupla com transfer (Disponíveis → Selecionadas)
+
+### Página 2 - Especificação de Campos do Usuário
+
+- **HISTÓRICO**: Campos para rastreamento integrados ao módulo GED
+  - Últimos Acessos: Data/Hora, Ação, Módulo, IP de acesso, Unidade
+  - Histórico de Alterações: Data/Hora, Usuário que alterou, Campo Alterado, Valor Antigo/Novo
+- **SEGURANÇA**: Campos para autenticação
+  - Login*, Senha*, Confirmar Senha\*
+  - Habilitar 2FA\* (checkbox), Método de 2FA (E-mail, SMS, Aplicativo)
+  - Pergunta de Recuperação, Resposta de Recuperação
+- **PERFIS E PERMISSÕES**: Níveis de acesso
+  - Perfil\*: Dropdown (Recepcionista, Coletora, Administrador, Gestor, etc)
+  - Módulos de Acesso\*: Tabela com Módulo, Ação, Unidade, Restrição Temporal
+  - Permissões Específicas: Checklist de ações
+  - Status do Perfil\*: Ativo, Inativo, Suspenso
+- **INFORMAÇÕES PESSOAIS**:
+  - Nome Completo*, CPF*, E-mail*, Telefone*, Celular
+  - Cargo/Função*, Data de Admissão, Unidades Associadas*, CNPJ Associado\*
+- **NOTIFICAÇÕES**:
+  - Notificar por E-mail\*, Notificar por WhatsApp
+
+### Página 3 - Editar Tutorial
+
+- Título: "Editar TUTORIAL"
+- Campos:
+  - Título do video\* (ex: "COMO CADASTRAR UM PACIENTE?")
+  - Categoria\* (dropdown: CADASTROS)
+  - Status: ATIVO / INATIVO (toggle)
+  - Descrição\* (textarea)
+  - URL do video\* (campo com validação YouTube)
+- Preview do video com player embutido
+- Botões: CANCELAR | SALVAR
+
+### Páginas 4-6 - VISUALIZAR MATRIZES DE EXAME
+
+- Indicações de desenvolvimento: "PRONTO PARA DESENVOLVER"
+
+### Página 7 - Visualizar Matriz de Audiometria
+
+- Cabeçalho verde: MAT.AUDIOMETRIA
+  - Cadastrado em: data/hora/usuário
+  - Última edição: data/hora/usuário
+- Configurações iniciais:
+  - Tipo de exame: AUDIOMETRIA
+  - Exame: AUDIOMETRIA TONAL
+  - Código interno: AUD123
+- Espaço dedicado para imagens/gráficos do laudo
+- Seções do laudo:
+  - MEATOSCOPIA: OD / OE (campos XXXXX)
+  - AUDIOMETRIA: OD / OE (campos XXXXX)
+  - IMPRESSÃO DIAGNÓSTICA (campo XXXXX)
+
+### Página 8 - Cadastrar Agenda (Aba Informações Gerais)
+
+- Título: "Cadastrar AGENDA"
+- Abas: INFORMAÇÕES GERAIS | VINCULAÇÃO | NOTIFICAÇÕES E INTEGRAÇÃO
+- Botões: CANCELAR | FINALIZAR E VINCULAR AGENDA
+- Seção "Informações básicas":
+  - Código interno* (AGE001), Nome da agenda*, Unidade Associada\*, Setor
+  - Sala\*, Profissional, Especialidade, Equipamento
+  - Descrição (textarea)
+- Seção "Configuração de agenda":
+  - Dias da semana\*: SEG TER QUA QUI SEX SAB DOM FERIADOS (chips)
+  - Período de atendimento\*: Horário início/fim
+  - Intervalo entre agendamentos\*: Dropdown
+  - Capacidade por horário: Campo numérico
+  - Capacidade total
+  - Data específica + Horário específico + botão ADICIONAR
+  - Botão: NOVO PERÍODO
+- Seção "Bloqueio de horários":
+  - Dia a bloquear, Horário a bloquear, Observação
+  - Botão: ADICIONAR DIA
+
+### Página 9 - Visualizar Matriz de Densitometria Óssea
+
+- Cabeçalho verde: MAT.DENSITOMETRIA ÓSSEA
+- Configurações iniciais:
+  - Tipo de exame: Imagem
+  - Exame: Densitometria Óssea
+  - Código interno: DES123
+- Seções do laudo:
+  - COLUNA LOMBAR (BMD)
+  - FÊMUR DIREITO (BMD)
+  - CONCLUSÃO
+- Informações complementares:
+  - SIGLA: Explicação dos índices T, Z, BMC, BMD
+  - OBSERVAÇÕES E CONCEITOS para interpretação
+  - MASSA ÓSSEA EM RELAÇÃO AO ADULTO JOVEM:
+    - NORMAL: +1,01 A -1,00 DP
+    - OSTEOPENIA: -1,01 A -2,49 DP
+    - OSTEOPOROSE: > DO QUE -2,50 DP
+- Espaço para imagens/gráficos
+
+### Página 10 - Visualizar Matriz de Eletrocardiograma
+
+- Cabeçalho verde: MAT.ELETROCARDIOGRAMA
+- Configurações iniciais:
+  - Tipo de exame: EXTERNO
+  - Exame: Eletrocardiograma
+  - Código interno: ELE123
+- Seção ANÁLISE:
+  - Ritmo e Frequência Cardíaca
+  - Despolarização Atrial - Onda P
+  - Condução Atrioventricular - Intervalo PR
+  - Despolarização Ventricular - Complexos QRS
+  - Repolarização Ventricular (Onda T, Segmento ST e intervalo QT)
+- CONCLUSÕES
+- Espaço para imagens/gráficos
+
+### Página 11 - Cadastrar Profissionais (Aba Informações Gerais)
+
+- Título: "Cadastrar PROFISSIONAIS"
+- Botões header: Baixar planilha | Importar dados | CANCELAR | FINALIZAR
+- Aba: INFORMAÇÕES GERAIS
+- Seção "Informações pessoais":
+  - Pronome pessoal (DR.), Nome completo\*, CPF, Data de nascimento
+  - Sexo (MASCULINO), Celular, E-mail
+- Seção "Informações profissionais":
+  - Tipo de contratação: CLT / PJ / AUTÔNOMO (chips)
+  - Profissão\* (dropdown: MÉDICO)
+  - Código interno (19011)
+  - Tipo de profissional: REALIZANTE / SOLICITANTE / AMBOS (chips)
+  - Nome do conselho (CRM)
+  - Estado do conselho (SÃO PAULO), Número do conselho (37308)
+  - Código CBO (225320), RQE (1257)
+  - Especialidade principal (CARDIOLOGIA)
+
+### Página 12 - Cadastrar Profissionais (Aba Agendas Vinculadas)
+
+- Abas: INFORMAÇÕES GERAIS | AGENDAS VINCULADAS
+- Seção "Agendas vinculadas":
+  - Grid com colunas: Nome da agenda, Dias e Horário, Unidade Associada, Status, Excluir vínculo
+  - Exemplo: Ultrassonografia - Unidade São Roque, Seg/Qua/Sex 14:00-18:00, 10min intervalo
+- Paginação: 02 de 02 registros
+- Seção "Cadastrar agenda":
+  - Aviso: "Ao clicar em cadastrar agenda, você será direcionado a outra tela..."
+  - Botão: "CLIQUE AQUI PARA CADASTRAR UMA AGENDA"
+
+### Página 13 - EDITAR UNIDADE
+
+- Indicação: "PRONTO PARA DESENVOLVER"
+
+### Página 14 - VISUALIZAR MATRIZES DE EXAME
+
+- Indicação: "PRONTO PARA DESENVOLVER"
+
+### Página 15 - Editar Unidades de Saúde
+
+- Título: "Editar UNIDADES DE SAÚDE - #0001"
+- Nota para desenvolvedores:
+  - "AS INFORMAÇÕES CONTIDAS NAS TELAS DE EDIÇÃO SERÃO AS MESMAS DO CADASTRO"
+  - "SOMENTE MUDANDO AS NOMENCLATURAS NECESSÁRIAS, COMO O TÍTULO ACIMA"
+
+### Página 16 - Visualizar Matriz de Hemograma
+
+- Cabeçalho verde: HEMOGRAMA 1
+- Configurações iniciais:
+  - Tipo de exame: Laboratorial
+  - Exame: Hemograma Completo
+  - Código interno: HEM123
+- SÉRIE VERMELHA + VALORES DE REFERÊNCIA:
+  - ERITRÓCITOS: 4,10 a 5,60 milhões/mm³
+  - HEMOGLOBINA: 12,5 a 17,0 g/dL
+  - HEMATÓCRITO: 37,5 a 51,0 %
+  - VCM: 80,0 a 99,9 μm³
+  - HCM: 23,8 a 33,4 pg
+  - RDW: 12,0 a 15,4 %
+- SÉRIE BRANCA + VALORES DE REFERÊNCIA:
+  - LEUCÓCITOS: 3.600 a 12.000 /mm³
+  - BASTONETES: 0,0 a 5,0% - 0 a 600 /mm³
+  - SEGMENTADOS: 40,0 a 75,0% - 1.440 a 9.000 /mm³
+  - EOSINÓFILOS: 1,0 a 5,0% - 36 a 600 /mm³
+  - BASÓFILOS: 0,0 a 2,0% - 0 a 240 /mm³
+  - LINFÓCITOS: 20,0 a 45,0% - 720 a 5.400 /mm³
+  - MONÓCITOS: 1,0 a 12,0% - 36 a 1.440 /mm³
+- SÉRIE PLAQUETÁRIA + VALORES DE REFERÊNCIA:
+  - PLAQUETAS: 150.000 a 450.000 /mm³
+  - VPM: Masculino 7,4 a 11,4 fL / Feminino 7,9 a 10,8 fL
+- MÉTODO, MATERIAL
+
+### Páginas 17-20 - Divisores de Seção
+
+- Página 17: AGENDAS (fundo verde)
+- Página 18: MÉTODOS (fundo verde)
+- Página 19: AMOSTRAS (fundo verde)
+- Página 20: KITS (fundo verde)
 
 ---
 
 ## chunk_016_p301-320.pdf
 
 **Páginas**: 301-320
-**Status**: Não catalogado
+**Status**: ✅ Catalogado (01/12/2025)
 **Conteúdo**:
 
-- [ ] A ser preenchido
+### Páginas 1-3 - AGENDAS (Indicações de desenvolvimento)
+
+- Página 1: AGENDAS - PRONTO PARA DESENVOLVER
+- Página 2: CADASTRAR AGENDAS - PRONTO PARA DESENVOLVER
+- Página 3: VISUALIZAR AGENDAS - PRONTO PARA DESENVOLVER
+
+### Páginas 4-6 - MÉTODOS (Indicações de desenvolvimento)
+
+- Página 4: MÉTODOS - PRONTO PARA DESENVOLVER
+- Página 5: CADASTRAR MÉTODOS - PRONTO PARA DESENVOLVER
+- Página 6: VISUALIZAR MÉTODO - PRONTO PARA DESENVOLVER
+
+### Páginas 7-9 - AMOSTRAS (Indicações de desenvolvimento)
+
+- Página 7: AMOSTRAS - PRONTO PARA DESENVOLVER
+- Página 8: CADASTRAR AMOSTRAS - PRONTO PARA DESENVOLVER
+- Página 9: VISUALIZAR AMOSTRAS - PRONTO PARA DESENVOLVER
+
+### Páginas 10-13 - KITS (Indicações de desenvolvimento)
+
+- Página 10: KITS - PRONTO PARA DESENVOLVER
+- Página 11: CADASTRAR KITS - PRONTO PARA DESENVOLVER
+- Página 12: CADASTRAR KITS - PRONTO PARA DESENVOLVER (duplicado)
+- Página 13: VISUALIZAR KITS - PRONTO PARA DESENVOLVER
+
+### Página 14 - Agendas (Tela de Listagem)
+
+- Menu lateral completo com navegação (Agendas selecionado)
+- Contadores: 20 Equipamentos | 20 Especialidades | 30 Profissionais | 200 Salas
+- Filtros: Status (todos), Pesquisar
+- Abas de tipo: EQUIPAMENTOS | ESPECIALIDADES | PROFISSIONAIS | SALAS
+- Grid de listagem (aba Equipamentos):
+  - Colunas: Cód interno, Nome da agenda, Tipo de agenda, Unidade associada, Data da criação, Ativo, Editar, Visualizar, Opções
+  - Código: AG-EQU001, AG-EQU002...
+  - Tipo: Equipamento
+- Paginação: 05 de 50 registros
+
+### Página 15 - Cadastrar Agendas (Aba Informações Gerais)
+
+- Título: "Cadastrar AGENDAS"
+- Abas: INFORMAÇÕES GERAIS | VINCULAÇÃO | NOTIFICAÇÕES E INTEGRAÇÃO
+- Seção "Informações básicas":
+  - Código interno* (AGE001), Nome da agenda*, Unidade Associada\*, Setor
+  - Sala\*, Profissional, Especialidade, Equipamento
+  - Descrição (textarea)
+- Seção "Configuração de agenda":
+  - Dias da semana\*: SEG TER QUA QUI SEX SAB DOM FERIADOS
+  - Período de atendimento\*: Horário início às fim
+  - Intervalo entre agendamentos\*: Dropdown
+  - Capacidade por horário: Campo texto
+  - Capacidade total, Data específica, Horário específico
+  - Botão: ADICIONAR
+  - Botão: NOVO PERÍODO
+- Seção "Bloqueio de horários":
+  - Dia a bloquear, Horário a bloquear (às), Observação
+  - Botão: ADICIONAR DIA
+
+### Página 16 - Cadastrar Agendas (Aba Vinculação)
+
+- Abas: INFORMAÇÕES GERAIS | VINCULAÇÃO | NOTIFICAÇÕES E INTEGRAÇÃO
+- Seção "Vinculação":
+  - Especialidade Associada\*: Multi-select + ADICIONAR
+  - Setor Associado\*: Multi-select + ADICIONAR
+  - Profissional Associado\*: Multi-select + ADICIONAR
+  - Equipamento Associado\*: Multi-select + ADICIONAR
+- Cada campo com área de tags "Nenhuma opção adicionada"
+
+### Página 17 - Cadastrar Agendas (Aba Notificações e Integração)
+
+- Abas: INFORMAÇÕES GERAIS | VINCULAÇÃO | NOTIFICAÇÕES E INTEGRAÇÃO
+- Seção "Notificações":
+  - Notificar via e-mail\*: NÃO / SIM (toggle)
+  - Notificar via whatsapp\*: NÃO / SIM (toggle)
+  - Prazo pra lembrar\*: Dropdown
+- Seção "Canais de integrações":
+  - Canais de integração\*: Multi-select + ADICIONAR
+  - Integração com convênios\*: NÃO / SIM (toggle)
+
+### Página 18 - Observação sobre Visualização
+
+- Nota (fundo laranja):
+  - "A tela de visualização vai funcionar como as demais telas de visualização."
+  - "Neste caso, será separado em abas, semelhante ao VISUALIZAR MATERIAIS / INSUMO"
+
+### Página 19 - Menu de Opções (Dropdown)
+
+- Opções do menu (ícone ...):
+  - Ativar/Desativar
+  - Excluir
+
+### Página 20 - Métodos (Tela de Listagem)
+
+- Menu lateral completo com navegação (Métodos selecionado)
+- Contador: 100 Métodos
+- Filtros: Status (todos), Pesquisar
+- Botão: CADASTRAR (verde)
+- Grid de listagem:
+  - Colunas: Cód interno, Nome do método, Descrição, Status, Excluir, Editar, Visualizar
+  - Código: MET001, MET123...
+  - Status: Ativo (verde), Inativo (cinza), Em revisão (laranja)
+  - Exemplo: MET001 - PCR (reação em cadeia da Polimerase) - Técnica de amplificação de DNA para detecção viral
+- Paginação: 10 de 100 registros
+
+### Resumo das Telas para Implementação
+
+#### Agendas (Módulo completo)
+
+- **Tipos de agenda**: Equipamentos, Especialidades, Profissionais, Salas
+- **Campos principais**:
+  - Código interno (AG-EQU001, AG-ESP001, etc)
+  - Nome, Unidade, Setor, Sala
+  - Profissional, Especialidade, Equipamento
+  - Dias da semana, Período, Intervalo, Capacidade
+  - Bloqueios de horário
+- **Vinculações**: ManyToMany com Especialidade, Setor, Profissional, Equipamento
+- **Notificações**: E-mail, WhatsApp, Prazo de lembrete
+- **Integrações**: Canais externos, Convênios
+
+#### Métodos (Listagem)
+
+- **Campos identificados**:
+  - Código interno (MET001)
+  - Nome do método
+  - Descrição
+  - Status (Ativo, Inativo, Em revisão)
 
 ---
 

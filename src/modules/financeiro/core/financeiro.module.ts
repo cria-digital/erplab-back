@@ -11,6 +11,8 @@ import { AdquirenteUnidade } from './entities/adquirente-unidade.entity';
 import { RestricaoAdquirente } from './entities/restricao-adquirente.entity';
 import { PlanoContas } from './entities/plano-contas.entity';
 import { ContaContabil } from './entities/conta-contabil.entity';
+import { HierarquiaCfo } from './entities/hierarquia-cfo.entity';
+import { ClasseCfo } from './entities/classe-cfo.entity';
 
 // Services
 import { BancoService } from './banco.service';
@@ -19,6 +21,7 @@ import { GatewayPagamentoService } from './gateway-pagamento.service';
 import { AdquirenteService } from './adquirente.service';
 import { PlanoContasService } from './plano-contas.service';
 import { ContaContabilService } from './conta-contabil.service';
+import { HierarquiaCfoService } from './hierarquia-cfo.service';
 
 // Controllers
 import { BancoController } from './banco.controller';
@@ -27,6 +30,7 @@ import { GatewayPagamentoController } from './gateway-pagamento.controller';
 import { AdquirenteController } from './adquirente.controller';
 import { PlanoContasController } from './plano-contas.controller';
 import { ContaContabilController } from './conta-contabil.controller';
+import { HierarquiaCfoController } from './hierarquia-cfo.controller';
 
 // Modules
 import { UnidadeSaudeModule } from '../../cadastros/unidade-saude/unidade-saude.module';
@@ -45,6 +49,8 @@ import { IntegracoesModule } from '../../atendimento/integracoes/integracoes.mod
       RestricaoAdquirente,
       PlanoContas,
       ContaContabil,
+      HierarquiaCfo,
+      ClasseCfo,
     ]),
     UnidadeSaudeModule,
     AuditoriaModule,
@@ -57,6 +63,7 @@ import { IntegracoesModule } from '../../atendimento/integracoes/integracoes.mod
     AdquirenteController,
     PlanoContasController,
     ContaContabilController,
+    HierarquiaCfoController,
   ],
   providers: [
     BancoService,
@@ -65,6 +72,7 @@ import { IntegracoesModule } from '../../atendimento/integracoes/integracoes.mod
     AdquirenteService,
     PlanoContasService,
     ContaContabilService,
+    HierarquiaCfoService,
   ],
   exports: [
     BancoService,
@@ -73,6 +81,7 @@ import { IntegracoesModule } from '../../atendimento/integracoes/integracoes.mod
     AdquirenteService,
     PlanoContasService,
     ContaContabilService,
+    HierarquiaCfoService,
   ],
 })
 export class FinanceiroModule {}
