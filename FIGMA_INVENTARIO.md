@@ -400,7 +400,7 @@ Este documento cataloga o conteúdo de cada arquivo PDF do Figma para referênci
 ## chunk_022_p421-440.pdf
 
 **Páginas**: 421-440
-**Status**: Catalogado (30/11/2025)
+**Status**: ✅ Catalogado e Implementado (01/12/2025)
 **Conteúdo**:
 
 ### Página 1 - DOCUMENTACAO - FORMULARIOS DE ATENDIMENTO (Divisor de seção)
@@ -408,8 +408,15 @@ Este documento cataloga o conteúdo de cada arquivo PDF do Figma para referênci
 - Título da seção: "DOCUMENTAÇÃO - FORMULÁRIOS DE ATENDIMENTO"
 - Indicação: NOVA TELA
 
-### Página 2 - Cabeçalhos/Rodapés (Tela de listagem)
+### Página 2 - Cabeçalhos/Rodapés (Tela de listagem) ✅ IMPLEMENTADO
 
+- **Status**: ✅ 100% Implementado (30/11/2025)
+- **Endpoint**: `/api/v1/configuracoes/documentacao/cabecalhos-rodapes`
+- **Arquivos**:
+  - Entity: `src/modules/configuracoes/documentacao/cabecalhos-rodapes/entities/cabecalho-rodape.entity.ts`
+  - Migration: `1764512737722-CreateCabecalhosRodapesTable.ts`
+  - Service: `src/modules/configuracoes/documentacao/cabecalhos-rodapes/services/cabecalhos-rodapes.service.ts`
+  - Controller: `src/modules/configuracoes/documentacao/cabecalhos-rodapes/controllers/cabecalhos-rodapes.controller.ts`
 - Menu lateral completo com navegação
 - Filtros superiores:
   - Selecione uma unidade (dropdown)
@@ -421,8 +428,15 @@ Este documento cataloga o conteúdo de cada arquivo PDF do Figma para referênci
   - Exemplos: São Roque, Jardins, Navegantes (cada uma com cabeçalho e rodapé)
 - Paginação: 06 de 06 registros
 
-### Página 3 - Formulários de Atendimento (Tela de listagem)
+### Página 3 - Formulários de Atendimento (Tela de listagem) ✅ IMPLEMENTADO
 
+- **Status**: ✅ 100% Implementado (01/12/2025)
+- **Endpoint**: `/api/v1/configuracoes/documentacao/formularios-atendimento`
+- **Arquivos**:
+  - Entity: `src/modules/configuracoes/documentacao/formularios-atendimento/entities/formulario-atendimento.entity.ts`
+  - Migration: `1764578306901-CreateFormulariosAtendimentoTable.ts`
+  - Service: `src/modules/configuracoes/documentacao/formularios-atendimento/services/formularios-atendimento.service.ts`
+  - Controller: `src/modules/configuracoes/documentacao/formularios-atendimento/controllers/formularios-atendimento.controller.ts`
 - Menu lateral com "Formulários de atendimento" selecionado
 - Filtros superiores:
   - Selecione uma unidade (dropdown)
@@ -550,10 +564,271 @@ Este documento cataloga o conteúdo de cada arquivo PDF do Figma para referênci
 ## chunk_023_p441-460.pdf
 
 **Páginas**: 441-460
-**Status**: Não catalogado
+**Status**: ✅ Catalogado (01/12/2025)
 **Conteúdo**:
 
-- [ ] A ser preenchido
+### Página 1 - Adquirentes (Tela de listagem)
+
+- Menu lateral completo com navegação (Adquirentes selecionado)
+- Contador: "50 Adquirentes" (ícone)
+- Filtros superiores:
+  - Status: todos (dropdown)
+  - Unidade: todas (dropdown)
+  - Pesquisar (campo texto)
+- Botão: CADASTRAR (verde, canto superior direito)
+- Grid de listagem:
+  - Colunas: Cód interno, Nome do adquirente, Descrição, Conta Associada, Unidades Associadas, Ativo, Editar, Visualizar, Opções
+  - Exemplo: ADQ001, Picpay, "Loren ipson loren ipson", 237 - Bradesco - 123456-7, São Roque, Sim
+- Paginação: 05 de 50 registros
+
+### Página 2 - Menu de Opções (Adquirentes)
+
+- Dropdown de opções (ícone ...):
+  - Ativar/Desativar
+  - Excluir
+
+### Página 3 - Cadastrar Adquirentes (Aba Informações Gerais - vazio)
+
+- Abas: INFORMAÇÕES GERAIS | INTEGRAÇÃO
+- Seção "Informações iniciais":
+  - Código interno\* (ex: ADQ001, auto-gerado)
+  - Nome do adquirente\* (texto)
+  - Descrição\* (texto)
+  - Conta Associada\* (select)
+- Seção "Informações específicas":
+  - Unidades Associadas\* (multi-select + botão ADICIONAR)
+- Seção "Informações financeiras":
+  - Tipo de cartões suportados\* (multi-select + ADICIONAR) - Ex: Mastercard
+  - Opção de parcelamento\* (select)
+  - Taxa por transação (texto - %)
+  - Taxa por parcelamento (texto - %)
+  - Porcentagem de repasse\* (texto - %)
+  - Prazo de repasse\* (texto)
+- Seção "Restrições":
+  - Unidade (select)
+  - Restrição (select)
+  - Botão: NOVA RESTRIÇÃO
+- Botões: CANCELAR | FINALIZAR
+
+### Página 4 - Cadastrar Adquirentes (Aba Integração - vazio)
+
+- Abas: INFORMAÇÕES GERAIS | INTEGRAÇÃO (selecionada)
+- Seção "Vincular integração":
+  - Integração\* (select)
+  - Botão: TESTAR CONEXÃO
+  - Validade de configuração da API\* (campo data --/--/----)
+  - Contingência\* (texto - "Digite a chave de uma API alternativa")
+- Botões: CANCELAR | FINALIZAR
+
+### Página 5 - Observação sobre Visualização (Adquirentes)
+
+- Nota informativa (fundo laranja):
+  - "OBSERVAÇÃO: A tela de visualização vai funcionar como as demais telas de visualização."
+
+### Página 6 - Cadastrar Bancos (Aba Integração - preenchido)
+
+- Título: "Cadastrar BANCOS"
+- Abas: INFORMAÇÕES GERAIS | INTEGRAÇÃO (selecionada)
+- Seção "Vincular integração":
+  - Integração: "GATEWAY DE PAGAMENTO - LOREN IPSON" (selecionado)
+  - Botão: TESTAR CONEXÃO
+  - Mensagem de sucesso: "Conexão bem sucedida" (verde, com ícone ✓)
+  - Validade de configuração da API: 31/01/2026
+  - Contingência: chave longa preenchida
+- Botões: CANCELAR | FINALIZAR
+
+### Página 7 - Hierarquia CFO (Tela de listagem)
+
+- Menu lateral com "Hierarquia CFO" selecionado
+- Contador: "02 Hierarquias CFO" (ícone)
+- Grid de listagem:
+  - Colunas: Cód interno, Descrição da hierarquia, Cadastrado em, Última edição, Editar, Visualizar, Ativar
+  - Exemplo 1: HCFO01, "Hierarquia 2025", 10/01/2025 - 12:52 / Rafael Biencourt, 12/01/2025 - 16:05 / Rafael Biencourt, toggle ativo
+  - Exemplo 2: HCFO01, "Hierarquia 2020", 10/01/2020 - 09:15 / Samuel Oliveira, 25/01/2021 - 14:02 / Samuel Oliveira, toggle inativo
+- Paginação: 04 de 10 registros
+
+### Página 8 - Cadastrar Hierarquia CFO (vazio)
+
+- Título: "Cadastrar HIERARQUIA CFO - CLASSE FINANCEIRA ORÇAMENTÁRIA"
+- Campo: Descrição da hierarquia\* (texto)
+- Grid editável com drag-and-drop:
+  - Colunas: Nível de classificação, Código hierárquico, Código contábil, Nome da classe, Vínculos, Excluir, Desativar
+  - Linha TÍTULO: campo texto para nome do título
+  - Linha de nível: botões 01/02/03/04 para selecionar nível, código hierárquico (ex: 1), código contábil (Preencha), nome da classe (texto), vínculos (multi-select), excluir (ícone), desativar (toggle)
+- Botões: ADICIONAR TÍTULO | ADICIONAR NÍVEL
+- Contador: 02 registros
+- Botões: CANCELAR | FINALIZAR
+
+### Página 9 - Visualizar Hierarquia CFO
+
+- Cabeçalho verde com:
+  - Título: "HIERARQUIA 2025"
+  - Cadastrado em: 01/02/2025 - 12:15 / Rafael Bittencourt
+  - Última edição: 01/02/2025 - 17:25 / Giovana Ferreira
+- Estrutura hierárquica em árvore (indentação visual):
+  - **DESPESAS** (título em verde)
+    - 1 - DESPESAS COM PESSOAL
+      - 1.1 - SALÁRIOS (texto cinza claro)
+        - 1.1.1 - JOÃO DA SILVA (texto cinza mais claro)
+          - 1.1.1.1 - LOREN IPSON LOREN
+      - 1.2 - ENCARGOS
+        - 1.2.1 - JOÃO DA SILVA
+  - **ORGANIZAÇÃO DE RECEITAS** (título em verde)
+    - 2 - RECEITAS
+      - 2.1 - ANUIDADES/MENSALIDADES
+      - 2.2 - RECEITAS DIVERSAS
+      - 2.3 - RECEITAS DE APLICAÇÕES FINANCEIRA
+
+### Página 10 - Cadastrar Bancos (Aba Informações Gerais - preenchido)
+
+- Título: "Cadastrar BANCOS"
+- Abas: INFORMAÇÕES GERAIS (selecionada) | INTEGRAÇÃO
+- Seção "Informações iniciais":
+  - Código interno\*: BAN001
+  - Banco\*: 237 - BRADESCO (select)
+  - Descrição\*: CONTA PRINCIPAL PARA PAGAMENTOS DE FORNECEDORES
+  - Status do banco: ATIVO (select)
+- Seção "Informações da conta":
+  - Agência\*: 1234-5
+  - Conta corrente\*: 123456-7
+  - Dígito verificador\*: 8 (com tooltip)
+  - Tipo de conta\*: CORRENTE (select)
+  - Chave PIX: 999.999.999-99
+  - Unidades Associadas\*: (multi-select + ADICIONAR) - São Roque, Jardins (tags removíveis)
+- Botão: NOVA CONTA (para adicionar múltiplas contas)
+- Botões: CANCELAR | FINALIZAR
+
+### Página 11 - Cadastrar Adquirentes (Aba Informações Gerais - preenchido)
+
+- Título: "Cadastrar ADQUIRENTES"
+- Abas: INFORMAÇÕES GERAIS (selecionada) | INTEGRAÇÃO
+- Seção "Informações iniciais":
+  - Código interno\*: ADQ001
+  - Nome do adquirente\*: PICPAY
+  - Descrição\*: LOREN IPSON LOREN
+  - Conta Associada\*: 237 - BRADESCO - 123456-7 (select)
+- Seção "Informações específicas":
+  - Unidades Associadas\*: São Roque (tag removível)
+- Seção "Informações financeiras":
+  - Tipo de cartões suportados\*: Mastercard, Visa (tags removíveis)
+  - Opção de parcelamento\*: 12X
+  - Taxa por transação: 1%
+  - Taxa por parcelamento: 3%
+  - Porcentagem de repasse\*: 10%
+  - Prazo de repasse\*: 5 DIAS ÚTEIS
+- Seção "Restrições":
+  - Unidade: SÃO ROQUE
+  - Restrição: NÃO PODE PARCELAR LOREN IPSON
+- Botão: NOVA RESTRIÇÃO
+- Botões: CANCELAR | FINALIZAR
+
+### Página 12 - Cadastrar Hierarquia CFO (preenchido)
+
+- Título: "Cadastrar HIERARQUIA CFO - CLASSE FINANCEIRA ORÇAMENTÁRIA"
+- Campo: Descrição da hierarquia\*: HIERARQUIA 2025
+- Grid com 12 registros preenchidos (drag-and-drop habilitado):
+  - **TÍTULO: DESPESAS**
+    - Nível 01: código 1 | contábil 0001 | DESPESA COM PESSOAL | vínculos: FINANCEIRO + 2
+    - Nível 02: código 1.1 | contábil 0002 | SALÁRIOS | vínculos: FINANCEIRO
+    - Nível 03: código 1.1.1 | contábil - | JOÃO DA SILVA | vínculos: -
+    - Nível 04: código 1.1.1.1 | contábil - | LOREN IPSON LOREN | vínculos: -
+    - Nível 02: código 1.2 | contábil - | ENCARGOS | vínculos: -
+    - Nível 03: código 1.2.1 | contábil - | JOÃO DA SILVA | vínculos: -
+  - **TÍTULO: ORGANIZAÇÃO DE RECEITAS**
+    - Nível 01: código 2 | contábil 0006 | RECEITAS | vínculos: FINANCEIRO
+    - Nível 02: código 2.1 | contábil - | ANUIDADES/MENSALIDADES | vínculos: -
+    - Nível 02: código 2.2 | contábil - | RECEITAS DIVERSAS | vínculos: -
+    - Nível 02: código 2.2 | contábil - | RECEITAS DE APLICAÇÕES FINANCEIRA | vínculos: -
+- Botões: ADICIONAR TÍTULO | ADICIONAR NÍVEL
+- Contador: 12 registros
+- Botões: CANCELAR | FINALIZAR
+
+### Página 13 - CADASTROS OUTROS (Divisor de seção)
+
+- Título da seção: "CADASTROS OUTROS" (fundo verde)
+
+### Página 14 - IMPORTAÇÃO DE TABELAS (Divisor de seção)
+
+- Título da seção: "IMPORTAÇÃO DE TABELAS" (fundo amarelo)
+
+### Página 15 - INTEGRAÇÕES (Divisor de seção)
+
+- Título da seção: "INTEGRAÇÕES" (fundo verde)
+
+### Página 16 - CAMPOS DO FORMULÁRIO (Divisor de seção)
+
+- Título da seção: "CAMPOS DO FORMULÁRIO" (fundo verde)
+
+### Página 17 - IMPORTAÇÃO DE TABELAS (Indicação de desenvolvimento)
+
+- "IMPORTAÇÃO DE TABELAS - NOVA TELA"
+- Status: Nova funcionalidade a ser desenvolvida
+
+### Página 18 - INTEGRAÇÕES (Indicação de desenvolvimento)
+
+- "INTEGRAÇÕES - PRONTO PARA DESENVOLVER"
+- Status: Pronto para desenvolvimento
+
+### Página 19 - CADASTRAR INTEGRAÇÃO (Indicação de desenvolvimento)
+
+- "CADASTRAR INTEGRAÇÃO - PRONTO PARA DESENVOLVER"
+- Status: Pronto para desenvolvimento
+
+### Página 20 - CAMPOS DO FORMULÁRIO (Indicação de desenvolvimento)
+
+- "CAMPOS DO FORMULÁRIO - PRONTO PARA DESENVOLVER"
+- Status: Pronto para desenvolvimento
+
+### Resumo das Telas para Implementação
+
+#### Adquirentes (PENDENTE)
+
+- **Entidade necessária**: `Adquirente`
+- **Campos identificados**:
+  - id, codigoInterno (ADQ001), nome, descricao
+  - contaBancariaId (FK para conta bancária)
+  - unidadesAssociadas (ManyToMany com UnidadeSaude)
+  - tipoCartoesSuportados (array: Mastercard, Visa, etc)
+  - opcaoParcelamento (select/enum)
+  - taxaTransacao (decimal %), taxaParcelamento (decimal %)
+  - percentualRepasse (decimal %), prazoRepasse (texto/int)
+  - integracaoId, validadeApiConfig, chaveContingencia
+  - ativo, criadoEm, atualizadoEm
+- **Relacionamento**: ManyToMany com UnidadeSaude
+- **Tabela adicional**: `adquirentes_restricoes` (unidadeId, restricao)
+
+#### Hierarquia CFO (PENDENTE)
+
+- **Entidades necessárias**: `HierarquiaCfo`, `ClasseCfo`
+- **Campos HierarquiaCfo**:
+  - id, codigoInterno (HCFO01), descricao
+  - ativo, criadoPor, atualizadoPor, criadoEm, atualizadoEm
+- **Campos ClasseCfo**:
+  - id, hierarquiaId (FK)
+  - tipo (TITULO | NIVEL)
+  - nivelClassificacao (1-4)
+  - codigoHierarquico (ex: 1.1.1)
+  - codigoContabil (texto)
+  - nomeClasse (texto)
+  - vinculos (ManyToMany com alguma entidade?)
+  - ordem (para drag-and-drop)
+  - ativo, criadoEm, atualizadoEm
+- **Estrutura**: Hierárquica com até 4 níveis + títulos
+
+#### Importação de Tabelas (PENDENTE)
+
+- Nova tela a ser desenvolvida
+- Funcionalidade para importar dados via planilhas
+
+#### Integrações (PENDENTE)
+
+- Nova tela de listagem e cadastro de integrações
+- Campos: nome, tipo, url, token, status conexão, etc
+
+#### Campos do Formulário (JÁ EXISTE - `infraestrutura/campos-formulario`)
+
+- Já implementado em `src/modules/infraestrutura/campos-formulario/`
+- Verificar se precisa de ajustes baseado no Figma
 
 ---
 
@@ -602,5 +877,5 @@ Este documento cataloga o conteúdo de cada arquivo PDF do Figma para referênci
 
 ## Última atualização
 
-**Data**: 30/11/2025
-**Chunks catalogados**: 2 de 26
+**Data**: 01/12/2025
+**Chunks catalogados**: 3 de 26

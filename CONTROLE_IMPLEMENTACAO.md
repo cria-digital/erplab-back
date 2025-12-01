@@ -927,6 +927,29 @@
 | 2025-10-07 | Claude      | Documento criado com análise completa             |
 | 2025-10-08 | Claude      | Reorganização de rotas implementada e documentada |
 | 2025-10-08 | Claude      | Identificado problema com infraestrutura deletada |
+| 2025-11-30 | Claude      | Módulo Cabeçalhos/Rodapés implementado            |
+| 2025-12-01 | Claude      | Módulo Formulários de Atendimento implementado    |
+| 2025-12-01 | Claude      | Limpeza de arquivos .md obsoletos                 |
+
+---
+
+## ✅ Módulos de Documentação (Implementados em Nov-Dez 2025)
+
+### Cabeçalhos e Rodapés
+
+- **Endpoint:** `/api/v1/configuracoes/documentacao/cabecalhos-rodapes`
+- **Status:** ✅ 100% Implementado
+- **Funcionalidades:** Upload de imagens para cabeçalho/rodapé por unidade
+- **Limite:** 1MB por arquivo, formatos: JPG, PNG, GIF, WEBP
+- **Constraint:** UNIQUE por (unidade_id, tipo) - apenas 1 cabeçalho e 1 rodapé por unidade
+
+### Formulários de Atendimento
+
+- **Endpoint:** `/api/v1/configuracoes/documentacao/formularios-atendimento`
+- **Status:** ✅ 100% Implementado
+- **Funcionalidades:** Upload de PDFs de formulários por unidade
+- **Limite:** 1MB por arquivo, formato: PDF
+- **Observação:** Múltiplos formulários por unidade permitidos
 
 ---
 
@@ -935,5 +958,4 @@
 - Documento base: `/erp-analise-de-requisitos-v3-1.pdf`
 - Relatório de mocks: Análise realizada em 2025-10-07
 - Padrões de código: `/back/CLAUDE.md`
-- Proposta de reorganização: `/PROPOSTA_REORGANIZACAO.md`
-- Organização de módulos: `/ORGANIZACAO_MODULOS_BACKEND.md`
+- Mapeamento Figma: `/organizacao_modulos.md`

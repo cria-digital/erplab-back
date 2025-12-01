@@ -5,16 +5,25 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
-import {
-  Adquirente,
-  StatusAdquirente,
-  TipoAdquirente,
-  TipoCartao,
-} from './entities/adquirente.entity';
+import { Adquirente, StatusAdquirente } from './entities/adquirente.entity';
 import { AdquirenteUnidade } from './entities/adquirente-unidade.entity';
-import { CreateAdquirenteDto } from './dto/create-adquirente.dto';
+import { RestricaoAdquirente } from './entities/restricao-adquirente.entity';
+import {
+  CreateAdquirenteDto,
+  RestricaoAdquirenteDto,
+} from './dto/create-adquirente.dto';
 import { UpdateAdquirenteDto } from './dto/update-adquirente.dto';
 import { IntegracoesService } from '../../atendimento/integracoes/integracoes.service';
+
+import { PaginatedResultDto } from '../../infraestrutura/common/dto/pagination.dto';
+
+export interface FiltroAdquirente {
+  status?: StatusAdquirente;
+  unidade?: string;
+  pesquisar?: string;
+  page?: number;
+  limit?: number;
+}
 
 @Injectable()
 export class AdquirenteService {
@@ -23,10 +32,15 @@ export class AdquirenteService {
     private readonly repository: Repository<Adquirente>,
     @InjectRepository(AdquirenteUnidade)
     private readonly adquirenteUnidadeRepository: Repository<AdquirenteUnidade>,
+    @InjectRepository(RestricaoAdquirente)
+    private readonly restricaoRepository: Repository<RestricaoAdquirente>,
     private readonly dataSource: DataSource,
     private readonly integracoesService: IntegracoesService,
   ) {}
 
+  /**
+   * Criar novo adquirente
+   */
   async create(createDto: CreateAdquirenteDto): Promise<Adquirente> {
     // Verifica se já existe adquirente com o mesmo código interno
     const existente = await this.repository.findOne({
@@ -44,8 +58,8 @@ export class AdquirenteService {
     await queryRunner.startTransaction();
 
     try {
-      // Extrair unidades_associadas do DTO
-      const { unidades_associadas, ...adquirenteData } = createDto;
+      // Extrair relacionamentos do DTO
+      const { unidades_associadas, restricoes, ...adquirenteData } = createDto;
 
       // Criar adquirente
       const adquirente = this.repository.create(adquirenteData);
@@ -63,6 +77,18 @@ export class AdquirenteService {
         await queryRunner.manager.save(vinculos);
       }
 
+      // Criar restrições
+      if (restricoes && restricoes.length > 0) {
+        const restricoesEntities = restricoes.map((r) =>
+          this.restricaoRepository.create({
+            adquirente_id: adquirenteSalvo.id,
+            unidade_saude_id: r.unidade_saude_id,
+            restricao: r.restricao,
+          }),
+        );
+        await queryRunner.manager.save(restricoesEntities);
+      }
+
       await queryRunner.commitTransaction();
       return this.findOne(adquirenteSalvo.id);
     } catch (error) {
@@ -73,21 +99,63 @@ export class AdquirenteService {
     }
   }
 
-  async findAll(): Promise<Adquirente[]> {
-    return await this.repository.find({
-      relations: [
-        'conta_bancaria',
-        'conta_bancaria.banco',
-        'integracao',
+  /**
+   * Listar todos os adquirentes com filtros opcionais e paginação
+   */
+  async findAll(
+    filtros?: FiltroAdquirente,
+  ): Promise<PaginatedResultDto<Adquirente>> {
+    const page = filtros?.page || 1;
+    const limit = filtros?.limit || 10;
+    const skip = (page - 1) * limit;
+
+    const queryBuilder = this.repository
+      .createQueryBuilder('adquirente')
+      .leftJoinAndSelect('adquirente.conta_bancaria', 'conta_bancaria')
+      .leftJoinAndSelect('conta_bancaria.banco', 'banco')
+      .leftJoinAndSelect('adquirente.integracao', 'integracao')
+      .leftJoinAndSelect(
+        'adquirente.unidades_associadas',
         'unidades_associadas',
-        'unidades_associadas.unidade_saude',
-        'restricoes',
-        'restricoes.unidade_saude',
-      ],
-      order: { created_at: 'DESC' },
-    });
+      )
+      .leftJoinAndSelect('unidades_associadas.unidade_saude', 'unidade_saude')
+      .leftJoinAndSelect('adquirente.restricoes', 'restricoes')
+      .leftJoinAndSelect('restricoes.unidade_saude', 'restricao_unidade');
+
+    // Filtro por status
+    if (filtros?.status) {
+      queryBuilder.andWhere('adquirente.status = :status', {
+        status: filtros.status,
+      });
+    }
+
+    // Filtro por unidade
+    if (filtros?.unidade) {
+      queryBuilder.andWhere('unidades_associadas.unidade_saude_id = :unidade', {
+        unidade: filtros.unidade,
+      });
+    }
+
+    // Filtro por pesquisa (nome ou código)
+    if (filtros?.pesquisar) {
+      queryBuilder.andWhere(
+        '(adquirente.nome_adquirente ILIKE :pesquisar OR adquirente.codigo_interno ILIKE :pesquisar)',
+        { pesquisar: `%${filtros.pesquisar}%` },
+      );
+    }
+
+    const [data, total] = await queryBuilder
+      .orderBy('adquirente.nome_adquirente', 'ASC')
+      .skip(skip)
+      .take(limit)
+      .getManyAndCount();
+
+    return new PaginatedResultDto(data, total, page, limit);
   }
 
+  /**
+   * Buscar adquirente por ID
+   */
   async findOne(id: string): Promise<Adquirente> {
     const adquirente = await this.repository.findOne({
       where: { id },
@@ -95,7 +163,6 @@ export class AdquirenteService {
         'conta_bancaria',
         'conta_bancaria.banco',
         'integracao',
-        'integracao.configuracoes',
         'unidades_associadas',
         'unidades_associadas.unidade_saude',
         'restricoes',
@@ -110,6 +177,9 @@ export class AdquirenteService {
     return adquirente;
   }
 
+  /**
+   * Atualizar adquirente
+   */
   async update(
     id: string,
     updateDto: UpdateAdquirenteDto,
@@ -137,8 +207,8 @@ export class AdquirenteService {
     await queryRunner.startTransaction();
 
     try {
-      // Extrair unidades_associadas do DTO
-      const { unidades_associadas, ...adquirenteData } = updateDto;
+      // Extrair relacionamentos do DTO
+      const { unidades_associadas, restricoes, ...adquirenteData } = updateDto;
 
       // Atualizar adquirente
       Object.assign(adquirente, adquirenteData);
@@ -164,6 +234,26 @@ export class AdquirenteService {
         }
       }
 
+      // Atualizar restrições se fornecido
+      if (restricoes !== undefined) {
+        // Remover restrições antigas
+        await queryRunner.manager.delete(RestricaoAdquirente, {
+          adquirente_id: id,
+        });
+
+        // Criar novas restrições
+        if (restricoes.length > 0) {
+          const restricoesEntities = restricoes.map((r) =>
+            this.restricaoRepository.create({
+              adquirente_id: id,
+              unidade_saude_id: r.unidade_saude_id,
+              restricao: r.restricao,
+            }),
+          );
+          await queryRunner.manager.save(restricoesEntities);
+        }
+      }
+
       await queryRunner.commitTransaction();
       return this.findOne(id);
     } catch (error) {
@@ -174,42 +264,18 @@ export class AdquirenteService {
     }
   }
 
-  async remove(id: string): Promise<any> {
+  /**
+   * Excluir adquirente
+   */
+  async remove(id: string): Promise<{ affected: number }> {
     const adquirente = await this.findOne(id);
     await this.repository.remove(adquirente);
     return { affected: 1 };
   }
 
-  async findByStatus(status: StatusAdquirente): Promise<Adquirente[]> {
-    return await this.repository.find({
-      where: { status },
-      relations: ['conta_bancaria'],
-      order: { created_at: 'DESC' },
-    });
-  }
-
-  async findByTipo(tipo: TipoAdquirente): Promise<Adquirente[]> {
-    return await this.repository.find({
-      where: { tipo_adquirente: tipo },
-      relations: ['conta_bancaria'],
-      order: { created_at: 'DESC' },
-    });
-  }
-
-  async findByTipoCartao(tipoCartao: TipoCartao): Promise<Adquirente[]> {
-    // TypeORM não tem suporte direto para buscar em arrays, então buscar todos e filtrar
-    const todosAdquirentes = await this.repository.find({
-      relations: ['conta_bancaria'],
-      order: { created_at: 'DESC' },
-    });
-
-    return todosAdquirentes.filter(
-      (adq) =>
-        adq.tipos_cartao_suportados &&
-        adq.tipos_cartao_suportados.includes(tipoCartao),
-    );
-  }
-
+  /**
+   * Alternar status do adquirente (ativo/inativo)
+   */
   async toggleStatus(id: string): Promise<Adquirente> {
     const adquirente = await this.findOne(id);
 
@@ -221,55 +287,27 @@ export class AdquirenteService {
     return await this.repository.save(adquirente);
   }
 
-  async updateTaxas(
-    id: string,
-    taxas: {
-      taxa_antecipacao?: number;
-      taxa_parcelamento?: number;
-      taxa_transacao?: number;
-      percentual_repasse?: number;
-    },
-  ): Promise<Adquirente> {
-    const adquirente = await this.findOne(id);
+  /**
+   * Estatísticas dos adquirentes (para o contador no Figma)
+   */
+  async getEstatisticas(): Promise<{
+    total: number;
+    ativos: number;
+    inativos: number;
+  }> {
+    const total = await this.repository.count();
+    const ativos = await this.repository.count({
+      where: { status: StatusAdquirente.ATIVO },
+    });
+    const inativos = await this.repository.count({
+      where: { status: StatusAdquirente.INATIVO },
+    });
 
-    if (taxas.taxa_antecipacao !== undefined) {
-      adquirente.taxa_antecipacao = taxas.taxa_antecipacao;
-    }
-
-    if (taxas.taxa_parcelamento !== undefined) {
-      adquirente.taxa_parcelamento = taxas.taxa_parcelamento;
-    }
-
-    if (taxas.taxa_transacao !== undefined) {
-      adquirente.taxa_transacao = taxas.taxa_transacao;
-    }
-
-    if (taxas.percentual_repasse !== undefined) {
-      adquirente.percentual_repasse = taxas.percentual_repasse;
-    }
-
-    return await this.repository.save(adquirente);
-  }
-
-  async validateConfiguration(id: string): Promise<any> {
-    const adquirente = await this.findOne(id);
-
-    // Validações básicas
-    if (!adquirente.codigo_estabelecimento && !adquirente.terminal_id) {
-      return {
-        valida: false,
-        erro: 'Código de estabelecimento ou Terminal ID deve ser configurado',
-      };
-    }
-
-    return {
-      valida: true,
-      erro: null,
-    };
+    return { total, ativos, inativos };
   }
 
   /**
-   * Busca adquirentes por unidade de saúde
+   * Buscar adquirentes por unidade de saúde
    */
   async findByUnidade(unidadeSaudeId: string): Promise<Adquirente[]> {
     return await this.repository
@@ -288,6 +326,22 @@ export class AdquirenteService {
       .andWhere('unidades_associadas.ativo = true')
       .orderBy('adquirente.nome_adquirente', 'ASC')
       .getMany();
+  }
+
+  /**
+   * Buscar adquirentes por status
+   */
+  async findByStatus(status: StatusAdquirente): Promise<Adquirente[]> {
+    return await this.repository.find({
+      where: { status },
+      relations: [
+        'conta_bancaria',
+        'conta_bancaria.banco',
+        'unidades_associadas',
+        'unidades_associadas.unidade_saude',
+      ],
+      order: { nome_adquirente: 'ASC' },
+    });
   }
 
   /**
@@ -312,11 +366,13 @@ export class AdquirenteService {
   }
 
   /**
-   * Vincula uma integração ao adquirente
+   * Vincular uma integração ao adquirente
    */
   async vincularIntegracao(
     id: string,
     integracaoId: string,
+    validadeConfigApi?: string,
+    chaveContingencia?: string,
   ): Promise<Adquirente> {
     const adquirente = await this.findOne(id);
 
@@ -324,6 +380,15 @@ export class AdquirenteService {
     await this.integracoesService.findOne(integracaoId);
 
     adquirente.integracao_id = integracaoId;
+
+    if (validadeConfigApi) {
+      adquirente.validade_configuracao_api = new Date(validadeConfigApi);
+    }
+
+    if (chaveContingencia) {
+      adquirente.chave_contingencia = chaveContingencia;
+    }
+
     await this.repository.save(adquirente);
 
     return this.findOne(id);
@@ -336,6 +401,9 @@ export class AdquirenteService {
     const adquirente = await this.findOne(id);
 
     adquirente.integracao_id = null;
+    adquirente.validade_configuracao_api = null;
+    adquirente.chave_contingencia = null;
+
     await this.repository.save(adquirente);
 
     return this.findOne(id);
@@ -386,6 +454,38 @@ export class AdquirenteService {
     await this.adquirenteUnidadeRepository.delete({
       adquirente_id: id,
       unidade_saude_id: unidadeSaudeId,
+    });
+
+    return this.findOne(id);
+  }
+
+  /**
+   * Adicionar restrição
+   */
+  async adicionarRestricao(
+    id: string,
+    restricaoDto: RestricaoAdquirenteDto,
+  ): Promise<Adquirente> {
+    // Verificar se adquirente existe
+    await this.findOne(id);
+
+    const restricao = this.restricaoRepository.create({
+      adquirente_id: id,
+      unidade_saude_id: restricaoDto.unidade_saude_id,
+      restricao: restricaoDto.restricao,
+    });
+    await this.restricaoRepository.save(restricao);
+
+    return this.findOne(id);
+  }
+
+  /**
+   * Remover restrição
+   */
+  async removerRestricao(id: string, restricaoId: string): Promise<Adquirente> {
+    await this.restricaoRepository.delete({
+      id: restricaoId,
+      adquirente_id: id,
     });
 
     return this.findOne(id);

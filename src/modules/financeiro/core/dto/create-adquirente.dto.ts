@@ -6,15 +6,14 @@ import {
   IsEnum,
   IsUUID,
   IsNumber,
-  IsInt,
   IsBoolean,
   IsArray,
+  IsDateString,
   MaxLength,
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import {
-  TipoAdquirente,
   StatusAdquirente,
   TipoCartao,
   OpcaoParcelamento,
@@ -40,14 +39,26 @@ export class UnidadeAssociadaDto {
   ativo?: boolean;
 }
 
-export class CreateAdquirenteDto {
+export class RestricaoAdquirenteDto {
   @ApiProperty({
-    description: 'ID da conta bancária associada',
+    description: 'ID da unidade de saúde com restrição',
     example: 'uuid',
   })
   @IsUUID()
   @IsNotEmpty()
-  conta_bancaria_id: string;
+  unidade_saude_id: string;
+
+  @ApiProperty({
+    description: 'Descrição da restrição',
+    example: 'Não pode parcelar acima de 6x',
+  })
+  @IsString()
+  @IsNotEmpty()
+  restricao: string;
+}
+
+export class CreateAdquirenteDto {
+  // === INFORMAÇÕES INICIAIS ===
 
   @ApiProperty({
     description: 'Código interno único do adquirente',
@@ -61,7 +72,7 @@ export class CreateAdquirenteDto {
 
   @ApiProperty({
     description: 'Nome do adquirente',
-    example: 'Cielo',
+    example: 'PicPay',
     maxLength: 255,
   })
   @IsString()
@@ -71,7 +82,7 @@ export class CreateAdquirenteDto {
 
   @ApiProperty({
     description: 'Descrição do adquirente',
-    example: 'Adquirente principal para cartões de crédito',
+    example: 'Adquirente para pagamentos digitais',
     required: false,
   })
   @IsString()
@@ -79,13 +90,27 @@ export class CreateAdquirenteDto {
   descricao?: string;
 
   @ApiProperty({
-    description: 'Tipo do adquirente',
-    enum: TipoAdquirente,
-    example: TipoAdquirente.CIELO,
+    description: 'ID da conta bancária associada',
+    example: 'uuid',
   })
-  @IsEnum(TipoAdquirente)
+  @IsUUID()
   @IsNotEmpty()
-  tipo_adquirente: TipoAdquirente;
+  conta_bancaria_id: string;
+
+  // === INFORMAÇÕES ESPECÍFICAS ===
+
+  @ApiProperty({
+    description: 'Lista de unidades associadas ao adquirente',
+    type: [UnidadeAssociadaDto],
+    required: false,
+  })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => UnidadeAssociadaDto)
+  @IsOptional()
+  unidades_associadas?: UnidadeAssociadaDto[];
+
+  // === INFORMAÇÕES FINANCEIRAS ===
 
   @ApiProperty({
     description: 'Tipos de cartão suportados',
@@ -111,7 +136,7 @@ export class CreateAdquirenteDto {
   opcao_parcelamento?: OpcaoParcelamento;
 
   @ApiProperty({
-    description: 'Taxa de transação (%)',
+    description: 'Taxa por transação (%)',
     example: 1.5,
     required: false,
   })
@@ -120,7 +145,16 @@ export class CreateAdquirenteDto {
   taxa_transacao?: number;
 
   @ApiProperty({
-    description: 'Percentual de repasse (%)',
+    description: 'Taxa por parcelamento (%)',
+    example: 3.0,
+    required: false,
+  })
+  @IsNumber()
+  @IsOptional()
+  taxa_parcelamento?: number;
+
+  @ApiProperty({
+    description: 'Porcentagem de repasse (%)',
     example: 10.0,
     required: false,
   })
@@ -129,137 +163,30 @@ export class CreateAdquirenteDto {
   percentual_repasse?: number;
 
   @ApiProperty({
-    description: 'Código do estabelecimento',
-    example: '1234567890',
+    description: 'Prazo de repasse (ex: "5 dias úteis")',
+    example: '5 dias úteis',
     maxLength: 50,
     required: false,
   })
   @IsString()
   @IsOptional()
   @MaxLength(50)
-  codigo_estabelecimento?: string;
+  prazo_repasse?: string;
+
+  // === RESTRIÇÕES ===
 
   @ApiProperty({
-    description: 'ID do terminal',
-    example: 'TERM001',
-    maxLength: 50,
+    description: 'Lista de restrições por unidade',
+    type: [RestricaoAdquirenteDto],
     required: false,
   })
-  @IsString()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => RestricaoAdquirenteDto)
   @IsOptional()
-  @MaxLength(50)
-  terminal_id?: string;
+  restricoes?: RestricaoAdquirenteDto[];
 
-  @ApiProperty({
-    description: 'Taxa de antecipação (%)',
-    example: 2.5,
-    required: false,
-  })
-  @IsNumber()
-  @IsOptional()
-  taxa_antecipacao?: number;
-
-  @ApiProperty({
-    description: 'Prazo de recebimento (dias)',
-    example: 30,
-    default: 30,
-    required: false,
-  })
-  @IsInt()
-  @IsOptional()
-  prazo_recebimento?: number;
-
-  @ApiProperty({
-    description: 'Permite parcelamento',
-    example: true,
-    default: true,
-    required: false,
-  })
-  @IsBoolean()
-  @IsOptional()
-  permite_parcelamento?: boolean;
-
-  @ApiProperty({
-    description: 'Número máximo de parcelas',
-    example: 12,
-    default: 12,
-    required: false,
-  })
-  @IsInt()
-  @IsOptional()
-  parcela_maxima?: number;
-
-  @ApiProperty({
-    description: 'Taxa de parcelamento (%)',
-    example: 3.2,
-    required: false,
-  })
-  @IsNumber()
-  @IsOptional()
-  taxa_parcelamento?: number;
-
-  @ApiProperty({
-    description: 'Valor mínimo por parcela',
-    example: 50.0,
-    default: 50,
-    required: false,
-  })
-  @IsNumber()
-  @IsOptional()
-  valor_minimo_parcela?: number;
-
-  @ApiProperty({
-    description: 'Status do adquirente',
-    enum: StatusAdquirente,
-    example: StatusAdquirente.ATIVO,
-    default: StatusAdquirente.ATIVO,
-    required: false,
-  })
-  @IsEnum(StatusAdquirente)
-  @IsOptional()
-  status?: StatusAdquirente;
-
-  @ApiProperty({
-    description: 'Nome do contato comercial',
-    example: 'João Silva',
-    maxLength: 255,
-    required: false,
-  })
-  @IsString()
-  @IsOptional()
-  @MaxLength(255)
-  contato_comercial?: string;
-
-  @ApiProperty({
-    description: 'Telefone do suporte',
-    example: '(11) 3000-0000',
-    maxLength: 20,
-    required: false,
-  })
-  @IsString()
-  @IsOptional()
-  @MaxLength(20)
-  telefone_suporte?: string;
-
-  @ApiProperty({
-    description: 'Email do suporte',
-    example: 'suporte@cielo.com.br',
-    maxLength: 255,
-    required: false,
-  })
-  @IsString()
-  @IsOptional()
-  @MaxLength(255)
-  email_suporte?: string;
-
-  @ApiProperty({
-    description: 'Observações sobre o adquirente',
-    example: 'Adquirente principal para cartões',
-    required: false,
-  })
-  @IsString()
-  @IsOptional()
-  observacoes?: string;
+  // === ABA INTEGRAÇÃO ===
 
   @ApiProperty({
     description: 'ID da integração vinculada',
@@ -271,13 +198,35 @@ export class CreateAdquirenteDto {
   integracao_id?: string;
 
   @ApiProperty({
-    description: 'Lista de unidades associadas ao adquirente',
-    type: [UnidadeAssociadaDto],
+    description: 'Validade de configuração da API',
+    example: '2026-01-31',
     required: false,
   })
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => UnidadeAssociadaDto)
+  @IsDateString()
   @IsOptional()
-  unidades_associadas?: UnidadeAssociadaDto[];
+  validade_configuracao_api?: string;
+
+  @ApiProperty({
+    description: 'Chave de API alternativa (contingência)',
+    example: 'chave_api_alternativa_123',
+    maxLength: 500,
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  @MaxLength(500)
+  chave_contingencia?: string;
+
+  // === STATUS ===
+
+  @ApiProperty({
+    description: 'Status do adquirente',
+    enum: StatusAdquirente,
+    example: StatusAdquirente.ATIVO,
+    default: StatusAdquirente.ATIVO,
+    required: false,
+  })
+  @IsEnum(StatusAdquirente)
+  @IsOptional()
+  status?: StatusAdquirente;
 }

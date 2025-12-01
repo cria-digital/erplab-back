@@ -6,9 +6,10 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards,
+  Query,
   HttpCode,
   HttpStatus,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -16,23 +17,25 @@ import {
   ApiOperation,
   ApiResponse,
   ApiParam,
+  ApiQuery,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../../autenticacao/auth/guards/jwt-auth.guard';
-import { AdquirenteService } from './adquirente.service';
-import { CreateAdquirenteDto } from './dto/create-adquirente.dto';
-import { UpdateAdquirenteDto } from './dto/update-adquirente.dto';
+import { AdquirenteService, FiltroAdquirente } from './adquirente.service';
 import {
-  StatusAdquirente,
-  TipoCartao,
-  TipoAdquirente,
-} from './entities/adquirente.entity';
+  CreateAdquirenteDto,
+  RestricaoAdquirenteDto,
+} from './dto/create-adquirente.dto';
+import { UpdateAdquirenteDto } from './dto/update-adquirente.dto';
+import { StatusAdquirente } from './entities/adquirente.entity';
 
 @ApiTags('Adquirentes')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
 @Controller('financeiro/adquirentes')
 export class AdquirenteController {
   constructor(private readonly service: AdquirenteService) {}
+
+  // =============================================
+  // CRUD BÁSICO
+  // =============================================
 
   @Post()
   @ApiOperation({ summary: 'Criar novo adquirente' })
@@ -49,13 +52,66 @@ export class AdquirenteController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Listar todos os adquirentes' })
+  @ApiOperation({
+    summary: 'Listar todos os adquirentes com filtros opcionais e paginação',
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'Número da página (padrão: 1)',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Itens por página (padrão: 10)',
+  })
+  @ApiQuery({
+    name: 'status',
+    required: false,
+    enum: StatusAdquirente,
+    description: 'Filtrar por status',
+  })
+  @ApiQuery({
+    name: 'unidade',
+    required: false,
+    description: 'Filtrar por unidade de saúde (ID)',
+  })
+  @ApiQuery({
+    name: 'pesquisar',
+    required: false,
+    description: 'Pesquisar por nome ou código',
+  })
   @ApiResponse({
     status: 200,
     description: 'Lista de adquirentes retornada com sucesso',
   })
-  findAll() {
-    return this.service.findAll();
+  findAll(
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('status') status?: StatusAdquirente,
+    @Query('unidade') unidade?: string,
+    @Query('pesquisar') pesquisar?: string,
+  ) {
+    const filtros: FiltroAdquirente = {};
+    if (page) filtros.page = parseInt(page, 10);
+    if (limit) filtros.limit = parseInt(limit, 10);
+    if (status) filtros.status = status;
+    if (unidade) filtros.unidade = unidade;
+    if (pesquisar) filtros.pesquisar = pesquisar;
+
+    return this.service.findAll(filtros);
+  }
+
+  @Get('estatisticas')
+  @ApiOperation({ summary: 'Obter estatísticas dos adquirentes' })
+  @ApiResponse({
+    status: 200,
+    description: 'Estatísticas retornadas com sucesso',
+  })
+  getEstatisticas() {
+    return this.service.getEstatisticas();
   }
 
   @Get('status/:status')
@@ -73,19 +129,20 @@ export class AdquirenteController {
     return this.service.findByStatus(status);
   }
 
-  @Get('tipo-cartao/:tipo')
-  @ApiOperation({ summary: 'Buscar adquirentes por tipo de cartão suportado' })
+  @Get('unidade/:unidadeSaudeId')
+  @ApiOperation({ summary: 'Buscar adquirentes por unidade de saúde' })
   @ApiParam({
-    name: 'tipo',
-    description: 'Tipo de cartão',
-    enum: TipoCartao,
+    name: 'unidadeSaudeId',
+    description: 'ID da unidade de saúde',
   })
   @ApiResponse({
     status: 200,
     description: 'Adquirentes encontrados com sucesso',
   })
-  findByTipoCartao(@Param('tipo') tipo: TipoCartao) {
-    return this.service.findByTipoCartao(tipo);
+  findByUnidade(
+    @Param('unidadeSaudeId', ParseUUIDPipe) unidadeSaudeId: string,
+  ) {
+    return this.service.findByUnidade(unidadeSaudeId);
   }
 
   @Get(':id')
@@ -102,7 +159,7 @@ export class AdquirenteController {
     status: 404,
     description: 'Adquirente não encontrado',
   })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.findOne(id);
   }
 
@@ -120,28 +177,35 @@ export class AdquirenteController {
     status: 404,
     description: 'Adquirente não encontrado',
   })
-  update(@Param('id') id: string, @Body() updateDto: UpdateAdquirenteDto) {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateDto: UpdateAdquirenteDto,
+  ) {
     return this.service.update(id, updateDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: 'Deletar adquirente' })
+  @ApiOperation({ summary: 'Excluir adquirente' })
   @ApiParam({
     name: 'id',
     description: 'ID do adquirente',
   })
   @ApiResponse({
     status: 204,
-    description: 'Adquirente deletado com sucesso',
+    description: 'Adquirente excluído com sucesso',
   })
   @ApiResponse({
     status: 404,
     description: 'Adquirente não encontrado',
   })
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.remove(id);
   }
+
+  // =============================================
+  // AÇÕES DE STATUS
+  // =============================================
 
   @Patch(':id/toggle-status')
   @ApiOperation({ summary: 'Alternar status do adquirente (ativo/inativo)' })
@@ -157,79 +221,13 @@ export class AdquirenteController {
     status: 404,
     description: 'Adquirente não encontrado',
   })
-  toggleStatus(@Param('id') id: string) {
+  toggleStatus(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.toggleStatus(id);
   }
 
-  @Get('tipo/:tipo')
-  @ApiOperation({ summary: 'Buscar adquirentes por tipo' })
-  @ApiParam({
-    name: 'tipo',
-    description: 'Tipo do adquirente',
-    enum: TipoAdquirente,
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Adquirentes encontrados com sucesso',
-  })
-  findByTipo(@Param('tipo') tipo: TipoAdquirente) {
-    return this.service.findByTipo(tipo);
-  }
-
-  @Patch(':id/taxas')
-  @ApiOperation({ summary: 'Atualizar taxas do adquirente' })
-  @ApiParam({
-    name: 'id',
-    description: 'ID do adquirente',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Taxas atualizadas com sucesso',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Adquirente não encontrado',
-  })
-  updateTaxas(
-    @Param('id') id: string,
-    @Body()
-    taxas: {
-      taxa_antecipacao?: number;
-      taxa_parcelamento?: number;
-      taxa_transacao?: number;
-      percentual_repasse?: number;
-    },
-  ) {
-    return this.service.updateTaxas(id, taxas);
-  }
-
-  @Get(':id/validate-configuration')
-  @ApiOperation({ summary: 'Validar configuração de integração do adquirente' })
-  @ApiParam({
-    name: 'id',
-    description: 'ID do adquirente',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Validação realizada',
-  })
-  validateConfiguration(@Param('id') id: string) {
-    return this.service.validateConfiguration(id);
-  }
-
-  @Get('unidade/:unidadeSaudeId')
-  @ApiOperation({ summary: 'Buscar adquirentes por unidade de saúde' })
-  @ApiParam({
-    name: 'unidadeSaudeId',
-    description: 'ID da unidade de saúde',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Adquirentes encontrados com sucesso',
-  })
-  findByUnidade(@Param('unidadeSaudeId') unidadeSaudeId: string) {
-    return this.service.findByUnidade(unidadeSaudeId);
-  }
+  // =============================================
+  // INTEGRAÇÃO (ABA INTEGRAÇÃO DO FIGMA)
+  // =============================================
 
   @Post(':id/testar-conexao')
   @ApiOperation({ summary: 'Testar conexão com a integração vinculada' })
@@ -245,19 +243,17 @@ export class AdquirenteController {
     status: 404,
     description: 'Adquirente não encontrado',
   })
-  testarConexao(@Param('id') id: string) {
+  testarConexao(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.testarConexao(id);
   }
 
-  @Patch(':id/vincular-integracao/:integracaoId')
-  @ApiOperation({ summary: 'Vincular uma integração ao adquirente' })
+  @Patch(':id/vincular-integracao')
+  @ApiOperation({
+    summary: 'Vincular integração ao adquirente com config de API',
+  })
   @ApiParam({
     name: 'id',
     description: 'ID do adquirente',
-  })
-  @ApiParam({
-    name: 'integracaoId',
-    description: 'ID da integração',
   })
   @ApiResponse({
     status: 200,
@@ -268,10 +264,20 @@ export class AdquirenteController {
     description: 'Adquirente ou integração não encontrado',
   })
   vincularIntegracao(
-    @Param('id') id: string,
-    @Param('integracaoId') integracaoId: string,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body()
+    body: {
+      integracao_id: string;
+      validade_configuracao_api?: string;
+      chave_contingencia?: string;
+    },
   ) {
-    return this.service.vincularIntegracao(id, integracaoId);
+    return this.service.vincularIntegracao(
+      id,
+      body.integracao_id,
+      body.validade_configuracao_api,
+      body.chave_contingencia,
+    );
   }
 
   @Delete(':id/desvincular-integracao')
@@ -288,9 +294,13 @@ export class AdquirenteController {
     status: 404,
     description: 'Adquirente não encontrado',
   })
-  desvincularIntegracao(@Param('id') id: string) {
+  desvincularIntegracao(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.desvincularIntegracao(id);
   }
+
+  // =============================================
+  // UNIDADES ASSOCIADAS
+  // =============================================
 
   @Post(':id/unidades/:unidadeSaudeId')
   @ApiOperation({ summary: 'Adicionar unidade ao adquirente' })
@@ -307,8 +317,8 @@ export class AdquirenteController {
     description: 'Unidade adicionada com sucesso',
   })
   adicionarUnidade(
-    @Param('id') id: string,
-    @Param('unidadeSaudeId') unidadeSaudeId: string,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Param('unidadeSaudeId', ParseUUIDPipe) unidadeSaudeId: string,
   ) {
     return this.service.adicionarUnidade(id, unidadeSaudeId);
   }
@@ -328,9 +338,51 @@ export class AdquirenteController {
     description: 'Unidade removida com sucesso',
   })
   removerUnidade(
-    @Param('id') id: string,
-    @Param('unidadeSaudeId') unidadeSaudeId: string,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Param('unidadeSaudeId', ParseUUIDPipe) unidadeSaudeId: string,
   ) {
     return this.service.removerUnidade(id, unidadeSaudeId);
+  }
+
+  // =============================================
+  // RESTRIÇÕES
+  // =============================================
+
+  @Post(':id/restricoes')
+  @ApiOperation({ summary: 'Adicionar restrição ao adquirente' })
+  @ApiParam({
+    name: 'id',
+    description: 'ID do adquirente',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Restrição adicionada com sucesso',
+  })
+  adicionarRestricao(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() restricaoDto: RestricaoAdquirenteDto,
+  ) {
+    return this.service.adicionarRestricao(id, restricaoDto);
+  }
+
+  @Delete(':id/restricoes/:restricaoId')
+  @ApiOperation({ summary: 'Remover restrição do adquirente' })
+  @ApiParam({
+    name: 'id',
+    description: 'ID do adquirente',
+  })
+  @ApiParam({
+    name: 'restricaoId',
+    description: 'ID da restrição',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Restrição removida com sucesso',
+  })
+  removerRestricao(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Param('restricaoId', ParseUUIDPipe) restricaoId: string,
+  ) {
+    return this.service.removerRestricao(id, restricaoId);
   }
 }

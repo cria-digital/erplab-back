@@ -13,23 +13,9 @@ import { RestricaoAdquirente } from './restricao-adquirente.entity';
 import { AdquirenteUnidade } from './adquirente-unidade.entity';
 import { Integracao } from '../../../atendimento/integracoes/entities/integracao.entity';
 
-export enum TipoAdquirente {
-  CIELO = 'cielo',
-  REDE = 'rede',
-  GETNET = 'getnet',
-  STONE = 'stone',
-  PAGSEGURO = 'pagseguro',
-  MERCADOPAGO = 'mercadopago',
-  SAFRAPAY = 'safrapay',
-  VERO = 'vero',
-  OUTRO = 'outro',
-}
-
 export enum StatusAdquirente {
   ATIVO = 'ativo',
   INATIVO = 'inativo',
-  BLOQUEADO = 'bloqueado',
-  EM_ANALISE = 'em_analise',
 }
 
 export enum TipoCartao {
@@ -39,23 +25,29 @@ export enum TipoCartao {
   AMERICAN_EXPRESS = 'american_express',
   HIPERCARD = 'hipercard',
   DINERS = 'diners',
+  PIX = 'pix',
   OUTRO = 'outro',
 }
 
 export enum OpcaoParcelamento {
-  '12X' = '12x',
-  '6X' = '6x',
-  '3X' = '3x',
   AVISTA = 'avista',
+  '2X' = '2x',
+  '3X' = '3x',
+  '4X' = '4x',
+  '5X' = '5x',
+  '6X' = '6x',
+  '7X' = '7x',
+  '8X' = '8x',
+  '9X' = '9x',
+  '10X' = '10x',
+  '11X' = '11x',
+  '12X' = '12x',
 }
 
 @Entity('adquirentes')
 export class Adquirente {
   @PrimaryGeneratedColumn('uuid')
   id: string;
-
-  @Column({ type: 'uuid' })
-  conta_bancaria_id: string;
 
   @Column({ type: 'varchar', length: 20, unique: true })
   codigo_interno: string;
@@ -66,15 +58,19 @@ export class Adquirente {
   @Column({ type: 'text', nullable: true })
   descricao: string;
 
-  @Column({
-    type: 'enum',
-    enum: TipoAdquirente,
-  })
-  tipo_adquirente: TipoAdquirente;
+  // Conta Associada (FK)
+  @Column({ type: 'uuid' })
+  conta_bancaria_id: string;
 
+  @ManyToOne(() => ContaBancaria)
+  @JoinColumn({ name: 'conta_bancaria_id' })
+  conta_bancaria: ContaBancaria;
+
+  // Tipo de cartões suportados (multi-select)
   @Column({ type: 'simple-array', nullable: true })
   tipos_cartao_suportados: TipoCartao[];
 
+  // Opção de parcelamento (select)
   @Column({
     type: 'enum',
     enum: OpcaoParcelamento,
@@ -82,36 +78,23 @@ export class Adquirente {
   })
   opcao_parcelamento: OpcaoParcelamento;
 
+  // Taxa por transação (%)
   @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
   taxa_transacao: number;
 
-  @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
-  percentual_repasse: number;
-
-  @Column({ type: 'varchar', length: 50, nullable: true })
-  codigo_estabelecimento: string;
-
-  @Column({ type: 'varchar', length: 50, nullable: true })
-  terminal_id: string;
-
-  @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
-  taxa_antecipacao: number;
-
-  @Column({ type: 'int', default: 30 })
-  prazo_recebimento: number;
-
-  @Column({ type: 'boolean', default: true })
-  permite_parcelamento: boolean;
-
-  @Column({ type: 'int', default: 12 })
-  parcela_maxima: number;
-
+  // Taxa por parcelamento (%)
   @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
   taxa_parcelamento: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2, default: 50 })
-  valor_minimo_parcela: number;
+  // Porcentagem de repasse (%)
+  @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
+  percentual_repasse: number;
 
+  // Prazo de repasse (em dias ou texto como "5 DIAS ÚTEIS")
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  prazo_repasse: string;
+
+  // Status (ativo/inativo)
   @Column({
     type: 'enum',
     enum: StatusAdquirente,
@@ -119,26 +102,9 @@ export class Adquirente {
   })
   status: StatusAdquirente;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  contato_comercial: string;
+  // === ABA INTEGRAÇÃO ===
 
-  @Column({ type: 'varchar', length: 20, nullable: true })
-  telefone_suporte: string;
-
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  email_suporte: string;
-
-  @Column({ type: 'text', nullable: true })
-  observacoes: string;
-
-  @ManyToOne(() => ContaBancaria)
-  @JoinColumn({ name: 'conta_bancaria_id' })
-  conta_bancaria: ContaBancaria;
-
-  @OneToMany(() => RestricaoAdquirente, (restricao) => restricao.adquirente)
-  restricoes: RestricaoAdquirente[];
-
-  // Relacionamento com Integração
+  // Integração vinculada (FK)
   @Column({ type: 'uuid', nullable: true })
   integracao_id: string;
 
@@ -146,13 +112,29 @@ export class Adquirente {
   @JoinColumn({ name: 'integracao_id' })
   integracao: Integracao;
 
-  // Relacionamento ManyToMany com Unidades via tabela intermediária
+  // Validade de configuração da API
+  @Column({ type: 'date', nullable: true })
+  validade_configuracao_api: Date;
+
+  // Contingência (chave de API alternativa)
+  @Column({ type: 'varchar', length: 500, nullable: true })
+  chave_contingencia: string;
+
+  // === RELACIONAMENTOS ===
+
+  // Unidades Associadas (ManyToMany via tabela intermediária)
   @OneToMany(
     () => AdquirenteUnidade,
     (adquirenteUnidade) => adquirenteUnidade.adquirente,
     { cascade: true },
   )
   unidades_associadas: AdquirenteUnidade[];
+
+  // Restrições por unidade
+  @OneToMany(() => RestricaoAdquirente, (restricao) => restricao.adquirente)
+  restricoes: RestricaoAdquirente[];
+
+  // === TIMESTAMPS ===
 
   @CreateDateColumn()
   created_at: Date;

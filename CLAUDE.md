@@ -364,6 +364,56 @@ Essa validação deve ser feita IMEDIATAMENTE após criar cada arquivo de teste,
 - Separar DTOs de Create e Update
 - Sempre validar UUIDs e formatos específicos (CPF, email, etc)
 
+### ⚠️ Padrão de Paginação (CRÍTICO - Dezembro 2025)
+
+**SEMPRE usar o `PaginatedResultDto` para endpoints que retornam listas paginadas!**
+
+**Localização do DTO**: `src/modules/infraestrutura/common/dto/pagination.dto.ts`
+
+**Como usar no Service**:
+
+```typescript
+import { PaginatedResultDto } from '../../infraestrutura/common/dto/pagination.dto';
+
+async findAll(page = 1, limit = 10): Promise<PaginatedResultDto<Entidade>> {
+  const [data, total] = await queryBuilder
+    .skip((page - 1) * limit)
+    .take(limit)
+    .getManyAndCount();
+
+  return new PaginatedResultDto(data, total, page, limit);
+}
+```
+
+**Estrutura da Resposta**:
+
+```json
+{
+  "data": [...],
+  "meta": {
+    "page": 1,
+    "limit": 10,
+    "total": 50,
+    "totalPages": 5,
+    "hasPrevPage": false,
+    "hasNextPage": true
+  }
+}
+```
+
+**❌ NÃO USAR estrutura simplificada (incorreta)**:
+
+```json
+{
+  "data": [...],
+  "total": 50,
+  "page": 1,
+  "totalPages": 5
+}
+```
+
+**Motivo**: A estrutura com `meta` é o padrão do projeto, usado em CNAEs e outros módulos. Mantém consistência na API.
+
 ### Padrões de Refatoração e Manutenção (Outubro-Novembro 2025)
 
 **Lições aprendidas da reorganização de módulos:**
@@ -1904,6 +1954,68 @@ src/modules/configuracoes/campos-formulario/
 
 ---
 
+### ✅ Módulo de Documentação - Cabeçalhos e Rodapés (Novembro 2025)
+
+**Objetivo**: Permitir upload de imagens de cabeçalho e rodapé por unidade de saúde.
+
+**Implementação Completa:**
+
+- ✅ Entidade `CabecalhoRodape` com enum `TipoCabecalhoRodape` (CABECALHO/RODAPE)
+- ✅ Migration `CreateCabecalhosRodapesTable1764512737722`
+- ✅ DTOs: `CreateCabecalhoRodapeDto`, `FilterCabecalhoRodapeDto`
+- ✅ Service com upload de arquivos e validação
+- ✅ Controller com multipart/form-data
+- ✅ Endpoints testados
+
+**Características:**
+
+- **Limite**: 1MB por arquivo
+- **Formatos**: JPG, PNG, GIF, WEBP
+- **Constraint**: UNIQUE por (unidade_id, tipo) - apenas 1 cabeçalho e 1 rodapé por unidade
+- **Storage**: Local em `uploads/cabecalhos-rodapes/{unidadeId}/`
+
+**Endpoints:**
+
+- `POST /api/v1/configuracoes/documentacao/cabecalhos-rodapes` - Upload
+- `GET /api/v1/configuracoes/documentacao/cabecalhos-rodapes` - Listar
+- `GET /api/v1/configuracoes/documentacao/cabecalhos-rodapes/estatisticas` - Estatísticas
+- `GET /api/v1/configuracoes/documentacao/cabecalhos-rodapes/:id/download` - Download
+- `DELETE /api/v1/configuracoes/documentacao/cabecalhos-rodapes/:id` - Excluir
+
+---
+
+### ✅ Módulo de Documentação - Formulários de Atendimento (Dezembro 2025)
+
+**Objetivo**: Permitir upload de formulários PDF por unidade de saúde.
+
+**Implementação Completa:**
+
+- ✅ Entidade `FormularioAtendimento`
+- ✅ Migration `CreateFormulariosAtendimentoTable1764578306901`
+- ✅ DTOs: `CreateFormularioAtendimentoDto`, `FilterFormularioAtendimentoDto`
+- ✅ Service com upload de arquivos e validação
+- ✅ Controller com multipart/form-data
+- ✅ Endpoints testados
+
+**Características:**
+
+- **Limite**: 1MB por arquivo
+- **Formato**: PDF apenas
+- **Múltiplos por unidade**: Sim (sem UNIQUE constraint)
+- **Campo observacao**: Opcional, para descrição do formulário
+- **Storage**: Local em `uploads/formularios-atendimento/{unidadeId}/`
+
+**Endpoints:**
+
+- `POST /api/v1/configuracoes/documentacao/formularios-atendimento` - Upload
+- `GET /api/v1/configuracoes/documentacao/formularios-atendimento` - Listar
+- `GET /api/v1/configuracoes/documentacao/formularios-atendimento/estatisticas` - Estatísticas
+- `GET /api/v1/configuracoes/documentacao/formularios-atendimento/unidade/:unidadeId` - Por unidade
+- `GET /api/v1/configuracoes/documentacao/formularios-atendimento/:id/download` - Download
+- `DELETE /api/v1/configuracoes/documentacao/formularios-atendimento/:id` - Excluir
+
+---
+
 ## Próximos Passos Sugeridos
 
 ### Módulos em Implementação (Alta Prioridade)
@@ -1912,12 +2024,14 @@ src/modules/configuracoes/campos-formulario/
 2. ✅ **Amostras** - Concluído
 3. ✅ **Serviços de Saúde LC 116/2003** - Concluído (31/10/2025)
 4. ✅ **CNAEs da Área de Saúde** - Concluído (31/10/2025)
-5. ⏳ **Estrutura Física** - Em andamento
-   - ⏳ Salas (entidade criada, falta migration/DTO/service/controller)
-   - ⏳ Setores
-   - ⏳ Equipamentos
-   - ⏳ Imobilizados
-   - ⏳ Etiquetas de Amostra
+5. ✅ **Documentação - Cabeçalhos/Rodapés** - Concluído (30/11/2025)
+6. ✅ **Documentação - Formulários de Atendimento** - Concluído (01/12/2025)
+7. ⏳ **Estrutura Física** - Em andamento
+   - ✅ Salas - Concluído
+   - ✅ Equipamentos - Concluído
+   - ✅ Etiquetas de Amostra - Concluído
+   - ❌ Setores - Removido (conforme Figma)
+   - ❌ Imobilizados - Removido (conforme Figma)
 
 ### Tarefas Técnicas
 
