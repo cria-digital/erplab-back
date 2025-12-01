@@ -5,6 +5,7 @@ import { NotFoundException, BadRequestException } from '@nestjs/common';
 import { ProfissionaisService } from './services/profissionais.service';
 import { Profissional } from './entities/profissional.entity';
 import { DocumentoProfissional } from './entities/documento-profissional.entity';
+import { Especialidade } from './entities/especialidade.entity';
 import {
   Endereco,
   EstadoEnum,
@@ -96,6 +97,14 @@ describe('ProfissionaisService', () => {
             findOne: jest.fn(),
             update: jest.fn(),
             delete: jest.fn(),
+          },
+        },
+        {
+          provide: getRepositoryToken(Especialidade),
+          useValue: {
+            findBy: jest.fn(),
+            find: jest.fn(),
+            findOne: jest.fn(),
           },
         },
         {
@@ -224,7 +233,13 @@ describe('ProfissionaisService', () => {
 
       expect(result).toEqual(mockProfissionais);
       expect(profissionalRepository.find).toHaveBeenCalledWith({
-        relations: ['documentos', 'endereco', 'agendas'],
+        relations: [
+          'documentos',
+          'endereco',
+          'agendas',
+          'especialidadePrincipal',
+          'especialidadesRealiza',
+        ],
       });
     });
 
@@ -250,7 +265,13 @@ describe('ProfissionaisService', () => {
       expect(result).toEqual(mockProfissional);
       expect(profissionalRepository.findOne).toHaveBeenCalledWith({
         where: { id: '550e8400-e29b-41d4-a716-446655440000' },
-        relations: ['documentos', 'endereco', 'agendas'],
+        relations: [
+          'documentos',
+          'endereco',
+          'agendas',
+          'especialidadePrincipal',
+          'especialidadesRealiza',
+        ],
       });
     });
 
@@ -279,7 +300,13 @@ describe('ProfissionaisService', () => {
       expect(result).toEqual(mockProfissional);
       expect(profissionalRepository.findOne).toHaveBeenCalledWith({
         where: { cpf: '123.456.789-00' },
-        relations: ['documentos', 'endereco', 'agendas'],
+        relations: [
+          'documentos',
+          'endereco',
+          'agendas',
+          'especialidadePrincipal',
+          'especialidadesRealiza',
+        ],
       });
     });
 

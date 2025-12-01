@@ -20,6 +20,7 @@ import {
 import { DocumentoProfissional } from './documento-profissional.entity';
 import { Endereco } from '../../../infraestrutura/common/entities/endereco.entity';
 import { Agenda } from '../../../atendimento/agendas/entities/agenda.entity';
+import { Especialidade } from './especialidade.entity';
 
 @Entity('profissionais')
 export class Profissional {
@@ -89,11 +90,54 @@ export class Profissional {
   @Column({ nullable: true })
   rqe: string;
 
+  // Especialidade Principal (FK para Especialidade)
   @Column({ nullable: true })
-  especialidadePrincipal: string;
+  especialidadePrincipalId: string;
+
+  @ManyToOne(() => Especialidade, { nullable: true })
+  @JoinColumn({ name: 'especialidadePrincipalId' })
+  especialidadePrincipal: Especialidade;
+
+  // ========== ASSINATURA DIGITAL ==========
+  // Campos visíveis apenas se tipoProfissional = REALIZANTE ou AMBOS
 
   @Column({ default: false })
   possuiAssinaturaDigital: boolean;
+
+  @Column({ nullable: true })
+  serialNumberCertificado: string;
+
+  @Column({ nullable: true })
+  usuarioAssinatura: string;
+
+  @Column({ nullable: true })
+  senhaAssinatura: string; // Armazenar criptografada
+
+  // ========== INFORMAÇÕES DO REALIZANTE ==========
+  // Campos visíveis apenas se tipoProfissional = REALIZANTE ou AMBOS
+
+  // Especialidades que o profissional realiza (ManyToMany)
+  @ManyToMany(() => Especialidade)
+  @JoinTable({
+    name: 'profissionais_especialidades_realiza',
+    joinColumn: {
+      name: 'profissional_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'especialidade_id',
+      referencedColumnName: 'id',
+    },
+  })
+  especialidadesRealiza: Especialidade[];
+
+  // Exames que o profissional NÃO realiza (lista de IDs de exames)
+  @Column({ type: 'uuid', array: true, nullable: true })
+  examesNaoRealiza: string[];
+
+  // Exames além da especialidade que o profissional realiza (lista de IDs de exames)
+  @Column({ type: 'uuid', array: true, nullable: true })
+  examesAlemEspecialidade: string[];
 
   @OneToMany(
     () => DocumentoProfissional,

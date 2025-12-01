@@ -1,0 +1,124 @@
+### ================================================
+### ESPECIALIDADES - Cadastro de Especialidades Médicas
+### ================================================
+### NOTA: Endpoints de especialidades ainda não foram implementados.
+### Este arquivo serve como referência para futura implementação.
+### ================================================
+
+### Listar Todas as Especialidades
+# GET {{baseUrl}}/api/v1/cadastros/especialidades
+# Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid",
+#     "codigo": "CAR001",
+#     "nome": "Cardiologia",
+#     "descricao": "Especialidade médica focada em doenças do coração",
+#     "codigoCBOS": "2251-01",
+#     "ativo": true
+#   },
+#   {
+#     "id": "uuid",
+#     "codigo": "DER001",
+#     "nome": "Dermatologia",
+#     "descricao": "Especialidade médica focada em doenças da pele",
+#     "codigoCBOS": "2251-02",
+#     "ativo": true
+#   }
+# ]
+
+###
+
+### Buscar Especialidade por ID
+# GET {{baseUrl}}/api/v1/cadastros/especialidades/{{especialidadeId}}
+# Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+
+###
+
+### Buscar Especialidade por Código
+# GET {{baseUrl}}/api/v1/cadastros/especialidades/codigo/CAR001
+# Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+
+###
+
+### Criar Nova Especialidade
+# POST {{baseUrl}}/api/v1/cadastros/especialidades
+# Content-Type: {{contentType}}
+# Authorization: Bearer {{token}}
+#
+# {
+#   "codigo": "NEU001",
+#   "nome": "Neurologia",
+#   "descricao": "Especialidade médica focada em doenças do sistema nervoso",
+#   "codigoCBOS": "2251-03",
+#   "ativo": true
+# }
+
+### Expected Response
+# Status: 201 Created
+
+###
+
+### Atualizar Especialidade
+# PATCH {{baseUrl}}/api/v1/cadastros/especialidades/{{especialidadeId}}
+# Content-Type: {{contentType}}
+# Authorization: Bearer {{token}}
+#
+# {
+#   "descricao": "Nova descrição da especialidade",
+#   "ativo": true
+# }
+
+### Expected Response
+# Status: 200 OK
+
+###
+
+### Desativar Especialidade
+# PATCH {{baseUrl}}/api/v1/cadastros/especialidades/{{especialidadeId}}/toggle-status
+# Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+
+###
+
+### Remover Especialidade
+# DELETE {{baseUrl}}/api/v1/cadastros/especialidades/{{especialidadeId}}
+# Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+
+### ================================================
+### Especialidades Comuns para Referência:
+### ================================================
+# CAR001 - Cardiologia
+# DER001 - Dermatologia
+# GAS001 - Gastroenterologia
+# GIN001 - Ginecologia
+# NEU001 - Neurologia
+# OFT001 - Oftalmologia
+# ORT001 - Ortopedia
+# OTO001 - Otorrinolaringologia
+# PED001 - Pediatria
+# PSI001 - Psiquiatria
+# URO001 - Urologia
+# END001 - Endocrinologia
+# NEF001 - Nefrologia
+# PNE001 - Pneumologia
+# REU001 - Reumatologia
+# HEM001 - Hematologia
+# ONT001 - Oncologia
+# RAD001 - Radiologia
+# ANA001 - Anestesiologia
+# CIR001 - Cirurgia Geral

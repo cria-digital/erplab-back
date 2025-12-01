@@ -1,5 +1,35 @@
-### Criar Novo Profissional
-POST {{baseUrl}}/api/v1/profissionais
+### Criar Novo Profissional (Básico - SOLICITANTE)
+POST {{baseUrl}}/api/v1/cadastros/profissionais
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "pronomesPessoal": "DR",
+  "nomeCompleto": "Carlos Eduardo Mendes",
+  "cpf": "111.222.333-44",
+  "dataNascimento": "1975-05-20",
+  "sexo": "MASCULINO",
+  "celular": "(11) 98888-7777",
+  "email": "carlos.mendes@clinica.com",
+  "tipoContratacao": "PJ",
+  "profissao": "MÉDICO",
+  "codigoInterno": "19012",
+  "tipoProfissional": "SOLICITANTE",
+  "nomeConselho": "CRM",
+  "numeroConselho": "45678",
+  "estadoConselho": "SP",
+  "codigoCBO": "225320",
+  "possuiAssinaturaDigital": false,
+  "ativo": true
+}
+
+### Expected Response
+# Status: 201 Created
+
+###
+
+### Criar Profissional REALIZANTE (com Assinatura Digital e Especialidades)
+POST {{baseUrl}}/api/v1/cadastros/profissionais
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -20,8 +50,22 @@ Authorization: Bearer {{token}}
   "estadoConselho": "SP",
   "codigoCBO": "225320",
   "rqe": "1257",
-  "especialidadePrincipal": "CARDIOLOGIA",
-  "possuiAssinaturaDigital": false,
+  "especialidadePrincipalId": "uuid-da-especialidade-cardiologia",
+  "possuiAssinaturaDigital": true,
+  "serialNumberCertificado": "ABC123456789",
+  "usuarioAssinatura": "andre.giannini",
+  "senhaAssinatura": "senha_certificado",
+  "especialidadesRealizaIds": [
+    "uuid-especialidade-1",
+    "uuid-especialidade-2"
+  ],
+  "examesNaoRealiza": [
+    "uuid-exame-que-nao-faz-1"
+  ],
+  "examesAlemEspecialidade": [
+    "uuid-exame-extra-1",
+    "uuid-exame-extra-2"
+  ],
   "endereco": {
     "cep": "01310-100",
     "rua": "Avenida Paulista",
@@ -42,8 +86,48 @@ Authorization: Bearer {{token}}
 #   "cpf": "999.999.999-99",
 #   "codigoInterno": "19011",
 #   "profissao": "MÉDICO",
-#   "especialidadePrincipal": "CARDIOLOGIA",
+#   "tipoProfissional": "REALIZANTE",
+#   "especialidadePrincipal": { "id": "uuid", "nome": "CARDIOLOGIA" },
+#   "especialidadesRealiza": [...],
+#   "possuiAssinaturaDigital": true,
 #   "ativo": true,
-#   "criadoEm": "2024-03-15T10:00:00Z",
-#   "atualizadoEm": "2024-03-15T10:00:00Z"
+#   "criadoEm": "2024-03-15T10:00:00Z"
 # }
+
+###
+
+### Criar Profissional AMBOS (Realizante e Solicitante)
+POST {{baseUrl}}/api/v1/cadastros/profissionais
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "pronomesPessoal": "DRA",
+  "nomeCompleto": "Maria Fernanda Costa",
+  "cpf": "555.666.777-88",
+  "dataNascimento": "1980-08-15",
+  "sexo": "FEMININO",
+  "celular": "(21) 97777-8888",
+  "email": "maria.costa@hospital.com",
+  "tipoContratacao": "AUTONOMO",
+  "profissao": "MÉDICA",
+  "codigoInterno": "19013",
+  "tipoProfissional": "AMBOS",
+  "nomeConselho": "CRM",
+  "numeroConselho": "56789",
+  "estadoConselho": "RJ",
+  "codigoCBO": "225320",
+  "rqe": "4567",
+  "especialidadePrincipalId": "uuid-da-especialidade",
+  "possuiAssinaturaDigital": true,
+  "serialNumberCertificado": "XYZ987654321",
+  "usuarioAssinatura": "maria.costa",
+  "senhaAssinatura": "senha123",
+  "especialidadesRealizaIds": [
+    "uuid-especialidade-1"
+  ],
+  "ativo": true
+}
+
+### Expected Response
+# Status: 201 Created

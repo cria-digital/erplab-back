@@ -129,10 +129,153 @@ Este documento cataloga o conteúdo de cada arquivo PDF do Figma para referênci
 ## chunk_013_p241-260.pdf
 
 **Páginas**: 241-260
-**Status**: Não catalogado
+**Status**: ✅ Catalogado
 **Conteúdo**:
 
-- [ ] A ser preenchido
+### Matrizes de Exames
+
+#### Páginas 1, 6, 7, 13, 18 - Cadastro de Matrizes
+
+- Tela de cadastro de matrizes de exames
+- Tipos: EXTERNO, IMAGEM, LABORATORIAL, AUDIOMETRIA
+- Status implementação: `src/modules/exames/matrizes/`
+
+#### Página 2 - Indicador Vincular Certificado
+
+- Componente visual para vinculação de certificado
+
+#### Página 5 - Listagem de Matrizes
+
+- Listagem com 160 matrizes
+- Colunas: Código, Nome, Tipo, Especialidade, Status, Ações
+
+#### Página 14 - Visualização Matriz Densitometria Óssea
+
+- Template de visualização de matriz
+- Campos específicos para densitometria
+
+### Exames
+
+#### Página 3 - Listagem de Exames
+
+- Total: 160 exames
+- Colunas: Cód interno, Nome do exame, Especialidade, Setor, Destino do exame, Prazo de entrega, Ativo
+- Ordenação e paginação
+
+#### Página 4 - Visualização Hemograma Completo
+
+- Detalhes do exame Hemograma Completo
+- Todos os campos de um exame preenchidos
+- Referência para implementação
+
+#### Página 12 - Cadastro de Exame
+
+- Formulário completo de cadastro de exame
+- Campos detalhados
+
+### Profissionais
+
+#### Página 8 - Cadastro de Profissional (INFORMAÇÕES GERAIS)
+
+**Informações Pessoais:**
+
+- Pronome (ele/ela/elu)
+- Nome completo
+- CPF (com validação)
+- Data de nascimento
+- Sexo (Masculino/Feminino)
+- Celular
+- E-mail
+
+**Informações Profissionais:**
+
+- Tipo de contratação: CLT / PJ / AUTÔNOMO
+- Profissão
+- Código Interno
+- Tipo de profissional: REALIZANTE / SOLICITANTE / AMBOS
+- Nome do Conselho
+- Número do Conselho
+- Estado do Conselho (UF)
+- Código CBO
+- RQE
+- Especialidade principal
+
+**Abas:**
+
+- INFORMAÇÕES GERAIS
+- ASSINATURA DIGITAL (só aparece se tipo = REALIZANTE ou AMBOS)
+- DOCUMENTAÇÃO
+- INFORMAÇÕES DO REALIZANTE (só aparece se tipo = REALIZANTE ou AMBOS)
+- ENDEREÇO
+
+**Informações do Realizante (se REALIZANTE ou AMBOS):**
+
+- Especialidades que realiza (multiselect)
+- Exames que não realiza (lista de exclusão)
+- Exames além da especialidade (lista de adição)
+
+#### Página 10 - Visualização de Profissional
+
+- Exemplo: Dr. André Giannini Pinto
+- Visualização de todos os dados cadastrados
+
+#### Página 15 - Listagem de Profissionais
+
+- Total: 200 profissionais
+- Colunas: Código, Nome, Profissão, Tipo, Conselho, Status, Ações
+- Filtros e paginação
+
+#### Páginas 9, 16 - Modal Vincular Assinatura
+
+- Modal para vincular assinatura digital
+- Campos:
+  - Serial number (certificado digital)
+  - Usuário
+  - Senha
+
+#### Páginas 11, 17 - Modal "Selecione o que deseja cadastrar"
+
+- Modal de seleção de tipo de cadastro
+- Opções disponíveis no contexto
+
+### Usuários
+
+#### Página 20 - Listagem de Usuários
+
+- Total: 300 usuários
+- Listagem com dados de usuários do sistema
+
+### Regras de Sistema
+
+#### Página 19 - Regra de Profissional
+
+**REGRA CRÍTICA:**
+
+> "Assinatura Digital e Informações do realizante aparecem APENAS se o tipo profissional for REALIZANTE ou AMBOS"
+
+Esta regra define que as abas:
+
+- ASSINATURA DIGITAL
+- INFORMAÇÕES DO REALIZANTE
+
+São condicionais e só devem aparecer quando `tipoProfissional` for:
+
+- `REALIZANTE`
+- `AMBOS`
+
+### Arquivos Relacionados
+
+**Implementado:**
+
+- `src/modules/cadastros/profissionais/` - Módulo de profissionais
+- `src/modules/exames/matrizes/` - Módulo de matrizes
+- `src/modules/exames/exames/` - Módulo de exames
+
+**Pendente de Validação:**
+
+- Verificar campos do profissional vs Figma
+- Verificar lógica condicional de abas (tipoProfissional)
+- Verificar relacionamento com especialidades
 
 ---
 
@@ -1204,4 +1347,4 @@ Este documento cataloga o conteúdo de cada arquivo PDF do Figma para referênci
 ## Última atualização
 
 **Data**: 01/12/2025
-**Chunks catalogados**: 3 de 26
+**Chunks catalogados**: 4 de 26

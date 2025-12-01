@@ -128,14 +128,75 @@ export class CreateProfissionalDto {
   @IsString()
   rqe?: string;
 
-  @ApiPropertyOptional({ example: 'CARDIOLOGIA' })
+  @ApiPropertyOptional({
+    description: 'ID da especialidade principal',
+    example: 'uuid-da-especialidade',
+  })
   @IsOptional()
-  @IsString()
-  especialidadePrincipal?: string;
+  @IsUUID()
+  especialidadePrincipalId?: string;
+
+  // ========== ASSINATURA DIGITAL ==========
+  // Campos visíveis apenas se tipoProfissional = REALIZANTE ou AMBOS
 
   @ApiProperty({ default: false })
   @IsBoolean()
   possuiAssinaturaDigital: boolean;
+
+  @ApiPropertyOptional({
+    description: 'Número serial do certificado digital',
+    example: 'ABC123456789',
+  })
+  @IsOptional()
+  @IsString()
+  serialNumberCertificado?: string;
+
+  @ApiPropertyOptional({
+    description: 'Usuário do certificado digital',
+    example: 'usuario_certificado',
+  })
+  @IsOptional()
+  @IsString()
+  usuarioAssinatura?: string;
+
+  @ApiPropertyOptional({
+    description: 'Senha do certificado digital (será criptografada)',
+    example: '********',
+  })
+  @IsOptional()
+  @IsString()
+  senhaAssinatura?: string;
+
+  // ========== INFORMAÇÕES DO REALIZANTE ==========
+  // Campos visíveis apenas se tipoProfissional = REALIZANTE ou AMBOS
+
+  @ApiPropertyOptional({
+    type: [String],
+    description: 'IDs das especialidades que o profissional realiza',
+  })
+  @IsOptional()
+  @IsArray()
+  @IsUUID('4', { each: true })
+  especialidadesRealizaIds?: string[];
+
+  @ApiPropertyOptional({
+    type: [String],
+    description: 'IDs dos exames que o profissional NÃO realiza',
+  })
+  @IsOptional()
+  @IsArray()
+  @IsUUID('4', { each: true })
+  examesNaoRealiza?: string[];
+
+  @ApiPropertyOptional({
+    type: [String],
+    description:
+      'IDs dos exames além da especialidade que o profissional realiza',
+  })
+  @IsOptional()
+  @IsArray()
+  @IsUUID('4', { each: true })
+  examesAlemEspecialidade?: string[];
 
   @ApiPropertyOptional({ type: CreateEnderecoDto })
   @IsOptional()

@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Profissional } from './entities/profissional.entity';
 import { DocumentoProfissional } from './entities/documento-profissional.entity';
+import { Especialidade } from './entities/especialidade.entity';
 import { ProfissionaisService } from './services/profissionais.service';
 import { ProfissionaisController } from './controllers/profissionais.controller';
 import { Endereco } from '../../infraestrutura/common/entities/endereco.entity';
@@ -12,12 +13,13 @@ import { Agenda } from '../../atendimento/agendas/entities/agenda.entity';
     TypeOrmModule.forFeature([
       Profissional,
       DocumentoProfissional,
+      Especialidade,
       Endereco,
       Agenda,
     ]),
   ],
   providers: [ProfissionaisService],
   controllers: [ProfissionaisController],
-  exports: [ProfissionaisService],
+  exports: [ProfissionaisService, TypeOrmModule],
 })
 export class ProfissionaisModule {}

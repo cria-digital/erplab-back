@@ -4,9 +4,10 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { Profissional } from '../entities/profissional.entity';
 import { DocumentoProfissional } from '../entities/documento-profissional.entity';
+import { Especialidade } from '../entities/especialidade.entity';
 import { Endereco } from '../../../infraestrutura/common/entities/endereco.entity';
 import { Agenda } from '../../../atendimento/agendas/entities/agenda.entity';
 import { CreateProfissionalDto } from '../dto/create-profissional.dto';
@@ -20,6 +21,8 @@ export class ProfissionaisService {
     private profissionalRepository: Repository<Profissional>,
     @InjectRepository(DocumentoProfissional)
     private documentoRepository: Repository<DocumentoProfissional>,
+    @InjectRepository(Especialidade)
+    private especialidadeRepository: Repository<Especialidade>,
     @InjectRepository(Endereco)
     private enderecoRepository: Repository<Endereco>,
     @InjectRepository(Agenda)
@@ -31,6 +34,7 @@ export class ProfissionaisService {
   ): Promise<Profissional> {
     const profissionalData: any = { ...createProfissionalDto };
 
+    // Tratar endereço
     if (createProfissionalDto.endereco) {
       const endereco = this.enderecoRepository.create(
         createProfissionalDto.endereco,
@@ -42,22 +46,48 @@ export class ProfissionaisService {
       delete profissionalData.endereco;
     }
 
-    const profissional = this.profissionalRepository.create(profissionalData);
-    return this.profissionalRepository.save(
-      profissional,
-    ) as unknown as Promise<Profissional>;
+    // Tratar especialidades que realiza (ManyToMany)
+    let especialidadesRealiza: Especialidade[] = [];
+    if (createProfissionalDto.especialidadesRealizaIds?.length) {
+      especialidadesRealiza = await this.especialidadeRepository.findBy({
+        id: In(createProfissionalDto.especialidadesRealizaIds),
+      });
+      delete profissionalData.especialidadesRealizaIds;
+    }
+
+    const profissional = this.profissionalRepository.create(
+      profissionalData,
+    ) as unknown as Profissional;
+
+    if (especialidadesRealiza.length) {
+      profissional.especialidadesRealiza = especialidadesRealiza;
+    }
+
+    return this.profissionalRepository.save(profissional);
   }
 
   async findAll(): Promise<Profissional[]> {
     return await this.profissionalRepository.find({
-      relations: ['documentos', 'endereco', 'agendas'],
+      relations: [
+        'documentos',
+        'endereco',
+        'agendas',
+        'especialidadePrincipal',
+        'especialidadesRealiza',
+      ],
     });
   }
 
   async findOne(id: string): Promise<Profissional> {
     const profissional = await this.profissionalRepository.findOne({
       where: { id },
-      relations: ['documentos', 'endereco', 'agendas'],
+      relations: [
+        'documentos',
+        'endereco',
+        'agendas',
+        'especialidadePrincipal',
+        'especialidadesRealiza',
+      ],
     });
 
     if (!profissional) {
@@ -70,7 +100,13 @@ export class ProfissionaisService {
   async findByCpf(cpf: string): Promise<Profissional> {
     const profissional = await this.profissionalRepository.findOne({
       where: { cpf },
-      relations: ['documentos', 'endereco', 'agendas'],
+      relations: [
+        'documentos',
+        'endereco',
+        'agendas',
+        'especialidadePrincipal',
+        'especialidadesRealiza',
+      ],
     });
 
     if (!profissional) {
@@ -84,10 +120,11 @@ export class ProfissionaisService {
     id: string,
     updateProfissionalDto: UpdateProfissionalDto,
   ): Promise<Profissional> {
+    const profissional = await this.findOne(id);
     const updateData: any = { ...updateProfissionalDto };
 
+    // Tratar endereço
     if (updateProfissionalDto.endereco) {
-      const profissional = await this.findOne(id);
       if (profissional.enderecoId) {
         await this.enderecoRepository.update(
           profissional.enderecoId,
@@ -104,6 +141,23 @@ export class ProfissionaisService {
       }
       delete updateData.endereco;
     }
+
+    // Tratar especialidades que realiza (ManyToMany)
+    if (updateProfissionalDto.especialidadesRealizaIds !== undefined) {
+      if (updateProfissionalDto.especialidadesRealizaIds.length) {
+        profissional.especialidadesRealiza =
+          await this.especialidadeRepository.findBy({
+            id: In(updateProfissionalDto.especialidadesRealizaIds),
+          });
+      } else {
+        profissional.especialidadesRealiza = [];
+      }
+      delete updateData.especialidadesRealizaIds;
+      await this.profissionalRepository.save(profissional);
+    }
+
+    // Remover campos de relação que não podem ser atualizados via update
+    delete updateData.agendasIds;
 
     await this.profissionalRepository.update(id, updateData);
     return this.findOne(id);

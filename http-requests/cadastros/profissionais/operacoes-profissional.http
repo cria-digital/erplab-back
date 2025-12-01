@@ -1,5 +1,5 @@
 ### Listar Todos os Profissionais
-GET {{baseUrl}}/api/v1/profissionais
+GET {{baseUrl}}/api/v1/cadastros/profissionais
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -10,7 +10,10 @@ Authorization: Bearer {{token}}
 #     "nomeCompleto": "André Giannini Pinto",
 #     "cpf": "999.999.999-99",
 #     "profissao": "MÉDICO",
-#     "especialidadePrincipal": "CARDIOLOGIA",
+#     "tipoProfissional": "REALIZANTE",
+#     "especialidadePrincipal": { "id": "uuid", "nome": "CARDIOLOGIA" },
+#     "especialidadesRealiza": [...],
+#     "possuiAssinaturaDigital": true,
 #     "ativo": true
 #   }
 # ]
@@ -18,7 +21,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Buscar Profissional por ID
-GET {{baseUrl}}/api/v1/profissionais/{{profissionalId}}
+GET {{baseUrl}}/api/v1/cadastros/profissionais/{{profissionalId}}
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -26,14 +29,23 @@ Authorization: Bearer {{token}}
 # {
 #   "id": "uuid",
 #   "nomeCompleto": "André Giannini Pinto",
+#   "tipoProfissional": "REALIZANTE",
+#   "especialidadePrincipal": { "id": "uuid", "codigo": "CAR001", "nome": "CARDIOLOGIA" },
+#   "especialidadesRealiza": [{ "id": "uuid", "nome": "..." }],
+#   "possuiAssinaturaDigital": true,
+#   "serialNumberCertificado": "ABC123456789",
+#   "usuarioAssinatura": "andre.giannini",
+#   "examesNaoRealiza": ["uuid-1", "uuid-2"],
+#   "examesAlemEspecialidade": ["uuid-3"],
 #   "documentos": [...],
-#   "endereco": {...}
+#   "endereco": {...},
+#   "agendas": [...]
 # }
 
 ###
 
 ### Buscar Profissional por CPF
-GET {{baseUrl}}/api/v1/profissionais/cpf/999.999.999-99
+GET {{baseUrl}}/api/v1/cadastros/profissionais/cpf/999.999.999-99
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -41,15 +53,70 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Atualizar Profissional
-PATCH {{baseUrl}}/api/v1/profissionais/{{profissionalId}}
+### Atualizar Profissional (dados básicos)
+PATCH {{baseUrl}}/api/v1/cadastros/profissionais/{{profissionalId}}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
   "celular": "(11) 98888-7777",
-  "email": "andre.novo@melaboratorio.com",
-  "possuiAssinaturaDigital": true
+  "email": "andre.novo@melaboratorio.com"
+}
+
+### Expected Response
+# Status: 200 OK
+
+###
+
+### Atualizar Assinatura Digital do Profissional
+PATCH {{baseUrl}}/api/v1/cadastros/profissionais/{{profissionalId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "possuiAssinaturaDigital": true,
+  "serialNumberCertificado": "NOVO123456789",
+  "usuarioAssinatura": "andre.giannini.novo",
+  "senhaAssinatura": "nova_senha_certificado"
+}
+
+### Expected Response
+# Status: 200 OK
+
+###
+
+### Atualizar Especialidades que Realiza
+PATCH {{baseUrl}}/api/v1/cadastros/profissionais/{{profissionalId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "especialidadePrincipalId": "uuid-nova-especialidade-principal",
+  "especialidadesRealizaIds": [
+    "uuid-especialidade-1",
+    "uuid-especialidade-2",
+    "uuid-especialidade-3"
+  ]
+}
+
+### Expected Response
+# Status: 200 OK
+
+###
+
+### Atualizar Exames que NÃO Realiza
+PATCH {{baseUrl}}/api/v1/cadastros/profissionais/{{profissionalId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "examesNaoRealiza": [
+    "uuid-exame-1",
+    "uuid-exame-2"
+  ],
+  "examesAlemEspecialidade": [
+    "uuid-exame-extra-1"
+  ]
 }
 
 ### Expected Response
@@ -58,7 +125,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Adicionar Documento ao Profissional
-POST {{baseUrl}}/api/v1/profissionais/{{profissionalId}}/documentos
+POST {{baseUrl}}/api/v1/cadastros/profissionais/{{profissionalId}}/documentos
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -82,7 +149,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Atualizar Documento
-PATCH {{baseUrl}}/api/v1/profissionais/documentos/{{documentoId}}
+PATCH {{baseUrl}}/api/v1/cadastros/profissionais/documentos/{{documentoId}}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -97,7 +164,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Remover Documento
-DELETE {{baseUrl}}/api/v1/profissionais/documentos/{{documentoId}}
+DELETE {{baseUrl}}/api/v1/cadastros/profissionais/documentos/{{documentoId}}
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -106,7 +173,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Vincular Agenda ao Profissional
-POST {{baseUrl}}/api/v1/profissionais/{{profissionalId}}/agendas/{{agendaId}}
+POST {{baseUrl}}/api/v1/cadastros/profissionais/{{profissionalId}}/agendas/{{agendaId}}
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -114,13 +181,13 @@ Authorization: Bearer {{token}}
 # {
 #   "id": "uuid",
 #   "nomeCompleto": "André Giannini Pinto",
-#   "agendasIds": ["agenda-id-1", "agenda-id-2"]
+#   "agendas": [{ "id": "agenda-id-1", "nome": "..." }]
 # }
 
 ###
 
 ### Desvincular Agenda do Profissional
-DELETE {{baseUrl}}/api/v1/profissionais/{{profissionalId}}/agendas/{{agendaId}}
+DELETE {{baseUrl}}/api/v1/cadastros/profissionais/{{profissionalId}}/agendas/{{agendaId}}
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -129,7 +196,7 @@ Authorization: Bearer {{token}}
 ###
 
 ### Remover Profissional
-DELETE {{baseUrl}}/api/v1/profissionais/{{profissionalId}}
+DELETE {{baseUrl}}/api/v1/cadastros/profissionais/{{profissionalId}}
 Authorization: Bearer {{token}}
 
 ### Expected Response
