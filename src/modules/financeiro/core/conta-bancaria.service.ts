@@ -5,7 +5,11 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ContaBancaria, TipoConta } from './entities/conta-bancaria.entity';
+import {
+  ContaBancaria,
+  TipoConta,
+  StatusConta,
+} from './entities/conta-bancaria.entity';
 import {
   CreateContaBancariaDto,
   CreateContaBancariaBatchDto,
@@ -18,6 +22,7 @@ export interface PaginationParams {
   limit?: number;
   search?: string;
   tipo?: TipoConta;
+  status?: StatusConta;
   banco_id?: string;
   unidade_id?: string;
 }
@@ -130,6 +135,13 @@ export class ContaBancariaService {
     // Filtro por tipo de conta
     if (params.tipo) {
       queryBuilder.andWhere('conta.tipo_conta = :tipo', { tipo: params.tipo });
+    }
+
+    // Filtro por status
+    if (params.status) {
+      queryBuilder.andWhere('conta.status = :status', {
+        status: params.status,
+      });
     }
 
     // Filtro por banco

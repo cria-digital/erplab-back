@@ -6,7 +6,9 @@ import {
   UpdateDateColumn,
   ManyToOne,
   OneToMany,
+  ManyToMany,
   JoinColumn,
+  JoinTable,
   Index,
 } from 'typeorm';
 import { TipoExame } from './tipo-exame.entity';
@@ -15,6 +17,7 @@ import { ResultadoExame } from './resultado-exame.entity';
 import { SubgrupoExame } from './subgrupo-exame.entity';
 import { SetorExame } from './setor-exame.entity';
 import { LaboratorioApoio } from './laboratorio-apoio.entity';
+import { ExameLaboratorioApoio } from './exame-laboratorio-apoio.entity';
 import { AlternativaCampoFormulario } from '../../../infraestrutura/campos-formulario/entities/alternativa-campo-formulario.entity';
 import { Telemedicina } from '../../../relacionamento/telemedicina/entities/telemedicina.entity';
 import { UnidadeSaude } from '../../../cadastros/unidade-saude/entities/unidade-saude.entity';
@@ -53,6 +56,15 @@ export class Exame {
   sinonimos: string;
 
   // Códigos padronizados
+  @Column({
+    type: 'varchar',
+    length: 20,
+    nullable: true,
+    comment:
+      'Código CBHPM (Classificação Brasileira Hierarquizada de Procedimentos Médicos)',
+  })
+  codigo_cbhpm: string;
+
   @Column({
     type: 'varchar',
     length: 20,
@@ -144,6 +156,29 @@ export class Exame {
   })
   peso: number;
 
+  // Campos boolean conforme Figma (SIM/NÃO)
+  @Column({
+    type: 'boolean',
+    default: false,
+    comment: 'Se o exame requer peso do paciente',
+  })
+  requer_peso: boolean;
+
+  @Column({
+    type: 'boolean',
+    default: false,
+    comment: 'Se o exame requer altura do paciente',
+  })
+  requer_altura: boolean;
+
+  @Column({
+    type: 'boolean',
+    default: false,
+    comment: 'Se o exame requer volume específico',
+  })
+  requer_volume: boolean;
+
+  // Campos numéricos mantidos para compatibilidade (podem ser removidos futuramente)
   @Column({
     type: 'decimal',
     precision: 10,
@@ -217,6 +252,25 @@ export class Exame {
     comment: 'FK para alternativa do campo estabilidade',
   })
   estabilidade_id: string;
+
+  @Column({
+    nullable: true,
+    comment: 'FK para alternativa do campo volume_minimo',
+  })
+  volume_minimo_id: string;
+
+  @Column({
+    nullable: true,
+    comment: 'FK para alternativa do campo formato_laudo',
+  })
+  formato_laudo_id: string;
+
+  @Column({
+    type: 'boolean',
+    default: false,
+    comment: 'Se o exame requer termo de consentimento',
+  })
+  termo_consentimento: boolean;
 
   @Column({
     type: 'enum',
@@ -351,19 +405,86 @@ export class Exame {
   })
   formularios_atendimento: any;
 
-  // Preparo e Coleta
+  // Preparo - campos separados conforme Figma
+  @Column({
+    type: 'text',
+    nullable: true,
+    comment: 'Instruções de preparo - Público geral',
+  })
+  preparo_geral: string;
+
+  @Column({
+    type: 'text',
+    nullable: true,
+    comment: 'Instruções de preparo - Feminino',
+  })
+  preparo_feminino: string;
+
+  @Column({
+    type: 'text',
+    nullable: true,
+    comment: 'Instruções de preparo - Infantil',
+  })
+  preparo_infantil: string;
+
+  // Coleta - campos separados conforme Figma
+  @Column({
+    type: 'text',
+    nullable: true,
+    comment: 'Instruções de coleta - Público geral',
+  })
+  coleta_geral: string;
+
+  @Column({
+    type: 'text',
+    nullable: true,
+    comment: 'Instruções de coleta - Feminino',
+  })
+  coleta_feminino: string;
+
+  @Column({
+    type: 'text',
+    nullable: true,
+    comment: 'Instruções de coleta - Infantil',
+  })
+  coleta_infantil: string;
+
+  // Lembretes - campos separados conforme Figma
+  @Column({
+    type: 'text',
+    nullable: true,
+    comment: 'Lembrete para coletora',
+  })
+  lembrete_coletora: string;
+
+  @Column({
+    type: 'text',
+    nullable: true,
+    comment: 'Lembrete para recepcionista - Agendamentos e Orçamentos',
+  })
+  lembrete_recepcionista_agendamento: string;
+
+  @Column({
+    type: 'text',
+    nullable: true,
+    comment: 'Lembrete para recepcionista - Ordem de Serviço',
+  })
+  lembrete_recepcionista_os: string;
+
+  // Campo JSONB mantido para compatibilidade (pode ser removido futuramente)
   @Column({
     type: 'jsonb',
     nullable: true,
-    comment: 'Instruções de preparo por público (geral, feminino, infantil)',
+    comment:
+      'Instruções de preparo por público (geral, feminino, infantil) - DEPRECATED',
   })
   preparo_coleta: any;
 
-  // Lembretes
   @Column({
     type: 'jsonb',
     nullable: true,
-    comment: 'Lembretes para coletores, recepcionistas e ordem de serviço',
+    comment:
+      'Lembretes para coletores, recepcionistas e ordem de serviço - DEPRECATED',
   })
   lembretes: any;
 
@@ -462,6 +583,14 @@ export class Exame {
   @JoinColumn({ name: 'estabilidade_id' })
   estabilidadeAlternativa?: AlternativaCampoFormulario;
 
+  @ManyToOne(() => AlternativaCampoFormulario, { eager: false })
+  @JoinColumn({ name: 'volume_minimo_id' })
+  volumeMinimoAlternativa?: AlternativaCampoFormulario;
+
+  @ManyToOne(() => AlternativaCampoFormulario, { eager: false })
+  @JoinColumn({ name: 'formato_laudo_id' })
+  formatoLaudoAlternativa?: AlternativaCampoFormulario;
+
   // Relacionamentos de integração
   @ManyToOne(() => Telemedicina, { eager: false })
   @JoinColumn({ name: 'telemedicina_id' })
@@ -476,6 +605,19 @@ export class Exame {
 
   @OneToMany(() => ResultadoExame, (resultado) => resultado.exame)
   resultados?: ResultadoExame[];
+
+  // Relacionamento N:M - Unidades que realizam o exame
+  @ManyToMany(() => UnidadeSaude)
+  @JoinTable({
+    name: 'exames_unidades',
+    joinColumn: { name: 'exame_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'unidade_id', referencedColumnName: 'id' },
+  })
+  unidadesQueRealizam?: UnidadeSaude[];
+
+  // Relacionamento 1:N - Configurações específicas por laboratório de apoio
+  @OneToMany(() => ExameLaboratorioApoio, (exameLab) => exameLab.exame)
+  laboratoriosApoioConfig?: ExameLaboratorioApoio[];
 
   // Métodos auxiliares
   getCodigoFormatado(): string {

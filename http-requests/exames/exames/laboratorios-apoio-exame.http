@@ -1,0 +1,155 @@
+###
+### ⚠️ IMPORTANTE - Laboratórios de Apoio por Exame (Dezembro 2025)
+###
+### Esta funcionalidade permite configurar múltiplos laboratórios de apoio
+### para um mesmo exame, cada um com suas configurações específicas.
+###
+### Estrutura: 1 Exame → N Laboratórios de Apoio (cada um com configuração própria)
+###
+### Variáveis necessárias no http-client.env.json:
+### - {{exameId}} - UUID do exame
+### - {{laboratorioApoioId}} - UUID do laboratório de apoio
+### - {{exameLaboratorioApoioId}} - UUID do vínculo exame-lab
+###
+
+### Listar todos os vínculos de laboratórios de apoio
+GET {{baseUrl}}/exames/exames-laboratorios-apoio
+Authorization: Bearer {{token}}
+
+###
+
+### Listar laboratórios de apoio de um exame específico
+GET {{baseUrl}}/exames/exames-laboratorios-apoio?exameId={{exameId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar configuração específica por ID
+GET {{baseUrl}}/exames/exames-laboratorios-apoio/{{exameLaboratorioApoioId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Criar vínculo de laboratório de apoio para um exame
+### (Cada laboratório de apoio pode ter configurações diferentes para o mesmo exame)
+POST {{baseUrl}}/exames/exames-laboratorios-apoio
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "exame_id": "{{exameId}}",
+  "laboratorio_apoio_id": "{{laboratorioApoioId}}",
+  "codigo_exame_apoio": "HEM001-EXT",
+
+  "metodologia_id": "{{metodologiaId}}",
+  "unidade_medida_id": "{{unidadeMedidaId}}",
+
+  "requer_peso": false,
+  "requer_altura": false,
+  "requer_volume": true,
+
+  "amostra_id": "{{amostraId}}",
+  "amostra_enviar_id": "{{amostraEnviarId}}",
+  "tipo_recipiente_id": "{{tipoRecipienteId}}",
+  "regioes_coleta_ids": ["{{regiaoColetaId}}"],
+  "volume_minimo_id": "{{volumeMinimoId}}",
+  "estabilidade_id": "{{estabilidadeId}}",
+
+  "formularios_atendimento": ["termo_envio_laboratorio"],
+
+  "preparo_geral": "Jejum de 8 horas obrigatório para este laboratório",
+  "preparo_feminino": "Jejum de 8 horas. Informar DUM.",
+  "preparo_infantil": "Jejum de 4 horas para crianças até 5 anos.",
+
+  "coleta_geral": "Coletar em tubo EDTA (tampa roxa). Volume mínimo: 3mL.",
+  "coleta_feminino": "Coletar em tubo EDTA. Volume mínimo: 3mL. Anotar DUM.",
+  "coleta_infantil": "Coletar com agulha pediátrica. Volume mínimo: 1,5mL.",
+
+  "tecnica_coleta": "Punção venosa periférica com sistema a vácuo",
+
+  "lembrete_coletora": "LABORATÓRIO EXTERNO: Homogeneizar 10x e identificar tubo",
+  "lembrete_recepcionista_agendamento": "Este exame será enviado ao lab externo",
+  "lembrete_recepcionista_os": "Verificar código do exame no lab de apoio: HEM001-EXT",
+
+  "distribuicao": "Centrifugar 3000rpm/10min, separar soro, enviar refrigerado",
+
+  "prazo_entrega_dias": 3,
+  "formato_laudo_id": "{{formatoLaudoId}}",
+
+  "ativo": true
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "message": "Configuração de laboratório de apoio criada com sucesso",
+#   "data": {
+#     "id": "uuid",
+#     "exameId": "uuid",
+#     "laboratorioApoioId": "uuid",
+#     ...
+#   }
+# }
+
+###
+
+### Criar segundo laboratório de apoio para o mesmo exame
+### (Exemplo: laboratório alternativo com preços diferentes)
+POST {{baseUrl}}/exames/exames-laboratorios-apoio
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "exame_id": "{{exameId}}",
+  "laboratorio_apoio_id": "{{laboratorioApoioId2}}",
+  "codigo_exame_apoio": "HEMO-ALT",
+
+  "requer_peso": false,
+  "requer_altura": false,
+  "requer_volume": true,
+
+  "preparo_geral": "Jejum de 6 horas (este laboratório aceita jejum menor)",
+  "coleta_geral": "Coletar em tubo EDTA. Volume mínimo: 2mL.",
+
+  "lembrete_coletora": "LABORATÓRIO ALTERNATIVO: Código HEMO-ALT",
+  "lembrete_recepcionista_os": "Lab alternativo - usar código HEMO-ALT",
+
+  "prazo_entrega_dias": 5,
+  "ativo": true
+}
+
+###
+
+### Atualizar configuração de laboratório de apoio
+PATCH {{baseUrl}}/exames/exames-laboratorios-apoio/{{exameLaboratorioApoioId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "prazo_entrega_dias": 2,
+  "preparo_geral": "Jejum de 10 horas (atualizado)",
+  "lembrete_coletora": "ATENÇÃO: Prazo reduzido para 2 dias!"
+}
+
+###
+
+### Ativar/Desativar vínculo
+PATCH {{baseUrl}}/exames/exames-laboratorios-apoio/{{exameLaboratorioApoioId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "ativo": false
+}
+
+###
+
+### Remover vínculo de laboratório de apoio
+DELETE {{baseUrl}}/exames/exames-laboratorios-apoio/{{exameLaboratorioApoioId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Configuração de laboratório de apoio removida com sucesso"
+# }

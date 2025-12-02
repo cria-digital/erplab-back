@@ -8,6 +8,7 @@ import { OrdemServico } from './entities/ordem-servico.entity';
 import { OrdemServicoExame } from './entities/ordem-servico-exame.entity';
 import { ResultadoExame } from './entities/resultado-exame.entity';
 import { LaboratorioApoio } from './entities/laboratorio-apoio.entity';
+import { ExameLaboratorioApoio } from './entities/exame-laboratorio-apoio.entity';
 import { SubgrupoExame } from './entities/subgrupo-exame.entity';
 import { SetorExame } from './entities/setor-exame.entity';
 import { Empresa } from '../../cadastros/empresas/entities/empresa.entity';
@@ -18,10 +19,12 @@ import { ConveniosModule } from '../../relacionamento/convenios/convenios.module
 // Services
 import { ExamesService } from './exames.service';
 import { TiposExameService } from './tipos-exame.service';
+import { ExameLaboratorioApoioService } from './exame-laboratorio-apoio.service';
 
 // Controllers
 import { ExamesController } from './exames.controller';
 import { TiposExameController } from './tipos-exame.controller';
+import { ExameLaboratorioApoioController } from './exame-laboratorio-apoio.controller';
 
 @Module({
   imports: [
@@ -32,14 +35,19 @@ import { TiposExameController } from './tipos-exame.controller';
       OrdemServicoExame,
       ResultadoExame,
       LaboratorioApoio,
+      ExameLaboratorioApoio,
       SubgrupoExame,
       SetorExame,
       Empresa,
     ]),
     ConveniosModule, // Importar módulo completo para ter acesso aos services
   ],
-  controllers: [ExamesController, TiposExameController],
-  providers: [ExamesService, TiposExameService],
-  exports: [ExamesService, TiposExameService],
+  controllers: [
+    ExamesController,
+    TiposExameController,
+    ExameLaboratorioApoioController,
+  ],
+  providers: [ExamesService, TiposExameService, ExameLaboratorioApoioService],
+  exports: [ExamesService, TiposExameService, ExameLaboratorioApoioService],
 })
 export class ExamesModule {}

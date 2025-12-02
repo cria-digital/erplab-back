@@ -5,6 +5,9 @@ import {
   IsOptional,
   IsNumber,
   IsEnum,
+  IsBoolean,
+  IsArray,
+  IsUUID,
   MaxLength,
 } from 'class-validator';
 
@@ -166,6 +169,33 @@ export class CreateExameDto {
   peso?: number;
 
   @ApiProperty({
+    description: 'Se o exame requer peso do paciente (SIM/NÃO)',
+    example: false,
+    required: false,
+  })
+  @IsBoolean()
+  @IsOptional()
+  requer_peso?: boolean;
+
+  @ApiProperty({
+    description: 'Se o exame requer altura do paciente (SIM/NÃO)',
+    example: false,
+    required: false,
+  })
+  @IsBoolean()
+  @IsOptional()
+  requer_altura?: boolean;
+
+  @ApiProperty({
+    description: 'Se o exame requer volume específico (SIM/NÃO)',
+    example: false,
+    required: false,
+  })
+  @IsBoolean()
+  @IsOptional()
+  requer_volume?: boolean;
+
+  @ApiProperty({
     description: 'Volume mínimo necessário (em ml)',
     example: 2.5,
     required: false,
@@ -237,6 +267,33 @@ export class CreateExameDto {
   @IsString()
   @IsOptional()
   estabilidade_id?: string;
+
+  @ApiProperty({
+    description: 'ID da alternativa do campo volume_minimo',
+    example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  volume_minimo_id?: string;
+
+  @ApiProperty({
+    description: 'ID da alternativa do campo formato_laudo',
+    example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  formato_laudo_id?: string;
+
+  @ApiProperty({
+    description: 'Se o exame requer termo de consentimento (SIM/NÃO)',
+    example: false,
+    required: false,
+  })
+  @IsBoolean()
+  @IsOptional()
+  termo_consentimento?: boolean;
 
   @ApiProperty({
     description: 'Se necessita preparo especial',
@@ -405,26 +462,104 @@ export class CreateExameDto {
   @IsOptional()
   formularios_atendimento?: any;
 
+  // Preparo - campos separados conforme Figma
   @ApiProperty({
-    description: 'Instruções de preparo por público',
-    example: {
-      geral: 'Jejum de 8 horas',
-      feminino: 'Informar data da última menstruação',
-      infantil: 'Jejum de 4 horas para crianças',
-    },
+    description: 'Instruções de preparo - Público geral',
+    example: 'Jejum de 8 horas',
     required: false,
+  })
+  @IsString()
+  @IsOptional()
+  preparo_geral?: string;
+
+  @ApiProperty({
+    description: 'Instruções de preparo - Feminino',
+    example: 'Informar data da última menstruação',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  preparo_feminino?: string;
+
+  @ApiProperty({
+    description: 'Instruções de preparo - Infantil',
+    example: 'Jejum de 4 horas para crianças',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  preparo_infantil?: string;
+
+  // Coleta - campos separados conforme Figma
+  @ApiProperty({
+    description: 'Instruções de coleta - Público geral',
+    example: 'Coletar em tubo EDTA',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  coleta_geral?: string;
+
+  @ApiProperty({
+    description: 'Instruções de coleta - Feminino',
+    example: 'Coleta preferencialmente fora do período menstrual',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  coleta_feminino?: string;
+
+  @ApiProperty({
+    description: 'Instruções de coleta - Infantil',
+    example: 'Coleta com agulha pediátrica',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  coleta_infantil?: string;
+
+  // Lembretes - campos separados conforme Figma
+  @ApiProperty({
+    description: 'Lembrete para coletora',
+    example: 'Homogeneizar suavemente o tubo',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  lembrete_coletora?: string;
+
+  @ApiProperty({
+    description: 'Lembrete para recepcionista - Agendamentos e Orçamentos',
+    example: 'Verificar jejum do paciente',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  lembrete_recepcionista_agendamento?: string;
+
+  @ApiProperty({
+    description: 'Lembrete para recepcionista - Ordem de Serviço',
+    example: 'Exame deve ser coletado em tubo EDTA',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  lembrete_recepcionista_os?: string;
+
+  // Campos JSONB mantidos para compatibilidade (deprecated)
+  @ApiProperty({
+    description:
+      'Instruções de preparo por público (DEPRECATED - usar campos separados)',
+    required: false,
+    deprecated: true,
   })
   @IsOptional()
   preparo_coleta?: any;
 
   @ApiProperty({
-    description: 'Lembretes para coletores, recepcionistas e ordem de serviço',
-    example: {
-      coletores: 'Homogeneizar suavemente o tubo',
-      recepcionistas: 'Verificar jejum do paciente',
-      ordem_servico: 'Exame deve ser coletado em tubo EDTA',
-    },
+    description: 'Lembretes (DEPRECATED - usar campos separados)',
     required: false,
+    deprecated: true,
   })
   @IsOptional()
   lembretes?: any;
@@ -437,6 +572,17 @@ export class CreateExameDto {
   @IsEnum(['ativo', 'inativo', 'suspenso'])
   @IsOptional()
   status?: string;
+
+  @ApiProperty({
+    description: 'IDs das unidades que realizam o exame',
+    example: ['f47ac10b-58cc-4372-a567-0e02b2c3d479'],
+    required: false,
+    type: [String],
+  })
+  @IsArray()
+  @IsUUID('4', { each: true })
+  @IsOptional()
+  unidades_ids?: string[];
 
   @ApiProperty({
     description: 'ID da empresa (null = disponível para todas)',

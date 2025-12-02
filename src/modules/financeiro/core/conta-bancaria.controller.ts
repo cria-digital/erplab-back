@@ -26,7 +26,7 @@ import {
   CreateContaBancariaBatchDto,
 } from './dto/create-conta-bancaria.dto';
 import { UpdateContaBancariaDto } from './dto/update-conta-bancaria.dto';
-import { TipoConta } from './entities/conta-bancaria.entity';
+import { TipoConta, StatusConta } from './entities/conta-bancaria.entity';
 
 @ApiTags('Contas Bancárias')
 @ApiBearerAuth()
@@ -125,6 +125,13 @@ export class ContaBancariaController {
     example: 'corrente',
   })
   @ApiQuery({
+    name: 'status',
+    required: false,
+    enum: StatusConta,
+    description: 'Filtrar por status da conta',
+    example: 'ativo',
+  })
+  @ApiQuery({
     name: 'banco_id',
     required: false,
     type: String,
@@ -141,6 +148,7 @@ export class ContaBancariaController {
     @Query('limit') limit?: number,
     @Query('search') search?: string,
     @Query('tipo') tipo?: TipoConta,
+    @Query('status') status?: StatusConta,
     @Query('banco_id') banco_id?: string,
     @Query('unidade_id') unidade_id?: string,
   ) {
@@ -149,6 +157,7 @@ export class ContaBancariaController {
       limit: limit ? Number(limit) : 10,
       search,
       tipo,
+      status,
       banco_id,
       unidade_id,
     };

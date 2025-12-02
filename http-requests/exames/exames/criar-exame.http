@@ -1,42 +1,43 @@
 ###
-### ⚠️ IMPORTANTE - Estrutura Refatorada (Novembro 2025)
+### ⚠️ IMPORTANTE - Estrutura Refatorada (Dezembro 2025)
 ###
-### Após refatoração, os seguintes campos agora são FKs (foreign keys):
-### - metodologia_id (antes: metodologia VARCHAR)
-### - grupo_id (antes: grupo VARCHAR)
-### - unidade_medida_id (antes: unidade_medida VARCHAR)
-### - amostra_id (antes: amostra_biologica VARCHAR) - FK para tabela amostras
-### - amostra_enviar_id (NOVO) - FK para alternativas_campo_formulario (soro, plasma, etc)
-### - tipo_recipiente_id (antes: tipo_recipiente VARCHAR)
-### - especialidade_id (antes: especialidade VARCHAR)
+### === NOVOS CAMPOS ADICIONADOS (Dezembro 2025) ===
 ###
-### Novos campos adicionados:
-### - amostra_enviar_id (UUID, opcional) - o que enviar ao laboratório após processamento
-### - regiao_coleta_id (UUID, opcional)
-### - estabilidade_id (UUID, opcional)
-### - rejeicao (TEXT, opcional)
-### - links_uteis (TEXT, opcional)
+### Campos boolean (SIM/NÃO):
+### - requer_peso (boolean) - Se exame requer peso do paciente
+### - requer_altura (boolean) - Se exame requer altura do paciente
+### - requer_volume (boolean) - Se exame requer volume específico
+### - termo_consentimento (boolean) - Se exige termo de consentimento
 ###
-### Para usar estes requests, primeiro obtenha os IDs das tabelas de campos de formulário:
+### Campos FK adicionais:
+### - volume_minimo_id (UUID) - FK para alternativa de volume mínimo
+### - formato_laudo_id (UUID) - FK para alternativa de formato do laudo
+###
+### Campos de preparo SEPARADOS (substituem preparo_coleta JSONB):
+### - preparo_geral (TEXT) - Instruções de preparo público geral
+### - preparo_feminino (TEXT) - Instruções de preparo feminino
+### - preparo_infantil (TEXT) - Instruções de preparo infantil
+###
+### Campos de coleta SEPARADOS (NOVOS):
+### - coleta_geral (TEXT) - Instruções de coleta público geral
+### - coleta_feminino (TEXT) - Instruções de coleta feminino
+### - coleta_infantil (TEXT) - Instruções de coleta infantil
+###
+### Campos de lembrete SEPARADOS (substituem lembretes JSONB):
+### - lembrete_coletora (TEXT) - Lembrete para coletora
+### - lembrete_recepcionista_agendamento (TEXT) - Lembrete para recepcionista (agendamento)
+### - lembrete_recepcionista_os (TEXT) - Lembrete para recepcionista (ordem de serviço)
+###
+### Relacionamento N:M com Unidades:
+### - unidades_ids (UUID[]) - IDs das unidades que realizam o exame
+###
+### === CAMPOS FK EXISTENTES ===
+### - metodologia_id, grupo_id, unidade_medida_id, amostra_id
+### - amostra_enviar_id, tipo_recipiente_id, especialidade_id
+### - regiao_coleta_id, estabilidade_id
+###
+### Para usar estes requests, primeiro obtenha os IDs:
 ### GET /api/v1/infraestrutura/campos-formulario
-###
-### Ou crie variáveis no http-client.env.json:
-### {
-###   "development": {
-###     "tipoExameId": "uuid-do-tipo-exame",
-###     "metodologiaId": "uuid-da-metodologia",
-###     "grupoId": "uuid-do-grupo",
-###     "unidadeMedidaId": "uuid-da-unidade-medida",
-###     "amostraId": "uuid-da-amostra",
-###     "amostraEnviarId": "uuid-da-amostra-enviar",
-###     "tipoRecipienteId": "uuid-do-tipo-recipiente",
-###     "regiaoColetaId": "uuid-da-regiao-coleta",
-###     "estabilidadeId": "uuid-da-estabilidade",
-###     "subgrupoId": "uuid-do-subgrupo",
-###     "setorId": "uuid-do-setor",
-###     "empresaId": "uuid-da-empresa"
-###   }
-### }
 ###
 
 ### Criar um novo exame - Hemograma Completo
@@ -48,6 +49,7 @@ Authorization: Bearer {{token}}
   "codigo_interno": "HEMOG001",
   "nome": "Hemograma Completo",
   "sinonimos": "Hemograma, Contagem de células",
+  "codigo_cbhpm": "40304361",
   "codigo_tuss": "40304361",
   "codigo_amb": "28.01.001-2",
   "codigo_sus": "0202010503",
@@ -59,6 +61,12 @@ Authorization: Bearer {{token}}
   "especialidade_requerida": "nao",
   "grupo_id": "{{grupoId}}",
   "peso": 100,
+
+  "requer_peso": false,
+  "requer_altura": false,
+  "requer_volume": true,
+  "termo_consentimento": false,
+
   "volume_min": 2.5,
   "volume_ideal": 5.0,
   "unidade_medida_id": "{{unidadeMedidaId}}",
@@ -67,6 +75,9 @@ Authorization: Bearer {{token}}
   "tipo_recipiente_id": "{{tipoRecipienteId}}",
   "regiao_coleta_id": "{{regiaoColetaId}}",
   "estabilidade_id": "{{estabilidadeId}}",
+  "volume_minimo_id": "{{volumeMinimoId}}",
+  "formato_laudo_id": "{{formatoLaudoId}}",
+
   "necessita_preparo": "sim",
   "requisitos": "Jejum de 4 horas",
   "tipo_realizacao": "interno",
@@ -84,18 +95,24 @@ Authorization: Bearer {{token}}
     }
   },
   "tecnica_coleta": "Punção venosa periférica",
+  "distribuicao": "Homogeneizar tubo, processar em até 4 horas",
   "rejeicao": "Hemólise, coágulos, volume insuficiente",
   "links_uteis": "https://www.fleury.com.br/manual-de-exames/hemograma",
-  "preparo_coleta": {
-    "geral": "Jejum de 4 horas",
-    "feminino": "Informar se está menstruada",
-    "infantil": "Jejum de 2 horas para crianças"
-  },
-  "lembretes": {
-    "coletores": "Homogeneizar suavemente o tubo após coleta",
-    "recepcionistas": "Verificar jejum do paciente",
-    "ordem_servico": "Coletar em tubo EDTA (roxo)"
-  },
+
+  "preparo_geral": "Jejum de 4 horas. Evitar exercícios físicos intensos 24h antes.",
+  "preparo_feminino": "Jejum de 4 horas. Informar se está menstruada ou gestante.",
+  "preparo_infantil": "Jejum de 2 horas para crianças até 5 anos.",
+
+  "coleta_geral": "Coletar em tubo EDTA (tampa roxa). Volume mínimo: 2,5mL.",
+  "coleta_feminino": "Coletar em tubo EDTA (tampa roxa). Anotar DUM se aplicável.",
+  "coleta_infantil": "Coletar com agulha pediátrica em tubo EDTA. Volume mínimo: 1mL.",
+
+  "lembrete_coletora": "Homogeneizar suavemente o tubo 8-10 vezes após coleta",
+  "lembrete_recepcionista_agendamento": "Verificar se paciente está em jejum de 4 horas",
+  "lembrete_recepcionista_os": "Exame deve ser coletado em tubo EDTA (tampa roxa)",
+
+  "unidades_ids": ["{{unidadeId}}"],
+
   "status": "ativo",
   "empresa_id": "{{empresaId}}"
 }
