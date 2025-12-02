@@ -7,9 +7,9 @@ import { UnidadeSaudeService } from './unidade-saude.service';
 import { UnidadeSaude } from './entities/unidade-saude.entity';
 import { HorarioAtendimento } from './entities/horario-atendimento.entity';
 import { CnaeSecundario } from './entities/cnae-secundario.entity';
-import { Banco } from '../../financeiro/core/entities/banco.entity';
 import { ContaBancaria } from '../../financeiro/core/entities/conta-bancaria.entity';
 import { ContaBancariaUnidade } from '../../financeiro/core/entities/conta-bancaria-unidade.entity';
+import { Cnae } from '../../infraestrutura/common/entities/cnae.entity';
 import { CreateUnidadeSaudeDto } from './dto/create-unidade-saude.dto';
 import { UpdateUnidadeSaudeDto } from './dto/update-unidade-saude.dto';
 
@@ -65,7 +65,7 @@ describe('UnidadeSaudeService', () => {
       id: 'banco-uuid-1',
       codigo: '001',
       nome: 'Banco do Brasil',
-    } as Banco,
+    },
   } as any as ContaBancaria;
 
   const _mockContaBancariaUnidade = {
@@ -125,7 +125,7 @@ describe('UnidadeSaudeService', () => {
     save: jest.fn(),
   };
 
-  const mockBancoRepository = {
+  const mockCnaeRepository = {
     findOne: jest.fn(),
   };
 
@@ -146,8 +146,8 @@ describe('UnidadeSaudeService', () => {
           useValue: mockCnaeSecundarioRepository,
         },
         {
-          provide: getRepositoryToken(Banco),
-          useValue: mockBancoRepository,
+          provide: getRepositoryToken(Cnae),
+          useValue: mockCnaeRepository,
         },
         {
           provide: getRepositoryToken(ContaBancaria),
@@ -180,6 +180,10 @@ describe('UnidadeSaudeService', () => {
     mockQueryRunner.manager.update.mockResolvedValue(undefined);
     // Reset repository mocks
     mockContaBancariaRepository.findOne.mockResolvedValue(null);
+    mockCnaeRepository.findOne.mockResolvedValue({
+      id: 'cnae-uuid',
+      codigo: '8640-2/03',
+    });
     mockQueryRunner.manager.delete.mockResolvedValue(undefined);
     mockQueryRunner.manager.findOne.mockResolvedValue(undefined);
   });
@@ -210,10 +214,7 @@ describe('UnidadeSaudeService', () => {
       ],
       contas_bancarias: [
         {
-          banco_id: 'banco-uuid-1',
-          agencia: '1234',
-          numero_conta: '567890',
-          digito_conta: '1',
+          conta_bancaria_id: 'conta-uuid-1',
         },
       ],
       cnaeSecundarios: [
@@ -234,12 +235,7 @@ describe('UnidadeSaudeService', () => {
       mockHorarioAtendimentoRepository.create.mockReturnValue(
         mockHorarioAtendimento,
       );
-      mockContaBancariaRepository.create.mockReturnValue(mockContaBancaria);
-      mockBancoRepository.findOne.mockResolvedValue({
-        id: 'banco-uuid-1',
-        codigo: '001',
-        nome: 'Banco do Brasil',
-      });
+      mockContaBancariaRepository.findOne.mockResolvedValue(mockContaBancaria);
 
       const result = await service.create(createUnidadeSaudeDto);
 
@@ -261,15 +257,12 @@ describe('UnidadeSaudeService', () => {
       expect(mockQueryRunner.release).toHaveBeenCalled();
     });
 
-    it('deve definir primeiro dado bancário como principal quando nenhum for especificado', async () => {
-      const dtoSemPrincipal = {
+    it('deve vincular conta bancária existente', async () => {
+      const dtoComConta = {
         ...createUnidadeSaudeDto,
         contas_bancarias: [
           {
-            banco_id: 'banco-uuid-1',
-            agencia: '1234',
-            numero_conta: '567890',
-            digito_conta: '1',
+            conta_bancaria_id: 'conta-uuid-1',
           },
         ],
       };
@@ -277,15 +270,11 @@ describe('UnidadeSaudeService', () => {
       mockUnidadeSaudeRepository.findOne.mockResolvedValue(null);
       mockUnidadeSaudeRepository.create.mockReturnValue(mockUnidadeSaude);
       mockQueryRunner.manager.save.mockResolvedValue(mockUnidadeSaude);
-      mockBancoRepository.findOne.mockResolvedValue({
-        id: 'banco-uuid-1',
-        codigo: '001',
-        nome: 'Banco do Brasil',
-      });
+      mockContaBancariaRepository.findOne.mockResolvedValue(mockContaBancaria);
 
-      await service.create(dtoSemPrincipal);
+      await service.create(dtoComConta);
 
-      // Verifica que a conta bancária foi criada corretamente
+      // Verifica que a conta bancária foi vinculada corretamente
       expect(mockQueryRunner.manager.save).toHaveBeenCalled();
     });
 
@@ -605,22 +594,22 @@ describe('UnidadeSaudeService', () => {
       );
     });
 
-    it('deve atualizar dados bancários', async () => {
+    it('deve atualizar vínculos de contas bancárias', async () => {
       const updateDto = {
         contas_bancarias: [
           {
-            banco_id: 'banco-uuid-2',
-            agencia: '5678',
-            numero_conta: '123456',
-            digito_conta: '2',
+            conta_bancaria_id: 'conta-uuid-2',
           },
         ],
       };
 
-      // Mock findOne to return null (conta doesn't exist yet)
-      mockContaBancariaRepository.findOne.mockResolvedValue(null);
-      mockContaBancariaRepository.create.mockReturnValue(mockContaBancaria);
-      mockQueryRunner.manager.save.mockResolvedValue(mockContaBancaria);
+      // Mock findOne to return conta existente
+      mockContaBancariaRepository.findOne.mockResolvedValue(mockContaBancaria);
+      mockContaBancariaUnidadeRepository.create.mockReturnValue({
+        conta_bancaria_id: 'conta-uuid-2',
+        unidade_saude_id: 'unidade-uuid-1',
+        ativo: true,
+      });
 
       await service.update('unidade-uuid-1', updateDto);
 
@@ -628,16 +617,11 @@ describe('UnidadeSaudeService', () => {
         ContaBancariaUnidade,
         { unidade_saude_id: 'unidade-uuid-1' },
       );
-      // Verifica que ContaBancaria foi salva
+      // Verifica que ContaBancariaUnidade foi salva
       expect(mockQueryRunner.manager.save).toHaveBeenCalledWith(
-        ContaBancaria,
+        ContaBancariaUnidade,
         expect.any(Object),
       );
-      // Verifica que ContaBancariaUnidade foi salva (mas pode ser undefined no segundo save)
-      const saveCallsWithContaBancariaUnidade = (
-        mockQueryRunner.manager.save as jest.Mock
-      ).mock.calls.filter((call) => call[0] === ContaBancariaUnidade);
-      expect(saveCallsWithContaBancariaUnidade.length).toBeGreaterThan(0);
     });
 
     it('deve atualizar CNAEs secundários', async () => {
@@ -763,26 +747,21 @@ describe('UnidadeSaudeService', () => {
     });
   });
 
-  describe('update - casos adicionais de dados bancários', () => {
-    it('deve definir primeiro dado bancário como principal quando nenhum é principal', async () => {
+  describe('update - casos adicionais de contas bancárias', () => {
+    it('deve vincular múltiplas contas bancárias existentes', async () => {
       const updateDto = {
         contas_bancarias: [
           {
-            banco_id: 'banco-uuid-1',
-            agencia: '1234',
-            numero_conta: '12345',
-            digito_conta: '1',
+            conta_bancaria_id: 'conta-uuid-1',
           },
           {
-            banco_id: 'banco-uuid-2',
-            agencia: '5678',
-            numero_conta: '67890',
-            digito_conta: '2',
+            conta_bancaria_id: 'conta-uuid-2',
           },
         ],
       };
 
       mockUnidadeSaudeRepository.findOne.mockResolvedValue(null);
+      mockContaBancariaRepository.findOne.mockResolvedValue(mockContaBancaria);
       mockQueryRunner.manager.update.mockResolvedValue({ affected: 1 });
       mockQueryRunner.manager.delete.mockResolvedValue({});
       mockQueryRunner.manager.save.mockResolvedValue(mockUnidadeSaude);
@@ -793,102 +772,102 @@ describe('UnidadeSaudeService', () => {
 
       await service.update('uuid-123', updateDto);
 
-      // Verifica que as contas bancárias foram processadas
+      // Verifica que as contas bancárias foram vinculadas
       expect(mockQueryRunner.manager.save).toHaveBeenCalled();
     });
   });
 
   describe('validateCnpj', () => {
     it('deve validar CNPJ válido', () => {
-      const service = new UnidadeSaudeService(
+      const testService = new UnidadeSaudeService(
         mockUnidadeSaudeRepository as any,
         mockHorarioAtendimentoRepository as any,
         mockCnaeSecundarioRepository as any,
-        mockBancoRepository as any,
         mockContaBancariaRepository as any,
         mockContaBancariaUnidadeRepository as any,
+        mockCnaeRepository as any,
         mockDataSource as any,
       );
 
       // Testa CNPJ válido
-      const result = service['validateCnpj']('11.222.333/0001-81');
+      const result = testService['validateCnpj']('11.222.333/0001-81');
       expect(result).toBe(true);
     });
 
     it('deve rejeitar CNPJ com tamanho incorreto', () => {
-      const service = new UnidadeSaudeService(
+      const testService = new UnidadeSaudeService(
         mockUnidadeSaudeRepository as any,
         mockHorarioAtendimentoRepository as any,
         mockCnaeSecundarioRepository as any,
-        mockBancoRepository as any,
         mockContaBancariaRepository as any,
         mockContaBancariaUnidadeRepository as any,
+        mockCnaeRepository as any,
         mockDataSource as any,
       );
 
-      const result = service['validateCnpj']('12345678');
+      const result = testService['validateCnpj']('12345678');
       expect(result).toBe(false);
     });
 
     it('deve rejeitar CNPJ com todos dígitos iguais', () => {
-      const service = new UnidadeSaudeService(
+      const testService = new UnidadeSaudeService(
         mockUnidadeSaudeRepository as any,
         mockHorarioAtendimentoRepository as any,
         mockCnaeSecundarioRepository as any,
-        mockBancoRepository as any,
         mockContaBancariaRepository as any,
         mockContaBancariaUnidadeRepository as any,
+        mockCnaeRepository as any,
         mockDataSource as any,
       );
 
-      const result = service['validateCnpj']('11111111111111');
+      const result = testService['validateCnpj']('11111111111111');
       expect(result).toBe(false);
     });
 
     it('deve rejeitar CNPJ com dígitos verificadores inválidos', () => {
-      const service = new UnidadeSaudeService(
+      const testService = new UnidadeSaudeService(
         mockUnidadeSaudeRepository as any,
         mockHorarioAtendimentoRepository as any,
         mockCnaeSecundarioRepository as any,
-        mockBancoRepository as any,
         mockContaBancariaRepository as any,
         mockContaBancariaUnidadeRepository as any,
+        mockCnaeRepository as any,
         mockDataSource as any,
       );
 
-      const result = service['validateCnpj']('11.222.333/0001-99');
+      const result = testService['validateCnpj']('11.222.333/0001-99');
       expect(result).toBe(false);
     });
 
     it('deve validar CNPJ removendo caracteres especiais', () => {
-      const service = new UnidadeSaudeService(
+      const testService = new UnidadeSaudeService(
         mockUnidadeSaudeRepository as any,
         mockHorarioAtendimentoRepository as any,
         mockCnaeSecundarioRepository as any,
-        mockBancoRepository as any,
         mockContaBancariaRepository as any,
         mockContaBancariaUnidadeRepository as any,
+        mockCnaeRepository as any,
         mockDataSource as any,
       );
 
       // CNPJ válido com formatação
-      const result = service['validateCnpj']('11.222.333/0001-81');
+      const result = testService['validateCnpj']('11.222.333/0001-81');
       expect(result).toBe(true);
     });
 
     it('deve validar corretamente CNPJ com soma que resulta em resto menor que 2', () => {
-      const service = new UnidadeSaudeService(
+      const testService = new UnidadeSaudeService(
         mockUnidadeSaudeRepository as any,
         mockHorarioAtendimentoRepository as any,
         mockCnaeSecundarioRepository as any,
-        mockBancoRepository as any,
         mockContaBancariaRepository as any,
         mockContaBancariaUnidadeRepository as any,
+        mockCnaeRepository as any,
         mockDataSource as any,
       );
 
       // CNPJ que resulta em resto < 2 no cálculo
-      const result = service['validateCnpj']('11.444.777/0001-61');
+      const result = testService['validateCnpj']('11.444.777/0001-61');
       expect(result).toBe(true);
     });
   });
@@ -960,34 +939,27 @@ describe('UnidadeSaudeService', () => {
       expect(mockQueryRunner.release).toHaveBeenCalled();
     });
 
-    it('deve fazer rollback quando falha ao salvar dados bancários', async () => {
-      const dtoComDados = {
+    it('deve fazer rollback quando falha ao vincular contas bancárias', async () => {
+      const dtoComContas = {
         ...createDto,
         contas_bancarias: [
           {
-            banco_id: 'banco-uuid-1',
-            agencia: '1234',
-            numero_conta: '567890',
-            digito_conta: '1',
+            conta_bancaria_id: 'conta-uuid-1',
           },
         ],
       };
 
-      mockBancoRepository.findOne.mockResolvedValue({
-        id: 'banco-uuid-1',
-        codigo: '001',
-        nome: 'Banco Teste',
-      });
+      mockContaBancariaRepository.findOne.mockResolvedValue(mockContaBancaria);
 
       mockUnidadeSaudeRepository.findOne.mockResolvedValue(null);
       mockUnidadeSaudeRepository.create.mockReturnValue(mockUnidadeSaude);
       mockQueryRunner.manager.save.mockResolvedValueOnce(mockUnidadeSaude);
       mockQueryRunner.manager.save.mockRejectedValueOnce(
-        new Error('Dados bancários error'),
+        new Error('Erro ao vincular conta bancária'),
       );
 
-      await expect(service.create(dtoComDados)).rejects.toThrow(
-        'Dados bancários error',
+      await expect(service.create(dtoComContas)).rejects.toThrow(
+        'Erro ao vincular conta bancária',
       );
 
       expect(mockQueryRunner.rollbackTransaction).toHaveBeenCalled();
@@ -1542,65 +1514,67 @@ describe('UnidadeSaudeService', () => {
   });
 
   describe('validateCnpj - comprehensive edge cases', () => {
-    let service: UnidadeSaudeService;
+    let localService: UnidadeSaudeService;
 
     beforeEach(() => {
-      service = new UnidadeSaudeService(
+      localService = new UnidadeSaudeService(
         mockUnidadeSaudeRepository as any,
         mockHorarioAtendimentoRepository as any,
         mockCnaeSecundarioRepository as any,
-        mockBancoRepository as any,
         mockContaBancariaRepository as any,
         mockContaBancariaUnidadeRepository as any,
+        mockCnaeRepository as any,
         mockDataSource as any,
       );
     });
 
     it('deve rejeitar CNPJ vazio', () => {
-      const result = service['validateCnpj']('');
+      const result = localService['validateCnpj']('');
       expect(result).toBe(false);
     });
 
     it('deve rejeitar CNPJ null/undefined', () => {
-      const result1 = service['validateCnpj'](null as any);
-      const result2 = service['validateCnpj'](undefined as any);
+      const result1 = localService['validateCnpj'](null as any);
+      const result2 = localService['validateCnpj'](undefined as any);
       expect(result1).toBe(false);
       expect(result2).toBe(false);
     });
 
     it('deve rejeitar CNPJ com apenas letras', () => {
-      const result = service['validateCnpj']('abcdefghijklmn');
+      const result = localService['validateCnpj']('abcdefghijklmn');
       expect(result).toBe(false);
     });
 
     it('deve rejeitar CNPJ com 15 dígitos', () => {
-      const result = service['validateCnpj']('123456789012345');
+      const result = localService['validateCnpj']('123456789012345');
       expect(result).toBe(false);
     });
 
     it('deve rejeitar CNPJ com 13 dígitos', () => {
-      const result = service['validateCnpj']('1234567890123');
+      const result = localService['validateCnpj']('1234567890123');
       expect(result).toBe(false);
     });
 
     it('deve validar CNPJ real válido', () => {
       // CNPJ da Receita Federal (público)
-      const result = service['validateCnpj']('00.394.460/0058-87');
+      const result = localService['validateCnpj']('00.394.460/0058-87');
       expect(result).toBe(true);
     });
 
     it('deve rejeitar CNPJ com primeiro dígito verificador inválido', () => {
-      const result = service['validateCnpj']('00.394.460/0058-97'); // último dígito alterado
+      const result = localService['validateCnpj']('00.394.460/0058-97'); // último dígito alterado
       expect(result).toBe(false);
     });
 
     it('deve rejeitar CNPJ com segundo dígito verificador inválido', () => {
-      const result = service['validateCnpj']('00.394.460/0058-89'); // penúltimo dígito alterado
+      const result = localService['validateCnpj']('00.394.460/0058-89'); // penúltimo dígito alterado
       expect(result).toBe(false);
     });
 
     it('deve remover todos os caracteres não numéricos', () => {
-      const result = service['validateCnpj']('00abc.394xyz.460/0058-87!!!');
+      const result = localService['validateCnpj'](
+        '00abc.394xyz.460/0058-87!!!',
+      );
       expect(result).toBe(true); // Deve validar após remover caracteres
     });
 
@@ -1619,20 +1593,20 @@ describe('UnidadeSaudeService', () => {
       ];
 
       invalidCnpjs.forEach((cnpj) => {
-        const result = service['validateCnpj'](cnpj);
+        const result = localService['validateCnpj'](cnpj);
         expect(result).toBe(false);
       });
     });
 
     it('deve tratar casos onde resto da divisão é exatamente 2', () => {
       // Teste específico para caso onde soma % 11 = 2 (dígito deve ser 0)
-      const result = service['validateCnpj']('11.222.333/0001-81');
+      const result = localService['validateCnpj']('11.222.333/0001-81');
       expect(result).toBe(true);
     });
 
     it('deve tratar casos onde resto da divisão é maior que 2', () => {
       // Teste específico para caso onde soma % 11 > 2 (dígito = 11 - resto)
-      const result = service['validateCnpj']('00.394.460/0058-87');
+      const result = localService['validateCnpj']('00.394.460/0058-87');
       expect(result).toBe(true);
     });
   });

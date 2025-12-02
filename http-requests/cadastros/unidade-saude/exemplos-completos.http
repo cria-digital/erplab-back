@@ -1,11 +1,12 @@
 ### ===== CENÁRIO COMPLETO: CRIAR MÚLTIPLAS UNIDADES =====
-# IMPORTANTE: O campo bancoId usa UUID da tabela bancos
-# Para buscar Bancos disponíveis: GET {{baseUrl}}/financeiro/bancos
-# Substitua "SUBSTITUA-PELO-UUID-DO-BANCO" pelos IDs reais
+# IMPORTANTE:
+# - Para vincular contas bancárias, PRIMEIRO cadastre-as em /financeiro/contas-bancarias
+# - Depois use o conta_bancaria_id retornado no array contas_bancarias
 
 ### 1. Criar Unidade São Roque
 POST {{baseUrl}}/cadastros/unidades-saude
 Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
 
 {
   "nomeUnidade": "Laboratório São Roque",
@@ -37,12 +38,7 @@ Content-Type: {{contentType}}
     }
   ],
   "contas_bancarias": [
-    {
-      "banco_id": "SUBSTITUA-PELO-UUID-DO-BANCO-033",
-      "agencia": "1234",
-      "numero_conta": "11111",
-      "observacoes": true
-    }
+    { "conta_bancaria_id": "UUID-DA-CONTA-BANCARIA-CADASTRADA" }
   ]
 }
 
@@ -51,6 +47,7 @@ Content-Type: {{contentType}}
 ### 2. Criar Unidade Ibiúna
 POST {{baseUrl}}/cadastros/unidades-saude
 Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
 
 {
   "nomeUnidade": "Laboratório Ibiúna",
@@ -79,6 +76,7 @@ Content-Type: {{contentType}}
 ### 3. Criar Unidade Araçariguama
 POST {{baseUrl}}/cadastros/unidades-saude
 Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
 
 {
   "nomeUnidade": "Laboratório Araçariguama",
@@ -107,6 +105,7 @@ Content-Type: {{contentType}}
 ### 4. Criar Unidade Vargem Grande Paulista
 POST {{baseUrl}}/cadastros/unidades-saude
 Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
 
 {
   "nomeUnidade": "Laboratório Vargem Grande",
@@ -135,6 +134,7 @@ Content-Type: {{contentType}}
 ### 5. Criar Unidade Cotia
 POST {{baseUrl}}/cadastros/unidades-saude
 Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
 
 {
   "nomeUnidade": "Laboratório Cotia",
@@ -163,6 +163,7 @@ Content-Type: {{contentType}}
 ### 6. Criar Unidade Itapecerica da Serra
 POST {{baseUrl}}/cadastros/unidades-saude
 Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
 
 {
   "nomeUnidade": "Laboratório Itapecerica",
@@ -192,18 +193,22 @@ Content-Type: {{contentType}}
 
 ### Listar Todas as Unidades Criadas
 GET {{baseUrl}}/cadastros/unidades-saude?limit=10
+Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar Unidades da Região (por Estado)
 GET {{baseUrl}}/cadastros/unidades-saude?estado=SP&ativo=true
+Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar Unidade Específica por CNPJ
 GET {{baseUrl}}/cadastros/unidades-saude/cnpj/11111111000111
+Authorization: Bearer {{token}}
 
 ###
 
 ### Listar Unidades para Dropdown (apenas id, nome e cnpj)
 GET {{baseUrl}}/cadastros/unidades-saude/ativas
+Authorization: Bearer {{token}}

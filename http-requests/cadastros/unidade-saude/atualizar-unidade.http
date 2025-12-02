@@ -49,28 +49,32 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Atualizar Contas Bancárias
-# IMPORTANTE: O campo banco_id usa UUID da tabela bancos
-# Para buscar Bancos disponíveis: GET {{baseUrl}}/financeiro/bancos
-# Esta operação substitui TODAS as contas bancárias da unidade
+### Atualizar Vínculos de Contas Bancárias
+# IMPORTANTE:
+# - Use conta_bancaria_id com UUID de conta já cadastrada em /financeiro/contas-bancarias
+# - Esta operação SUBSTITUI todos os vínculos existentes
+# - Para listar contas disponíveis: GET {{baseUrl}}/financeiro/contas-bancarias
 PATCH {{baseUrl}}/cadastros/unidades-saude/123e4567-e89b-12d3-a456-426614174000
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
   "contas_bancarias": [
-    {
-      "banco_id": "SUBSTITUA-PELO-UUID-DO-BANCO-237",
-      "codigo_interno": "CC-LAB001-BRAD-001",
-      "nome_conta": "Conta Corrente Bradesco",
-      "agencia": "3456",
-      "digito_agencia": "7",
-      "numero_conta": "98765",
-      "digito_conta": "4",
-      "tipo_conta": "corrente",
-      "observacoes": "Nova conta principal (Bradesco - 237)"
-    }
+    { "conta_bancaria_id": "UUID-DA-CONTA-BANCARIA-1" },
+    { "conta_bancaria_id": "UUID-DA-CONTA-BANCARIA-2" }
   ]
+}
+
+###
+
+### Remover Todos os Vínculos de Contas Bancárias
+# Envie array vazio para remover todos os vínculos
+PATCH {{baseUrl}}/cadastros/unidades-saude/123e4567-e89b-12d3-a456-426614174000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "contas_bancarias": []
 }
 
 ###
@@ -90,10 +94,9 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Vincular Conta Bancária Existente (conta principal)
-# Para usar este endpoint, primeiro crie a conta em:
-# POST {{baseUrl}}/financeiro/contas-bancarias
-# Depois use o ID da conta retornado aqui
+### Vincular Conta Bancária Principal (campo legado)
+# O campo contaBancariaId vincula UMA conta bancária principal (ManyToOne)
+# Para múltiplas contas, use o array contas_bancarias
 PATCH {{baseUrl}}/cadastros/unidades-saude/123e4567-e89b-12d3-a456-426614174000
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
@@ -101,9 +104,6 @@ Authorization: Bearer {{token}}
 {
   "contaBancariaId": "uuid-da-conta-bancaria-existente"
 }
-
-### Nota: Este campo vincula uma conta bancária principal à unidade.
-### As contas_bancarias inline continuam funcionando para criação de múltiplas contas.
 
 ###
 

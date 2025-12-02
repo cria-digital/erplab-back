@@ -10,6 +10,10 @@
       {
         "include": "modules/email/templates/**/*",
         "outDir": "dist"
+      },
+      {
+        "include": "database/seeds/data/**/*",
+        "outDir": "dist"
       }
     ]
   }

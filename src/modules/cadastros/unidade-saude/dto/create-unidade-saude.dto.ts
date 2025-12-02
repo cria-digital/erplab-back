@@ -67,77 +67,13 @@ export class CreateHorarioAtendimentoDto {
 
 export class CreateContaBancariaUnidadeDto {
   @ApiProperty({
-    example: 'uuid-do-banco',
-    description: 'ID do banco',
+    example: 'uuid-da-conta-bancaria',
+    description:
+      'ID da conta bancária existente (cadastrada em /financeiro/contas-bancarias)',
   })
   @IsString()
   @IsNotEmpty()
-  banco_id: string;
-
-  @ApiProperty({ example: '1234', description: 'Número da agência' })
-  @IsString()
-  @IsNotEmpty()
-  @Length(1, 10)
-  agencia: string;
-
-  @ApiPropertyOptional({ example: '5', description: 'Dígito da agência' })
-  @IsOptional()
-  @IsString()
-  @Length(1, 2)
-  digito_agencia?: string;
-
-  @ApiProperty({ example: '12345678', description: 'Número da conta' })
-  @IsString()
-  @IsNotEmpty()
-  @Length(1, 20)
-  numero_conta: string;
-
-  @ApiProperty({ example: '9', description: 'Dígito verificador da conta' })
-  @IsString()
-  @IsNotEmpty()
-  @Length(1, 2)
-  digito_conta: string;
-
-  @ApiPropertyOptional({
-    example: 'corrente',
-    description: 'Tipo de conta',
-    enum: ['corrente', 'poupanca', 'pagamento', 'salario', 'investimento'],
-  })
-  @IsOptional()
-  @IsString()
-  tipo_conta?: string = 'corrente';
-
-  @ApiPropertyOptional({
-    example: 'cnpj',
-    description: 'Tipo de chave PIX',
-  })
-  @IsOptional()
-  @IsString()
-  @Length(1, 20)
-  pix_tipo?: string;
-
-  @ApiPropertyOptional({
-    example: '12.345.678/0001-90',
-    description: 'Chave PIX',
-  })
-  @IsOptional()
-  @IsString()
-  @Length(1, 255)
-  pix_chave?: string;
-
-  @ApiPropertyOptional({
-    example: 1000.0,
-    description: 'Saldo inicial da conta',
-  })
-  @IsOptional()
-  @IsNumber()
-  saldo_inicial?: number = 0;
-
-  @ApiPropertyOptional({ description: 'Observações sobre a conta bancária' })
-  @IsOptional()
-  @IsString()
-  @Length(0, 255)
-  observacoes?: string;
+  conta_bancaria_id: string;
 }
 
 export class CreateCnaeSecundarioDto {

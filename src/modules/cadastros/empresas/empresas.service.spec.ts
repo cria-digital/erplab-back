@@ -9,6 +9,7 @@ import { ContaBancaria } from '../../financeiro/core/entities/conta-bancaria.ent
 import { Laboratorio } from '../../relacionamento/laboratorios/entities/laboratorio.entity';
 import { Convenio } from '../../relacionamento/convenios/entities/convenio.entity';
 import { Telemedicina } from '../../relacionamento/telemedicina/entities/telemedicina.entity';
+import { Cnae } from '../../infraestrutura/common/entities/cnae.entity';
 import { CreateEmpresaDto } from './dto/create-empresa.dto';
 import { UpdateEmpresaDto } from './dto/update-empresa.dto';
 import { TipoEmpresaEnum } from './enums/empresas.enum';
@@ -45,6 +46,13 @@ describe('EmpresasService', () => {
   };
 
   const mockTelemedicinaRepository = {
+    create: jest.fn(),
+    save: jest.fn(),
+    find: jest.fn(),
+    findOne: jest.fn(),
+  };
+
+  const mockCnaeRepository = {
     create: jest.fn(),
     save: jest.fn(),
     find: jest.fn(),
@@ -136,6 +144,10 @@ describe('EmpresasService', () => {
         {
           provide: getRepositoryToken(Telemedicina),
           useValue: mockTelemedicinaRepository,
+        },
+        {
+          provide: getRepositoryToken(Cnae),
+          useValue: mockCnaeRepository,
         },
         {
           provide: DataSource,

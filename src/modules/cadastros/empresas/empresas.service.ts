@@ -12,6 +12,7 @@ import { ContaBancaria } from '../../financeiro/core/entities/conta-bancaria.ent
 import { Laboratorio } from '../../relacionamento/laboratorios/entities/laboratorio.entity';
 import { Convenio } from '../../relacionamento/convenios/entities/convenio.entity';
 import { Telemedicina } from '../../relacionamento/telemedicina/entities/telemedicina.entity';
+import { Cnae } from '../../infraestrutura/common/entities/cnae.entity';
 import { CreateEmpresaDto } from './dto/create-empresa.dto';
 import { UpdateEmpresaDto } from './dto/update-empresa.dto';
 import { SearchEmpresaDto } from './dto/search-empresa.dto';
@@ -31,6 +32,8 @@ export class EmpresasService {
     private readonly convenioRepository: Repository<Convenio>,
     @InjectRepository(Telemedicina)
     private readonly telemedicinaRepository: Repository<Telemedicina>,
+    @InjectRepository(Cnae)
+    private readonly cnaeRepository: Repository<Cnae>,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -202,7 +205,10 @@ export class EmpresasService {
       const dadosCNPJA = await this.buscarCNPJA(cnpjLimpo);
 
       // Adapta os dados da API CNPJA para o formato esperado pelo frontend
-      return this.adaptarRespostaCNPJA(dadosCNPJA);
+      const dadosAdaptados = this.adaptarRespostaCNPJA(dadosCNPJA);
+
+      // Enriquece com dados de CNAE do banco local
+      return await this.enriquecerComCnaesLocais(dadosAdaptados);
     } catch (_error) {
       throw new NotFoundException(
         `Empresa com CNPJ ${cnpj} não encontrada no banco de dados e na Receita Federal`,
@@ -331,6 +337,60 @@ export class EmpresasService {
       // Informação de que é filial/matriz
       head: dados.head,
     };
+  }
+
+  /**
+   * Converte código CNAE numérico (ex: 8640203) para formato com pontuação (ex: 8640-2/03)
+   */
+  private formatarCodigoCnae(codigo: number | string): string {
+    const codigoStr = String(codigo).padStart(7, '0');
+    // Formato: XXXX-X/XX (ex: 8640-2/03)
+    return `${codigoStr.substring(0, 4)}-${codigoStr.substring(4, 5)}/${codigoStr.substring(5, 7)}`;
+  }
+
+  /**
+   * Enriquece os dados da API CNPJA com informações de CNAE do banco local
+   */
+  private async enriquecerComCnaesLocais(dados: any): Promise<any> {
+    // Busca o CNAE principal no banco local
+    if (dados.mainActivity?.code) {
+      const codigoFormatado = this.formatarCodigoCnae(dados.mainActivity.code);
+      const cnaeLocal = await this.cnaeRepository.findOne({
+        where: { codigo: codigoFormatado },
+      });
+
+      if (cnaeLocal) {
+        dados.mainActivity = {
+          ...dados.mainActivity,
+          cnaeLocal: cnaeLocal,
+        };
+      }
+    }
+
+    // Busca os CNAEs secundários no banco local
+    if (dados.sideActivities?.length > 0) {
+      const sideActivitiesEnriquecidas = await Promise.all(
+        dados.sideActivities.map(async (activity: any) => {
+          const codigoFormatado = this.formatarCodigoCnae(activity.code);
+          const cnaeLocal = await this.cnaeRepository.findOne({
+            where: { codigo: codigoFormatado },
+          });
+
+          if (cnaeLocal) {
+            return {
+              ...activity,
+              cnaeLocal: cnaeLocal,
+            };
+          }
+
+          return activity;
+        }),
+      );
+
+      dados.sideActivities = sideActivitiesEnriquecidas;
+    }
+
+    return dados;
   }
 
   async findByTipo(tipo: string): Promise<Empresa[]> {

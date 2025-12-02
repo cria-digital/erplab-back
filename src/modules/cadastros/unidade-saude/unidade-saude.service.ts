@@ -9,12 +9,9 @@ import { Repository, DataSource, FindManyOptions, ILike } from 'typeorm';
 import { UnidadeSaude } from './entities/unidade-saude.entity';
 import { HorarioAtendimento } from './entities/horario-atendimento.entity';
 import { CnaeSecundario } from './entities/cnae-secundario.entity';
-import { Banco } from '../../financeiro/core/entities/banco.entity';
-import {
-  ContaBancaria,
-  TipoConta,
-} from '../../financeiro/core/entities/conta-bancaria.entity';
+import { ContaBancaria } from '../../financeiro/core/entities/conta-bancaria.entity';
 import { ContaBancariaUnidade } from '../../financeiro/core/entities/conta-bancaria-unidade.entity';
+import { Cnae } from '../../infraestrutura/common/entities/cnae.entity';
 import { CreateUnidadeSaudeDto } from './dto/create-unidade-saude.dto';
 import { UpdateUnidadeSaudeDto } from './dto/update-unidade-saude.dto';
 
@@ -44,12 +41,12 @@ export class UnidadeSaudeService {
     private readonly horarioAtendimentoRepository: Repository<HorarioAtendimento>,
     @InjectRepository(CnaeSecundario)
     private readonly cnaeSecundarioRepository: Repository<CnaeSecundario>,
-    @InjectRepository(Banco)
-    private readonly bancoRepository: Repository<Banco>,
     @InjectRepository(ContaBancaria)
     private readonly contaBancariaRepository: Repository<ContaBancaria>,
     @InjectRepository(ContaBancariaUnidade)
     private readonly contaBancariaUnidadeRepository: Repository<ContaBancariaUnidade>,
+    @InjectRepository(Cnae)
+    private readonly cnaeRepository: Repository<Cnae>,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -71,6 +68,32 @@ export class UnidadeSaudeService {
         throw new ConflictException(
           `Já existe uma unidade com o CNPJ ${createDto.cnpj}`,
         );
+      }
+
+      // Valida CNAE Principal se fornecido
+      if (createDto.cnaePrincipalId) {
+        const cnaeExiste = await this.cnaeRepository.findOne({
+          where: { id: createDto.cnaePrincipalId },
+        });
+        if (!cnaeExiste) {
+          throw new BadRequestException(
+            `CNAE principal com ID ${createDto.cnaePrincipalId} não encontrado`,
+          );
+        }
+      }
+
+      // Valida CNAEs Secundários se fornecidos
+      if (createDto.cnaeSecundarios?.length > 0) {
+        for (const cnaeSecundario of createDto.cnaeSecundarios) {
+          const cnaeExiste = await this.cnaeRepository.findOne({
+            where: { id: cnaeSecundario.cnaeId },
+          });
+          if (!cnaeExiste) {
+            throw new BadRequestException(
+              `CNAE secundário com ID ${cnaeSecundario.cnaeId} não encontrado`,
+            );
+          }
+        }
       }
 
       // Cria a unidade principal
@@ -102,58 +125,23 @@ export class UnidadeSaudeService {
         await queryRunner.manager.save(HorarioAtendimento, horarios);
       }
 
-      // Salva as contas bancárias
+      // Vincula as contas bancárias existentes
       if (contas_bancarias?.length > 0) {
-        // Valida se todos os bancos existem
-        for (const conta of contas_bancarias) {
-          const banco = await this.bancoRepository.findOne({
-            where: { id: conta.banco_id },
-          });
-
-          if (!banco) {
-            throw new BadRequestException(
-              `Banco com ID ${conta.banco_id} não encontrado`,
-            );
-          }
-        }
-
-        // Cria as contas bancárias
         for (const contaDto of contas_bancarias) {
-          // Verifica se já existe conta com mesma agência e número para este banco
+          // Valida se a conta bancária existe
           const contaExistente = await this.contaBancariaRepository.findOne({
-            where: {
-              banco_id: contaDto.banco_id,
-              agencia: contaDto.agencia,
-              numero_conta: contaDto.numero_conta,
-            },
+            where: { id: contaDto.conta_bancaria_id },
           });
 
-          let conta: ContaBancaria;
-
-          if (contaExistente) {
-            // Reutiliza conta existente
-            conta = contaExistente;
-          } else {
-            // Cria nova conta
-            conta = this.contaBancariaRepository.create({
-              banco_id: contaDto.banco_id,
-              tipo_conta:
-                (contaDto.tipo_conta as TipoConta) || TipoConta.CORRENTE,
-              agencia: contaDto.agencia,
-              digito_agencia: contaDto.digito_agencia,
-              numero_conta: contaDto.numero_conta,
-              digito_conta: contaDto.digito_conta,
-              observacoes: contaDto.observacoes,
-            });
-            conta = (await queryRunner.manager.save(
-              ContaBancaria,
-              conta,
-            )) as ContaBancaria;
+          if (!contaExistente) {
+            throw new BadRequestException(
+              `Conta bancária com ID ${contaDto.conta_bancaria_id} não encontrada`,
+            );
           }
 
           // Vincula a conta à unidade
           const vinculo = this.contaBancariaUnidadeRepository.create({
-            conta_bancaria_id: conta.id,
+            conta_bancaria_id: contaDto.conta_bancaria_id,
             unidade_saude_id: savedUnidade.id,
             ativo: true,
           });
@@ -334,6 +322,32 @@ export class UnidadeSaudeService {
         }
       }
 
+      // Valida CNAE Principal se fornecido
+      if (updateDto.cnaePrincipalId) {
+        const cnaeExiste = await this.cnaeRepository.findOne({
+          where: { id: updateDto.cnaePrincipalId },
+        });
+        if (!cnaeExiste) {
+          throw new BadRequestException(
+            `CNAE principal com ID ${updateDto.cnaePrincipalId} não encontrado`,
+          );
+        }
+      }
+
+      // Valida CNAEs Secundários se fornecidos
+      if (updateDto.cnaeSecundarios?.length > 0) {
+        for (const cnaeSecundario of updateDto.cnaeSecundarios) {
+          const cnaeExiste = await this.cnaeRepository.findOne({
+            where: { id: cnaeSecundario.cnaeId },
+          });
+          if (!cnaeExiste) {
+            throw new BadRequestException(
+              `CNAE secundário com ID ${cnaeSecundario.cnaeId} não encontrado`,
+            );
+          }
+        }
+      }
+
       // Atualiza a unidade principal
       const {
         horariosAtendimento,
@@ -371,46 +385,30 @@ export class UnidadeSaudeService {
         }
       }
 
-      // Atualiza contas bancárias se fornecidas
+      // Atualiza vínculos de contas bancárias se fornecidos
       if (contas_bancarias !== undefined) {
         // Remove vínculos existentes
         await queryRunner.manager.delete(ContaBancariaUnidade, {
           unidade_saude_id: id,
         });
 
-        // Adiciona novas contas bancárias
+        // Adiciona novos vínculos
         if (contas_bancarias.length > 0) {
           for (const contaDto of contas_bancarias) {
-            // Verifica se já existe conta com mesma agência e número para este banco
-            let conta = await this.contaBancariaRepository.findOne({
-              where: {
-                banco_id: contaDto.banco_id,
-                agencia: contaDto.agencia,
-                numero_conta: contaDto.numero_conta,
-              },
+            // Valida se a conta bancária existe
+            const contaExistente = await this.contaBancariaRepository.findOne({
+              where: { id: contaDto.conta_bancaria_id },
             });
 
-            // Se não existe, cria nova conta
-            if (!conta) {
-              conta = this.contaBancariaRepository.create({
-                banco_id: contaDto.banco_id,
-                tipo_conta:
-                  (contaDto.tipo_conta as TipoConta) || TipoConta.CORRENTE,
-                agencia: contaDto.agencia,
-                digito_agencia: contaDto.digito_agencia,
-                numero_conta: contaDto.numero_conta,
-                digito_conta: contaDto.digito_conta,
-                observacoes: contaDto.observacoes,
-              });
-              conta = (await queryRunner.manager.save(
-                ContaBancaria,
-                conta,
-              )) as ContaBancaria;
+            if (!contaExistente) {
+              throw new BadRequestException(
+                `Conta bancária com ID ${contaDto.conta_bancaria_id} não encontrada`,
+              );
             }
 
             // Vincula a conta à unidade
             const vinculo = this.contaBancariaUnidadeRepository.create({
-              conta_bancaria_id: conta.id,
+              conta_bancaria_id: contaDto.conta_bancaria_id,
               unidade_saude_id: id,
               ativo: true,
             });

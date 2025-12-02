@@ -7,6 +7,7 @@ import { ContaBancaria } from '../../financeiro/core/entities/conta-bancaria.ent
 import { Laboratorio } from '../../relacionamento/laboratorios/entities/laboratorio.entity';
 import { Convenio } from '../../relacionamento/convenios/entities/convenio.entity';
 import { Telemedicina } from '../../relacionamento/telemedicina/entities/telemedicina.entity';
+import { Cnae } from '../../infraestrutura/common/entities/cnae.entity';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { Telemedicina } from '../../relacionamento/telemedicina/entities/telemed
       Laboratorio,
       Convenio,
       Telemedicina,
+      Cnae,
     ]),
   ],
   controllers: [EmpresasController],
