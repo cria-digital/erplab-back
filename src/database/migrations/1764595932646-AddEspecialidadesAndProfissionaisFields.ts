@@ -199,10 +199,16 @@ export class AddEspecialidadesAndProfissionaisFields1764595932646
       `ALTER TABLE "integracoes" DROP CONSTRAINT "UQ_b2c226842808110feee86182a81"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "integracoes" DROP COLUMN "codigo_identificacao"`,
+      `ALTER TABLE "integracoes" DROP COLUMN IF EXISTS "codigo_identificacao"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "integracoes" ADD "codigo_identificacao" character varying(100) NOT NULL`,
+      `ALTER TABLE "integracoes" ADD "codigo_identificacao" character varying(100)`,
+    );
+    await queryRunner.query(
+      `UPDATE "integracoes" SET "codigo_identificacao" = CONCAT('INT_', id::text) WHERE "codigo_identificacao" IS NULL`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "integracoes" ALTER COLUMN "codigo_identificacao" SET NOT NULL`,
     );
     await queryRunner.query(
       `ALTER TABLE "integracoes" ADD CONSTRAINT "UQ_b2c226842808110feee86182a81" UNIQUE ("codigo_identificacao")`,

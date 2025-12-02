@@ -1,19 +1,23 @@
-### Criar conta bancária - Conta Corrente Principal (múltiplas unidades)
+### ================================================================
+### CONTAS BANCÁRIAS - CRUD E OPERAÇÕES
+### ================================================================
+
+### Criar conta bancária - Conta Corrente Principal
 POST {{baseUrl}}/financeiro/contas-bancarias
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
   "banco_id": "{{bancoId}}",
-  "unidades_ids": ["{{unidadeId}}"],
-  "codigo_interno": "CC001",
-  "nome_conta": "Conta Corrente Principal",
   "tipo_conta": "corrente",
   "agencia": "1234",
   "digito_agencia": "5",
   "numero_conta": "12345678",
   "digito_conta": "9",
-  "observacoes": "Conta principal para recebimentos"
+  "status": "ativo",
+  "chave_pix": "12345678000190",
+  "observacoes": "Conta principal para recebimentos",
+  "unidades_ids": ["{{unidadeId}}"]
 }
 
 ### Expected Response
@@ -21,11 +25,15 @@ Authorization: Bearer {{token}}
 # {
 #   "id": "uuid",
 #   "banco_id": "uuid",
+#   "tipo_conta": "corrente",
+#   "agencia": "1234",
+#   "numero_conta": "12345678",
+#   "status": "ativo",
+#   "chave_pix": "12345678000190",
 #   "unidades_vinculadas": [
 #     {
 #       "id": "uuid",
 #       "unidade_saude_id": "uuid",
-#       "unidade_saude": { ... },
 #       "ativo": true
 #     }
 #   ],
@@ -34,38 +42,21 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Criar conta bancária - Compartilhada entre 2 unidades
+### Criar conta bancária - Sem vincular unidades (opcional)
 POST {{baseUrl}}/financeiro/contas-bancarias
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
   "banco_id": "{{bancoId}}",
-  "unidades_ids": ["{{unidadeId}}", "{{unidadeId2}}"],
-  "codigo_interno": "CC002",
-  "nome_conta": "Conta Compartilhada",
   "tipo_conta": "corrente",
-  "agencia": "1234",
-  "numero_conta": "87654321",
-  "digito_conta": "0",
-  "observacoes": "Conta compartilhada entre matriz e filial"
+  "agencia": "4567",
+  "numero_conta": "98765432",
+  "digito_conta": "1",
+  "status": "ativo",
+  "chave_pix": "email@empresa.com.br",
+  "observacoes": "Conta sem unidade vinculada"
 }
-
-### Expected Response
-# Status: 201 Created
-# {
-#   "id": "uuid",
-#   "banco_id": "uuid",
-#   "banco": {
-#     "id": "uuid",
-#     "nome": "Banco do Brasil S.A."
-#   },
-#   "unidade_saude_id": "uuid",
-#   "codigo_interno": "CC001",
-#   "nome_conta": "Conta Corrente Principal",
-#   "tipo_conta": "corrente",
-#   ...
-# }
 
 ###
 
@@ -76,18 +67,137 @@ Authorization: Bearer {{token}}
 
 {
   "banco_id": "{{bancoId}}",
-  "unidade_saude_id": "{{unidadeId}}",
-  "codigo_interno": "CP001",
-  "nome_conta": "Conta Poupança Reserva",
   "tipo_conta": "poupanca",
   "agencia": "1234",
   "numero_conta": "00012345",
-  "digito_conta": "8"
+  "digito_conta": "8",
+  "status": "ativo"
 }
 
 ###
 
-### Listar todas as contas bancárias (sem paginação - padrão: página 1, 10 itens)
+### Criar conta bancária - Compartilhada entre múltiplas unidades
+POST {{baseUrl}}/financeiro/contas-bancarias
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "banco_id": "{{bancoId}}",
+  "tipo_conta": "corrente",
+  "agencia": "1234",
+  "numero_conta": "87654321",
+  "digito_conta": "0",
+  "status": "ativo",
+  "chave_pix": "+5511999998888",
+  "observacoes": "Conta compartilhada entre matriz e filial",
+  "unidades_ids": ["{{unidadeId}}", "{{unidadeId2}}"]
+}
+
+###
+
+### ================================================================
+### CRIAÇÃO EM LOTE (BATCH)
+### ================================================================
+
+### Criar múltiplas contas em lote
+POST {{baseUrl}}/financeiro/contas-bancarias/batch
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "contas": [
+    {
+      "banco_id": "{{bancoId}}",
+      "tipo_conta": "corrente",
+      "agencia": "0001",
+      "numero_conta": "11111111",
+      "digito_conta": "1",
+      "status": "ativo",
+      "chave_pix": "conta1@empresa.com",
+      "observacoes": "Conta 1 - Lote"
+    },
+    {
+      "banco_id": "{{bancoId}}",
+      "tipo_conta": "poupanca",
+      "agencia": "0001",
+      "numero_conta": "22222222",
+      "digito_conta": "2",
+      "status": "ativo",
+      "observacoes": "Conta 2 - Lote"
+    },
+    {
+      "banco_id": "{{bancoId}}",
+      "tipo_conta": "corrente",
+      "agencia": "0001",
+      "numero_conta": "33333333",
+      "digito_conta": "3",
+      "status": "ativo",
+      "chave_pix": "33333333000199",
+      "unidades_ids": ["{{unidadeId}}"]
+    }
+  ]
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "criadas": [
+#     { "id": "uuid-1", "tipo_conta": "corrente", ... },
+#     { "id": "uuid-2", "tipo_conta": "poupanca", ... },
+#     { "id": "uuid-3", "tipo_conta": "corrente", ... }
+#   ],
+#   "erros": []
+# }
+
+###
+
+### Criar em lote - Com algumas contas que podem falhar
+POST {{baseUrl}}/financeiro/contas-bancarias/batch
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "contas": [
+    {
+      "banco_id": "{{bancoId}}",
+      "tipo_conta": "corrente",
+      "agencia": "0001",
+      "numero_conta": "44444444",
+      "digito_conta": "4",
+      "status": "ativo"
+    },
+    {
+      "banco_id": "{{bancoId}}",
+      "tipo_conta": "corrente",
+      "agencia": "0001",
+      "numero_conta": "44444444",
+      "digito_conta": "4",
+      "status": "ativo"
+    }
+  ]
+}
+
+### Expected Response (segunda conta falha por duplicidade)
+# Status: 201 Created
+# {
+#   "criadas": [
+#     { "id": "uuid-1", ... }
+#   ],
+#   "erros": [
+#     {
+#       "index": 1,
+#       "erro": "Já existe uma conta bancária com agência 0001 e conta 44444444 para este banco"
+#     }
+#   ]
+# }
+
+###
+
+### ================================================================
+### LISTAGEM E PAGINAÇÃO
+### ================================================================
+
+### Listar todas as contas bancárias (padrão: página 1, 10 itens)
 GET {{baseUrl}}/financeiro/contas-bancarias
 Authorization: Bearer {{token}}
 
@@ -106,34 +216,33 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Listar contas bancárias com paginação - Página 1, 10 itens
+### Listar contas bancárias com paginação
 GET {{baseUrl}}/financeiro/contas-bancarias?page=1&limit=10
 Authorization: Bearer {{token}}
 
 ###
 
-### Listar contas bancárias com paginação - Página 2, 20 itens
+### Listar contas bancárias - Página 2
 GET {{baseUrl}}/financeiro/contas-bancarias?page=2&limit=20
 Authorization: Bearer {{token}}
 
 ###
 
-### FILTROS COMBINADOS
+### ================================================================
+### FILTROS
+### ================================================================
 
-### Buscar contas por texto (agência, número da conta ou nome do banco)
+### Buscar por texto (agência, número da conta ou nome do banco)
 GET {{baseUrl}}/financeiro/contas-bancarias?search=1234
 Authorization: Bearer {{token}}
-
-### Exemplos de busca:
-# - search=1234 → Busca por agência "1234"
-# - search=12345678 → Busca por número de conta "12345678"
-# - search=Brasil → Busca por banco "Banco do Brasil"
 
 ###
 
 ### Filtrar por tipo de conta
 GET {{baseUrl}}/financeiro/contas-bancarias?tipo=corrente
 Authorization: Bearer {{token}}
+
+### Tipos disponíveis: corrente, poupanca, pagamento, salario, investimento
 
 ###
 
@@ -149,35 +258,15 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Combinar múltiplos filtros - Exemplo 1: Contas correntes
-GET {{baseUrl}}/financeiro/contas-bancarias?tipo=corrente
-Authorization: Bearer {{token}}
-
-###
-
-### Combinar múltiplos filtros - Exemplo 2: Buscar por agência "1234" nas contas correntes
-GET {{baseUrl}}/financeiro/contas-bancarias?search=1234&tipo=corrente
-Authorization: Bearer {{token}}
-
-###
-
-### Combinar múltiplos filtros - Exemplo 3: Todos os filtros + paginação
+### Combinar múltiplos filtros
 GET {{baseUrl}}/financeiro/contas-bancarias?search=1234&tipo=corrente&page=1&limit=10
 Authorization: Bearer {{token}}
 
 ###
 
-### Combinar múltiplos filtros - Exemplo 4: Contas de um banco específico
-GET {{baseUrl}}/financeiro/contas-bancarias?banco_id={{bancoId}}
-Authorization: Bearer {{token}}
-
-###
-
-### Combinar múltiplos filtros - Exemplo 5: Contas de uma unidade que são poupança
-GET {{baseUrl}}/financeiro/contas-bancarias?unidade_id={{unidadeId}}&tipo=poupanca
-Authorization: Bearer {{token}}
-
-###
+### ================================================================
+### BUSCA ESPECÍFICA
+### ================================================================
 
 ### Listar contas ativas
 GET {{baseUrl}}/financeiro/contas-bancarias/ativas
@@ -203,30 +292,52 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Buscar conta por código interno
-GET {{baseUrl}}/financeiro/contas-bancarias/codigo/CC001
-Authorization: Bearer {{token}}
-
-###
-
 ### Buscar conta por ID
 GET {{baseUrl}}/financeiro/contas-bancarias/{{contaId}}
 Authorization: Bearer {{token}}
 
 ###
 
-### Atualizar conta bancária - Alterar dados básicos
+### ================================================================
+### ATUALIZAÇÃO
+### ================================================================
+
+### Atualizar conta bancária - Alterar status
 PATCH {{baseUrl}}/financeiro/contas-bancarias/{{contaId}}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "observacoes": "Conta atualizada - observação modificada"
+  "status": "inativo"
+}
+
+### Status disponíveis: ativo, inativo, suspenso
+
+###
+
+### Atualizar conta bancária - Adicionar chave PIX
+PATCH {{baseUrl}}/financeiro/contas-bancarias/{{contaId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "chave_pix": "nova.chave@empresa.com"
 }
 
 ###
 
-### Atualizar conta bancária - Adicionar mais unidades vinculadas
+### Atualizar conta bancária - Alterar observações
+PATCH {{baseUrl}}/financeiro/contas-bancarias/{{contaId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "observacoes": "Conta atualizada - nova observação"
+}
+
+###
+
+### Atualizar conta bancária - Vincular a unidades
 PATCH {{baseUrl}}/financeiro/contas-bancarias/{{contaId}}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
@@ -235,68 +346,38 @@ Authorization: Bearer {{token}}
   "unidades_ids": ["{{unidadeId}}", "{{unidadeId2}}"]
 }
 
-### Expected Response
-# Status: 200 OK
-# {
-#   "id": "uuid",
-#   "banco_id": "uuid",
-#   "unidades_vinculadas": [
-#     {
-#       "id": "uuid",
-#       "conta_bancaria_id": "uuid",
-#       "unidade_saude_id": "uuid-1",
-#       "unidade_saude": { ... },
-#       "ativo": true
-#     },
-#     {
-#       "id": "uuid",
-#       "conta_bancaria_id": "uuid",
-#       "unidade_saude_id": "uuid-2",
-#       "unidade_saude": { ... },
-#       "ativo": true
-#     }
-#   ],
-#   ...
-# }
+### Nota: unidades_ids substitui completamente os vínculos existentes
 
 ###
 
-### Atualizar conta bancária - Remover unidades (deixar apenas uma)
+### Atualizar conta bancária - Remover todas unidades
 PATCH {{baseUrl}}/financeiro/contas-bancarias/{{contaId}}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "unidades_ids": ["{{unidadeId}}"]
+  "unidades_ids": []
 }
 
 ###
 
-### Atualizar conta bancária - Trocar unidades vinculadas completamente
+### Atualizar conta bancária - Múltiplos campos
 PATCH {{baseUrl}}/financeiro/contas-bancarias/{{contaId}}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "unidades_ids": ["{{unidadeId2}}", "{{unidadeId3}}"]
-}
-
-### Expected Response
-# Os vínculos antigos são removidos e apenas as novas unidades ficam vinculadas
-
-###
-
-### Atualizar conta bancária - Alterar dados E unidades ao mesmo tempo
-PATCH {{baseUrl}}/financeiro/contas-bancarias/{{contaId}}
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-  "observacoes": "Conta compartilhada entre 3 unidades - atualizada",
+  "status": "ativo",
+  "chave_pix": "11999998888",
+  "observacoes": "Conta compartilhada - atualizada",
   "unidades_ids": ["{{unidadeId}}", "{{unidadeId2}}", "{{unidadeId3}}"]
 }
 
 ###
+
+### ================================================================
+### EXCLUSÃO
+### ================================================================
 
 ### Deletar conta bancária
 DELETE {{baseUrl}}/financeiro/contas-bancarias/{{contaId}}

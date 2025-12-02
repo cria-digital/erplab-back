@@ -90,6 +90,23 @@ Authorization: Bearer {{token}}
 
 ###
 
+### Vincular Conta Bancária Existente (conta principal)
+# Para usar este endpoint, primeiro crie a conta em:
+# POST {{baseUrl}}/financeiro/contas-bancarias
+# Depois use o ID da conta retornado aqui
+PATCH {{baseUrl}}/cadastros/unidades-saude/123e4567-e89b-12d3-a456-426614174000
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "contaBancariaId": "uuid-da-conta-bancaria-existente"
+}
+
+### Nota: Este campo vincula uma conta bancária principal à unidade.
+### As contas_bancarias inline continuam funcionando para criação de múltiplas contas.
+
+###
+
 ### Atualizar Endereço Completo
 PATCH {{baseUrl}}/cadastros/unidades-saude/0523e48a-750a-4c23-bbcf-6ec50ee509b7
 Content-Type: {{contentType}}
