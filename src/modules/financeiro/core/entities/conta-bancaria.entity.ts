@@ -22,6 +22,12 @@ export enum TipoConta {
   INVESTIMENTO = 'investimento',
 }
 
+export enum StatusConta {
+  ATIVO = 'ativo',
+  INATIVO = 'inativo',
+  SUSPENSO = 'suspenso',
+}
+
 @Entity('contas_bancarias')
 export class ContaBancaria {
   @PrimaryGeneratedColumn('uuid')
@@ -48,6 +54,16 @@ export class ContaBancaria {
 
   @Column({ type: 'text', nullable: true })
   observacoes: string;
+
+  @Column({
+    type: 'enum',
+    enum: StatusConta,
+    default: StatusConta.ATIVO,
+  })
+  status: StatusConta;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  chave_pix: string;
 
   @Column({ type: 'uuid' })
   banco_id: string;

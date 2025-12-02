@@ -12,6 +12,7 @@ import { HorarioAtendimento } from './horario-atendimento.entity';
 import { CnaeSecundario } from './cnae-secundario.entity';
 import { Cnae } from '../../../infraestrutura/common/entities/cnae.entity';
 import { ContaBancariaUnidade } from '../../../financeiro/core/entities/conta-bancaria-unidade.entity';
+import { ContaBancaria } from '../../../financeiro/core/entities/conta-bancaria.entity';
 
 @Entity('unidades_saude')
 export class UnidadeSaude {
@@ -260,6 +261,18 @@ export class UnidadeSaude {
     nullable: true,
   })
   certificadoDigitalValidade: Date;
+
+  // Conta Bancária Principal
+  @Column({
+    name: 'conta_bancaria_id',
+    type: 'uuid',
+    nullable: true,
+  })
+  contaBancariaId: string;
+
+  @ManyToOne(() => ContaBancaria, { nullable: true })
+  @JoinColumn({ name: 'conta_bancaria_id' })
+  contaBancaria: ContaBancaria;
 
   // Status
   @Column({ type: 'boolean', default: true })

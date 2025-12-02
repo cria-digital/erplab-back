@@ -474,6 +474,15 @@ export class CreateUnidadeSaudeDto {
   @IsDateString()
   certificadoDigitalValidade?: Date;
 
+  // Conta Bancária Principal
+  @ApiPropertyOptional({
+    example: 'uuid-da-conta-bancaria',
+    description: 'ID da conta bancária principal da unidade',
+  })
+  @IsOptional()
+  @IsString()
+  contaBancariaId?: string;
+
   // Relacionamentos
   @ApiPropertyOptional({
     type: [CreateHorarioAtendimentoDto],

@@ -6,7 +6,10 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ContaBancaria, TipoConta } from './entities/conta-bancaria.entity';
-import { CreateContaBancariaDto } from './dto/create-conta-bancaria.dto';
+import {
+  CreateContaBancariaDto,
+  CreateContaBancariaBatchDto,
+} from './dto/create-conta-bancaria.dto';
 import { UpdateContaBancariaDto } from './dto/update-conta-bancaria.dto';
 import { PaginatedResultDto } from '../../infraestrutura/common/dto/pagination.dto';
 
@@ -74,6 +77,29 @@ export class ContaBancariaService {
     }
 
     return contaSalva;
+  }
+
+  async createBatch(batchDto: CreateContaBancariaBatchDto): Promise<{
+    criadas: ContaBancaria[];
+    erros: { index: number; erro: string }[];
+  }> {
+    const criadas: ContaBancaria[] = [];
+    const erros: { index: number; erro: string }[] = [];
+
+    for (let i = 0; i < batchDto.contas.length; i++) {
+      const dto = batchDto.contas[i];
+      try {
+        const conta = await this.create(dto);
+        criadas.push(conta);
+      } catch (error) {
+        erros.push({
+          index: i,
+          erro: error.message || 'Erro desconhecido ao criar conta',
+        });
+      }
+    }
+
+    return { criadas, erros };
   }
 
   async findAll(

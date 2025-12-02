@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsString,
   IsNotEmpty,
@@ -7,9 +7,11 @@ import {
   IsUUID,
   MaxLength,
   IsArray,
+  ValidateNested,
   ArrayMinSize,
 } from 'class-validator';
-import { TipoConta } from '../entities/conta-bancaria.entity';
+import { Type } from 'class-transformer';
+import { TipoConta, StatusConta } from '../entities/conta-bancaria.entity';
 
 export class CreateContaBancariaDto {
   @ApiProperty({
@@ -63,14 +65,33 @@ export class CreateContaBancariaDto {
   @MaxLength(2)
   digito_conta: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Observações sobre a conta',
     example: 'Conta principal para recebimentos',
-    required: false,
   })
   @IsString()
   @IsOptional()
   observacoes?: string;
+
+  @ApiPropertyOptional({
+    description: 'Status da conta bancária',
+    enum: StatusConta,
+    example: StatusConta.ATIVO,
+    default: StatusConta.ATIVO,
+  })
+  @IsEnum(StatusConta)
+  @IsOptional()
+  status?: StatusConta;
+
+  @ApiPropertyOptional({
+    description: 'Chave PIX da conta',
+    example: '12345678000190',
+    maxLength: 255,
+  })
+  @IsString()
+  @IsOptional()
+  @MaxLength(255)
+  chave_pix?: string;
 
   @ApiProperty({
     description: 'ID do banco',
@@ -90,15 +111,28 @@ export class CreateContaBancariaDto {
   @IsOptional()
   unidade_saude_id?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description:
-      'IDs das unidades de saúde vinculadas. Obrigatório na criação (mínimo 1). Na atualização, se fornecido, substitui completamente os vínculos anteriores.',
+      'IDs das unidades de saúde vinculadas. Opcional. Na atualização, se fornecido, substitui completamente os vínculos anteriores.',
     example: ['uuid-1', 'uuid-2'],
     type: [String],
     isArray: true,
   })
+  @IsOptional()
   @IsArray()
-  @ArrayMinSize(1, { message: 'Pelo menos uma unidade deve ser informada' })
   @IsUUID('4', { each: true })
-  unidades_ids: string[];
+  unidades_ids?: string[];
+}
+
+export class CreateContaBancariaBatchDto {
+  @ApiProperty({
+    description: 'Lista de contas bancárias a serem criadas',
+    type: [CreateContaBancariaDto],
+    isArray: true,
+  })
+  @IsArray()
+  @ArrayMinSize(1, { message: 'Pelo menos uma conta deve ser informada' })
+  @ValidateNested({ each: true })
+  @Type(() => CreateContaBancariaDto)
+  contas: CreateContaBancariaDto[];
 }

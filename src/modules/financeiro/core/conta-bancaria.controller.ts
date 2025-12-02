@@ -21,7 +21,10 @@ import {
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../autenticacao/auth/guards/jwt-auth.guard';
 import { ContaBancariaService } from './conta-bancaria.service';
-import { CreateContaBancariaDto } from './dto/create-conta-bancaria.dto';
+import {
+  CreateContaBancariaDto,
+  CreateContaBancariaBatchDto,
+} from './dto/create-conta-bancaria.dto';
 import { UpdateContaBancariaDto } from './dto/update-conta-bancaria.dto';
 import { TipoConta } from './entities/conta-bancaria.entity';
 
@@ -44,6 +47,43 @@ export class ContaBancariaController {
   })
   create(@Body() createDto: CreateContaBancariaDto) {
     return this.service.create(createDto);
+  }
+
+  @Post('batch')
+  @ApiOperation({
+    summary: 'Criar múltiplas contas bancárias em lote',
+    description:
+      'Cria várias contas bancárias de uma vez. Retorna as contas criadas e os erros ocorridos.',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Processamento do lote concluído',
+    schema: {
+      type: 'object',
+      properties: {
+        criadas: {
+          type: 'array',
+          description: 'Contas criadas com sucesso',
+        },
+        erros: {
+          type: 'array',
+          description: 'Erros ocorridos durante a criação',
+          items: {
+            type: 'object',
+            properties: {
+              index: {
+                type: 'number',
+                description: 'Índice da conta no array',
+              },
+              erro: { type: 'string', description: 'Mensagem de erro' },
+            },
+          },
+        },
+      },
+    },
+  })
+  createBatch(@Body() batchDto: CreateContaBancariaBatchDto) {
+    return this.service.createBatch(batchDto);
   }
 
   @Get()
