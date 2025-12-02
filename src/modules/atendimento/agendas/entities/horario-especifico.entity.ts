@@ -5,35 +5,23 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { ConfiguracaoAgenda } from './configuracao-agenda.entity';
+import { Agenda } from './agenda.entity';
 
 @Entity('horarios_especificos')
 export class HorarioEspecifico {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
-  configuracaoAgendaId: string;
+  @Column({ name: 'agenda_id' })
+  agendaId: string;
 
-  @ManyToOne(() => ConfiguracaoAgenda, (config) => config.horariosEspecificos)
-  @JoinColumn({ name: 'configuracaoAgendaId' })
-  configuracaoAgenda: ConfiguracaoAgenda;
+  @ManyToOne(() => Agenda, (agenda) => agenda.horariosEspecificos)
+  @JoinColumn({ name: 'agenda_id' })
+  agenda: Agenda;
 
-  @Column({ type: 'date' })
-  data: Date;
+  @Column({ name: 'data_especifica', type: 'date' })
+  dataEspecifica: Date;
 
-  @Column({ type: 'time' })
-  horaInicio: string;
-
-  @Column({ type: 'time' })
-  horaFim: string;
-
-  @Column({ type: 'int', nullable: true })
-  capacidade: number;
-
-  @Column({ default: false })
-  isFeriado: boolean;
-
-  @Column({ default: false })
-  isPeriodoFacultativo: boolean;
+  @Column({ name: 'horario_especifico', type: 'time' })
+  horarioEspecifico: string;
 }

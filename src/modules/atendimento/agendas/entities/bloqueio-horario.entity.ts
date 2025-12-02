@@ -5,35 +5,29 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { ConfiguracaoAgenda } from './configuracao-agenda.entity';
+import { Agenda } from './agenda.entity';
 
 @Entity('bloqueios_horario')
 export class BloqueioHorario {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
-  configuracaoAgendaId: string;
+  @Column({ name: 'agenda_id' })
+  agendaId: string;
 
-  @ManyToOne(() => ConfiguracaoAgenda, (config) => config.bloqueiosHorario)
-  @JoinColumn({ name: 'configuracaoAgendaId' })
-  configuracaoAgenda: ConfiguracaoAgenda;
+  @ManyToOne(() => Agenda, (agenda) => agenda.bloqueiosHorario)
+  @JoinColumn({ name: 'agenda_id' })
+  agenda: Agenda;
 
-  @Column({ type: 'date' })
-  dataInicio: Date;
+  @Column({ name: 'dia_bloquear', type: 'date' })
+  diaBloquear: Date;
 
-  @Column({ type: 'time' })
-  horaInicio: string;
+  @Column({ name: 'horario_inicio', type: 'time' })
+  horarioInicio: string;
 
-  @Column({ type: 'date', nullable: true })
-  dataFim: Date;
-
-  @Column({ type: 'time', nullable: true })
-  horaFim: string;
+  @Column({ name: 'horario_fim', type: 'time' })
+  horarioFim: string;
 
   @Column({ nullable: true })
   observacao: string;
-
-  @Column({ nullable: true })
-  motivoBloqueio: string;
 }

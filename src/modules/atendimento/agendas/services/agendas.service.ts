@@ -2,10 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Agenda } from '../entities/agenda.entity';
-import { ConfiguracaoAgenda } from '../entities/configuracao-agenda.entity';
 import { VinculacaoAgenda } from '../entities/vinculacao-agenda.entity';
-import { NotificacaoAgenda } from '../entities/notificacao-agenda.entity';
-import { CanalIntegracao } from '../entities/canal-integracao.entity';
 import { BloqueioHorario } from '../entities/bloqueio-horario.entity';
 import { HorarioEspecifico } from '../entities/horario-especifico.entity';
 import { PeriodoAtendimento } from '../entities/periodo-atendimento.entity';
@@ -18,14 +15,8 @@ export class AgendasService {
   constructor(
     @InjectRepository(Agenda)
     private agendaRepository: Repository<Agenda>,
-    @InjectRepository(ConfiguracaoAgenda)
-    private configuracaoRepository: Repository<ConfiguracaoAgenda>,
     @InjectRepository(VinculacaoAgenda)
     private vinculacaoRepository: Repository<VinculacaoAgenda>,
-    @InjectRepository(NotificacaoAgenda)
-    private notificacaoRepository: Repository<NotificacaoAgenda>,
-    @InjectRepository(CanalIntegracao)
-    private canalIntegracaoRepository: Repository<CanalIntegracao>,
     @InjectRepository(BloqueioHorario)
     private bloqueioRepository: Repository<BloqueioHorario>,
     @InjectRepository(HorarioEspecifico)
@@ -42,10 +33,10 @@ export class AgendasService {
   async findAll(): Promise<Agenda[]> {
     return await this.agendaRepository.find({
       relations: [
-        'configuracaoAgenda',
         'vinculacoes',
-        'notificacoes',
-        'canaisIntegracao',
+        'periodosAtendimento',
+        'horariosEspecificos',
+        'bloqueiosHorario',
       ],
     });
   }
@@ -54,13 +45,10 @@ export class AgendasService {
     const agenda = await this.agendaRepository.findOne({
       where: { id },
       relations: [
-        'configuracaoAgenda',
-        'configuracaoAgenda.periodosAtendimento',
-        'configuracaoAgenda.horariosEspecificos',
-        'configuracaoAgenda.bloqueiosHorario',
         'vinculacoes',
-        'notificacoes',
-        'canaisIntegracao',
+        'periodosAtendimento',
+        'horariosEspecificos',
+        'bloqueiosHorario',
       ],
     });
 
@@ -90,7 +78,7 @@ export class AgendasService {
     const agenda = await this.findOne(agendaId);
     const bloqueio = this.bloqueioRepository.create({
       ...bloqueioDto,
-      configuracaoAgendaId: agenda.configuracaoAgenda.id,
+      agendaId: agenda.id,
     });
     return this.bloqueioRepository.save(
       bloqueio,

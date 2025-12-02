@@ -4,7 +4,7 @@ import { AgendasService } from './services/agendas.service';
 import { CreateAgendaDto } from './dto/create-agenda.dto';
 import { UpdateAgendaDto } from './dto/update-agenda.dto';
 import { CreateBloqueioDto } from './dto/create-bloqueio.dto';
-import { DiaSemanaEnum, PeriodoEnum } from './enums/agendas.enum';
+import { DiaSemanaEnum } from './enums/agendas.enum';
 
 describe('AgendasController', () => {
   let controller: AgendasController;
@@ -22,22 +22,32 @@ describe('AgendasController', () => {
 
   const mockAgenda = {
     id: '550e8400-e29b-41d4-a716-446655440000',
-    nome: 'Agenda Clínica Geral',
+    codigoInterno: 'AGE001',
+    nomeAgenda: 'Agenda Clínica Geral',
     descricao: 'Agenda para atendimentos de clínica geral',
-    unidade_id: '550e8400-e29b-41d4-a716-446655440001',
+    unidadeId: '550e8400-e29b-41d4-a716-446655440001',
+    diasSemana: [
+      DiaSemanaEnum.SEG,
+      DiaSemanaEnum.TER,
+      DiaSemanaEnum.QUA,
+      DiaSemanaEnum.QUI,
+      DiaSemanaEnum.SEX,
+    ],
+    intervaloAgendamento: 30,
     ativo: true,
-    created_at: new Date(),
-    updated_at: new Date(),
+    criadoEm: new Date(),
+    atualizadoEm: new Date(),
   };
 
   const mockBloqueio = {
     id: '550e8400-e29b-41d4-a716-446655440002',
-    configuracaoAgendaId: '550e8400-e29b-41d4-a716-446655440003',
-    dataInicio: new Date('2024-01-01'),
-    dataFim: new Date('2024-01-02'),
-    motivo: 'Feriado',
-    created_at: new Date(),
-    updated_at: new Date(),
+    agendaId: '550e8400-e29b-41d4-a716-446655440000',
+    diaBloquear: new Date('2024-01-01'),
+    horarioInicio: '08:00',
+    horarioFim: '18:00',
+    observacao: 'Feriado',
+    criadoEm: new Date(),
+    atualizadoEm: new Date(),
   };
 
   beforeEach(async () => {
@@ -65,24 +75,21 @@ describe('AgendasController', () => {
         codigoInterno: 'AGE001',
         nomeAgenda: 'Agenda Clínica Geral',
         descricao: 'Agenda para atendimentos de clínica geral',
-        unidadeAssociadaId: '550e8400-e29b-41d4-a716-446655440001',
-        configuracaoAgenda: {
-          diasSemana: [
-            DiaSemanaEnum.SEG,
-            DiaSemanaEnum.TER,
-            DiaSemanaEnum.QUA,
-            DiaSemanaEnum.QUI,
-            DiaSemanaEnum.SEX,
-          ],
-          periodosAtendimento: [
-            {
-              periodo: PeriodoEnum.MANHA,
-              horarioInicio: '08:00',
-              horarioFim: '12:00',
-            },
-          ],
-          intervaloAgendamento: 30,
-        },
+        unidadeId: '550e8400-e29b-41d4-a716-446655440001',
+        diasSemana: [
+          DiaSemanaEnum.SEG,
+          DiaSemanaEnum.TER,
+          DiaSemanaEnum.QUA,
+          DiaSemanaEnum.QUI,
+          DiaSemanaEnum.SEX,
+        ],
+        intervaloAgendamento: 30,
+        periodosAtendimento: [
+          {
+            horarioInicio: '08:00',
+            horarioFim: '12:00',
+          },
+        ],
       };
 
       mockAgendasService.create.mockResolvedValue(mockAgenda);

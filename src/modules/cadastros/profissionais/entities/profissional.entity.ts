@@ -155,18 +155,7 @@ export class Profissional {
   @JoinColumn({ name: 'enderecoId' })
   endereco: Endereco;
 
-  @ManyToMany(() => Agenda, (agenda) => agenda.profissionais)
-  @JoinTable({
-    name: 'profissionais_agendas',
-    joinColumn: {
-      name: 'profissional_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'agenda_id',
-      referencedColumnName: 'id',
-    },
-  })
+  @OneToMany(() => Agenda, (agenda) => agenda.profissional)
   agendas: Agenda[];
 
   @Column({ default: true })

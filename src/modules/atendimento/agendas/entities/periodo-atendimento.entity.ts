@@ -5,42 +5,23 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { PeriodoEnum, DiaSemanaEnum } from '../enums/agendas.enum';
-import { ConfiguracaoAgenda } from './configuracao-agenda.entity';
+import { Agenda } from './agenda.entity';
 
 @Entity('periodos_atendimento')
 export class PeriodoAtendimento {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
-  configuracaoAgendaId: string;
+  @Column({ name: 'agenda_id' })
+  agendaId: string;
 
-  @ManyToOne(() => ConfiguracaoAgenda, (config) => config.periodosAtendimento)
-  @JoinColumn({ name: 'configuracaoAgendaId' })
-  configuracaoAgenda: ConfiguracaoAgenda;
+  @ManyToOne(() => Agenda, (agenda) => agenda.periodosAtendimento)
+  @JoinColumn({ name: 'agenda_id' })
+  agenda: Agenda;
 
-  @Column({
-    type: 'enum',
-    enum: PeriodoEnum,
-  })
-  periodo: PeriodoEnum;
-
-  @Column({ type: 'time' })
+  @Column({ name: 'horario_inicio', type: 'time' })
   horarioInicio: string;
 
-  @Column({ type: 'time' })
+  @Column({ name: 'horario_fim', type: 'time' })
   horarioFim: string;
-
-  @Column('simple-array', { nullable: true })
-  diasSemana: DiaSemanaEnum[];
-
-  @Column({ type: 'date', nullable: true })
-  dataEspecifica: Date;
-
-  @Column({ type: 'int', nullable: true, comment: 'Intervalo em minutos' })
-  intervaloPeriodo: number;
-
-  @Column({ type: 'int', nullable: true })
-  capacidadePeriodo: number;
 }

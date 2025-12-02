@@ -2016,6 +2016,79 @@ src/modules/configuracoes/campos-formulario/
 
 ---
 
+### ✅ Módulo de Agendas - Refatoração Conforme Figma (Dezembro 2025)
+
+**Objetivo**: Simplificar o módulo de agendas para seguir exatamente o Figma - sem campos a mais nem a menos.
+
+**Refatoração Completa:**
+
+#### Entidades Simplificadas:
+
+1. **Agenda** (`agenda.entity.ts`)
+   - Notificações integradas diretamente (notificarEmail, notificarWhatsapp, prazoLembrete)
+   - Integração integrada (integracaoConvenios)
+   - Configuração integrada (diasSemana, intervaloAgendamento, capacidades)
+   - Setor mudou de FK para campo string
+   - Status enum substituído por boolean `ativo`
+
+2. **PeriodoAtendimento** (`periodo-atendimento.entity.ts`)
+   - Mantidos apenas: horarioInicio, horarioFim
+   - Removidos: periodo (enum), diasSemana, intervaloPeriodo, capacidadePeriodo, dataEspecifica
+
+3. **HorarioEspecifico** (`horario-especifico.entity.ts`)
+   - Mantidos apenas: dataEspecifica, horarioEspecifico
+   - Removidos: horaInicio, horaFim, capacidade, isFeriado, isPeriodoFacultativo
+
+4. **BloqueioHorario** (`bloqueio-horario.entity.ts`)
+   - Mantidos: diaBloquear, horarioInicio, horarioFim, observacao
+   - Removidos: dataInicio, dataFim, motivoBloqueio
+
+5. **VinculacaoAgenda** (`vinculacao-agenda.entity.ts`)
+   - Removido: opcaoAdicional, entidadeVinculadaNome
+
+#### Entidades Removidas:
+
+- `notificacao-agenda.entity.ts` - integrado em Agenda
+- `canal-integracao.entity.ts` - não necessário conforme Figma
+- `configuracao-agenda.entity.ts` - integrado em Agenda
+
+#### Enums Removidos:
+
+- `PeriodoEnum` - não utilizado
+- `StatusAgendaEnum` - substituído por boolean `ativo`
+- `PrazoLembreteEnum` - não utilizado
+- `TipoIntegracaoEnum` - não utilizado
+
+#### Enums Mantidos:
+
+- `DiaSemanaEnum` - usado em Agenda.diasSemana
+- `TipoVinculacaoEnum` - usado em VinculacaoAgenda.tipo
+
+#### Correções Adicionais:
+
+- Import da Especialidade corrigido (estava em caminho errado)
+- Relacionamento Profissional ↔ Agenda ajustado de ManyToMany para OneToMany
+
+**Migration**: `1764676562354-SimplificarAgendasConfirmeFigma.ts`
+
+**Tabelas Removidas pela Migration**:
+
+- `configuracoes_agenda`
+- `notificacoes_agenda`
+- `canais_integracao`
+- `profissionais_agendas` (tabela de join ManyToMany)
+
+**Arquivos Modificados**:
+
+- `src/modules/atendimento/agendas/entities/*.ts` - todas as entidades
+- `src/modules/atendimento/agendas/enums/agendas.enum.ts` - enums simplificados
+- `src/modules/atendimento/agendas/dto/create-agenda.dto.ts` - DTO atualizado
+- `src/modules/atendimento/agendas/agendas.module.ts` - imports atualizados
+- `src/modules/atendimento/agendas/services/agendas.service.ts` - service simplificado
+- `src/modules/cadastros/profissionais/entities/profissional.entity.ts` - relacionamento corrigido
+
+---
+
 ## Próximos Passos Sugeridos
 
 ### Módulos em Implementação (Alta Prioridade)
@@ -2026,12 +2099,13 @@ src/modules/configuracoes/campos-formulario/
 4. ✅ **CNAEs da Área de Saúde** - Concluído (31/10/2025)
 5. ✅ **Documentação - Cabeçalhos/Rodapés** - Concluído (30/11/2025)
 6. ✅ **Documentação - Formulários de Atendimento** - Concluído (01/12/2025)
-7. ⏳ **Estrutura Física** - Em andamento
+7. ✅ **Estrutura Física** - Concluído
    - ✅ Salas - Concluído
    - ✅ Equipamentos - Concluído
    - ✅ Etiquetas de Amostra - Concluído
    - ❌ Setores - Removido (conforme Figma)
    - ❌ Imobilizados - Removido (conforme Figma)
+8. ✅ **Agendas - Refatoração** - Concluído (02/12/2025)
 
 ### Tarefas Técnicas
 

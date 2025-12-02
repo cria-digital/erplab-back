@@ -13,11 +13,11 @@ export class VinculacaoAgenda {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ name: 'agenda_id' })
   agendaId: string;
 
   @ManyToOne(() => Agenda, (agenda) => agenda.vinculacoes)
-  @JoinColumn({ name: 'agendaId' })
+  @JoinColumn({ name: 'agenda_id' })
   agenda: Agenda;
 
   @Column({
@@ -26,12 +26,6 @@ export class VinculacaoAgenda {
   })
   tipo: TipoVinculacaoEnum;
 
-  @Column()
+  @Column({ name: 'entidade_vinculada_id' })
   entidadeVinculadaId: string;
-
-  @Column({ nullable: true })
-  entidadeVinculadaNome: string;
-
-  @Column({ default: false })
-  opcaoAdicional: boolean;
 }

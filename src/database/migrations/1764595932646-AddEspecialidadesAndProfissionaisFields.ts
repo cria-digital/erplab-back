@@ -274,6 +274,9 @@ export class AddEspecialidadesAndProfissionaisFields1764595932646
       `ALTER TYPE "public"."tipo_tabela_preco_enum" RENAME TO "tipo_tabela_preco_enum_old"`,
     );
     await queryRunner.query(
+      `DROP TYPE IF EXISTS "public"."tabelas_preco_tipo_tabela_enum"`,
+    );
+    await queryRunner.query(
       `CREATE TYPE "public"."tabelas_preco_tipo_tabela_enum" AS ENUM('servico', 'material_medicamento')`,
     );
     await queryRunner.query(
@@ -350,6 +353,9 @@ export class AddEspecialidadesAndProfissionaisFields1764595932646
       `ALTER TYPE "public"."status_amostra_enum" RENAME TO "status_amostra_enum_old"`,
     );
     await queryRunner.query(
+      `DROP TYPE IF EXISTS "public"."amostras_status_enum"`,
+    );
+    await queryRunner.query(
       `CREATE TYPE "public"."amostras_status_enum" AS ENUM('ativo', 'inativo', 'em_revisao')`,
     );
     await queryRunner.query(
@@ -388,6 +394,9 @@ export class AddEspecialidadesAndProfissionaisFields1764595932646
     );
     await queryRunner.query(
       `ALTER TYPE "public"."adquirentes_opcao_parcelamento_enum" RENAME TO "adquirentes_opcao_parcelamento_enum_old"`,
+    );
+    await queryRunner.query(
+      `DROP TYPE IF EXISTS "public"."adquirentes_opcao_parcelamento_enum"`,
     );
     await queryRunner.query(
       `CREATE TYPE "public"."adquirentes_opcao_parcelamento_enum" AS ENUM('avista', '2x', '3x', '4x', '5x', '6x', '7x', '8x', '9x', '10x', '11x', '12x')`,
@@ -430,10 +439,13 @@ export class AddEspecialidadesAndProfissionaisFields1764595932646
       `ALTER TABLE "configuracoes_campos_formulario" DROP COLUMN "tipo_formulario"`,
     );
     await queryRunner.query(
+      `DROP TYPE IF EXISTS "public"."configuracoes_campos_formulario_tipo_formulario_enum"`,
+    );
+    await queryRunner.query(
       `CREATE TYPE "public"."configuracoes_campos_formulario_tipo_formulario_enum" AS ENUM('cadastro_paciente', 'ordem_servico', 'tiss')`,
     );
     await queryRunner.query(
-      `ALTER TABLE "configuracoes_campos_formulario" ADD "tipo_formulario" "public"."configuracoes_campos_formulario_tipo_formulario_enum" NOT NULL`,
+      `ALTER TABLE "configuracoes_campos_formulario" ADD "tipo_formulario" "public"."configuracoes_campos_formulario_tipo_formulario_enum" NOT NULL DEFAULT 'cadastro_paciente'`,
     );
     await queryRunner.query(
       `COMMENT ON COLUMN "configuracoes_campos_formulario"."tipo_formulario" IS 'Tipo do formulário: cadastro_paciente, ordem_servico, tiss'`,
@@ -458,6 +470,9 @@ export class AddEspecialidadesAndProfissionaisFields1764595932646
     );
     await queryRunner.query(
       `ALTER TYPE "public"."tipo_cabecalho_rodape_enum" RENAME TO "tipo_cabecalho_rodape_enum_old"`,
+    );
+    await queryRunner.query(
+      `DROP TYPE IF EXISTS "public"."cabecalhos_rodapes_tipo_enum"`,
     );
     await queryRunner.query(
       `CREATE TYPE "public"."cabecalhos_rodapes_tipo_enum" AS ENUM('CABECALHO', 'RODAPE')`,

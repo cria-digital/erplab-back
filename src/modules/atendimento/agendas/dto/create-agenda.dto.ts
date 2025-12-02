@@ -8,19 +8,12 @@ import {
   IsArray,
   ValidateNested,
   IsNumber,
+  IsBoolean,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import {
-  StatusAgendaEnum,
-  DiaSemanaEnum,
-  PeriodoEnum,
-} from '../enums/agendas.enum';
+import { DiaSemanaEnum } from '../enums/agendas.enum';
 
 class CreatePeriodoAtendimentoDto {
-  @ApiProperty({ enum: PeriodoEnum, description: 'Período do atendimento' })
-  @IsEnum(PeriodoEnum)
-  periodo: PeriodoEnum;
-
   @ApiProperty({ example: '08:00', description: 'Horário de início' })
   @IsString()
   horarioInicio: string;
@@ -28,52 +21,6 @@ class CreatePeriodoAtendimentoDto {
   @ApiProperty({ example: '12:00', description: 'Horário de fim' })
   @IsString()
   horarioFim: string;
-
-  @ApiPropertyOptional({ enum: DiaSemanaEnum, isArray: true })
-  @IsOptional()
-  @IsArray()
-  @IsEnum(DiaSemanaEnum, { each: true })
-  diasSemana?: DiaSemanaEnum[];
-
-  @ApiPropertyOptional({ example: 30, description: 'Intervalo em minutos' })
-  @IsOptional()
-  @IsNumber()
-  intervaloPeriodo?: number;
-
-  @ApiPropertyOptional({ example: 10 })
-  @IsOptional()
-  @IsNumber()
-  capacidadePeriodo?: number;
-}
-
-class CreateConfiguracaoAgendaDto {
-  @ApiProperty({ enum: DiaSemanaEnum, isArray: true })
-  @IsArray()
-  @IsEnum(DiaSemanaEnum, { each: true })
-  diasSemana: DiaSemanaEnum[];
-
-  @ApiProperty({ type: [CreatePeriodoAtendimentoDto] })
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => CreatePeriodoAtendimentoDto)
-  periodosAtendimento: CreatePeriodoAtendimentoDto[];
-
-  @ApiProperty({
-    example: 30,
-    description: 'Intervalo entre agendamentos em minutos',
-  })
-  @IsNumber()
-  intervaloAgendamento: number;
-
-  @ApiPropertyOptional({ example: 100 })
-  @IsOptional()
-  @IsNumber()
-  capacidadeTotal?: number;
-
-  @ApiPropertyOptional({ example: 4 })
-  @IsOptional()
-  @IsNumber()
-  capacidadePorHorario?: number;
 }
 
 export class CreateAgendaDto {
@@ -87,20 +34,14 @@ export class CreateAgendaDto {
   @IsNotEmpty()
   nomeAgenda: string;
 
-  @ApiPropertyOptional({ example: 'Agenda para exames de ultrassonografia' })
+  @ApiProperty({ description: 'ID da unidade de saúde' })
+  @IsUUID()
+  unidadeId: string;
+
+  @ApiPropertyOptional({ example: 'Setor de Imagem' })
   @IsOptional()
   @IsString()
-  descricao?: string;
-
-  @ApiPropertyOptional({ description: 'ID da unidade de saúde associada' })
-  @IsOptional()
-  @IsUUID()
-  unidadeAssociadaId?: string;
-
-  @ApiPropertyOptional({ description: 'ID do setor' })
-  @IsOptional()
-  @IsUUID()
-  setorId?: string;
+  setor?: string;
 
   @ApiPropertyOptional({ description: 'ID da sala' })
   @IsOptional()
@@ -122,16 +63,70 @@ export class CreateAgendaDto {
   @IsUUID()
   equipamentoId?: string;
 
-  @ApiProperty({ type: CreateConfiguracaoAgendaDto })
-  @ValidateNested()
-  @Type(() => CreateConfiguracaoAgendaDto)
-  configuracaoAgenda: CreateConfiguracaoAgendaDto;
-
-  @ApiPropertyOptional({
-    enum: StatusAgendaEnum,
-    default: StatusAgendaEnum.ATIVO,
-  })
+  @ApiPropertyOptional({ example: 'Agenda para exames de ultrassonografia' })
   @IsOptional()
-  @IsEnum(StatusAgendaEnum)
-  status?: StatusAgendaEnum;
+  @IsString()
+  descricao?: string;
+
+  // === CONFIGURAÇÃO DE AGENDA ===
+
+  @ApiProperty({ enum: DiaSemanaEnum, isArray: true })
+  @IsArray()
+  @IsEnum(DiaSemanaEnum, { each: true })
+  diasSemana: DiaSemanaEnum[];
+
+  @ApiProperty({
+    example: 30,
+    description: 'Intervalo entre agendamentos em minutos',
+  })
+  @IsNumber()
+  intervaloAgendamento: number;
+
+  @ApiPropertyOptional({ example: 4 })
+  @IsOptional()
+  @IsNumber()
+  capacidadePorHorario?: number;
+
+  @ApiPropertyOptional({ example: 100 })
+  @IsOptional()
+  @IsNumber()
+  capacidadeTotal?: number;
+
+  // === NOTIFICAÇÕES ===
+
+  @ApiPropertyOptional({ default: false })
+  @IsOptional()
+  @IsBoolean()
+  notificarEmail?: boolean;
+
+  @ApiPropertyOptional({ default: false })
+  @IsOptional()
+  @IsBoolean()
+  notificarWhatsapp?: boolean;
+
+  @ApiPropertyOptional({ example: '24 horas' })
+  @IsOptional()
+  @IsString()
+  prazoLembrete?: string;
+
+  // === INTEGRAÇÃO ===
+
+  @ApiPropertyOptional({ default: false })
+  @IsOptional()
+  @IsBoolean()
+  integracaoConvenios?: boolean;
+
+  // === PERÍODOS DE ATENDIMENTO ===
+
+  @ApiPropertyOptional({ type: [CreatePeriodoAtendimentoDto] })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreatePeriodoAtendimentoDto)
+  periodosAtendimento?: CreatePeriodoAtendimentoDto[];
+
+  @ApiPropertyOptional({ default: true })
+  @IsOptional()
+  @IsBoolean()
+  ativo?: boolean;
 }

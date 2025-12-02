@@ -4,17 +4,14 @@ import { Repository } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
 import { AgendasService } from './services/agendas.service';
 import { Agenda } from './entities/agenda.entity';
-import { ConfiguracaoAgenda } from './entities/configuracao-agenda.entity';
 import { VinculacaoAgenda } from './entities/vinculacao-agenda.entity';
-import { NotificacaoAgenda } from './entities/notificacao-agenda.entity';
-import { CanalIntegracao } from './entities/canal-integracao.entity';
 import { BloqueioHorario } from './entities/bloqueio-horario.entity';
 import { HorarioEspecifico } from './entities/horario-especifico.entity';
 import { PeriodoAtendimento } from './entities/periodo-atendimento.entity';
 import { CreateAgendaDto } from './dto/create-agenda.dto';
 import { UpdateAgendaDto } from './dto/update-agenda.dto';
 import { CreateBloqueioDto } from './dto/create-bloqueio.dto';
-import { DiaSemanaEnum, PeriodoEnum } from './enums/agendas.enum';
+import { DiaSemanaEnum } from './enums/agendas.enum';
 
 describe('AgendasService', () => {
   let service: AgendasService;
@@ -23,25 +20,32 @@ describe('AgendasService', () => {
 
   const mockAgenda = {
     id: '550e8400-e29b-41d4-a716-446655440000',
-    nome: 'Agenda Clínica Geral',
+    codigoInterno: 'AGE001',
+    nomeAgenda: 'Agenda Clínica Geral',
     descricao: 'Agenda para atendimentos de clínica geral',
-    unidade_id: '550e8400-e29b-41d4-a716-446655440001',
+    unidadeId: '550e8400-e29b-41d4-a716-446655440001',
+    diasSemana: [
+      DiaSemanaEnum.SEG,
+      DiaSemanaEnum.TER,
+      DiaSemanaEnum.QUA,
+      DiaSemanaEnum.QUI,
+      DiaSemanaEnum.SEX,
+    ],
+    intervaloAgendamento: 30,
     ativo: true,
-    configuracaoAgenda: {
-      id: '550e8400-e29b-41d4-a716-446655440003',
-    },
-    created_at: new Date(),
-    updated_at: new Date(),
+    criadoEm: new Date(),
+    atualizadoEm: new Date(),
   };
 
   const mockBloqueio = {
     id: '550e8400-e29b-41d4-a716-446655440002',
-    configuracaoAgendaId: '550e8400-e29b-41d4-a716-446655440003',
-    dataInicio: new Date('2024-01-01'),
-    dataFim: new Date('2024-01-02'),
-    motivo: 'Feriado',
-    created_at: new Date(),
-    updated_at: new Date(),
+    agendaId: '550e8400-e29b-41d4-a716-446655440000',
+    diaBloquear: new Date('2024-01-01'),
+    horarioInicio: '08:00',
+    horarioFim: '18:00',
+    observacao: 'Feriado',
+    criadoEm: new Date(),
+    atualizadoEm: new Date(),
   };
 
   beforeEach(async () => {
@@ -60,34 +64,7 @@ describe('AgendasService', () => {
           },
         },
         {
-          provide: getRepositoryToken(ConfiguracaoAgenda),
-          useValue: {
-            create: jest.fn(),
-            save: jest.fn(),
-            find: jest.fn(),
-            findOne: jest.fn(),
-          },
-        },
-        {
           provide: getRepositoryToken(VinculacaoAgenda),
-          useValue: {
-            create: jest.fn(),
-            save: jest.fn(),
-            find: jest.fn(),
-            findOne: jest.fn(),
-          },
-        },
-        {
-          provide: getRepositoryToken(NotificacaoAgenda),
-          useValue: {
-            create: jest.fn(),
-            save: jest.fn(),
-            find: jest.fn(),
-            findOne: jest.fn(),
-          },
-        },
-        {
-          provide: getRepositoryToken(CanalIntegracao),
           useValue: {
             create: jest.fn(),
             save: jest.fn(),
@@ -145,24 +122,21 @@ describe('AgendasService', () => {
         codigoInterno: 'AGE001',
         nomeAgenda: 'Agenda Clínica Geral',
         descricao: 'Agenda para atendimentos de clínica geral',
-        unidadeAssociadaId: '550e8400-e29b-41d4-a716-446655440001',
-        configuracaoAgenda: {
-          diasSemana: [
-            DiaSemanaEnum.SEG,
-            DiaSemanaEnum.TER,
-            DiaSemanaEnum.QUA,
-            DiaSemanaEnum.QUI,
-            DiaSemanaEnum.SEX,
-          ],
-          periodosAtendimento: [
-            {
-              periodo: PeriodoEnum.MANHA,
-              horarioInicio: '08:00',
-              horarioFim: '12:00',
-            },
-          ],
-          intervaloAgendamento: 30,
-        },
+        unidadeId: '550e8400-e29b-41d4-a716-446655440001',
+        diasSemana: [
+          DiaSemanaEnum.SEG,
+          DiaSemanaEnum.TER,
+          DiaSemanaEnum.QUA,
+          DiaSemanaEnum.QUI,
+          DiaSemanaEnum.SEX,
+        ],
+        intervaloAgendamento: 30,
+        periodosAtendimento: [
+          {
+            horarioInicio: '08:00',
+            horarioFim: '12:00',
+          },
+        ],
       };
 
       jest.spyOn(agendaRepository, 'create').mockReturnValue(mockAgenda as any);
@@ -180,24 +154,21 @@ describe('AgendasService', () => {
         codigoInterno: 'AGE001',
         nomeAgenda: 'Agenda Clínica Geral',
         descricao: 'Agenda para atendimentos de clínica geral',
-        unidadeAssociadaId: '550e8400-e29b-41d4-a716-446655440001',
-        configuracaoAgenda: {
-          diasSemana: [
-            DiaSemanaEnum.SEG,
-            DiaSemanaEnum.TER,
-            DiaSemanaEnum.QUA,
-            DiaSemanaEnum.QUI,
-            DiaSemanaEnum.SEX,
-          ],
-          periodosAtendimento: [
-            {
-              periodo: PeriodoEnum.MANHA,
-              horarioInicio: '08:00',
-              horarioFim: '12:00',
-            },
-          ],
-          intervaloAgendamento: 30,
-        },
+        unidadeId: '550e8400-e29b-41d4-a716-446655440001',
+        diasSemana: [
+          DiaSemanaEnum.SEG,
+          DiaSemanaEnum.TER,
+          DiaSemanaEnum.QUA,
+          DiaSemanaEnum.QUI,
+          DiaSemanaEnum.SEX,
+        ],
+        intervaloAgendamento: 30,
+        periodosAtendimento: [
+          {
+            horarioInicio: '08:00',
+            horarioFim: '12:00',
+          },
+        ],
       };
 
       jest.spyOn(agendaRepository, 'create').mockReturnValue(mockAgenda as any);
@@ -221,10 +192,10 @@ describe('AgendasService', () => {
       expect(result).toEqual(mockAgendas);
       expect(agendaRepository.find).toHaveBeenCalledWith({
         relations: [
-          'configuracaoAgenda',
           'vinculacoes',
-          'notificacoes',
-          'canaisIntegracao',
+          'periodosAtendimento',
+          'horariosEspecificos',
+          'bloqueiosHorario',
         ],
       });
     });
@@ -252,13 +223,10 @@ describe('AgendasService', () => {
       expect(agendaRepository.findOne).toHaveBeenCalledWith({
         where: { id: '550e8400-e29b-41d4-a716-446655440000' },
         relations: [
-          'configuracaoAgenda',
-          'configuracaoAgenda.periodosAtendimento',
-          'configuracaoAgenda.horariosEspecificos',
-          'configuracaoAgenda.bloqueiosHorario',
           'vinculacoes',
-          'notificacoes',
-          'canaisIntegracao',
+          'periodosAtendimento',
+          'horariosEspecificos',
+          'bloqueiosHorario',
         ],
       });
     });
@@ -379,7 +347,7 @@ describe('AgendasService', () => {
       expect(result).toEqual(mockBloqueio);
       expect(bloqueioRepository.create).toHaveBeenCalledWith({
         ...dto,
-        configuracaoAgendaId: mockAgenda.configuracaoAgenda.id,
+        agendaId: mockAgenda.id,
       });
       expect(bloqueioRepository.save).toHaveBeenCalledWith(mockBloqueio);
     });
