@@ -38,34 +38,34 @@ export class ChangeFormatoLaudoToJsonbArray1764850000000
       );
     }
 
-    // 2. Tabela exames_laboratorio_apoio - Mesma alteração
+    // 2. Tabela exames_laboratorios_apoio - Mesma alteração
     const elaColExists = await queryRunner.query(`
       SELECT column_name FROM information_schema.columns
-      WHERE table_name = 'exames_laboratorio_apoio' AND column_name = 'formato_laudo_id'
+      WHERE table_name = 'exames_laboratorios_apoio' AND column_name = 'formato_laudo_id'
     `);
 
     if (elaColExists.length > 0) {
       // Remover a coluna antiga
       await queryRunner.query(
-        `ALTER TABLE "exames_laboratorio_apoio" DROP COLUMN IF EXISTS "formato_laudo_id"`,
+        `ALTER TABLE "exames_laboratorios_apoio" DROP COLUMN IF EXISTS "formato_laudo_id"`,
       );
     }
 
     // Verificar se a nova coluna já existe
     const elaNewColExists = await queryRunner.query(`
       SELECT column_name FROM information_schema.columns
-      WHERE table_name = 'exames_laboratorio_apoio' AND column_name = 'formatos_laudo'
+      WHERE table_name = 'exames_laboratorios_apoio' AND column_name = 'formatos_laudo'
     `);
 
     if (elaNewColExists.length === 0) {
       // Adicionar a nova coluna JSONB
       await queryRunner.query(
-        `ALTER TABLE "exames_laboratorio_apoio" ADD COLUMN "formatos_laudo" jsonb`,
+        `ALTER TABLE "exames_laboratorios_apoio" ADD COLUMN "formatos_laudo" jsonb`,
       );
 
       // Adicionar comentário
       await queryRunner.query(
-        `COMMENT ON COLUMN "exames_laboratorio_apoio"."formatos_laudo" IS 'Formatos de laudo aceitos (PDF, XML, HTML, TEXTO, FORMULARIO, DICOM)'`,
+        `COMMENT ON COLUMN "exames_laboratorios_apoio"."formatos_laudo" IS 'Formatos de laudo aceitos (PDF, XML, HTML, TEXTO, FORMULARIO, DICOM)'`,
       );
     }
   }
@@ -81,12 +81,12 @@ export class ChangeFormatoLaudoToJsonbArray1764850000000
       `ALTER TABLE "exames" ADD COLUMN "formato_laudo_id" uuid`,
     );
 
-    // 2. Tabela exames_laboratorio_apoio
+    // 2. Tabela exames_laboratorios_apoio
     await queryRunner.query(
-      `ALTER TABLE "exames_laboratorio_apoio" DROP COLUMN IF EXISTS "formatos_laudo"`,
+      `ALTER TABLE "exames_laboratorios_apoio" DROP COLUMN IF EXISTS "formatos_laudo"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "exames_laboratorio_apoio" ADD COLUMN "formato_laudo_id" uuid`,
+      `ALTER TABLE "exames_laboratorios_apoio" ADD COLUMN "formato_laudo_id" uuid`,
     );
   }
 }
