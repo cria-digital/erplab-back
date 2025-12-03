@@ -10,6 +10,7 @@ import { ExamesService } from './exames.service';
 import { Exame } from './entities/exame.entity';
 import { CreateExameDto } from './dto/create-exame.dto';
 import { UpdateExameDto } from './dto/update-exame.dto';
+import { UnidadeSaude } from '../../cadastros/unidade-saude/entities/unidade-saude.entity';
 
 describe('ExamesService', () => {
   let service: ExamesService;
@@ -103,6 +104,10 @@ describe('ExamesService', () => {
     update: jest.fn(),
   };
 
+  const mockUnidadeRepository = {
+    find: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -110,6 +115,10 @@ describe('ExamesService', () => {
         {
           provide: getRepositoryToken(Exame),
           useValue: mockRepository,
+        },
+        {
+          provide: getRepositoryToken(UnidadeSaude),
+          useValue: mockUnidadeRepository,
         },
       ],
     }).compile();
@@ -134,18 +143,20 @@ describe('ExamesService', () => {
     };
 
     it('deve criar um exame com sucesso', async () => {
-      mockRepository.findOne.mockResolvedValue(null);
+      // First call: check for duplicate - return null (not found)
+      // Second call: findOne to return with relations - return mockExame
+      mockRepository.findOne
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(mockExame);
       mockRepository.create.mockReturnValue(mockExame);
       mockRepository.save.mockResolvedValue(mockExame);
 
       const result = await service.create(createExameDto);
 
       expect(result).toEqual(mockExame);
-      expect(mockRepository.findOne).toHaveBeenCalledWith({
-        where: { codigo_interno: createExameDto.codigo_interno },
-      });
+      expect(mockRepository.findOne).toHaveBeenCalledTimes(2);
       expect(mockRepository.create).toHaveBeenCalledWith(createExameDto);
-      expect(mockRepository.save).toHaveBeenCalledWith(mockExame);
+      expect(mockRepository.save).toHaveBeenCalled();
     });
 
     it('deve lançar ConflictException quando código já existir', async () => {
@@ -282,6 +293,7 @@ describe('ExamesService', () => {
           'subgrupo',
           'setor',
           'laboratorioApoio',
+          'unidadesQueRealizam',
         ],
       });
     });

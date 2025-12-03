@@ -340,55 +340,67 @@ export class EmpresasService {
   }
 
   /**
-   * Converte código CNAE numérico (ex: 8640203) para formato com pontuação (ex: 8640-2/03)
+   * Busca CNAE no banco local tentando diferentes formatos
+   * A API retorna códigos como 6311900 (7 dígitos)
+   * O banco pode ter:
+   * - Formato simples: 63119 (5 dígitos - classe)
+   * - Formato completo: 6311-9/00 (com formatação)
    */
-  private formatarCodigoCnae(codigo: number | string): string {
+  private async buscarCnaeLocal(codigo: number | string): Promise<any> {
     const codigoStr = String(codigo).padStart(7, '0');
-    // Formato: XXXX-X/XX (ex: 8640-2/03)
-    return `${codigoStr.substring(0, 4)}-${codigoStr.substring(4, 5)}/${codigoStr.substring(5, 7)}`;
+
+    // Formato 1: apenas 5 primeiros dígitos (classe)
+    const codigoSimples = codigoStr.substring(0, 5);
+
+    // Formato 2: XXXX-X/XX (ex: 6311-9/00)
+    const codigoFormatado = `${codigoStr.substring(0, 4)}-${codigoStr.substring(4, 5)}/${codigoStr.substring(5, 7)}`;
+
+    // Tenta primeiro o formato simples (5 dígitos)
+    let cnaeLocal = await this.cnaeRepository.findOne({
+      where: { codigo: codigoSimples },
+    });
+
+    if (cnaeLocal) {
+      return cnaeLocal;
+    }
+
+    // Se não encontrou, tenta o formato completo
+    cnaeLocal = await this.cnaeRepository.findOne({
+      where: { codigo: codigoFormatado },
+    });
+
+    return cnaeLocal || null;
   }
 
   /**
    * Enriquece os dados da API CNPJA com informações de CNAE do banco local
+   * Retorna objetos completos do CNAE do banco de dados
    */
   private async enriquecerComCnaesLocais(dados: any): Promise<any> {
-    // Busca o CNAE principal no banco local
+    // Busca o CNAE principal no banco local e retorna o objeto completo
     if (dados.mainActivity?.code) {
-      const codigoFormatado = this.formatarCodigoCnae(dados.mainActivity.code);
-      const cnaeLocal = await this.cnaeRepository.findOne({
-        where: { codigo: codigoFormatado },
-      });
-
-      if (cnaeLocal) {
-        dados.mainActivity = {
-          ...dados.mainActivity,
-          cnaeLocal: cnaeLocal,
-        };
-      }
+      dados.cnaePrincipal = await this.buscarCnaeLocal(dados.mainActivity.code);
+    } else {
+      dados.cnaePrincipal = null;
     }
 
-    // Busca os CNAEs secundários no banco local
+    // Busca os CNAEs secundários no banco local e retorna array de objetos
     if (dados.sideActivities?.length > 0) {
-      const sideActivitiesEnriquecidas = await Promise.all(
+      const cnaesSecundarios = await Promise.all(
         dados.sideActivities.map(async (activity: any) => {
-          const codigoFormatado = this.formatarCodigoCnae(activity.code);
-          const cnaeLocal = await this.cnaeRepository.findOne({
-            where: { codigo: codigoFormatado },
-          });
-
-          if (cnaeLocal) {
-            return {
-              ...activity,
-              cnaeLocal: cnaeLocal,
-            };
-          }
-
-          return activity;
+          return await this.buscarCnaeLocal(activity.code);
         }),
       );
 
-      dados.sideActivities = sideActivitiesEnriquecidas;
+      // Filtra apenas os CNAEs encontrados no banco
+      dados.cnaesSecundarios = cnaesSecundarios.filter((cnae) => cnae !== null);
+    } else {
+      dados.cnaesSecundarios = [];
     }
+
+    // Remove as propriedades originais da API
+    delete dados.mainActivity;
+    delete dados.sideActivities;
 
     return dados;
   }

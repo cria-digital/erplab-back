@@ -5,16 +5,19 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like } from 'typeorm';
+import { Repository, Like, In } from 'typeorm';
 import { Exame } from './entities/exame.entity';
 import { CreateExameDto } from './dto/create-exame.dto';
 import { UpdateExameDto } from './dto/update-exame.dto';
+import { UnidadeSaude } from '../../cadastros/unidade-saude/entities/unidade-saude.entity';
 
 @Injectable()
 export class ExamesService {
   constructor(
     @InjectRepository(Exame)
     private readonly exameRepository: Repository<Exame>,
+    @InjectRepository(UnidadeSaude)
+    private readonly unidadeRepository: Repository<UnidadeSaude>,
   ) {}
 
   async create(createExameDto: CreateExameDto): Promise<Exame> {
@@ -29,8 +32,23 @@ export class ExamesService {
       );
     }
 
-    const exame = this.exameRepository.create(createExameDto);
-    return await this.exameRepository.save(exame);
+    // Separa unidades_ids do resto do DTO
+    const { unidades_ids, ...exameData } = createExameDto;
+
+    const exame = this.exameRepository.create(exameData);
+
+    // Se foram passadas unidades, busca e associa
+    if (unidades_ids && unidades_ids.length > 0) {
+      const unidades = await this.unidadeRepository.find({
+        where: { id: In(unidades_ids) },
+      });
+      exame.unidadesQueRealizam = unidades;
+    }
+
+    const savedExame = await this.exameRepository.save(exame);
+
+    // Retorna com as relações carregadas
+    return this.findOne(savedExame.id);
   }
 
   async findAll(
@@ -83,6 +101,7 @@ export class ExamesService {
         'subgrupo',
         'setor',
         'laboratorioApoio',
+        'unidadesQueRealizam',
       ],
     });
 
