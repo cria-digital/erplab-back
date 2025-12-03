@@ -63,7 +63,7 @@ export class ExameLaboratorioApoioService {
       lembrete_recepcionista_os: dto.lembrete_recepcionista_os,
       distribuicao: dto.distribuicao,
       prazo_entrega_dias: dto.prazo_entrega_dias,
-      formato_laudo_id: dto.formato_laudo_id,
+      formatos_laudo: dto.formatos_laudo,
       ativo: dto.ativo ?? true,
     });
 
@@ -121,7 +121,6 @@ export class ExameLaboratorioApoioService {
         'tipoRecipienteAlternativa',
         'volumeMinimoAlternativa',
         'estabilidadeAlternativa',
-        'formatoLaudoAlternativa',
       ],
     });
 
@@ -209,8 +208,8 @@ export class ExameLaboratorioApoioService {
     if (dto.distribuicao !== undefined) entity.distribuicao = dto.distribuicao;
     if (dto.prazo_entrega_dias !== undefined)
       entity.prazo_entrega_dias = dto.prazo_entrega_dias;
-    if (dto.formato_laudo_id !== undefined)
-      entity.formato_laudo_id = dto.formato_laudo_id;
+    if (dto.formatos_laudo !== undefined)
+      entity.formatos_laudo = dto.formatos_laudo;
     if (dto.ativo !== undefined) entity.ativo = dto.ativo;
 
     return this.repository.save(entity);

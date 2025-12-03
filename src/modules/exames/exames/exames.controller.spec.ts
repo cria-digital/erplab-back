@@ -53,7 +53,7 @@ describe('ExamesController', () => {
     regiao_coleta_ids: null,
     estabilidade_id: null,
     volume_minimo_id: null,
-    formato_laudo_id: null,
+    formatos_laudo: null,
     volume_min: 3,
     volume_ideal: 5,
     requer_peso: false,

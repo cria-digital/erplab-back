@@ -74,7 +74,7 @@ Content-Type: application/json
   "distribuicao": "Centrifugar 3000rpm/10min, separar soro, enviar refrigerado",
 
   "prazo_entrega_dias": 3,
-  "formato_laudo_id": "{{formatoLaudoId}}",
+  "formatos_laudo": ["PDF", "XML", "HTML"],
 
   "ativo": true
 }

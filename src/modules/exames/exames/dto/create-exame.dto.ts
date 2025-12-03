@@ -293,13 +293,16 @@ export class CreateExameDto {
   volume_minimo_id?: string;
 
   @ApiProperty({
-    description: 'ID da alternativa do campo formato_laudo',
-    example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
+    description: 'Formatos de laudo aceitos (multiselect)',
+    example: ['PDF', 'XML', 'HTML'],
+    enum: ['PDF', 'XML', 'HTML', 'TEXTO', 'FORMULARIO', 'DICOM'],
+    isArray: true,
     required: false,
   })
-  @IsString()
+  @IsArray()
+  @IsString({ each: true })
   @IsOptional()
-  formato_laudo_id?: string;
+  formatos_laudo?: string[];
 
   @ApiProperty({
     description: 'Se o exame requer termo de consentimento (SIM/NÃO)',

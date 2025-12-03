@@ -1,8 +1,19 @@
 ###
 ### Campos de Formulário utilizados (FK para alternativas):
 ### - tipo_exame_id, metodologia_id, grupo_id, especialidade_id, unidade_medida_id
-### - amostra_enviar_id, tipo_recipiente_id, estabilidade_id, volume_minimo_id, formato_laudo_id
+### - amostra_enviar_id, tipo_recipiente_id, estabilidade_id, volume_minimo_id
 ### - regiao_coleta_ids (array de IDs)
+###
+### Vínculos com outras entidades:
+### - laboratorio_apoio_id: FK para laboratório de apoio (GET /api/v1/relacionamento/laboratorios)
+### - telemedicina_id: FK para telemedicina (GET /api/v1/relacionamento/telemedicina)
+### - unidade_destino_id: FK para unidade de saúde destino (GET /api/v1/cadastros/unidades-saude)
+###
+### formatos_laudo: Array de strings com formatos aceitos
+###   Opções: "PDF", "XML", "HTML", "TEXTO", "FORMULARIO", "DICOM"
+###
+### tipo_realizacao: "interno", "apoio" ou "telemedicina"
+### envio_automatico: "sim" ou "nao"
 ###
 ### Para obter os IDs disponíveis: GET /api/v1/infraestrutura/campos-formulario
 ###
@@ -44,11 +55,15 @@ Authorization: Bearer {{token}}
   "regiao_coleta_ids": ["{{regiaoColetaId1}}", "{{regiaoColetaId2}}"],
   "estabilidade_id": "{{estabilidadeId}}",
   "volume_minimo_id": "{{volumeMinimoId}}",
-  "formato_laudo_id": "{{formatoLaudoId}}",
+  "formatos_laudo": ["PDF", "XML"],
 
   "necessita_preparo": "sim",
   "requisitos": "Jejum de 4 horas",
   "tipo_realizacao": "interno",
+  "laboratorio_apoio_id": "{{laboratorioApoioId}}",
+  "telemedicina_id": "{{telemedicinaId}}",
+  "unidade_destino_id": "{{unidadeDestinoId}}",
+  "envio_automatico": "nao",
   "prazo_entrega_dias": 1,
   "formato_prazo": "1 dia útil",
   "tem_valores_referencia": "sim",
@@ -117,9 +132,65 @@ Authorization: Bearer {{token}}
   "tipo_realizacao": "interno",
   "prazo_entrega_dias": 1,
   "formato_prazo": "24 horas",
+  "formatos_laudo": ["PDF", "DICOM"],
   "rejeicao": "Imagem borrada, paciente em movimento",
   "links_uteis": "https://www.fleury.com.br/manual-de-exames/raio-x-torax",
   "preparo_geral": "Retirar objetos metálicos",
   "preparo_feminino": "Informar possibilidade de gravidez",
+  "status": "ativo"
+}
+
+###
+
+### Criar exame enviado para Laboratório de Apoio
+POST {{baseUrl}}/exames/exames
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo_interno": "TSH001",
+  "nome": "TSH - Hormônio Tireoestimulante",
+  "sinonimos": ["TSH", "Tireotrofina"],
+  "codigo_tuss": "40316521",
+  "tipo_exame_id": "{{tipoExameId}}",
+  "categoria": "laboratorio",
+  "metodologia_id": "{{metodologiaId}}",
+  "amostra_id": "{{amostraId}}",
+  "necessita_preparo": "nao",
+  "tipo_realizacao": "apoio",
+  "laboratorio_apoio_id": "{{laboratorioApoioId}}",
+  "envio_automatico": "sim",
+  "prazo_entrega_dias": 3,
+  "formato_prazo": "3 dias úteis",
+  "formatos_laudo": ["PDF", "XML"],
+  "preparo_geral": "Não necessita jejum",
+  "status": "ativo"
+}
+
+###
+
+### Criar exame de Telemedicina
+POST {{baseUrl}}/exames/exames
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo_interno": "ECG001",
+  "nome": "Eletrocardiograma com Laudo",
+  "sinonimos": ["ECG", "EKG"],
+  "codigo_tuss": "40101010",
+  "tipo_exame_id": "{{tipoExameImagemId}}",
+  "categoria": "procedimento",
+  "metodologia_id": "{{metodologiaId}}",
+  "especialidade_requerida": "sim",
+  "especialidade_id": "{{especialidadeCardiologiaId}}",
+  "necessita_preparo": "nao",
+  "tipo_realizacao": "telemedicina",
+  "telemedicina_id": "{{telemedicinaId}}",
+  "envio_automatico": "sim",
+  "prazo_entrega_dias": 1,
+  "formato_prazo": "24 horas",
+  "formatos_laudo": ["PDF"],
+  "preparo_geral": "Repouso de 10 minutos antes do exame",
   "status": "ativo"
 }

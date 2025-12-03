@@ -260,10 +260,12 @@ export class Exame {
   volume_minimo_id: string;
 
   @Column({
+    type: 'jsonb',
     nullable: true,
-    comment: 'FK para alternativa do campo formato_laudo',
+    comment:
+      'Formatos de laudo aceitos (PDF, XML, HTML, TEXTO, FORMULARIO, DICOM)',
   })
-  formato_laudo_id: string;
+  formatos_laudo: string[];
 
   @Column({
     type: 'boolean',
@@ -585,9 +587,7 @@ export class Exame {
   @JoinColumn({ name: 'volume_minimo_id' })
   volumeMinimoAlternativa?: AlternativaCampoFormulario;
 
-  @ManyToOne(() => AlternativaCampoFormulario, { eager: false })
-  @JoinColumn({ name: 'formato_laudo_id' })
-  formatoLaudoAlternativa?: AlternativaCampoFormulario;
+  // formatos_laudo é JSONB (array de strings) - não tem relacionamento
 
   // Relacionamentos de integração
   @ManyToOne(() => Telemedicina, { eager: false })

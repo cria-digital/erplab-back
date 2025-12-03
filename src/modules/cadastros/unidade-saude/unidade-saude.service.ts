@@ -190,14 +190,14 @@ export class UnidadeSaudeService {
 
     const skip = (page - 1) * limit;
 
-    let where: any = {};
+    let where: any = { excluido: false };
 
-    // Por padrão, lista apenas unidades ativas (soft delete)
+    // Por padrão, lista apenas unidades ativas
     // Para incluir inativas, passar incluirInativos=true
     if (!incluirInativos) {
       where.ativo = true;
     }
-    // Se incluirInativos=true, não adiciona filtro de ativo (retorna todas)
+    // Se incluirInativos=true, lista ativas e inativas (mas nunca excluídas)
 
     if (cidade) {
       where.cidade = ILike(`%${cidade}%`);
@@ -451,12 +451,13 @@ export class UnidadeSaudeService {
 
   /**
    * Remove (soft delete) uma unidade de saúde
+   * Marca como excluído - não aparece mais na listagem
    */
   async remove(id: string): Promise<void> {
     await this.findOne(id);
 
-    // Soft delete - apenas marca como inativo
-    await this.unidadeSaudeRepository.update(id, { ativo: false });
+    // Soft delete - marca como excluído (não lista mais)
+    await this.unidadeSaudeRepository.update(id, { excluido: true });
   }
 
   /**
@@ -488,7 +489,7 @@ export class UnidadeSaudeService {
     Pick<UnidadeSaude, 'id' | 'nomeUnidade' | 'nomeFantasia' | 'cnpj'>[]
   > {
     return this.unidadeSaudeRepository.find({
-      where: { ativo: true },
+      where: { ativo: true, excluido: false },
       select: ['id', 'nomeUnidade', 'nomeFantasia', 'cnpj'],
       order: { nomeUnidade: 'ASC' },
     });
@@ -502,6 +503,7 @@ export class UnidadeSaudeService {
       where: {
         cidade: ILike(`%${cidade}%`),
         ativo: true,
+        excluido: false,
       },
       relations: ['horariosAtendimento'],
       order: { nomeUnidade: 'ASC' },

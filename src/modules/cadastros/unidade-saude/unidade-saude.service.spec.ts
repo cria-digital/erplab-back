@@ -338,7 +338,7 @@ describe('UnidadeSaudeService', () => {
 
       expect(result).toEqual(paginatedResult);
       expect(mockUnidadeSaudeRepository.findAndCount).toHaveBeenCalledWith({
-        where: { ativo: true },
+        where: { excluido: false, ativo: true },
         relations: [
           'horariosAtendimento',
           'contas_bancarias',
@@ -361,18 +361,22 @@ describe('UnidadeSaudeService', () => {
       expect(mockUnidadeSaudeRepository.findAndCount).toHaveBeenCalledWith({
         where: [
           {
+            excluido: false,
             ativo: true,
             nomeUnidade: expect.objectContaining({ _type: 'ilike' }),
           },
           {
+            excluido: false,
             ativo: true,
             nomeFantasia: expect.objectContaining({ _type: 'ilike' }),
           },
           {
+            excluido: false,
             ativo: true,
             cnpj: expect.objectContaining({ _type: 'ilike' }),
           },
           {
+            excluido: false,
             ativo: true,
             razaoSocial: expect.objectContaining({ _type: 'ilike' }),
           },
@@ -397,7 +401,7 @@ describe('UnidadeSaudeService', () => {
       await service.findAll({ incluirInativos: false });
 
       expect(mockUnidadeSaudeRepository.findAndCount).toHaveBeenCalledWith({
-        where: { ativo: true },
+        where: { excluido: false, ativo: true },
         relations: [
           'horariosAtendimento',
           'contas_bancarias',
@@ -419,6 +423,7 @@ describe('UnidadeSaudeService', () => {
 
       expect(mockUnidadeSaudeRepository.findAndCount).toHaveBeenCalledWith({
         where: {
+          excluido: false,
           ativo: true,
           cidade: expect.objectContaining({ _type: 'ilike' }),
           estado: 'DF',
@@ -443,7 +448,7 @@ describe('UnidadeSaudeService', () => {
       await service.findAll({ page: 3, limit: 20 });
 
       expect(mockUnidadeSaudeRepository.findAndCount).toHaveBeenCalledWith({
-        where: { ativo: true },
+        where: { excluido: false, ativo: true },
         relations: [
           'horariosAtendimento',
           'contas_bancarias',
@@ -660,16 +665,17 @@ describe('UnidadeSaudeService', () => {
   });
 
   describe('remove', () => {
-    it('deve desativar uma unidade (soft delete)', async () => {
+    it('deve excluir uma unidade (soft delete)', async () => {
       jest.spyOn(service, 'findOne').mockResolvedValue(mockUnidadeSaude);
       mockUnidadeSaudeRepository.update.mockResolvedValue({ affected: 1 });
 
       await service.remove('unidade-uuid-1');
 
       expect(service.findOne).toHaveBeenCalledWith('unidade-uuid-1');
+      // Remove marca excluido=true (não aparece mais na listagem)
       expect(mockUnidadeSaudeRepository.update).toHaveBeenCalledWith(
         'unidade-uuid-1',
-        { ativo: false },
+        { excluido: true },
       );
     });
   });
@@ -721,7 +727,7 @@ describe('UnidadeSaudeService', () => {
 
       expect(result).toEqual(activeUnidades);
       expect(mockUnidadeSaudeRepository.find).toHaveBeenCalledWith({
-        where: { ativo: true },
+        where: { excluido: false, ativo: true },
         select: ['id', 'nomeUnidade', 'nomeFantasia', 'cnpj'],
         order: { nomeUnidade: 'ASC' },
       });
@@ -740,6 +746,7 @@ describe('UnidadeSaudeService', () => {
         where: {
           cidade: expect.objectContaining({ _type: 'ilike' }),
           ativo: true,
+          excluido: false,
         },
         relations: ['horariosAtendimento'],
         order: { nomeUnidade: 'ASC' },
@@ -1124,9 +1131,10 @@ describe('UnidadeSaudeService', () => {
 
       await service.findAll({ incluirInativos: true });
 
+      // Quando incluirInativos=true, lista ativas e inativas, mas nunca excluídas
       expect(mockUnidadeSaudeRepository.findAndCount).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: {},
+          where: { excluido: false },
         }),
       );
     });
@@ -1138,7 +1146,7 @@ describe('UnidadeSaudeService', () => {
 
       expect(mockUnidadeSaudeRepository.findAndCount).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: { ativo: true, estado: 'SP' },
+          where: { excluido: false, ativo: true, estado: 'SP' },
         }),
       );
     });
@@ -1380,7 +1388,7 @@ describe('UnidadeSaudeService', () => {
 
       expect(mockUnidadeSaudeRepository.update).toHaveBeenCalledWith(
         'unidade-uuid-1',
-        { ativo: false },
+        { excluido: true },
       );
     });
   });
@@ -1443,7 +1451,7 @@ describe('UnidadeSaudeService', () => {
 
       expect(result).toEqual([]);
       expect(mockUnidadeSaudeRepository.find).toHaveBeenCalledWith({
-        where: { ativo: true },
+        where: { excluido: false, ativo: true },
         select: ['id', 'nomeUnidade', 'nomeFantasia', 'cnpj'],
         order: { nomeUnidade: 'ASC' },
       });
@@ -1480,6 +1488,7 @@ describe('UnidadeSaudeService', () => {
         where: {
           cidade: expect.objectContaining({ _type: 'ilike' }),
           ativo: true,
+          excluido: false,
         },
         relations: ['horariosAtendimento'],
         order: { nomeUnidade: 'ASC' },
@@ -1495,6 +1504,7 @@ describe('UnidadeSaudeService', () => {
         where: {
           cidade: expect.objectContaining({ _type: 'ilike' }),
           ativo: true,
+          excluido: false,
         },
         relations: ['horariosAtendimento'],
         order: { nomeUnidade: 'ASC' },

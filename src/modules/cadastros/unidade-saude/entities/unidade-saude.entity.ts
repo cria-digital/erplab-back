@@ -278,6 +278,13 @@ export class UnidadeSaude {
   @Column({ type: 'boolean', default: true })
   ativo: boolean;
 
+  @Column({
+    type: 'boolean',
+    default: false,
+    comment: 'Soft delete - registro excluído',
+  })
+  excluido: boolean;
+
   // Timestamps
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

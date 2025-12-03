@@ -215,10 +215,12 @@ export class ExameLaboratorioApoio {
   prazo_entrega_dias: number;
 
   @Column({
+    type: 'jsonb',
     nullable: true,
-    comment: 'FK para alternativa do campo formato_laudo',
+    comment:
+      'Formatos de laudo aceitos (PDF, XML, HTML, TEXTO, FORMULARIO, DICOM)',
   })
-  formato_laudo_id: string;
+  formatos_laudo: string[];
 
   // Controle
   @Column({
@@ -280,7 +282,5 @@ export class ExameLaboratorioApoio {
   @JoinColumn({ name: 'estabilidade_id' })
   estabilidadeAlternativa?: AlternativaCampoFormulario;
 
-  @ManyToOne(() => AlternativaCampoFormulario, { eager: false })
-  @JoinColumn({ name: 'formato_laudo_id' })
-  formatoLaudoAlternativa?: AlternativaCampoFormulario;
+  // formatos_laudo é JSONB (array de strings) - não tem relacionamento
 }
