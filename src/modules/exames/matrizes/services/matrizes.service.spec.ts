@@ -203,7 +203,7 @@ describe('MatrizesService', () => {
 
       expect(mockMatrizRepository.findAndCount).toHaveBeenCalledWith({
         where: { tipoExameId: 'tipo-exame-uuid' },
-        relations: ['campos', 'tipoExame', 'exame'],
+        relations: ['campos', 'tipoExameAlternativa', 'exame'],
         order: { nome: 'ASC' },
         skip: 0,
         take: 10,
@@ -217,7 +217,7 @@ describe('MatrizesService', () => {
 
       expect(mockMatrizRepository.findAndCount).toHaveBeenCalledWith({
         where: { ativo: true },
-        relations: ['campos', 'tipoExame', 'exame'],
+        relations: ['campos', 'tipoExameAlternativa', 'exame'],
         order: { nome: 'ASC' },
         skip: 0,
         take: 10,
@@ -234,7 +234,7 @@ describe('MatrizesService', () => {
       expect(result).toEqual(mockMatriz);
       expect(mockMatrizRepository.findOne).toHaveBeenCalledWith({
         where: { id: 'matriz-uuid' },
-        relations: ['campos', 'tipoExame', 'exame'],
+        relations: ['campos', 'tipoExameAlternativa', 'exame'],
       });
     });
 
@@ -274,7 +274,7 @@ describe('MatrizesService', () => {
       expect(result).toEqual([mockMatriz]);
       expect(mockMatrizRepository.find).toHaveBeenCalledWith({
         where: { tipoExameId: 'tipo-exame-uuid', ativo: true },
-        relations: ['campos', 'tipoExame', 'exame'],
+        relations: ['campos', 'tipoExameAlternativa', 'exame'],
         order: { nome: 'ASC' },
       });
     });
@@ -289,7 +289,7 @@ describe('MatrizesService', () => {
       expect(result).toEqual([mockMatriz]);
       expect(mockMatrizRepository.find).toHaveBeenCalledWith({
         where: { ativo: true },
-        relations: ['campos', 'tipoExame', 'exame'],
+        relations: ['campos', 'tipoExameAlternativa', 'exame'],
         order: { nome: 'ASC' },
       });
     });

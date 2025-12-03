@@ -1,43 +1,10 @@
 ###
-### ⚠️ IMPORTANTE - Estrutura Refatorada (Dezembro 2025)
+### Campos de Formulário utilizados (FK para alternativas):
+### - tipo_exame_id, metodologia_id, grupo_id, especialidade_id, unidade_medida_id
+### - amostra_enviar_id, tipo_recipiente_id, estabilidade_id, volume_minimo_id, formato_laudo_id
+### - regiao_coleta_ids (array de IDs)
 ###
-### === NOVOS CAMPOS ADICIONADOS (Dezembro 2025) ===
-###
-### Campos boolean (SIM/NÃO):
-### - requer_peso (boolean) - Se exame requer peso do paciente
-### - requer_altura (boolean) - Se exame requer altura do paciente
-### - requer_volume (boolean) - Se exame requer volume específico
-### - termo_consentimento (boolean) - Se exige termo de consentimento
-###
-### Campos FK adicionais:
-### - volume_minimo_id (UUID) - FK para alternativa de volume mínimo
-### - formato_laudo_id (UUID) - FK para alternativa de formato do laudo
-###
-### Campos de preparo SEPARADOS (substituem preparo_coleta JSONB):
-### - preparo_geral (TEXT) - Instruções de preparo público geral
-### - preparo_feminino (TEXT) - Instruções de preparo feminino
-### - preparo_infantil (TEXT) - Instruções de preparo infantil
-###
-### Campos de coleta SEPARADOS (NOVOS):
-### - coleta_geral (TEXT) - Instruções de coleta público geral
-### - coleta_feminino (TEXT) - Instruções de coleta feminino
-### - coleta_infantil (TEXT) - Instruções de coleta infantil
-###
-### Campos de lembrete SEPARADOS (substituem lembretes JSONB):
-### - lembrete_coletora (TEXT) - Lembrete para coletora
-### - lembrete_recepcionista_agendamento (TEXT) - Lembrete para recepcionista (agendamento)
-### - lembrete_recepcionista_os (TEXT) - Lembrete para recepcionista (ordem de serviço)
-###
-### Relacionamento N:M com Unidades:
-### - unidades_ids (UUID[]) - IDs das unidades que realizam o exame
-###
-### === CAMPOS FK EXISTENTES ===
-### - metodologia_id, grupo_id, unidade_medida_id, amostra_id
-### - amostra_enviar_id, tipo_recipiente_id, especialidade_id
-### - regiao_coleta_id, estabilidade_id
-###
-### Para usar estes requests, primeiro obtenha os IDs:
-### GET /api/v1/infraestrutura/campos-formulario
+### Para obter os IDs disponíveis: GET /api/v1/infraestrutura/campos-formulario
 ###
 
 ### Criar um novo exame - Hemograma Completo
@@ -48,10 +15,11 @@ Authorization: Bearer {{token}}
 {
   "codigo_interno": "HEMOG001",
   "nome": "Hemograma Completo",
-  "sinonimos": "Hemograma, Contagem de células",
+  "sinonimos": ["Hemograma", "Contagem de células", "CBC"],
   "codigo_cbhpm": "40304361",
   "codigo_tuss": "40304361",
   "codigo_amb": "28.01.001-2",
+  "codigo_loinc": "58410-2",
   "codigo_sus": "0202010503",
   "tipo_exame_id": "{{tipoExameId}}",
   "categoria": "laboratorio",
@@ -73,7 +41,7 @@ Authorization: Bearer {{token}}
   "amostra_id": "{{amostraId}}",
   "amostra_enviar_id": "{{amostraEnviarId}}",
   "tipo_recipiente_id": "{{tipoRecipienteId}}",
-  "regiao_coleta_id": "{{regiaoColetaId}}",
+  "regiao_coleta_ids": ["{{regiaoColetaId1}}", "{{regiaoColetaId2}}"],
   "estabilidade_id": "{{estabilidadeId}}",
   "volume_minimo_id": "{{volumeMinimoId}}",
   "formato_laudo_id": "{{formatoLaudoId}}",
@@ -113,8 +81,7 @@ Authorization: Bearer {{token}}
 
   "unidades_ids": ["{{unidadeId}}"],
 
-  "status": "ativo",
-  "empresa_id": "{{empresaId}}"
+  "status": "ativo"
 }
 
 ### Expected Response
@@ -122,7 +89,7 @@ Authorization: Bearer {{token}}
 # {
 #   "message": "Exame criado com sucesso",
 #   "data": {
-#     "id": 1,
+#     "id": "uuid",
 #     "codigo_interno": "HEMOG001",
 #     "nome": "Hemograma Completo",
 #     ...
@@ -139,7 +106,7 @@ Authorization: Bearer {{token}}
 {
   "codigo_interno": "RX001",
   "nome": "Radiografia de Tórax PA e Perfil",
-  "sinonimos": "Raio-X Tórax, RX Tórax",
+  "sinonimos": ["Raio-X Tórax", "RX Tórax"],
   "codigo_tuss": "41001010",
   "tipo_exame_id": "{{tipoExameImagemId}}",
   "categoria": "imagem",
@@ -152,10 +119,7 @@ Authorization: Bearer {{token}}
   "formato_prazo": "24 horas",
   "rejeicao": "Imagem borrada, paciente em movimento",
   "links_uteis": "https://www.fleury.com.br/manual-de-exames/raio-x-torax",
-  "preparo_coleta": {
-    "geral": "Retirar objetos metálicos",
-    "feminino": "Informar possibilidade de gravidez"
-  },
-  "status": "ativo",
-  "empresa_id": "{{empresaId}}"
+  "preparo_geral": "Retirar objetos metálicos",
+  "preparo_feminino": "Informar possibilidade de gravidez",
+  "status": "ativo"
 }

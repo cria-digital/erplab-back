@@ -18,8 +18,9 @@ describe('ExamesService', () => {
     id: 'exame-uuid-1',
     codigo_interno: 'EXM001',
     nome: 'Hemograma Completo',
-    sinonimos: 'CBC',
+    sinonimos: ['CBC', 'Hemograma'],
     codigo_tuss: '40311010',
+    codigo_cbhpm: '40304361',
     codigo_amb: '2.02.02.03-8',
     codigo_loinc: '58410-2',
     codigo_sus: '0202020380',
@@ -33,11 +34,18 @@ describe('ExamesService', () => {
     grupo_id: null,
     unidade_medida_id: 'unidade-medida-uuid-1',
     amostra_id: 'amostra-uuid-1',
+    amostra_enviar_id: null,
     tipo_recipiente_id: 'recipiente-uuid-1',
-    regiao_coleta_id: null,
+    regiao_coleta_ids: null,
     estabilidade_id: null,
+    volume_minimo_id: null,
+    formato_laudo_id: null,
     volume_min: 3,
     volume_ideal: 5,
+    requer_peso: false,
+    requer_altura: false,
+    requer_volume: true,
+    termo_consentimento: false,
     necessita_preparo: 'não',
     requisitos: null,
     prazo_entrega_dias: 1,
@@ -63,16 +71,28 @@ describe('ExamesService', () => {
     links_uteis: null,
     requisitos_anvisa: null,
     formularios_atendimento: null,
-    preparo_coleta: null,
-    lembretes: null,
+    preparo_geral: null,
+    preparo_feminino: null,
+    preparo_infantil: null,
+    coleta_geral: null,
+    coleta_feminino: null,
+    coleta_infantil: null,
+    lembrete_coletora: null,
+    lembrete_recepcionista_agendamento: null,
+    lembrete_recepcionista_os: null,
     criado_por: null,
     atualizado_por: null,
+    tipoExameAlternativa: null,
+    subgrupo: null,
+    setor: null,
+    laboratorioApoio: null,
+    unidades: [],
     getCodigoFormatado: () => 'EXM001 - Hemograma Completo',
     getDescricaoCompleta: () => 'Hemograma Completo (CBC) - Automação',
     getPrazoFormatado: () => '1 dia útil',
     isExterno: () => false,
     requiresPreparo: () => false,
-  } as Exame;
+  } as unknown as Exame;
 
   const mockRepository = {
     create: jest.fn(),
@@ -109,13 +129,8 @@ describe('ExamesService', () => {
     const createExameDto: CreateExameDto = {
       codigo_interno: 'EXM001',
       nome: 'Hemograma Completo',
-      tipo_exame_id: 'tipo-uuid-1',
       categoria: 'laboratorio',
-      metodologia_id: 'metodologia-uuid-1',
-      amostra_id: 'amostra-uuid-1',
-      tipo_recipiente_id: 'recipiente-uuid-1',
       prazo_entrega_dias: 1,
-      empresa_id: 'empresa-uuid-1',
     };
 
     it('deve criar um exame com sucesso', async () => {
@@ -161,7 +176,12 @@ describe('ExamesService', () => {
       });
       expect(mockRepository.findAndCount).toHaveBeenCalledWith({
         where: {},
-        relations: ['tipoExame', 'subgrupo', 'setor', 'laboratorioApoio'],
+        relations: [
+          'tipoExameAlternativa',
+          'subgrupo',
+          'setor',
+          'laboratorioApoio',
+        ],
         skip: 0,
         take: 10,
         order: { nome: 'ASC' },
@@ -176,7 +196,12 @@ describe('ExamesService', () => {
 
       expect(mockRepository.findAndCount).toHaveBeenCalledWith({
         where: { nome: expect.objectContaining({ _type: 'like' }) },
-        relations: ['tipoExame', 'subgrupo', 'setor', 'laboratorioApoio'],
+        relations: [
+          'tipoExameAlternativa',
+          'subgrupo',
+          'setor',
+          'laboratorioApoio',
+        ],
         skip: 0,
         take: 10,
         order: { nome: 'ASC' },
@@ -191,7 +216,12 @@ describe('ExamesService', () => {
 
       expect(mockRepository.findAndCount).toHaveBeenCalledWith({
         where: { categoria: 'laboratorio' },
-        relations: ['tipoExame', 'subgrupo', 'setor', 'laboratorioApoio'],
+        relations: [
+          'tipoExameAlternativa',
+          'subgrupo',
+          'setor',
+          'laboratorioApoio',
+        ],
         skip: 0,
         take: 10,
         order: { nome: 'ASC' },
@@ -206,7 +236,12 @@ describe('ExamesService', () => {
 
       expect(mockRepository.findAndCount).toHaveBeenCalledWith({
         where: { status: 'ativo' },
-        relations: ['tipoExame', 'subgrupo', 'setor', 'laboratorioApoio'],
+        relations: [
+          'tipoExameAlternativa',
+          'subgrupo',
+          'setor',
+          'laboratorioApoio',
+        ],
         skip: 0,
         take: 10,
         order: { nome: 'ASC' },
@@ -220,7 +255,12 @@ describe('ExamesService', () => {
 
       expect(mockRepository.findAndCount).toHaveBeenCalledWith({
         where: {},
-        relations: ['tipoExame', 'subgrupo', 'setor', 'laboratorioApoio'],
+        relations: [
+          'tipoExameAlternativa',
+          'subgrupo',
+          'setor',
+          'laboratorioApoio',
+        ],
         skip: 40,
         take: 20,
         order: { nome: 'ASC' },
@@ -237,7 +277,12 @@ describe('ExamesService', () => {
       expect(result).toEqual(mockExame);
       expect(mockRepository.findOne).toHaveBeenCalledWith({
         where: { id: 'exame-uuid-1' },
-        relations: ['tipoExame', 'subgrupo', 'setor', 'laboratorioApoio'],
+        relations: [
+          'tipoExameAlternativa',
+          'subgrupo',
+          'setor',
+          'laboratorioApoio',
+        ],
       });
     });
 
@@ -259,7 +304,12 @@ describe('ExamesService', () => {
       expect(result).toEqual(mockExame);
       expect(mockRepository.findOne).toHaveBeenCalledWith({
         where: { codigo_interno: 'EXM001' },
-        relations: ['tipoExame', 'subgrupo', 'setor', 'laboratorioApoio'],
+        relations: [
+          'tipoExameAlternativa',
+          'subgrupo',
+          'setor',
+          'laboratorioApoio',
+        ],
       });
     });
 
@@ -349,7 +399,7 @@ describe('ExamesService', () => {
       expect(result).toEqual(mockExames);
       expect(mockRepository.find).toHaveBeenCalledWith({
         where: { categoria: 'laboratorio', status: 'ativo' },
-        relations: ['tipoExame'],
+        relations: ['tipoExameAlternativa'],
         order: { nome: 'ASC' },
       });
     });
@@ -365,7 +415,7 @@ describe('ExamesService', () => {
       expect(result).toEqual(mockExames);
       expect(mockRepository.find).toHaveBeenCalledWith({
         where: { tipo_exame_id: 'tipo-uuid-1', status: 'ativo' },
-        relations: ['tipoExame', 'subgrupo', 'setor'],
+        relations: ['tipoExameAlternativa', 'subgrupo', 'setor'],
         order: { nome: 'ASC' },
       });
     });
@@ -403,7 +453,7 @@ describe('ExamesService', () => {
             status: 'ativo',
           },
         ],
-        relations: ['tipoExame'],
+        relations: ['tipoExameAlternativa'],
         take: 20,
         order: { nome: 'ASC' },
       });
@@ -420,7 +470,7 @@ describe('ExamesService', () => {
       expect(result).toEqual(mockExames);
       expect(mockRepository.find).toHaveBeenCalledWith({
         where: { status: 'ativo', codigo_tuss: '40311010' },
-        relations: ['tipoExame'],
+        relations: ['tipoExameAlternativa'],
       });
     });
 
@@ -433,7 +483,7 @@ describe('ExamesService', () => {
       expect(result).toEqual(mockExames);
       expect(mockRepository.find).toHaveBeenCalledWith({
         where: { status: 'ativo', codigo_amb: '2.02.02.03-8' },
-        relations: ['tipoExame'],
+        relations: ['tipoExameAlternativa'],
       });
     });
 
@@ -446,7 +496,7 @@ describe('ExamesService', () => {
       expect(result).toEqual(mockExames);
       expect(mockRepository.find).toHaveBeenCalledWith({
         where: { status: 'ativo', codigo_sus: '0202020380' },
-        relations: ['tipoExame'],
+        relations: ['tipoExameAlternativa'],
       });
     });
 
@@ -468,7 +518,7 @@ describe('ExamesService', () => {
           codigo_amb: '2.02.02.03-8',
           codigo_sus: '0202020380',
         },
-        relations: ['tipoExame'],
+        relations: ['tipoExameAlternativa'],
       });
     });
   });
@@ -505,7 +555,7 @@ describe('ExamesService', () => {
       expect(result).toEqual(mockExames);
       expect(mockRepository.find).toHaveBeenCalledWith({
         where: { necessita_preparo: 'sim', status: 'ativo' },
-        relations: ['tipoExame'],
+        relations: ['tipoExameAlternativa'],
         order: { nome: 'ASC' },
       });
     });
@@ -521,7 +571,7 @@ describe('ExamesService', () => {
       expect(result).toEqual(mockExames);
       expect(mockRepository.find).toHaveBeenCalledWith({
         where: { status: 'ativo' },
-        relations: ['tipoExame'],
+        relations: ['tipoExameAlternativa'],
         order: { peso: 'DESC', nome: 'ASC' },
         take: 50,
       });

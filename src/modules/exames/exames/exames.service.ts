@@ -56,7 +56,12 @@ export class ExamesService {
 
     const [data, total] = await this.exameRepository.findAndCount({
       where,
-      relations: ['tipoExame', 'subgrupo', 'setor', 'laboratorioApoio'],
+      relations: [
+        'tipoExameAlternativa',
+        'subgrupo',
+        'setor',
+        'laboratorioApoio',
+      ],
       skip: (page - 1) * limit,
       take: limit,
       order: { nome: 'ASC' },
@@ -73,7 +78,12 @@ export class ExamesService {
   async findOne(id: string): Promise<Exame> {
     const exame = await this.exameRepository.findOne({
       where: { id },
-      relations: ['tipoExame', 'subgrupo', 'setor', 'laboratorioApoio'],
+      relations: [
+        'tipoExameAlternativa',
+        'subgrupo',
+        'setor',
+        'laboratorioApoio',
+      ],
     });
 
     if (!exame) {
@@ -86,7 +96,12 @@ export class ExamesService {
   async findByCodigo(codigo: string): Promise<Exame> {
     const exame = await this.exameRepository.findOne({
       where: { codigo_interno: codigo },
-      relations: ['tipoExame', 'subgrupo', 'setor', 'laboratorioApoio'],
+      relations: [
+        'tipoExameAlternativa',
+        'subgrupo',
+        'setor',
+        'laboratorioApoio',
+      ],
     });
 
     if (!exame) {
@@ -133,7 +148,7 @@ export class ExamesService {
   async findByCategoria(categoria: string): Promise<Exame[]> {
     return await this.exameRepository.find({
       where: { categoria, status: 'ativo' },
-      relations: ['tipoExame'],
+      relations: ['tipoExameAlternativa'],
       order: { nome: 'ASC' },
     });
   }
@@ -141,7 +156,7 @@ export class ExamesService {
   async findByTipo(tipoExameId: string): Promise<Exame[]> {
     return await this.exameRepository.find({
       where: { tipo_exame_id: tipoExameId, status: 'ativo' },
-      relations: ['tipoExame', 'subgrupo', 'setor'],
+      relations: ['tipoExameAlternativa', 'subgrupo', 'setor'],
       order: { nome: 'ASC' },
     });
   }
@@ -160,7 +175,7 @@ export class ExamesService {
         { nome: Like(`%${nome}%`), status: 'ativo' },
         { sinonimos: Like(`%${nome}%`), status: 'ativo' },
       ],
-      relations: ['tipoExame'],
+      relations: ['tipoExameAlternativa'],
       take: 20,
       order: { nome: 'ASC' },
     });
@@ -185,7 +200,7 @@ export class ExamesService {
 
     return await this.exameRepository.find({
       where,
-      relations: ['tipoExame'],
+      relations: ['tipoExameAlternativa'],
     });
   }
 
@@ -200,7 +215,7 @@ export class ExamesService {
   async getExamesComPreparo(): Promise<Exame[]> {
     return await this.exameRepository.find({
       where: { necessita_preparo: 'sim', status: 'ativo' },
-      relations: ['tipoExame'],
+      relations: ['tipoExameAlternativa'],
       order: { nome: 'ASC' },
     });
   }
@@ -208,7 +223,7 @@ export class ExamesService {
   async getExamesUrgentes(): Promise<Exame[]> {
     return await this.exameRepository.find({
       where: { status: 'ativo' },
-      relations: ['tipoExame'],
+      relations: ['tipoExameAlternativa'],
       order: { peso: 'DESC', nome: 'ASC' },
       take: 50,
     });

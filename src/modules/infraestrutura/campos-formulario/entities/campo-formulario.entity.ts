@@ -26,6 +26,7 @@ export enum NomeCampoFormulario {
   REGIAO_COLETA = 'regiao_coleta',
   VOLUME_MINIMO = 'volume_minimo',
   ESTABILIDADE = 'estabilidade',
+  FORMATO_LAUDO = 'formato_laudo',
 
   // Campos de Convênios
   TIPO_CONVENIO = 'tipo_convenio',

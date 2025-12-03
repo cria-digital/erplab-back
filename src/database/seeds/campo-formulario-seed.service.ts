@@ -213,6 +213,19 @@ export class CampoFormularioSeedService {
           { texto: 'Processar imediatamente', ordem: 9 },
         ],
       },
+      {
+        nomeCampo: NomeCampoFormulario.FORMATO_LAUDO,
+        descricao: '',
+        alternativas: [
+          { texto: 'Laudo Padrão', ordem: 1 },
+          { texto: 'Laudo Descritivo', ordem: 2 },
+          { texto: 'Laudo com Imagem', ordem: 3 },
+          { texto: 'Laudo Gráfico', ordem: 4 },
+          { texto: 'Laudo Tabular', ordem: 5 },
+          { texto: 'Laudo Audiométrico', ordem: 6 },
+          { texto: 'Laudo Eletrocardiográfico', ordem: 7 },
+        ],
+      },
     ];
 
     let totalCamposNovos = 0;

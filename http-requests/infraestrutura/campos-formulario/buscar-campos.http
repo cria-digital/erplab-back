@@ -1,5 +1,5 @@
 ### Buscar campos com paginação - Página 1
-GET {{baseUrl}}/infraestrutura/campos-formulario/search?page=1&limit=5
+GET {{baseUrl}}/infraestrutura/campos-formulario/search?page=1&limit=50
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 

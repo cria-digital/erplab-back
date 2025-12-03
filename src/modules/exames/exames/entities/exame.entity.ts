@@ -11,7 +11,6 @@ import {
   JoinTable,
   Index,
 } from 'typeorm';
-import { TipoExame } from './tipo-exame.entity';
 import { OrdemServicoExame } from './ordem-servico-exame.entity';
 import { ResultadoExame } from './resultado-exame.entity';
 import { SubgrupoExame } from './subgrupo-exame.entity';
@@ -48,12 +47,11 @@ export class Exame {
   nome: string;
 
   @Column({
-    type: 'varchar',
-    length: 50,
+    type: 'jsonb',
     nullable: true,
-    comment: 'Sinônimos ou nomes alternativos',
+    comment: 'Sinônimos ou nomes alternativos (array de strings)',
   })
-  sinonimos: string;
+  sinonimos: string[];
 
   // Códigos padronizados
   @Column({
@@ -99,7 +97,8 @@ export class Exame {
 
   // Tipo e categoria
   @Column({
-    comment: 'ID do tipo de exame',
+    nullable: true,
+    comment: 'FK para alternativa do campo tipo_exames',
   })
   tipo_exame_id: string;
 
@@ -242,10 +241,11 @@ export class Exame {
   tipo_recipiente_id: string;
 
   @Column({
+    type: 'jsonb',
     nullable: true,
-    comment: 'FK para alternativa do campo regiao_coleta',
+    comment: 'Array de IDs de alternativas do campo regiao_coleta',
   })
-  regiao_coleta_id: string;
+  regiao_coleta_ids: string[];
 
   @Column({
     nullable: true,
@@ -530,9 +530,9 @@ export class Exame {
   atualizado_por: string;
 
   // Relacionamentos
-  @ManyToOne(() => TipoExame, { eager: false })
+  @ManyToOne(() => AlternativaCampoFormulario, { eager: false })
   @JoinColumn({ name: 'tipo_exame_id' })
-  tipoExame?: TipoExame;
+  tipoExameAlternativa?: AlternativaCampoFormulario;
 
   @ManyToOne(() => SubgrupoExame, { eager: false })
   @JoinColumn({ name: 'subgrupo_id' })
@@ -575,9 +575,7 @@ export class Exame {
   @JoinColumn({ name: 'tipo_recipiente_id' })
   tipoRecipienteAlternativa?: AlternativaCampoFormulario;
 
-  @ManyToOne(() => AlternativaCampoFormulario, { eager: false })
-  @JoinColumn({ name: 'regiao_coleta_id' })
-  regiaoColetaAlternativa?: AlternativaCampoFormulario;
+  // regiao_coleta_ids é jsonb (array) - não tem relacionamento direto
 
   @ManyToOne(() => AlternativaCampoFormulario, { eager: false })
   @JoinColumn({ name: 'estabilidade_id' })
@@ -626,8 +624,8 @@ export class Exame {
 
   getDescricaoCompleta(): string {
     const partes = [this.nome];
-    if (this.sinonimos) {
-      partes.push(`(${this.sinonimos})`);
+    if (this.sinonimos?.length) {
+      partes.push(`(${this.sinonimos.join(', ')})`);
     }
     if (this.metodologiaAlternativa?.textoAlternativa) {
       partes.push(`- ${this.metodologiaAlternativa.textoAlternativa}`);

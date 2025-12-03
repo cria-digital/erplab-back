@@ -116,7 +116,7 @@ export class MatrizesService {
 
     const [data, total] = await this.matrizRepository.findAndCount({
       where,
-      relations: ['campos', 'tipoExame', 'exame'],
+      relations: ['campos', 'tipoExameAlternativa', 'exame'],
       order: {
         nome: 'ASC',
       },
@@ -139,7 +139,7 @@ export class MatrizesService {
   async findOne(id: string): Promise<MatrizExame> {
     const matriz = await this.matrizRepository.findOne({
       where: { id },
-      relations: ['campos', 'tipoExame', 'exame'],
+      relations: ['campos', 'tipoExameAlternativa', 'exame'],
     });
 
     if (!matriz) {
@@ -155,7 +155,7 @@ export class MatrizesService {
   async findByCodigo(codigoInterno: string): Promise<MatrizExame> {
     const matriz = await this.matrizRepository.findOne({
       where: { codigoInterno },
-      relations: ['campos', 'tipoExame', 'exame'],
+      relations: ['campos', 'tipoExameAlternativa', 'exame'],
     });
 
     if (!matriz) {
@@ -173,7 +173,7 @@ export class MatrizesService {
   async findByTipoExame(tipoExameId: string): Promise<MatrizExame[]> {
     return this.matrizRepository.find({
       where: { tipoExameId, ativo: true },
-      relations: ['campos', 'tipoExame', 'exame'],
+      relations: ['campos', 'tipoExameAlternativa', 'exame'],
       order: { nome: 'ASC' },
     });
   }
@@ -184,7 +184,7 @@ export class MatrizesService {
   async findAtivas(): Promise<MatrizExame[]> {
     return this.matrizRepository.find({
       where: { ativo: true },
-      relations: ['campos', 'tipoExame', 'exame'],
+      relations: ['campos', 'tipoExameAlternativa', 'exame'],
       order: { nome: 'ASC' },
     });
   }

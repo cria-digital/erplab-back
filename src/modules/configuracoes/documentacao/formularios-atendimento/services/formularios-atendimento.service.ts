@@ -26,9 +26,16 @@ export class FormulariosAtendimentoService {
   }
 
   private ensureUploadDirExists(): void {
-    const uploadPath = path.join(process.cwd(), UPLOAD_DIR);
-    if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath, { recursive: true });
+    try {
+      const uploadPath = path.join(process.cwd(), UPLOAD_DIR);
+      if (!fs.existsSync(uploadPath)) {
+        fs.mkdirSync(uploadPath, { recursive: true });
+      }
+    } catch (error) {
+      // Log warning but don't fail - directory creation will be attempted when needed
+      console.warn(
+        `Aviso: Não foi possível criar diretório de uploads: ${error.message}`,
+      );
     }
   }
 

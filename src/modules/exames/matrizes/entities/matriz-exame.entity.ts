@@ -9,8 +9,8 @@ import {
   JoinColumn,
   Index,
 } from 'typeorm';
-import { TipoExame } from '../../exames/entities/tipo-exame.entity';
 import { Exame } from '../../exames/entities/exame.entity';
+import { AlternativaCampoFormulario } from '../../../infraestrutura/campos-formulario/entities/alternativa-campo-formulario.entity';
 import { CampoMatriz } from './campo-matriz.entity';
 
 /**
@@ -45,17 +45,18 @@ export class MatrizExame {
   })
   nome: string;
 
-  // Tipo de Exame (EXTERNO, IMAGEM, LABORATORIAL, AUDIOMETRIA)
+  // Tipo de Exame (FK para alternativa do campo tipo_exames)
   @Column({
     name: 'tipo_exame_id',
     type: 'uuid',
-    comment: 'ID do tipo de exame (FK para tipos_exame)',
+    nullable: true,
+    comment: 'FK para alternativa do campo tipo_exames',
   })
   tipoExameId: string;
 
-  @ManyToOne(() => TipoExame)
+  @ManyToOne(() => AlternativaCampoFormulario)
   @JoinColumn({ name: 'tipo_exame_id' })
-  tipoExame: TipoExame;
+  tipoExameAlternativa: AlternativaCampoFormulario;
 
   // Exame Vinculado
   @Column({

@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 // Entities
 import { Exame } from './entities/exame.entity';
-import { TipoExame } from './entities/tipo-exame.entity';
 import { OrdemServico } from './entities/ordem-servico.entity';
 import { OrdemServicoExame } from './entities/ordem-servico-exame.entity';
 import { ResultadoExame } from './entities/resultado-exame.entity';
@@ -18,19 +17,16 @@ import { ConveniosModule } from '../../relacionamento/convenios/convenios.module
 
 // Services
 import { ExamesService } from './exames.service';
-import { TiposExameService } from './tipos-exame.service';
 import { ExameLaboratorioApoioService } from './exame-laboratorio-apoio.service';
 
 // Controllers
 import { ExamesController } from './exames.controller';
-import { TiposExameController } from './tipos-exame.controller';
 import { ExameLaboratorioApoioController } from './exame-laboratorio-apoio.controller';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       Exame,
-      TipoExame,
       OrdemServico,
       OrdemServicoExame,
       ResultadoExame,
@@ -42,12 +38,8 @@ import { ExameLaboratorioApoioController } from './exame-laboratorio-apoio.contr
     ]),
     ConveniosModule, // Importar módulo completo para ter acesso aos services
   ],
-  controllers: [
-    ExamesController,
-    TiposExameController,
-    ExameLaboratorioApoioController,
-  ],
-  providers: [ExamesService, TiposExameService, ExameLaboratorioApoioService],
-  exports: [ExamesService, TiposExameService, ExameLaboratorioApoioService],
+  controllers: [ExamesController, ExameLaboratorioApoioController],
+  providers: [ExamesService, ExameLaboratorioApoioService],
+  exports: [ExamesService, ExameLaboratorioApoioService],
 })
 export class ExamesModule {}

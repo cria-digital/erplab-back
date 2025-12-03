@@ -25,6 +25,10 @@ COPY --from=builder --chown=nestjs:nodejs /app/tsconfig.build.json ./
 COPY --chown=nestjs:nodejs docker-entrypoint.sh ./
 RUN chmod +x ./docker-entrypoint.sh
 
+# Create uploads directory with correct permissions
+RUN mkdir -p /app/uploads/cabecalhos-rodapes /app/uploads/formularios-atendimento && \
+    chown -R nestjs:nodejs /app/uploads
+
 USER nestjs
 EXPOSE 10016
 

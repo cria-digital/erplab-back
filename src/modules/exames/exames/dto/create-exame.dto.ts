@@ -33,15 +33,27 @@ export class CreateExameDto {
   nome: string;
 
   @ApiProperty({
-    description: 'Sinônimos ou nomes alternativos',
-    example: 'Hemograma, Contagem de células',
+    description: 'Sinônimos ou nomes alternativos (array de strings)',
+    example: ['Hemograma', 'Contagem de células'],
     required: false,
-    maxLength: 50,
+    type: [String],
+  })
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  sinonimos?: string[];
+
+  @ApiProperty({
+    description:
+      'Código CBHPM (Classificação Brasileira Hierarquizada de Procedimentos Médicos)',
+    example: '40304361',
+    required: false,
+    maxLength: 20,
   })
   @IsString()
   @IsOptional()
-  @MaxLength(50)
-  sinonimos?: string;
+  @MaxLength(20)
+  codigo_cbhpm?: string;
 
   @ApiProperty({
     description: 'Código TUSS (Terminologia Unificada da Saúde Suplementar)',
@@ -89,12 +101,13 @@ export class CreateExameDto {
   codigo_sus?: string;
 
   @ApiProperty({
-    description: 'ID do tipo de exame',
+    description: 'ID da alternativa do campo tipo_exames',
     example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
+    required: false,
   })
   @IsString()
-  @IsNotEmpty()
-  tipo_exame_id: string;
+  @IsOptional()
+  tipo_exame_id?: string;
 
   @ApiProperty({
     description: 'Categoria geral do exame',
@@ -251,13 +264,15 @@ export class CreateExameDto {
   tipo_recipiente_id?: string;
 
   @ApiProperty({
-    description: 'ID da alternativa do campo regiao_coleta',
-    example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
+    description: 'IDs das alternativas do campo regiao_coleta (array)',
+    example: ['f47ac10b-58cc-4372-a567-0e02b2c3d479'],
     required: false,
+    type: [String],
   })
-  @IsString()
+  @IsArray()
+  @IsUUID('4', { each: true })
   @IsOptional()
-  regiao_coleta_id?: string;
+  regiao_coleta_ids?: string[];
 
   @ApiProperty({
     description: 'ID da alternativa do campo estabilidade',
@@ -584,12 +599,5 @@ export class CreateExameDto {
   @IsOptional()
   unidades_ids?: string[];
 
-  @ApiProperty({
-    description: 'ID da empresa (null = disponível para todas)',
-    example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
-    required: false,
-  })
-  @IsString()
-  @IsOptional()
-  empresa_id?: string;
+  // empresa_id é definido automaticamente pelo sistema
 }
