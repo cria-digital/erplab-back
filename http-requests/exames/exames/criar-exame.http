@@ -5,7 +5,7 @@
 ### - regiao_coleta_ids (array de IDs)
 ###
 ### Vínculos com outras entidades:
-### - laboratorio_apoio_id: FK para laboratório de apoio (GET /api/v1/relacionamento/laboratorios)
+### - laboratorio_apoio_id: FK para laboratório de apoio (GET /api/v1/exames/laboratorios-apoio)
 ### - telemedicina_id: FK para telemedicina (GET /api/v1/relacionamento/telemedicina)
 ### - unidade_destino_id: FK para unidade de saúde destino (GET /api/v1/cadastros/unidades-saude)
 ###
@@ -16,6 +16,78 @@
 ### envio_automatico: "sim" ou "nao"
 ###
 ### Para obter os IDs disponíveis: GET /api/v1/infraestrutura/campos-formulario
+###
+
+### ⭐ EXEMPLO MÍNIMO - Criar exame com campos obrigatórios apenas
+POST {{baseUrl}}/exames/exames
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo_interno": "HEM001",
+  "nome": "Hemograma Completo",
+  "categoria": "laboratorio",
+  "status": "ativo"
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "id": "uuid",
+#   "codigo_interno": "HEM001",
+#   "nome": "Hemograma Completo",
+#   "categoria": "laboratorio",
+#   "status": "ativo",
+#   ...
+# }
+
+###
+
+### Criar exame INTERNO simples
+POST {{baseUrl}}/exames/exames
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo_interno": "GLI001",
+  "nome": "Glicemia de Jejum",
+  "sinonimos": ["Glicose", "Açúcar no sangue"],
+  "codigo_tuss": "40301630",
+  "categoria": "laboratorio",
+  "tipo_realizacao": "interno",
+  "necessita_preparo": "sim",
+  "preparo_geral": "Jejum de 8 a 12 horas",
+  "prazo_entrega_dias": 1,
+  "formato_prazo": "1 dia útil",
+  "formatos_laudo": ["PDF"],
+  "status": "ativo"
+}
+
+###
+
+### Criar exame para LABORATÓRIO DE APOIO (com ID do lab)
+### Primeiro crie o laboratório em POST /api/v1/exames/laboratorios-apoio
+### e use o ID retornado aqui
+POST {{baseUrl}}/exames/exames
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo_interno": "TSH001",
+  "nome": "TSH - Hormônio Tireoestimulante",
+  "sinonimos": ["TSH", "Tireotrofina"],
+  "codigo_tuss": "40316521",
+  "categoria": "laboratorio",
+  "tipo_realizacao": "apoio",
+  "laboratorio_apoio_id": "{{laboratorioApoioId}}",
+  "envio_automatico": "sim",
+  "prazo_entrega_dias": 3,
+  "formato_prazo": "3 dias úteis",
+  "formatos_laudo": ["PDF", "XML"],
+  "preparo_geral": "Não necessita jejum",
+  "status": "ativo"
+}
+
 ###
 
 ### Criar um novo exame - Hemograma Completo

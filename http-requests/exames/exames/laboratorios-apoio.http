@@ -1,0 +1,176 @@
+###
+### ⚠️ Laboratórios de Apoio - CRUD (Dezembro 2025)
+###
+### Esta funcionalidade permite gerenciar laboratórios de apoio para envio de exames.
+### É a tabela base (laboratorios_apoio) que é referenciada pelos exames.
+###
+### Variáveis necessárias no http-client.env.json:
+### - {{laboratorioApoioId}} - UUID do laboratório de apoio
+###
+
+### Criar um novo laboratório de apoio
+POST {{baseUrl}}/exames/laboratorios-apoio
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo": "LAB001",
+  "nome": "Laboratório DB Diagnósticos",
+  "razao_social": "DB Diagnósticos Médicos Ltda",
+  "cnpj": "12345678000199",
+  "tem_integracao_api": true,
+  "url_api": "https://api.db.com.br/v1",
+  "usuario_api": "user_api",
+  "senha_api": "token_secreto",
+  "forma_envio": "api",
+  "url_portal": "https://portal.db.com.br",
+  "email_envio": "amostras@db.com.br",
+  "horario_coleta": "08:00",
+  "dias_coleta": ["segunda", "terça", "quarta", "quinta", "sexta"],
+  "responsavel_coleta": "Transportadora XYZ",
+  "prazo_padrao_dias": 3,
+  "aceita_urgencia": true,
+  "prazo_urgencia_horas": 24,
+  "percentual_desconto": 10.5,
+  "periodicidade_faturamento": "mensal",
+  "prazo_pagamento_dias": 30,
+  "telefone": "1132334455",
+  "whatsapp": "11987654321",
+  "email": "contato@db.com.br",
+  "contato_nome": "João Silva",
+  "observacoes": "Laboratório parceiro para exames especializados",
+  "status": "ativo"
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "message": "Laboratório de apoio criado com sucesso",
+#   "data": {
+#     "id": "uuid",
+#     "codigo": "LAB001",
+#     "nome": "Laboratório DB Diagnósticos",
+#     ...
+#   }
+# }
+
+###
+
+### Criar laboratório Hermes Pardini
+POST {{baseUrl}}/exames/laboratorios-apoio
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo": "PARDINI",
+  "nome": "Hermes Pardini",
+  "razao_social": "Hermes Pardini S.A.",
+  "cnpj": "19378769000176",
+  "tem_integracao_api": true,
+  "url_api": "https://webservices.hermespardini.com.br",
+  "forma_envio": "api",
+  "prazo_padrao_dias": 5,
+  "aceita_urgencia": true,
+  "prazo_urgencia_horas": 48,
+  "periodicidade_faturamento": "quinzenal",
+  "telefone": "3131250000",
+  "email": "atendimento@hermespardini.com.br",
+  "status": "ativo"
+}
+
+###
+
+### Listar todos os laboratórios de apoio (com paginação)
+GET {{baseUrl}}/exames/laboratorios-apoio?page=1&limit=10
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [...],
+#   "total": 5,
+#   "page": 1,
+#   "lastPage": 1
+# }
+
+###
+
+### Listar com filtro por nome
+GET {{baseUrl}}/exames/laboratorios-apoio?search=Pardini
+Authorization: Bearer {{token}}
+
+###
+
+### Listar apenas laboratórios ativos
+GET {{baseUrl}}/exames/laboratorios-apoio/ativos
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Laboratórios de apoio ativos listados com sucesso",
+#   "data": [...],
+#   "total": 3
+# }
+
+###
+
+### Buscar laboratório por código
+GET {{baseUrl}}/exames/laboratorios-apoio/codigo/LAB001
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar laboratório por ID
+GET {{baseUrl}}/exames/laboratorios-apoio/{{laboratorioApoioId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Atualizar laboratório de apoio
+PATCH {{baseUrl}}/exames/laboratorios-apoio/{{laboratorioApoioId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "prazo_padrao_dias": 2,
+  "percentual_desconto": 15.0,
+  "observacoes": "Prazo reduzido para 2 dias"
+}
+
+###
+
+### Ativar/Desativar laboratório
+PATCH {{baseUrl}}/exames/laboratorios-apoio/{{laboratorioApoioId}}/toggle-status
+Authorization: Bearer {{token}}
+
+###
+
+### Remover laboratório (soft delete - apenas desativa)
+DELETE {{baseUrl}}/exames/laboratorios-apoio/{{laboratorioApoioId}}
+Authorization: Bearer {{token}}
+
+###
+
+### ⚠️ FLUXO COMPLETO - Criar Lab → Criar Exame → Vincular
+###
+### 1. Primeiro crie o laboratório de apoio (POST /exames/laboratorios-apoio)
+### 2. Copie o ID retornado
+### 3. Crie o exame usando o ID do laboratório:
+###
+POST {{baseUrl}}/exames/exames
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo_interno": "TSH001",
+  "nome": "TSH - Hormônio Tireoestimulante",
+  "categoria": "laboratorio",
+  "tipo_realizacao": "apoio",
+  "laboratorio_apoio_id": "{{laboratorioApoioId}}",
+  "envio_automatico": "sim",
+  "prazo_entrega_dias": 3,
+  "formato_prazo": "3 dias úteis",
+  "status": "ativo"
+}
+

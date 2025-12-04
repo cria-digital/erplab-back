@@ -1,0 +1,193 @@
+###
+### ⚠️ IMPORTANTE - Atualização de Exames
+###
+### Este arquivo contém exemplos de atualização de exames, incluindo:
+### - Alteração do tipo de realização (interno/apoio/telemedicina)
+### - Vinculação com laboratório de apoio
+### - Vinculação com telemedicina
+###
+### Variáveis necessárias no http-client.env.json:
+### - {{exameId}} - UUID do exame a ser atualizado
+### - {{laboratorioApoioId}} - UUID do laboratório de apoio (tabela laboratorios_apoio)
+### - {{telemedicinaId}} - UUID da telemedicina
+### - {{unidadeDestinoId}} - UUID da unidade de saúde destino
+###
+
+### Atualizar exame para usar Laboratório de Apoio
+### (Quando tipo_realizacao = 'apoio', o laboratorio_apoio_id é obrigatório)
+PATCH {{baseUrl}}/exames/exames/{{exameId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipo_realizacao": "apoio",
+  "laboratorio_apoio_id": "{{laboratorioApoioId}}",
+  "envio_automatico": "sim",
+  "prazo_entrega_dias": 3,
+  "formato_prazo": "3 dias úteis"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "tipo_realizacao": "apoio",
+#   "laboratorio_apoio_id": "uuid",
+#   "laboratorioApoio": {
+#     "id": "uuid",
+#     "codigo": "LAB001",
+#     "nome": "Laboratório DB"
+#   },
+#   ...
+# }
+
+###
+
+### Atualizar exame para usar Telemedicina
+### (Quando tipo_realizacao = 'telemedicina', o telemedicina_id é obrigatório)
+PATCH {{baseUrl}}/exames/exames/{{exameId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipo_realizacao": "telemedicina",
+  "telemedicina_id": "{{telemedicinaId}}",
+  "envio_automatico": "sim",
+  "prazo_entrega_dias": 1,
+  "formato_prazo": "24 horas"
+}
+
+###
+
+### Alterar exame para realização Interna (remover apoio/telemedicina)
+PATCH {{baseUrl}}/exames/exames/{{exameId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "tipo_realizacao": "interno",
+  "laboratorio_apoio_id": null,
+  "telemedicina_id": null,
+  "envio_automatico": "nao"
+}
+
+###
+
+### Atualizar campos de preparo e coleta
+PATCH {{baseUrl}}/exames/exames/{{exameId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "necessita_preparo": "sim",
+  "preparo_geral": "Jejum de 8 horas obrigatório",
+  "preparo_feminino": "Jejum de 8 horas. Informar DUM se aplicável.",
+  "preparo_infantil": "Jejum de 4 horas para crianças até 5 anos",
+  "coleta_geral": "Coletar em tubo EDTA (tampa roxa). Volume mínimo: 3mL",
+  "coleta_feminino": "Coletar em tubo EDTA. Anotar DUM.",
+  "coleta_infantil": "Coletar com agulha pediátrica. Volume mínimo: 1mL"
+}
+
+###
+
+### Atualizar lembretes do exame
+PATCH {{baseUrl}}/exames/exames/{{exameId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "lembrete_coletora": "Homogeneizar suavemente o tubo 8-10 vezes",
+  "lembrete_recepcionista_agendamento": "Verificar jejum do paciente antes de agendar",
+  "lembrete_recepcionista_os": "Exame deve ser coletado em tubo EDTA (tampa roxa)"
+}
+
+###
+
+### Atualizar unidade de destino
+PATCH {{baseUrl}}/exames/exames/{{exameId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "unidade_destino_id": "{{unidadeDestinoId}}"
+}
+
+###
+
+### Atualizar status do exame
+PATCH {{baseUrl}}/exames/exames/{{exameId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "status": "ativo"
+}
+
+###
+
+### Atualizar status em lote (múltiplos exames)
+POST {{baseUrl}}/exames/exames/bulk-status
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "ids": ["{{exameId1}}", "{{exameId2}}", "{{exameId3}}"],
+  "status": "inativo"
+}
+
+###
+
+### Buscar exame por ID (verificar laboratorio de apoio vinculado)
+GET {{baseUrl}}/exames/exames/{{exameId}}
+Authorization: Bearer {{token}}
+
+### Expected Response com laboratorioApoio
+# Status: 200 OK
+# {
+#   "id": "uuid",
+#   "codigo_interno": "TSH001",
+#   "nome": "TSH - Hormônio Tireoestimulante",
+#   "tipo_realizacao": "apoio",
+#   "laboratorio_apoio_id": "uuid",
+#   "laboratorioApoio": {
+#     "id": "uuid",
+#     "codigo": "LAB001",
+#     "nome": "Laboratório DB",
+#     "razao_social": "DB Diagnósticos",
+#     "cnpj": "12345678000199",
+#     "tem_integracao_api": true,
+#     "forma_envio": "api",
+#     "prazo_padrao_dias": 3,
+#     "status": "ativo"
+#   },
+#   "telemedicina_id": null,
+#   "telemedicina": null,
+#   ...
+# }
+
+###
+
+### Listar exames por laboratório de apoio
+GET {{baseUrl}}/exames/exames/laboratorio/{{laboratorioApoioId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# [
+#   {
+#     "id": "uuid",
+#     "codigo_interno": "TSH001",
+#     "nome": "TSH",
+#     "laboratorioApoio": { ... }
+#   },
+#   ...
+# ]
+
+###
+
+### Listar laboratórios de apoio disponíveis
+### Nota: Esta é a tabela antiga laboratorios_apoio (específica para exames)
+### Para laboratórios que seguem o padrão Empresa, use /api/v1/relacionamento/laboratorios
+GET {{baseUrl}}/exames/laboratorios-apoio
+Authorization: Bearer {{token}}
+
