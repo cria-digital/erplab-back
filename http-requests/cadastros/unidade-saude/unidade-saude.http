@@ -1,0 +1,204 @@
+###############################################################################
+# UNIDADES DE SAÚDE - API REST
+# Base URL: {{baseUrl}}/cadastros/unidades-saude
+###############################################################################
+
+### ===========================================
+### LISTAGEM
+### ===========================================
+
+### Listar Todas as Unidades (ativas e inativas)
+# Excluídas não aparecem
+GET {{baseUrl}}/cadastros/unidades-saude
+Authorization: Bearer {{token}}
+
+###
+
+### Listar com Paginação
+GET {{baseUrl}}/cadastros/unidades-saude?page=1&limit=5
+Authorization: Bearer {{token}}
+
+###
+
+### Listar com Busca
+GET {{baseUrl}}/cadastros/unidades-saude?search=São Roque
+Authorization: Bearer {{token}}
+
+###
+
+### Listar por Cidade e Estado
+GET {{baseUrl}}/cadastros/unidades-saude?cidade=São Roque&estado=SP
+Authorization: Bearer {{token}}
+
+###
+
+### Listar Apenas Ativas (para dropdowns/selects)
+GET {{baseUrl}}/cadastros/unidades-saude/ativas
+Authorization: Bearer {{token}}
+
+### ===========================================
+### BUSCA
+### ===========================================
+
+### Buscar por ID
+GET {{baseUrl}}/cadastros/unidades-saude/{{unidadeId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar por CNPJ
+GET {{baseUrl}}/cadastros/unidades-saude/cnpj/12345678000190
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar por Cidade
+GET {{baseUrl}}/cadastros/unidades-saude/cidade/São Roque
+Authorization: Bearer {{token}}
+
+### ===========================================
+### CRIAR
+### ===========================================
+
+### Criar Nova Unidade de Saúde
+# IMPORTANTE:
+# - cnaePrincipalId: UUID da tabela cnaes (GET /infraestrutura/cnae)
+# - conta_bancaria_id: UUID da tabela contas_bancarias (GET /financeiro/contas-bancarias)
+POST {{baseUrl}}/cadastros/unidades-saude
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nomeUnidade": "Laboratório Central São Roque",
+  "codigoInterno": "LAB001",
+  "cnpj": "12345678000191",
+  "razaoSocial": "Laboratório São Roque LTDA",
+  "nomeFantasia": "LabSR Central",
+  "inscricaoMunicipal": "123456",
+  "inscricaoEstadual": "789456123",
+  "cnes": "1234567",
+  "contatosUnidade": "(11) 4712-3456",
+  "email": "contato@labsr.com.br",
+  "cnaePrincipalId": "958195aa-b078-4ff3-8e1b-67800481fb5e",
+  "cep": "18130000",
+  "rua": "Rua São Paulo",
+  "numero": "123",
+  "bairro": "Centro",
+  "complemento": "Sala 10",
+  "estado": "SP",
+  "cidade": "São Roque",
+  "nomeResponsavel": "Dr. João Silva",
+  "contatoResponsavel": "(11) 98765-4321",
+  "emailResponsavel": "dr.joao@labsr.com.br",
+  "irrfPercentual": 1.5,
+  "pisPercentual": 0.65,
+  "cofinsPercentual": 3,
+  "csllPercentual": 1,
+  "issPercentual": 5,
+  "optanteSimplesNacional": false,
+  "ativo": true,
+  "horariosAtendimento": [
+    {
+      "diaSemana": "SEGUNDA",
+      "horarioInicio": "07:00",
+      "horarioFim": "18:00",
+      "intervaloInicio": "12:00",
+      "intervaloFim": "13:00",
+      "semIntervalo": false
+    },
+    {
+      "diaSemana": "SABADO",
+      "horarioInicio": "07:00",
+      "horarioFim": "12:00",
+      "semIntervalo": true
+    }
+  ],
+  "contas_bancarias": [
+    { "conta_bancaria_id": "UUID-DA-CONTA-BANCARIA" }
+  ],
+  "cnaeSecundarios": [
+    { "cnaeId": "UUID-DO-CNAE-SECUNDARIO" }
+  ]
+}
+
+### ===========================================
+### ATUALIZAR
+### ===========================================
+
+### Atualizar Dados Básicos
+PATCH {{baseUrl}}/cadastros/unidades-saude/{{unidadeId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "nomeFantasia": "LabSR Central - Atualizado",
+  "email": "novo.email@labsr.com.br"
+}
+
+###
+
+### Atualizar Horários de Atendimento
+PATCH {{baseUrl}}/cadastros/unidades-saude/{{unidadeId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "horariosAtendimento": [
+    {
+      "diaSemana": "SEGUNDA",
+      "horarioInicio": "06:00",
+      "horarioFim": "20:00",
+      "semIntervalo": true
+    }
+  ]
+}
+
+###
+
+### Atualizar Contas Bancárias (substitui todas)
+PATCH {{baseUrl}}/cadastros/unidades-saude/{{unidadeId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "contas_bancarias": [
+    { "conta_bancaria_id": "UUID-DA-CONTA-1" },
+    { "conta_bancaria_id": "UUID-DA-CONTA-2" }
+  ]
+}
+
+###
+
+### Atualizar Endereço
+PATCH {{baseUrl}}/cadastros/unidades-saude/{{unidadeId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "cep": "18135000",
+  "rua": "Avenida Brasil",
+  "numero": "500",
+  "bairro": "Vila Nova",
+  "cidade": "São Roque",
+  "estado": "SP"
+}
+
+### ===========================================
+### ATIVAR / DESATIVAR / EXCLUIR
+### ===========================================
+
+### Desativar Unidade (muda ativo=false, continua na listagem)
+PATCH {{baseUrl}}/cadastros/unidades-saude/{{unidadeId}}/desativar
+Authorization: Bearer {{token}}
+
+###
+
+### Ativar Unidade (muda ativo=true)
+PATCH {{baseUrl}}/cadastros/unidades-saude/{{unidadeId}}/ativar
+Authorization: Bearer {{token}}
+
+###
+
+### Excluir Unidade (soft delete - não aparece mais na listagem)
+DELETE {{baseUrl}}/cadastros/unidades-saude/{{unidadeId}}
+Authorization: Bearer {{token}}

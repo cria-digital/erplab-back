@@ -19,7 +19,6 @@ export interface PaginationParams {
   page?: number;
   limit?: number;
   search?: string;
-  incluirInativos?: boolean;
   cidade?: string;
   estado?: string;
 }
@@ -179,25 +178,12 @@ export class UnidadeSaudeService {
   async findAll(
     params: PaginationParams,
   ): Promise<PaginatedResult<UnidadeSaude>> {
-    const {
-      page = 1,
-      limit = 10,
-      search,
-      incluirInativos = false,
-      cidade,
-      estado,
-    } = params;
+    const { page = 1, limit = 10, search, cidade, estado } = params;
 
     const skip = (page - 1) * limit;
 
+    // Lista todas as unidades (ativas e inativas), exceto as excluídas
     let where: any = { excluido: false };
-
-    // Por padrão, lista apenas unidades ativas
-    // Para incluir inativas, passar incluirInativos=true
-    if (!incluirInativos) {
-      where.ativo = true;
-    }
-    // Se incluirInativos=true, lista ativas e inativas (mas nunca excluídas)
 
     if (cidade) {
       where.cidade = ILike(`%${cidade}%`);

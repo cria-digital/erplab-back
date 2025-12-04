@@ -114,7 +114,6 @@ describe('UnidadeSaudeController', () => {
         page: 1,
         limit: 10,
         search: undefined,
-        incluirInativos: false,
         cidade: undefined,
         estado: undefined,
       });
@@ -131,13 +130,12 @@ describe('UnidadeSaudeController', () => {
 
       mockUnidadeSaudeService.findAll.mockResolvedValue(paginatedResult);
 
-      await controller.findAll(2, 20, 'Saúde', 'true', 'Brasília', 'DF');
+      await controller.findAll(2, 20, 'Saúde', 'Brasília', 'DF');
 
       expect(service.findAll).toHaveBeenCalledWith({
         page: 2,
         limit: 20,
         search: 'Saúde',
-        incluirInativos: true,
         cidade: 'Brasília',
         estado: 'DF',
       });
@@ -160,7 +158,6 @@ describe('UnidadeSaudeController', () => {
         page: 1,
         limit: 10,
         search: undefined,
-        incluirInativos: false,
         cidade: undefined,
         estado: undefined,
       });
@@ -183,7 +180,6 @@ describe('UnidadeSaudeController', () => {
         page: 3,
         limit: 15,
         search: undefined,
-        incluirInativos: false,
         cidade: undefined,
         estado: undefined,
       });

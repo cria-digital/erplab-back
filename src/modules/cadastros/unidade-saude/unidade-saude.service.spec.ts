@@ -338,7 +338,7 @@ describe('UnidadeSaudeService', () => {
 
       expect(result).toEqual(paginatedResult);
       expect(mockUnidadeSaudeRepository.findAndCount).toHaveBeenCalledWith({
-        where: { excluido: false, ativo: true },
+        where: { excluido: false },
         relations: [
           'horariosAtendimento',
           'contas_bancarias',
@@ -362,46 +362,21 @@ describe('UnidadeSaudeService', () => {
         where: [
           {
             excluido: false,
-            ativo: true,
             nomeUnidade: expect.objectContaining({ _type: 'ilike' }),
           },
           {
             excluido: false,
-            ativo: true,
             nomeFantasia: expect.objectContaining({ _type: 'ilike' }),
           },
           {
             excluido: false,
-            ativo: true,
             cnpj: expect.objectContaining({ _type: 'ilike' }),
           },
           {
             excluido: false,
-            ativo: true,
             razaoSocial: expect.objectContaining({ _type: 'ilike' }),
           },
         ],
-        relations: [
-          'horariosAtendimento',
-          'contas_bancarias',
-          'contas_bancarias.conta_bancaria',
-          'contas_bancarias.conta_bancaria.banco',
-          'contas_bancarias.unidade_saude',
-          'cnaeSecundarios',
-        ],
-        order: { nomeUnidade: 'ASC' },
-        skip: 0,
-        take: 10,
-      });
-    });
-
-    it('deve aplicar filtro por status ativo (padrão quando incluirInativos é false)', async () => {
-      mockUnidadeSaudeRepository.findAndCount.mockResolvedValue([[], 0]);
-
-      await service.findAll({ incluirInativos: false });
-
-      expect(mockUnidadeSaudeRepository.findAndCount).toHaveBeenCalledWith({
-        where: { excluido: false, ativo: true },
         relations: [
           'horariosAtendimento',
           'contas_bancarias',
@@ -424,7 +399,6 @@ describe('UnidadeSaudeService', () => {
       expect(mockUnidadeSaudeRepository.findAndCount).toHaveBeenCalledWith({
         where: {
           excluido: false,
-          ativo: true,
           cidade: expect.objectContaining({ _type: 'ilike' }),
           estado: 'DF',
         },
@@ -448,7 +422,7 @@ describe('UnidadeSaudeService', () => {
       await service.findAll({ page: 3, limit: 20 });
 
       expect(mockUnidadeSaudeRepository.findAndCount).toHaveBeenCalledWith({
-        where: { excluido: false, ativo: true },
+        where: { excluido: false },
         relations: [
           'horariosAtendimento',
           'contas_bancarias',
@@ -1098,7 +1072,6 @@ describe('UnidadeSaudeService', () => {
 
       await service.findAll({
         search: 'clinica',
-        incluirInativos: false,
         cidade: 'Brasília',
         estado: 'DF',
       });
@@ -1106,10 +1079,10 @@ describe('UnidadeSaudeService', () => {
       expect(mockUnidadeSaudeRepository.findAndCount).toHaveBeenCalledWith(
         expect.objectContaining({
           where: [
-            expect.objectContaining({ ativo: true }),
-            expect.objectContaining({ ativo: true }),
-            expect.objectContaining({ ativo: true }),
-            expect.objectContaining({ ativo: true }),
+            expect.objectContaining({ excluido: false }),
+            expect.objectContaining({ excluido: false }),
+            expect.objectContaining({ excluido: false }),
+            expect.objectContaining({ excluido: false }),
           ],
         }),
       );
@@ -1126,19 +1099,6 @@ describe('UnidadeSaudeService', () => {
       expect(result.totalPages).toBe(3); // Math.ceil(25/10)
     });
 
-    it('deve incluir inativos quando incluirInativos é true', async () => {
-      mockUnidadeSaudeRepository.findAndCount.mockResolvedValue([[], 0]);
-
-      await service.findAll({ incluirInativos: true });
-
-      // Quando incluirInativos=true, lista ativas e inativas, mas nunca excluídas
-      expect(mockUnidadeSaudeRepository.findAndCount).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: { excluido: false },
-        }),
-      );
-    });
-
     it('deve normalizar estado para uppercase', async () => {
       mockUnidadeSaudeRepository.findAndCount.mockResolvedValue([[], 0]);
 
@@ -1146,7 +1106,7 @@ describe('UnidadeSaudeService', () => {
 
       expect(mockUnidadeSaudeRepository.findAndCount).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: { excluido: false, ativo: true, estado: 'SP' },
+          where: { excluido: false, estado: 'SP' },
         }),
       );
     });
