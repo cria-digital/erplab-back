@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CnaeService } from './cnae.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { ILike } from 'typeorm';
 import { Cnae } from '../entities/cnae.entity';
 import { NotFoundException } from '@nestjs/common';
 import { PaginatedResultDto } from '../dto/pagination.dto';
@@ -18,6 +17,7 @@ describe('CnaeService', () => {
   };
 
   const mockQueryBuilder = {
+    where: jest.fn().mockReturnThis(),
     andWhere: jest.fn().mockReturnThis(),
     orderBy: jest.fn().mockReturnThis(),
     skip: jest.fn().mockReturnThis(),
@@ -119,7 +119,7 @@ describe('CnaeService', () => {
       );
     });
 
-    it('should filter by descricao', async () => {
+    it('should filter by descricao with unaccent', async () => {
       const searchDto = { descricao: 'hospital', page: 1, limit: 10 };
       const cnaes = [mockCnae];
 
@@ -130,7 +130,7 @@ describe('CnaeService', () => {
       await service.findAll(searchDto as any);
 
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        'LOWER(cnae.descricao) LIKE LOWER(:descricao)',
+        'unaccent(LOWER(cnae.descricao)) LIKE unaccent(LOWER(:descricao))',
         { descricao: '%hospital%' },
       );
     });
@@ -281,27 +281,35 @@ describe('CnaeService', () => {
   });
 
   describe('search', () => {
-    it('should search CNAEs by termo', async () => {
+    it('should search CNAEs by termo with unaccent', async () => {
       const termo = 'hospital';
       const cnaes = [mockCnae];
-      mockCnaeRepository.find.mockResolvedValue(cnaes);
+
+      mockCnaeRepository.createQueryBuilder.mockReturnValue(mockQueryBuilder);
+      mockQueryBuilder.getMany.mockResolvedValue(cnaes);
 
       const result = await service.search(termo);
 
       expect(result).toEqual(cnaes);
-      expect(mockCnaeRepository.find).toHaveBeenCalledWith({
-        where: [
-          { codigo: ILike(`%${termo}%`) },
-          { descricao: ILike(`%${termo}%`) },
-          { descricaoSubclasse: ILike(`%${termo}%`) },
-        ],
-        take: 20,
-        order: { codigo: 'ASC' },
-      });
+      expect(mockCnaeRepository.createQueryBuilder).toHaveBeenCalledWith(
+        'cnae',
+      );
+      expect(mockQueryBuilder.where).toHaveBeenCalledWith(
+        `cnae.codigo ILIKE :termo
+       OR unaccent(LOWER(cnae.descricao)) LIKE unaccent(LOWER(:termo))
+       OR unaccent(LOWER(cnae.descricaoSubclasse)) LIKE unaccent(LOWER(:termo))`,
+        { termo: `%${termo}%` },
+      );
+      expect(mockQueryBuilder.orderBy).toHaveBeenCalledWith(
+        'cnae.codigo',
+        'ASC',
+      );
+      expect(mockQueryBuilder.take).toHaveBeenCalledWith(20);
     });
 
     it('should return empty array when no matches found', async () => {
-      mockCnaeRepository.find.mockResolvedValue([]);
+      mockCnaeRepository.createQueryBuilder.mockReturnValue(mockQueryBuilder);
+      mockQueryBuilder.getMany.mockResolvedValue([]);
 
       const result = await service.search('xyz123');
 

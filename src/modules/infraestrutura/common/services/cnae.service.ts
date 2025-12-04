@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, ILike } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Cnae } from '../entities/cnae.entity';
 import { CreateCnaeDto } from '../dto/create-cnae.dto';
 import { UpdateCnaeDto } from '../dto/update-cnae.dto';
@@ -29,9 +29,11 @@ export class CnaeService {
     }
 
     if (searchDto?.descricao) {
-      query.andWhere('LOWER(cnae.descricao) LIKE LOWER(:descricao)', {
-        descricao: `%${searchDto.descricao}%`,
-      });
+      // Usa unaccent para ignorar acentos na busca
+      query.andWhere(
+        'unaccent(LOWER(cnae.descricao)) LIKE unaccent(LOWER(:descricao))',
+        { descricao: `%${searchDto.descricao}%` },
+      );
     }
 
     if (searchDto?.secao) {
@@ -93,15 +95,21 @@ export class CnaeService {
   }
 
   async search(termo: string): Promise<Cnae[]> {
-    return await this.cnaeRepository.find({
-      where: [
-        { codigo: ILike(`%${termo}%`) },
-        { descricao: ILike(`%${termo}%`) },
-        { descricaoSubclasse: ILike(`%${termo}%`) },
-      ],
-      take: 20,
-      order: { codigo: 'ASC' },
-    });
+    // Usa unaccent para ignorar acentos na busca
+    // Ex: "Saude" encontra "Saúde", "laboratorio" encontra "Laboratório"
+    const query = this.cnaeRepository.createQueryBuilder('cnae');
+
+    query.where(
+      `cnae.codigo ILIKE :termo
+       OR unaccent(LOWER(cnae.descricao)) LIKE unaccent(LOWER(:termo))
+       OR unaccent(LOWER(cnae.descricaoSubclasse)) LIKE unaccent(LOWER(:termo))`,
+      { termo: `%${termo}%` },
+    );
+
+    query.orderBy('cnae.codigo', 'ASC');
+    query.take(20);
+
+    return await query.getMany();
   }
 
   async findBySecao(secao: string): Promise<Cnae[]> {
