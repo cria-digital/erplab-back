@@ -93,7 +93,7 @@ describe('CnaeSeedService', () => {
 
       const cnaeExistente = {
         id: 'uuid-123',
-        codigo: '8640-2/02',
+        codigo: '8640202',
         descricao: 'Descrição antiga',
         ativo: true,
       };
@@ -114,14 +114,23 @@ describe('CnaeSeedService', () => {
     });
   });
 
-  describe('formatarCodigoCnae', () => {
-    it('deve formatar corretamente códigos CNAE', () => {
+  describe('normalizarCodigoCnae', () => {
+    it('deve normalizar corretamente códigos CNAE para 7 dígitos sem formatação', () => {
       // Acessa o método privado via casting para testes
       const serviceAny = service as any;
 
-      expect(serviceAny.formatarCodigoCnae('86403')).toBe('0086-4/03');
-      expect(serviceAny.formatarCodigoCnae('0111300')).toBe('0111-3/00');
-      expect(serviceAny.formatarCodigoCnae('8610101')).toBe('8610-1/01');
+      // Códigos de 5 dígitos (IBGE classe) devem ter "00" adicionado no final
+      expect(serviceAny.normalizarCodigoCnae('86403')).toBe('8640300');
+      expect(serviceAny.normalizarCodigoCnae('01113')).toBe('0111300');
+      expect(serviceAny.normalizarCodigoCnae('63119')).toBe('6311900');
+
+      // Códigos de 7 dígitos devem permanecer como estão
+      expect(serviceAny.normalizarCodigoCnae('8610101')).toBe('8610101');
+      expect(serviceAny.normalizarCodigoCnae('6311900')).toBe('6311900');
+
+      // Códigos formatados devem ter formatação removida
+      expect(serviceAny.normalizarCodigoCnae('8640-2/03')).toBe('8640203');
+      expect(serviceAny.normalizarCodigoCnae('0111-3/00')).toBe('0111300');
     });
   });
 });

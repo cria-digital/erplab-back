@@ -8,9 +8,12 @@ import {
 } from 'class-validator';
 
 export class CreateCnaeDto {
-  @ApiProperty({ example: '8610-1/01', description: 'Código CNAE' })
+  @ApiProperty({
+    example: '8610101',
+    description: 'Código CNAE (7 dígitos, sem formatação)',
+  })
   @IsString()
-  @Length(1, 10)
+  @Length(7, 7)
   codigo: string;
 
   @ApiProperty({
@@ -98,13 +101,13 @@ export class CreateCnaeDto {
   descricaoClasse?: string;
 
   @ApiProperty({
-    example: '8610-1',
-    description: 'Subclasse do CNAE',
+    example: '861010',
+    description: 'Subclasse do CNAE (6 dígitos, sem formatação)',
     required: false,
   })
   @IsOptional()
   @IsString()
-  @Length(1, 7)
+  @Length(6, 6)
   subclasse?: string;
 
   @ApiProperty({

@@ -31,16 +31,27 @@ export class CnaeSeedService {
   ) {}
 
   /**
-   * Formata o código CNAE do formato IBGE (ex: "86403") para o formato padrão (ex: "8640-2/03")
+   * Normaliza o código CNAE para o formato sem formatação (7 dígitos)
+   * Formato IBGE (classe): "01113" (5 dígitos) -> "0111300" (7 dígitos)
+   * Formato CNPJA (subclasse): 6311900 (7 dígitos) -> "6311900"
+   * Mantém compatibilidade com API CNPJA que usa códigos de 7 dígitos
    */
-  private formatarCodigoCnae(codigo: string): string {
-    // Código do IBGE vem sem formatação (ex: "86403", "01113")
-    // Formato esperado: NNNN-N/NN (ex: "8640-2/03", "0111-3/00")
-    const codigoStr = codigo.padStart(7, '0');
-    const classe = codigoStr.substring(0, 4);
-    const digito = codigoStr.substring(4, 5);
-    const subclasse = codigoStr.substring(5, 7);
-    return `${classe}-${digito}/${subclasse}`;
+  private normalizarCodigoCnae(codigo: string): string {
+    // Remove qualquer formatação existente (hífens, barras)
+    const codigoLimpo = codigo.replace(/[-/]/g, '');
+
+    // Se o código tem 5 dígitos (formato IBGE classe), adiciona "00" no final (subclasse padrão)
+    if (codigoLimpo.length === 5) {
+      return codigoLimpo + '00';
+    }
+
+    // Se tem menos de 7 dígitos, adiciona zeros à esquerda
+    if (codigoLimpo.length < 7) {
+      return codigoLimpo.padStart(7, '0');
+    }
+
+    // Se já tem 7 dígitos, retorna como está
+    return codigoLimpo;
   }
 
   async seed(): Promise<void> {
@@ -78,10 +89,10 @@ export class CnaeSeedService {
 
       for (const cnaeJson of cnaesJson) {
         try {
-          const codigoFormatado = this.formatarCodigoCnae(cnaeJson.id);
+          const codigoNormalizado = this.normalizarCodigoCnae(cnaeJson.id);
 
           const cnaeData = {
-            codigo: codigoFormatado,
+            codigo: codigoNormalizado,
             descricao: cnaeJson.descricao,
             secao: cnaeJson.grupo.divisao.secao.id,
             descricaoSecao: cnaeJson.grupo.divisao.secao.descricao,
@@ -89,20 +100,20 @@ export class CnaeSeedService {
             descricaoDivisao: cnaeJson.grupo.divisao.descricao,
             grupo: cnaeJson.grupo.id,
             descricaoGrupo: cnaeJson.grupo.descricao,
-            classe: codigoFormatado.substring(0, 4),
+            classe: codigoNormalizado.substring(0, 4),
             descricaoClasse: cnaeJson.descricao,
-            subclasse: codigoFormatado.substring(0, 6),
+            subclasse: codigoNormalizado.substring(0, 6),
             descricaoSubclasse: cnaeJson.descricao,
             ativo: true,
           };
 
           const existente = await this.cnaeRepository.findOne({
-            where: { codigo: codigoFormatado },
+            where: { codigo: codigoNormalizado },
           });
 
           if (existente) {
             await this.cnaeRepository.update(
-              { codigo: codigoFormatado },
+              { codigo: codigoNormalizado },
               cnaeData,
             );
             atualizados++;
@@ -135,11 +146,12 @@ export class CnaeSeedService {
 
   /**
    * Seed básico com CNAEs de saúde (fallback)
+   * Códigos sem formatação para compatibilidade com API CNPJA
    */
   private async seedCnaesBasicos(): Promise<void> {
     const cnaesSaude = [
       {
-        codigo: '8640-2/02',
+        codigo: '8640202',
         descricao: 'Laboratórios de anatomia patológica e citológica',
         secao: 'Q',
         descricaoSecao: 'SAÚDE HUMANA E SERVIÇOS SOCIAIS',
@@ -151,13 +163,13 @@ export class CnaeSeedService {
         classe: '8640',
         descricaoClasse:
           'Atividades de serviços de complementação diagnóstica e terapêutica',
-        subclasse: '8640-2',
+        subclasse: '864020',
         descricaoSubclasse:
           'Atividades de serviços de complementação diagnóstica e terapêutica',
         ativo: true,
       },
       {
-        codigo: '8640-2/03',
+        codigo: '8640203',
         descricao: 'Laboratórios clínicos',
         secao: 'Q',
         descricaoSecao: 'SAÚDE HUMANA E SERVIÇOS SOCIAIS',
@@ -169,13 +181,13 @@ export class CnaeSeedService {
         classe: '8640',
         descricaoClasse:
           'Atividades de serviços de complementação diagnóstica e terapêutica',
-        subclasse: '8640-2',
+        subclasse: '864020',
         descricaoSubclasse:
           'Atividades de serviços de complementação diagnóstica e terapêutica',
         ativo: true,
       },
       {
-        codigo: '8621-4/00',
+        codigo: '8621400',
         descricao: 'Consultórios médicos',
         secao: 'Q',
         descricaoSecao: 'SAÚDE HUMANA E SERVIÇOS SOCIAIS',
@@ -186,12 +198,12 @@ export class CnaeSeedService {
           'Atividades de atenção ambulatorial executadas por médicos e odontólogos',
         classe: '8621',
         descricaoClasse: 'Consultórios médicos',
-        subclasse: '8621-4',
+        subclasse: '862140',
         descricaoSubclasse: 'Consultórios médicos',
         ativo: true,
       },
       {
-        codigo: '8630-5/03',
+        codigo: '8630503',
         descricao: 'Atividades de clínicas médicas',
         secao: 'Q',
         descricaoSecao: 'SAÚDE HUMANA E SERVIÇOS SOCIAIS',
@@ -203,12 +215,12 @@ export class CnaeSeedService {
         classe: '8630',
         descricaoClasse:
           'Atividades de atenção ambulatorial executadas por médicos e odontólogos',
-        subclasse: '8630-5',
+        subclasse: '863050',
         descricaoSubclasse: 'Atividades de atenção ambulatorial',
         ativo: true,
       },
       {
-        codigo: '8610-1/01',
+        codigo: '8610101',
         descricao: 'Atividades de atendimento hospitalar',
         secao: 'Q',
         descricaoSecao: 'SAÚDE HUMANA E SERVIÇOS SOCIAIS',
@@ -218,7 +230,7 @@ export class CnaeSeedService {
         descricaoGrupo: 'Atividades de atendimento hospitalar',
         classe: '8610',
         descricaoClasse: 'Atividades de atendimento hospitalar',
-        subclasse: '8610-1',
+        subclasse: '861010',
         descricaoSubclasse: 'Atividades de atendimento hospitalar',
         ativo: true,
       },

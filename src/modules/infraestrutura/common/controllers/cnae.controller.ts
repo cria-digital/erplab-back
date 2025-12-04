@@ -198,8 +198,8 @@ export class CnaeController {
   })
   @ApiQuery({
     name: 'codigo',
-    description: 'Código do CNAE',
-    example: '8640-2/02',
+    description: 'Código do CNAE (7 dígitos, sem formatação)',
+    example: '8640202',
   })
   @ApiResponse({ status: 200, description: 'CNAE encontrado' })
   @ApiResponse({ status: 404, description: 'CNAE não encontrado' })

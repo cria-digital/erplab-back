@@ -182,7 +182,7 @@ describe('UnidadeSaudeService', () => {
     mockContaBancariaRepository.findOne.mockResolvedValue(null);
     mockCnaeRepository.findOne.mockResolvedValue({
       id: 'cnae-uuid',
-      codigo: '8640-2/03',
+      codigo: '8640203',
     });
     mockQueryRunner.manager.delete.mockResolvedValue(undefined);
     mockQueryRunner.manager.findOne.mockResolvedValue(undefined);

@@ -25,7 +25,7 @@ describe('CnaeController', () => {
 
   const mockCnae = {
     id: '550e8400-e29b-41d4-a716-446655440000',
-    codigo: '86101',
+    codigo: '8610101',
     descricao: 'ATIVIDADES DE ATENDIMENTO HOSPITALAR',
     secao: 'Q',
     secaoDescricao: 'SAÚDE HUMANA E SERVIÇOS SOCIAIS',
@@ -33,9 +33,9 @@ describe('CnaeController', () => {
     divisaoDescricao: 'ATIVIDADES DE ATENÇÃO À SAÚDE HUMANA',
     grupo: '861',
     grupoDescricao: 'Atividades de atendimento hospitalar',
-    classe: '8610-1',
+    classe: '8610',
     classeDescricao: 'Atividades de atendimento hospitalar',
-    subclasse: '8610-1/01',
+    subclasse: '861010',
     subclasseDescricao:
       'Atividades de atendimento hospitalar, exceto pronto-socorro e unidades para atendimento a urgências',
     observacoes: null,
@@ -70,7 +70,7 @@ describe('CnaeController', () => {
   describe('create', () => {
     it('deveria criar um novo CNAE', async () => {
       const dto: CreateCnaeDto = {
-        codigo: '86101',
+        codigo: '8610101',
         descricao: 'ATIVIDADES DE ATENDIMENTO HOSPITALAR',
         secao: 'Q',
         descricaoSecao: 'SAÚDE HUMANA E SERVIÇOS SOCIAIS',
@@ -80,7 +80,7 @@ describe('CnaeController', () => {
         descricaoGrupo: 'Atividades de atendimento hospitalar',
         classe: '8610',
         descricaoClasse: 'Atividades de atendimento hospitalar',
-        subclasse: '8610-1/01',
+        subclasse: '861010',
         descricaoSubclasse: 'Atividades de atendimento hospitalar',
       };
 
@@ -184,19 +184,19 @@ describe('CnaeController', () => {
     it('deveria buscar CNAE por código', async () => {
       mockCnaeService.findByCodigo.mockResolvedValue(mockCnae);
 
-      const result = await controller.findByCodigo('86101');
+      const result = await controller.findByCodigo('8610101');
 
       expect(result).toEqual(mockCnae);
-      expect(service.findByCodigo).toHaveBeenCalledWith('86101');
+      expect(service.findByCodigo).toHaveBeenCalledWith('8610101');
     });
 
-    it('deveria buscar CNAE por código formatado', async () => {
+    it('deveria buscar CNAE por código de 7 dígitos', async () => {
       mockCnaeService.findByCodigo.mockResolvedValue(mockCnae);
 
-      const result = await controller.findByCodigo('8610-1/01');
+      const result = await controller.findByCodigo('8640203');
 
       expect(result).toEqual(mockCnae);
-      expect(service.findByCodigo).toHaveBeenCalledWith('8610-1/01');
+      expect(service.findByCodigo).toHaveBeenCalledWith('8640203');
     });
 
     it('deveria tratar erro quando CNAE não existir', async () => {
@@ -320,7 +320,7 @@ describe('CnaeController', () => {
     it('deveria importar CNAEs em lote', async () => {
       const cnaes: CreateCnaeDto[] = [
         {
-          codigo: '86101',
+          codigo: '8610101',
           descricao: 'CNAE 1',
           secao: 'Q',
           descricaoSecao: 'SAÚDE',
@@ -330,11 +330,11 @@ describe('CnaeController', () => {
           descricaoGrupo: 'Atendimento hospitalar',
           classe: '8610',
           descricaoClasse: 'Atendimento hospitalar',
-          subclasse: '8610-1/01',
+          subclasse: '861010',
           descricaoSubclasse: 'Atendimento hospitalar',
         },
         {
-          codigo: '86102',
+          codigo: '8610102',
           descricao: 'CNAE 2',
           secao: 'Q',
           descricaoSecao: 'SAÚDE',
@@ -344,7 +344,7 @@ describe('CnaeController', () => {
           descricaoGrupo: 'Atendimento hospitalar',
           classe: '8610',
           descricaoClasse: 'Atendimento hospitalar',
-          subclasse: '8610-1/02',
+          subclasse: '861010',
           descricaoSubclasse: 'Pronto-socorro',
         },
       ];
@@ -360,7 +360,7 @@ describe('CnaeController', () => {
     it('deveria tratar erro na importação em lote', async () => {
       const cnaes: CreateCnaeDto[] = [
         {
-          codigo: '86101',
+          codigo: '8610101',
           descricao: 'CNAE 1',
           secao: 'Q',
           descricaoSecao: 'SAÚDE',
@@ -370,7 +370,7 @@ describe('CnaeController', () => {
           descricaoGrupo: 'Atendimento hospitalar',
           classe: '8610',
           descricaoClasse: 'Atendimento hospitalar',
-          subclasse: '8610-1/01',
+          subclasse: '861010',
           descricaoSubclasse: 'Atendimento hospitalar',
         },
       ];

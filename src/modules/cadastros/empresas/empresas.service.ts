@@ -340,34 +340,30 @@ export class EmpresasService {
   }
 
   /**
-   * Busca CNAE no banco local tentando diferentes formatos
-   * A API retorna códigos como 6311900 (7 dígitos)
-   * O banco pode ter:
-   * - Formato simples: 63119 (5 dígitos - classe)
-   * - Formato completo: 6311-9/00 (com formatação)
+   * Busca CNAE no banco local pelo código
+   * A API CNPJA retorna códigos como 6311900 (7 dígitos, sem formatação)
+   * O banco pode ter códigos em 5 dígitos (IBGE) ou 7 dígitos (CNPJA)
    */
   private async buscarCnaeLocal(codigo: number | string): Promise<any> {
-    const codigoStr = String(codigo).padStart(7, '0');
+    const codigoStr = String(codigo);
 
-    // Formato 1: apenas 5 primeiros dígitos (classe)
-    const codigoSimples = codigoStr.substring(0, 5);
+    // Formato 1: código de 7 dígitos (ex: 6311900)
+    const codigo7digitos = codigoStr.padStart(7, '0');
 
-    // Formato 2: XXXX-X/XX (ex: 6311-9/00)
-    const codigoFormatado = `${codigoStr.substring(0, 4)}-${codigoStr.substring(4, 5)}/${codigoStr.substring(5, 7)}`;
+    // Formato 2: código de 5 dígitos - remove os últimos 2 zeros (ex: 6311900 -> 63119)
+    const codigo5digitos = codigo7digitos.substring(0, 5);
 
-    // Tenta primeiro o formato simples (5 dígitos)
+    // Tenta buscar pelo código de 7 dígitos primeiro
     let cnaeLocal = await this.cnaeRepository.findOne({
-      where: { codigo: codigoSimples },
+      where: { codigo: codigo7digitos },
     });
 
-    if (cnaeLocal) {
-      return cnaeLocal;
+    // Se não encontrou, tenta pelo código de 5 dígitos
+    if (!cnaeLocal) {
+      cnaeLocal = await this.cnaeRepository.findOne({
+        where: { codigo: codigo5digitos },
+      });
     }
-
-    // Se não encontrou, tenta o formato completo
-    cnaeLocal = await this.cnaeRepository.findOne({
-      where: { codigo: codigoFormatado },
-    });
 
     return cnaeLocal || null;
   }
