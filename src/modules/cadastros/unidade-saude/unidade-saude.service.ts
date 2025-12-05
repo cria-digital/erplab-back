@@ -203,16 +203,10 @@ export class UnidadeSaudeService {
       ];
     }
 
+    // Otimização: Na listagem, não carregamos relações aninhadas
+    // As relações completas ficam apenas no findOne
     const queryOptions: FindManyOptions<UnidadeSaude> = {
       where,
-      relations: [
-        'horariosAtendimento',
-        'contas_bancarias',
-        'contas_bancarias.conta_bancaria',
-        'contas_bancarias.conta_bancaria.banco',
-        'contas_bancarias.unidade_saude',
-        'cnaeSecundarios',
-      ],
       order: { nomeUnidade: 'ASC' },
       skip,
       take: limit,
@@ -241,7 +235,6 @@ export class UnidadeSaudeService {
         'contas_bancarias',
         'contas_bancarias.conta_bancaria',
         'contas_bancarias.conta_bancaria.banco',
-        'contas_bancarias.unidade_saude',
         'cnaeSecundarios',
       ],
     });
@@ -266,7 +259,6 @@ export class UnidadeSaudeService {
         'contas_bancarias',
         'contas_bancarias.conta_bancaria',
         'contas_bancarias.conta_bancaria.banco',
-        'contas_bancarias.unidade_saude',
         'cnaeSecundarios',
       ],
     });

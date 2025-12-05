@@ -339,14 +339,6 @@ describe('UnidadeSaudeService', () => {
       expect(result).toEqual(paginatedResult);
       expect(mockUnidadeSaudeRepository.findAndCount).toHaveBeenCalledWith({
         where: { excluido: false },
-        relations: [
-          'horariosAtendimento',
-          'contas_bancarias',
-          'contas_bancarias.conta_bancaria',
-          'contas_bancarias.conta_bancaria.banco',
-          'contas_bancarias.unidade_saude',
-          'cnaeSecundarios',
-        ],
         order: { nomeUnidade: 'ASC' },
         skip: 0,
         take: 10,
@@ -377,14 +369,6 @@ describe('UnidadeSaudeService', () => {
             razaoSocial: expect.objectContaining({ _type: 'ilike' }),
           },
         ],
-        relations: [
-          'horariosAtendimento',
-          'contas_bancarias',
-          'contas_bancarias.conta_bancaria',
-          'contas_bancarias.conta_bancaria.banco',
-          'contas_bancarias.unidade_saude',
-          'cnaeSecundarios',
-        ],
         order: { nomeUnidade: 'ASC' },
         skip: 0,
         take: 10,
@@ -402,14 +386,6 @@ describe('UnidadeSaudeService', () => {
           cidade: expect.objectContaining({ _type: 'ilike' }),
           estado: 'DF',
         },
-        relations: [
-          'horariosAtendimento',
-          'contas_bancarias',
-          'contas_bancarias.conta_bancaria',
-          'contas_bancarias.conta_bancaria.banco',
-          'contas_bancarias.unidade_saude',
-          'cnaeSecundarios',
-        ],
         order: { nomeUnidade: 'ASC' },
         skip: 0,
         take: 10,
@@ -423,14 +399,6 @@ describe('UnidadeSaudeService', () => {
 
       expect(mockUnidadeSaudeRepository.findAndCount).toHaveBeenCalledWith({
         where: { excluido: false },
-        relations: [
-          'horariosAtendimento',
-          'contas_bancarias',
-          'contas_bancarias.conta_bancaria',
-          'contas_bancarias.conta_bancaria.banco',
-          'contas_bancarias.unidade_saude',
-          'cnaeSecundarios',
-        ],
         order: { nomeUnidade: 'ASC' },
         skip: 40,
         take: 20,
@@ -452,7 +420,6 @@ describe('UnidadeSaudeService', () => {
           'contas_bancarias',
           'contas_bancarias.conta_bancaria',
           'contas_bancarias.conta_bancaria.banco',
-          'contas_bancarias.unidade_saude',
           'cnaeSecundarios',
         ],
       });
@@ -481,7 +448,6 @@ describe('UnidadeSaudeService', () => {
           'contas_bancarias',
           'contas_bancarias.conta_bancaria',
           'contas_bancarias.conta_bancaria.banco',
-          'contas_bancarias.unidade_saude',
           'cnaeSecundarios',
         ],
       });

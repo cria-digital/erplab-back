@@ -153,3 +153,89 @@ Authorization: Bearer {{token}}
 # {
 #   "message": "Configuração de laboratório de apoio removida com sucesso"
 # }
+
+###
+### ========================================================
+### BATCH - Criar múltiplos vínculos de uma vez
+### ========================================================
+###
+
+### Criar múltiplos vínculos de laboratórios de apoio em lote
+POST {{baseUrl}}/exames/exames-laboratorios-apoio/batch
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "items": [
+    {
+      "exame_id": "{{exameId}}",
+      "laboratorio_apoio_id": "{{laboratorioApoioId}}",
+      "codigo_exame_apoio": "HEM001-LAB1",
+      "requer_peso": false,
+      "requer_altura": false,
+      "requer_volume": true,
+      "preparo_geral": "Jejum de 8 horas",
+      "coleta_geral": "Coletar em tubo EDTA (tampa roxa). Volume mínimo: 3mL.",
+      "prazo_entrega_dias": 3,
+      "formatos_laudo": ["PDF", "XML"],
+      "ativo": true
+    },
+    {
+      "exame_id": "{{exameId}}",
+      "laboratorio_apoio_id": "{{laboratorioApoioId2}}",
+      "codigo_exame_apoio": "HEM001-LAB2",
+      "requer_peso": false,
+      "requer_altura": false,
+      "requer_volume": true,
+      "preparo_geral": "Jejum de 6 horas (aceita jejum menor)",
+      "coleta_geral": "Coletar em tubo EDTA. Volume mínimo: 2mL.",
+      "prazo_entrega_dias": 5,
+      "formatos_laudo": ["PDF"],
+      "ativo": true
+    },
+    {
+      "exame_id": "{{exameId2}}",
+      "laboratorio_apoio_id": "{{laboratorioApoioId}}",
+      "codigo_exame_apoio": "GLI001-LAB1",
+      "preparo_geral": "Jejum de 12 horas obrigatório",
+      "coleta_geral": "Coletar em tubo com fluoreto",
+      "prazo_entrega_dias": 1,
+      "formatos_laudo": ["PDF", "HTML"],
+      "ativo": true
+    }
+  ]
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "message": "Configurações criadas com sucesso",
+#   "total": 3,
+#   "created": 3,
+#   "errors": 0,
+#   "data": [
+#     { "id": "uuid1", "exameId": "...", "laboratorioApoioId": "..." },
+#     { "id": "uuid2", "exameId": "...", "laboratorioApoioId": "..." },
+#     { "id": "uuid3", "exameId": "...", "laboratorioApoioId": "..." }
+#   ]
+# }
+
+###
+
+### Batch com apenas campos obrigatórios (mínimo)
+POST {{baseUrl}}/exames/exames-laboratorios-apoio/batch
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "items": [
+    {
+      "exame_id": "{{exameId}}",
+      "laboratorio_apoio_id": "{{laboratorioApoioId}}"
+    },
+    {
+      "exame_id": "{{exameId2}}",
+      "laboratorio_apoio_id": "{{laboratorioApoioId}}"
+    }
+  ]
+}
