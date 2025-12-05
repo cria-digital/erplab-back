@@ -8,6 +8,7 @@ import { AlternativaCampoFormulario } from '../../modules/infraestrutura/campos-
 import { Estado } from '../../modules/infraestrutura/common/entities/estado.entity';
 import { Cidade } from '../../modules/infraestrutura/common/entities/cidade.entity';
 import { CnaeSeedService } from './cnae-seed.service';
+import { CnaeSubclassesSeedService } from './cnae-subclasses-seed.service';
 import { BancoSeedService } from './banco-seed.service';
 import { ServicoSaudeSeedService } from './servico-saude-seed.service';
 import { CampoFormularioSeedService } from './campo-formulario-seed.service';
@@ -29,6 +30,7 @@ import { CidadeSeedService } from './cidade-seed.service';
   ],
   providers: [
     CnaeSeedService,
+    CnaeSubclassesSeedService,
     BancoSeedService,
     ServicoSaudeSeedService,
     CampoFormularioSeedService,
@@ -38,6 +40,7 @@ import { CidadeSeedService } from './cidade-seed.service';
   ],
   exports: [
     CnaeSeedService,
+    CnaeSubclassesSeedService,
     BancoSeedService,
     ServicoSaudeSeedService,
     CampoFormularioSeedService,
