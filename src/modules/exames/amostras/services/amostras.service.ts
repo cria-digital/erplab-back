@@ -22,13 +22,25 @@ export class AmostrasService {
   ) {}
 
   async create(createAmostraDto: CreateAmostraDto): Promise<Amostra> {
-    const existingAmostra = await this.amostraRepository.findOne({
+    // Verificar duplicidade de código
+    const existingByCodigo = await this.amostraRepository.findOne({
       where: { codigoInterno: createAmostraDto.codigoInterno },
     });
 
-    if (existingAmostra) {
+    if (existingByCodigo) {
       throw new ConflictException(
         `Amostra com código ${createAmostraDto.codigoInterno} já existe`,
+      );
+    }
+
+    // Verificar duplicidade de nome
+    const existingByNome = await this.amostraRepository.findOne({
+      where: { nome: createAmostraDto.nome },
+    });
+
+    if (existingByNome) {
+      throw new ConflictException(
+        `Amostra com nome "${createAmostraDto.nome}" já existe`,
       );
     }
 
@@ -124,6 +136,21 @@ export class AmostrasService {
     updateAmostraDto: UpdateAmostraDto,
   ): Promise<Amostra> {
     const amostra = await this.findOne(id);
+
+    // Verificar duplicidade de nome se estiver alterando
+    if (updateAmostraDto.nome && updateAmostraDto.nome !== amostra.nome) {
+      const existingByNome = await this.amostraRepository.findOne({
+        where: { nome: updateAmostraDto.nome },
+      });
+
+      if (existingByNome && existingByNome.id !== id) {
+        throw new ConflictException(
+          `Amostra com nome "${updateAmostraDto.nome}" já existe`,
+        );
+      }
+    }
+
+    // Nota: codigoInterno não pode ser alterado (excluído do UpdateDto)
 
     Object.assign(amostra, updateAmostraDto);
 

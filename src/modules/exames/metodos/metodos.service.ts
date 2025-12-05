@@ -22,13 +22,25 @@ export class MetodosService {
   ) {}
 
   async create(createMetodoDto: CreateMetodoDto): Promise<Metodo> {
-    const existingMetodo = await this.metodoRepository.findOne({
+    // Verificar duplicidade de código
+    const existingByCodigo = await this.metodoRepository.findOne({
       where: { codigoInterno: createMetodoDto.codigoInterno },
     });
 
-    if (existingMetodo) {
+    if (existingByCodigo) {
       throw new ConflictException(
         `Método com código ${createMetodoDto.codigoInterno} já existe`,
+      );
+    }
+
+    // Verificar duplicidade de nome
+    const existingByNome = await this.metodoRepository.findOne({
+      where: { nome: createMetodoDto.nome },
+    });
+
+    if (existingByNome) {
+      throw new ConflictException(
+        `Método com nome "${createMetodoDto.nome}" já existe`,
       );
     }
 
@@ -118,6 +130,21 @@ export class MetodosService {
 
   async update(id: string, updateMetodoDto: UpdateMetodoDto): Promise<Metodo> {
     const metodo = await this.findOne(id);
+
+    // Verificar duplicidade de nome se estiver alterando
+    if (updateMetodoDto.nome && updateMetodoDto.nome !== metodo.nome) {
+      const existingByNome = await this.metodoRepository.findOne({
+        where: { nome: updateMetodoDto.nome },
+      });
+
+      if (existingByNome && existingByNome.id !== id) {
+        throw new ConflictException(
+          `Método com nome "${updateMetodoDto.nome}" já existe`,
+        );
+      }
+    }
+
+    // Nota: codigoInterno não pode ser alterado (excluído do UpdateDto)
 
     Object.assign(metodo, updateMetodoDto);
 
