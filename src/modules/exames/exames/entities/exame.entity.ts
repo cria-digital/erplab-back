@@ -391,13 +391,18 @@ export class Exame {
   })
   links_uteis: string;
 
-  // Requisitos técnicos
+  // Requisitos técnicos - vínculo com campo de formulário
   @Column({
-    type: 'jsonb',
+    type: 'uuid',
+    name: 'requisitos_anvisa_id',
     nullable: true,
-    comment: 'Requisitos da ANVISA/Normas técnicas',
+    comment: 'ID do requisito ANVISA selecionado',
   })
-  requisitos_anvisa: any;
+  requisitosAnvisaId: string;
+
+  @ManyToOne(() => AlternativaCampoFormulario, { nullable: true })
+  @JoinColumn({ name: 'requisitos_anvisa_id' })
+  requisitosAnvisa: AlternativaCampoFormulario;
 
   // Formulários de atendimento
   @Column({

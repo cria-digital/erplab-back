@@ -226,6 +226,25 @@ export class CampoFormularioSeedService {
           { texto: 'Laudo Eletrocardiográfico', ordem: 7 },
         ],
       },
+      {
+        nomeCampo: NomeCampoFormulario.REQUISITOS_ANVISA,
+        descricao: 'Requisitos da ANVISA/Normas técnicas aplicáveis',
+        alternativas: [
+          { texto: 'RDC 302/2005 - Laboratórios Clínicos', ordem: 1 },
+          { texto: 'RDC 306/2004 - Resíduos de Serviços de Saúde', ordem: 2 },
+          { texto: 'RDC 36/2013 - Segurança do Paciente', ordem: 3 },
+          { texto: 'RDC 63/2011 - Boas Práticas de Fabricação', ordem: 4 },
+          { texto: 'RDC 16/2013 - Produtos para Diagnóstico', ordem: 5 },
+          { texto: 'RDC 20/2012 - Medicamentos Controlados', ordem: 6 },
+          { texto: 'RDC 50/2002 - Estabelecimentos de Saúde', ordem: 7 },
+          { texto: 'IN 04/2012 - Controle de Qualidade Analítica', ordem: 8 },
+          {
+            texto: 'PALC - Programa de Acreditação de Laboratórios Clínicos',
+            ordem: 9,
+          },
+          { texto: 'ISO 15189 - Laboratórios Médicos', ordem: 10 },
+        ],
+      },
     ];
 
     let totalCamposNovos = 0;

@@ -462,15 +462,14 @@ export class CreateExameDto {
   links_uteis?: string;
 
   @ApiProperty({
-    description: 'Requisitos da ANVISA/Normas técnicas',
-    example: {
-      norma: 'RDC 302/2005',
-      requisito: 'Controle de qualidade interno',
-    },
+    description:
+      'ID do requisito ANVISA selecionado (alternativa de campo de formulário)',
+    example: 'uuid-da-alternativa',
     required: false,
   })
+  @IsUUID()
   @IsOptional()
-  requisitos_anvisa?: any;
+  requisitos_anvisa_id?: string;
 
   @ApiProperty({
     description: 'Formulários necessários para o atendimento',

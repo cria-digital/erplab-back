@@ -19,6 +19,7 @@ import {
 import { ExameLaboratorioApoioService } from './exame-laboratorio-apoio.service';
 import { CreateExameLaboratorioApoioDto } from './dto/create-exame-laboratorio-apoio.dto';
 import { UpdateExameLaboratorioApoioDto } from './dto/update-exame-laboratorio-apoio.dto';
+import { BatchCreateExameLaboratorioApoioDto } from './dto/batch-create-exame-laboratorio-apoio.dto';
 
 @ApiTags('Exames - Laboratórios de Apoio')
 @ApiBearerAuth()
@@ -43,6 +44,25 @@ export class ExameLaboratorioApoioController {
     return {
       message: 'Configuração de laboratório de apoio criada com sucesso',
       data,
+    };
+  }
+
+  @Post('batch')
+  @ApiOperation({
+    summary: 'Criar múltiplas configurações de laboratório de apoio em lote',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Processamento concluído',
+  })
+  async createBatch(@Body() dto: BatchCreateExameLaboratorioApoioDto) {
+    const result = await this.service.createBatch(dto);
+    return {
+      message: `Processamento concluído: ${result.created.length} criados, ${result.errors.length} erros`,
+      data: result.created,
+      errors: result.errors,
+      totalCreated: result.created.length,
+      totalErrors: result.errors.length,
     };
   }
 

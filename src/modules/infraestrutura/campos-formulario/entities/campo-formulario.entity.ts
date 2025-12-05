@@ -28,6 +28,9 @@ export enum NomeCampoFormulario {
   ESTABILIDADE = 'estabilidade',
   FORMATO_LAUDO = 'formato_laudo',
 
+  // Campos de Requisitos
+  REQUISITOS_ANVISA = 'requisitos_anvisa',
+
   // Campos de Convênios
   TIPO_CONVENIO = 'tipo_convenio',
   FORMA_LIQUIDACAO = 'forma_liquidacao',

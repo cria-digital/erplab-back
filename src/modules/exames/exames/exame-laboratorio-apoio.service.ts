@@ -4,10 +4,11 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { ExameLaboratorioApoio } from './entities/exame-laboratorio-apoio.entity';
 import { CreateExameLaboratorioApoioDto } from './dto/create-exame-laboratorio-apoio.dto';
 import { UpdateExameLaboratorioApoioDto } from './dto/update-exame-laboratorio-apoio.dto';
+import { BatchCreateExameLaboratorioApoioDto } from './dto/batch-create-exame-laboratorio-apoio.dto';
 import { PaginatedResultDto } from '../../infraestrutura/common/dto/pagination.dto';
 
 @Injectable()
@@ -15,6 +16,7 @@ export class ExameLaboratorioApoioService {
   constructor(
     @InjectRepository(ExameLaboratorioApoio)
     private readonly repository: Repository<ExameLaboratorioApoio>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async create(
@@ -68,6 +70,97 @@ export class ExameLaboratorioApoioService {
     });
 
     return this.repository.save(entity);
+  }
+
+  async createBatch(
+    dto: BatchCreateExameLaboratorioApoioDto,
+  ): Promise<{ created: ExameLaboratorioApoio[]; errors: any[] }> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    const created: ExameLaboratorioApoio[] = [];
+    const errors: any[] = [];
+
+    try {
+      for (let i = 0; i < dto.items.length; i++) {
+        const item = dto.items[i];
+        try {
+          // Verificar se já existe vínculo entre exame e laboratório
+          const existente = await queryRunner.manager.findOne(
+            ExameLaboratorioApoio,
+            {
+              where: {
+                exameId: item.exame_id,
+                laboratorioApoioId: item.laboratorio_apoio_id,
+              },
+            },
+          );
+
+          if (existente) {
+            errors.push({
+              index: i,
+              exame_id: item.exame_id,
+              laboratorio_apoio_id: item.laboratorio_apoio_id,
+              error:
+                'Já existe uma configuração para este exame e laboratório de apoio',
+            });
+            continue;
+          }
+
+          const entity = queryRunner.manager.create(ExameLaboratorioApoio, {
+            exameId: item.exame_id,
+            laboratorioApoioId: item.laboratorio_apoio_id,
+            codigo_exame_apoio: item.codigo_exame_apoio,
+            metodologia_id: item.metodologia_id,
+            unidade_medida_id: item.unidade_medida_id,
+            requer_peso: item.requer_peso ?? false,
+            requer_altura: item.requer_altura ?? false,
+            requer_volume: item.requer_volume ?? false,
+            amostra_id: item.amostra_id,
+            amostra_enviar_id: item.amostra_enviar_id,
+            tipo_recipiente_id: item.tipo_recipiente_id,
+            regioes_coleta_ids: item.regioes_coleta_ids,
+            volume_minimo_id: item.volume_minimo_id,
+            estabilidade_id: item.estabilidade_id,
+            formularios_atendimento: item.formularios_atendimento,
+            preparo_geral: item.preparo_geral,
+            preparo_feminino: item.preparo_feminino,
+            preparo_infantil: item.preparo_infantil,
+            coleta_geral: item.coleta_geral,
+            coleta_feminino: item.coleta_feminino,
+            coleta_infantil: item.coleta_infantil,
+            tecnica_coleta: item.tecnica_coleta,
+            lembrete_coletora: item.lembrete_coletora,
+            lembrete_recepcionista_agendamento:
+              item.lembrete_recepcionista_agendamento,
+            lembrete_recepcionista_os: item.lembrete_recepcionista_os,
+            distribuicao: item.distribuicao,
+            prazo_entrega_dias: item.prazo_entrega_dias,
+            formatos_laudo: item.formatos_laudo,
+            ativo: item.ativo ?? true,
+          });
+
+          const saved = await queryRunner.manager.save(entity);
+          created.push(saved);
+        } catch (error) {
+          errors.push({
+            index: i,
+            exame_id: item.exame_id,
+            laboratorio_apoio_id: item.laboratorio_apoio_id,
+            error: error.message,
+          });
+        }
+      }
+
+      await queryRunner.commitTransaction();
+      return { created, errors };
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async findAll(
