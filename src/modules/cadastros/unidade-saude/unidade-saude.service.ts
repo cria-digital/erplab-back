@@ -203,10 +203,16 @@ export class UnidadeSaudeService {
       ];
     }
 
-    // Otimização: Na listagem, não carregamos relações aninhadas
-    // As relações completas ficam apenas no findOne
+    // Otimização: Carregamos relações sem a circular (unidade_saude dentro de contas_bancarias)
     const queryOptions: FindManyOptions<UnidadeSaude> = {
       where,
+      relations: [
+        'horariosAtendimento',
+        'contas_bancarias',
+        'contas_bancarias.conta_bancaria',
+        'contas_bancarias.conta_bancaria.banco',
+        'cnaeSecundarios',
+      ],
       order: { nomeUnidade: 'ASC' },
       skip,
       take: limit,
