@@ -26,7 +26,6 @@ describe('ExamesService', () => {
     codigo_loinc: '58410-2',
     codigo_sus: '0202020380',
     tipo_exame_id: 'tipo-uuid-1',
-    categoria: 'laboratorio',
     subgrupo_id: 'subgrupo-uuid-1',
     setor_id: 'setor-uuid-1',
     laboratorio_apoio_id: null,
@@ -138,7 +137,6 @@ describe('ExamesService', () => {
     const createExameDto: CreateExameDto = {
       codigo_interno: 'EXM001',
       nome: 'Hemograma Completo',
-      categoria: 'laboratorio',
       prazo_entrega_dias: 1,
     };
 
@@ -219,31 +217,11 @@ describe('ExamesService', () => {
       });
     });
 
-    it('deve filtrar por categoria', async () => {
-      const mockExames = [mockExame];
-      mockRepository.findAndCount.mockResolvedValue([mockExames, 1]);
-
-      await service.findAll(1, 10, null, 'laboratorio');
-
-      expect(mockRepository.findAndCount).toHaveBeenCalledWith({
-        where: { categoria: 'laboratorio' },
-        relations: [
-          'tipoExameAlternativa',
-          'subgrupo',
-          'setor',
-          'laboratorioApoio',
-        ],
-        skip: 0,
-        take: 10,
-        order: { nome: 'ASC' },
-      });
-    });
-
     it('deve filtrar por status', async () => {
       const mockExames = [mockExame];
       mockRepository.findAndCount.mockResolvedValue([mockExames, 1]);
 
-      await service.findAll(1, 10, null, null, 'ativo');
+      await service.findAll(1, 10, null, 'ativo');
 
       expect(mockRepository.findAndCount).toHaveBeenCalledWith({
         where: { status: 'ativo' },
@@ -398,22 +376,6 @@ describe('ExamesService', () => {
       expect(mockRepository.save).toHaveBeenCalledWith(
         expect.objectContaining({ status: 'inativo' }),
       );
-    });
-  });
-
-  describe('findByCategoria', () => {
-    it('deve retornar exames por categoria', async () => {
-      const mockExames = [mockExame];
-      mockRepository.find.mockResolvedValue(mockExames);
-
-      const result = await service.findByCategoria('laboratorio');
-
-      expect(result).toEqual(mockExames);
-      expect(mockRepository.find).toHaveBeenCalledWith({
-        where: { categoria: 'laboratorio', status: 'ativo' },
-        relations: ['tipoExameAlternativa'],
-        order: { nome: 'ASC' },
-      });
     });
   });
 

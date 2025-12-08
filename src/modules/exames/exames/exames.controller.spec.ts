@@ -18,7 +18,6 @@ describe('ExamesController', () => {
     findByCodigo: jest.fn(),
     update: jest.fn(),
     remove: jest.fn(),
-    findByCategoria: jest.fn(),
     findByTipo: jest.fn(),
     findByLaboratorioApoio: jest.fn(),
     searchByName: jest.fn(),
@@ -39,7 +38,6 @@ describe('ExamesController', () => {
     codigo_loinc: '58410-2',
     codigo_sus: '0202020380',
     tipo_exame_id: 'tipo-uuid-1',
-    categoria: 'laboratorio',
     subgrupo_id: 'subgrupo-uuid-1',
     setor_id: 'setor-uuid-1',
     laboratorio_apoio_id: null,
@@ -135,7 +133,6 @@ describe('ExamesController', () => {
     const createExameDto: CreateExameDto = {
       codigo_interno: 'EXM001',
       nome: 'Hemograma Completo',
-      categoria: 'laboratorio',
       prazo_entrega_dias: 1,
     };
 
@@ -175,13 +172,7 @@ describe('ExamesController', () => {
       const result = await controller.findAll('1', '10');
 
       expect(result).toEqual(paginatedResult);
-      expect(service.findAll).toHaveBeenCalledWith(
-        1,
-        10,
-        undefined,
-        undefined,
-        undefined,
-      );
+      expect(service.findAll).toHaveBeenCalledWith(1, 10, undefined, undefined);
     });
 
     it('deve passar filtros para o service', async () => {
@@ -194,15 +185,9 @@ describe('ExamesController', () => {
 
       mockExamesService.findAll.mockResolvedValue(paginatedResult);
 
-      await controller.findAll('2', '5', 'Hemograma', 'laboratorio', 'ativo');
+      await controller.findAll('2', '5', 'Hemograma', 'ativo');
 
-      expect(service.findAll).toHaveBeenCalledWith(
-        2,
-        5,
-        'Hemograma',
-        'laboratorio',
-        'ativo',
-      );
+      expect(service.findAll).toHaveBeenCalledWith(2, 5, 'Hemograma', 'ativo');
     });
 
     it('deve usar valores padrão quando não fornecidos', async () => {
@@ -217,28 +202,7 @@ describe('ExamesController', () => {
 
       await controller.findAll();
 
-      expect(service.findAll).toHaveBeenCalledWith(
-        1,
-        10,
-        undefined,
-        undefined,
-        undefined,
-      );
-    });
-  });
-
-  describe('findByCategoria', () => {
-    it('deve retornar exames por categoria', async () => {
-      const exames = [mockExame];
-      mockExamesService.findByCategoria.mockResolvedValue(exames);
-
-      const result = await controller.findByCategoria('laboratorio');
-
-      expect(result).toEqual({
-        message: 'Exames encontrados com sucesso',
-        data: exames,
-      });
-      expect(service.findByCategoria).toHaveBeenCalledWith('laboratorio');
+      expect(service.findAll).toHaveBeenCalledWith(1, 10, undefined, undefined);
     });
   });
 

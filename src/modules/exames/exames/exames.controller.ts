@@ -107,12 +107,6 @@ export class ExamesController {
     description: 'Buscar por nome do exame',
   })
   @ApiQuery({
-    name: 'categoria',
-    required: false,
-    enum: ['laboratorio', 'imagem', 'procedimento', 'consulta'],
-    description: 'Filtrar por categoria',
-  })
-  @ApiQuery({
     name: 'status',
     required: false,
     enum: ['ativo', 'inativo', 'suspenso'],
@@ -122,41 +116,14 @@ export class ExamesController {
     @Query('page') page?: string,
     @Query('limit') limit?: string,
     @Query('search') search?: string,
-    @Query('categoria') categoria?: string,
     @Query('status') status?: string,
   ) {
     return await this.examesService.findAll(
       page ? parseInt(page) : 1,
       limit ? parseInt(limit) : 10,
       search,
-      categoria,
       status,
     );
-  }
-
-  @Get('categoria/:categoria')
-  @ApiOperation({
-    summary: 'Buscar exames por categoria',
-    description: 'Retorna todos os exames ativos de uma categoria específica.',
-  })
-  @ApiParam({
-    name: 'categoria',
-    enum: ['laboratorio', 'imagem', 'procedimento', 'consulta'],
-    description: 'Categoria do exame',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Lista de exames da categoria',
-    type: [Exame],
-  })
-  async findByCategoria(
-    @Param('categoria') categoria: string,
-  ): Promise<ApiResponseType<Exame[]>> {
-    const exames = await this.examesService.findByCategoria(categoria);
-    return {
-      message: 'Exames encontrados com sucesso',
-      data: exames,
-    };
   }
 
   @Get('tipo/:tipoId')

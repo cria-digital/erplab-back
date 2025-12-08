@@ -95,19 +95,12 @@ export class Exame {
   })
   codigo_sus: string;
 
-  // Tipo e categoria
+  // Tipo de exame
   @Column({
     nullable: true,
     comment: 'FK para alternativa do campo tipo_exames',
   })
   tipo_exame_id: string;
-
-  @Column({
-    type: 'enum',
-    enum: ['laboratorio', 'imagem', 'procedimento', 'consulta'],
-    comment: 'Categoria geral do exame',
-  })
-  categoria: string;
 
   @Column({
     nullable: true,

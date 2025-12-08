@@ -110,15 +110,6 @@ export class CreateExameDto {
   tipo_exame_id?: string;
 
   @ApiProperty({
-    description: 'Categoria geral do exame',
-    enum: ['laboratorio', 'imagem', 'procedimento', 'consulta'],
-    example: 'laboratorio',
-  })
-  @IsEnum(['laboratorio', 'imagem', 'procedimento', 'consulta'])
-  @IsNotEmpty()
-  categoria: string;
-
-  @ApiProperty({
     description: 'ID do subgrupo do exame',
     example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
     required: false,

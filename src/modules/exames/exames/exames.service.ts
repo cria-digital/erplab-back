@@ -55,17 +55,12 @@ export class ExamesService {
     page: number = 1,
     limit: number = 10,
     search?: string,
-    categoria?: string,
     status?: string,
   ): Promise<{ data: Exame[]; total: number; page: number; lastPage: number }> {
     const where: any = {};
 
     if (search) {
       where.nome = Like(`%${search}%`);
-    }
-
-    if (categoria) {
-      where.categoria = categoria;
     }
 
     if (status) {
@@ -162,14 +157,6 @@ export class ExamesService {
     // Por enquanto, apenas desativa o exame ao invés de deletar
     exame.status = 'inativo';
     await this.exameRepository.save(exame);
-  }
-
-  async findByCategoria(categoria: string): Promise<Exame[]> {
-    return await this.exameRepository.find({
-      where: { categoria, status: 'ativo' },
-      relations: ['tipoExameAlternativa'],
-      order: { nome: 'ASC' },
-    });
   }
 
   async findByTipo(tipoExameId: string): Promise<Exame[]> {
