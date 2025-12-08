@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 import { Equipamento } from '../entities/equipamento.entity';
 import { CreateEquipamentoDto } from '../dto/create-equipamento.dto';
 import { UpdateEquipamentoDto } from '../dto/update-equipamento.dto';
+import { PaginatedResultDto } from '../../../../infraestrutura/common/dto/pagination.dto';
 
 @Injectable()
 export class EquipamentosService {
@@ -32,6 +33,49 @@ export class EquipamentosService {
 
     const equipamento = this.equipamentoRepository.create(createEquipamentoDto);
     return await this.equipamentoRepository.save(equipamento);
+  }
+
+  async findAllPaginated(
+    page: number = 1,
+    limit: number = 10,
+    search?: string,
+    unidadeId?: string,
+    salaId?: string,
+  ): Promise<PaginatedResultDto<Equipamento>> {
+    const queryBuilder = this.equipamentoRepository
+      .createQueryBuilder('equipamento')
+      .leftJoinAndSelect('equipamento.sala', 'sala')
+      .leftJoinAndSelect('equipamento.unidade', 'unidade');
+
+    // Filtro por termo de busca (nome, código interno ou numeração)
+    if (search) {
+      queryBuilder.andWhere(
+        '(equipamento.nome ILIKE :search OR equipamento.codigoInterno ILIKE :search OR equipamento.numeracao ILIKE :search)',
+        { search: `%${search}%` },
+      );
+    }
+
+    // Filtro por unidade
+    if (unidadeId) {
+      queryBuilder.andWhere('equipamento.unidadeId = :unidadeId', {
+        unidadeId,
+      });
+    }
+
+    // Filtro por sala
+    if (salaId) {
+      queryBuilder.andWhere('equipamento.salaId = :salaId', { salaId });
+    }
+
+    // Ordenação e paginação
+    queryBuilder
+      .orderBy('equipamento.codigoInterno', 'ASC')
+      .skip((page - 1) * limit)
+      .take(limit);
+
+    const [data, total] = await queryBuilder.getManyAndCount();
+
+    return new PaginatedResultDto(data, total, page, limit);
   }
 
   async findAll(): Promise<Equipamento[]> {
@@ -80,7 +124,7 @@ export class EquipamentosService {
   async findByUnidade(unidadeId: string): Promise<Equipamento[]> {
     return await this.equipamentoRepository.find({
       where: { unidadeId },
-      relations: ['sala'],
+      relations: ['sala', 'unidade'],
       order: { codigoInterno: 'ASC' },
     });
   }
@@ -140,9 +184,18 @@ export class EquipamentosService {
     const porUnidade = await this.equipamentoRepository
       .createQueryBuilder('equipamento')
       .leftJoin('equipamento.unidade', 'unidade')
-      .select('unidade.nome', 'unidade')
+      .select('unidade.nomeFantasia', 'unidade')
       .addSelect('COUNT(*)', 'quantidade')
-      .groupBy('unidade.nome')
+      .groupBy('unidade.nomeFantasia')
+      .getRawMany();
+
+    const porSala = await this.equipamentoRepository
+      .createQueryBuilder('equipamento')
+      .leftJoin('equipamento.sala', 'sala')
+      .select('sala.nome', 'sala')
+      .addSelect('COUNT(*)', 'quantidade')
+      .where('equipamento.salaId IS NOT NULL')
+      .groupBy('sala.nome')
       .getRawMany();
 
     return {
@@ -150,6 +203,7 @@ export class EquipamentosService {
       ativos,
       inativos,
       porUnidade,
+      porSala,
     };
   }
 }

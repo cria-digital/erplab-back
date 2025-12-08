@@ -1,21 +1,77 @@
-### Listar todos os equipamentos
+### Listar equipamentos com paginacao (padrao: page=1, limit=10)
 GET {{baseUrl}}/configuracoes/estrutura/equipamentos
 Authorization: Bearer {{token}}
 
 ### Expected Response
 # Status: 200 OK
-# [
-#   {
-#     "id": "uuid-1",
-#     "codigoInterno": "EQ100",
-#     "unidadeId": "uuid-unidade",
-#     "nome": "Raio-X",
-#     "numeracao": "1592653986625698526",
-#     "salaId": "uuid-sala",
-#     "ativo": true,
-#     "criadoEm": "2025-11-30T10:00:00.000Z"
+# {
+#   "data": [
+#     {
+#       "id": "uuid-1",
+#       "codigoInterno": "EQ100",
+#       "unidadeId": "uuid-unidade",
+#       "unidade": {
+#         "id": "uuid-unidade",
+#         "nomeFantasia": "Unidade Central",
+#         ...
+#       },
+#       "nome": "Raio-X",
+#       "numeracao": "1592653986625698526",
+#       "salaId": "uuid-sala",
+#       "sala": {
+#         "id": "uuid-sala",
+#         "nome": "Sala de Imagem 01",
+#         ...
+#       },
+#       "ativo": true,
+#       "criadoEm": "2025-11-30T10:00:00.000Z"
+#     }
+#   ],
+#   "meta": {
+#     "page": 1,
+#     "limit": 10,
+#     "total": 50,
+#     "totalPages": 5,
+#     "hasPrevPage": false,
+#     "hasNextPage": true
 #   }
-# ]
+# }
+
+###
+
+### Listar equipamentos com paginacao customizada
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos?page=2&limit=20
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar equipamentos por termo (nome, codigo interno ou numeracao)
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos?search=Raio
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar equipamentos por termo com paginacao
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos?search=EQ&page=1&limit=10
+Authorization: Bearer {{token}}
+
+###
+
+### Filtrar equipamentos por unidade
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos?unidadeId={{unidadeId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Filtrar equipamentos por sala
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos?salaId={{salaId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar combinando todos os filtros
+GET {{baseUrl}}/configuracoes/estrutura/equipamentos?search=Raio&unidadeId={{unidadeId}}&salaId={{salaId}}&page=1&limit=10
+Authorization: Bearer {{token}}
 
 ###
 
@@ -38,6 +94,10 @@ Authorization: Bearer {{token}}
 #   "porUnidade": [
 #     { "unidade": "São Roque", "quantidade": 60 },
 #     { "unidade": "Jardins", "quantidade": 40 }
+#   ],
+#   "porSala": [
+#     { "sala": "Sala de Imagem 01", "quantidade": 10 },
+#     { "sala": "Laboratorio", "quantidade": 8 }
 #   ]
 # }
 

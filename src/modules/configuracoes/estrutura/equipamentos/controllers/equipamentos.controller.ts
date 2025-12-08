@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   ParseUUIDPipe,
+  Query,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -15,6 +16,7 @@ import {
   ApiResponse,
   ApiBearerAuth,
   ApiParam,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../../autenticacao/auth/guards/jwt-auth.guard';
 import { EquipamentosService } from '../services/equipamentos.service';
@@ -39,11 +41,53 @@ export class EquipamentosController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Listar todos os equipamentos' })
+  @ApiOperation({ summary: 'Listar equipamentos com paginação e filtros' })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'Número da página (padrão: 1)',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Itens por página (padrão: 10)',
+  })
+  @ApiQuery({
+    name: 'search',
+    required: false,
+    type: String,
+    description: 'Busca por nome, código interno ou numeração',
+  })
+  @ApiQuery({
+    name: 'unidadeId',
+    required: false,
+    type: String,
+    description: 'Filtrar por unidade de saúde',
+  })
+  @ApiQuery({
+    name: 'salaId',
+    required: false,
+    type: String,
+    description: 'Filtrar por sala',
+  })
   @ApiResponse({ status: 200, description: 'Lista de equipamentos retornada' })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
-  async findAll() {
-    return await this.equipamentosService.findAll();
+  async findAll(
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+    @Query('search') search?: string,
+    @Query('unidadeId') unidadeId?: string,
+    @Query('salaId') salaId?: string,
+  ) {
+    return await this.equipamentosService.findAllPaginated(
+      page || 1,
+      limit || 10,
+      search,
+      unidadeId,
+      salaId,
+    );
   }
 
   @Get('ativos')
