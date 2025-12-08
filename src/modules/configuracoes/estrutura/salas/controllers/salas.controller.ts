@@ -67,10 +67,10 @@ export class SalasController {
     description: 'Filtrar por unidade',
   })
   @ApiQuery({
-    name: 'setor',
+    name: 'setorId',
     required: false,
     type: String,
-    description: 'Filtrar por setor',
+    description: 'Filtrar por ID do setor',
   })
   @ApiResponse({
     status: 200,
@@ -82,14 +82,14 @@ export class SalasController {
     @Query('limit') limit?: string,
     @Query('search') search?: string,
     @Query('unidadeId') unidadeId?: string,
-    @Query('setor') setor?: string,
+    @Query('setorId') setorId?: string,
   ) {
     return await this.salasService.findAllPaginated(
       page ? parseInt(page) : 1,
       limit ? parseInt(limit) : 10,
       search,
       unidadeId,
-      setor,
+      setorId,
     );
   }
 
@@ -119,13 +119,14 @@ export class SalasController {
     return await this.salasService.findByUnidade(unidadeId);
   }
 
-  @Get('setor/:setor')
+  @Get('setor/:setorId')
   @ApiOperation({ summary: 'Buscar salas por setor' })
-  @ApiParam({ name: 'setor', type: 'string', description: 'Nome do setor' })
+  @ApiParam({ name: 'setorId', type: 'string', description: 'ID do setor' })
   @ApiResponse({ status: 200, description: 'Salas encontradas' })
+  @ApiResponse({ status: 400, description: 'UUID inválido' })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
-  async findBySetor(@Param('setor') setor: string) {
-    return await this.salasService.findBySetor(setor);
+  async findBySetor(@Param('setorId', ParseUUIDPipe) setorId: string) {
+    return await this.salasService.findBySetor(setorId);
   }
 
   @Get('codigo/:codigo')

@@ -6,7 +6,7 @@ Authorization: Bearer {{token}}
 {
   "codigoInterno": "SALA001",
   "unidadeId": "{{unidadeId}}",
-  "setor": "Hematologia",
+  "setorId": "{{setorId}}",
   "nome": "Sala de Coleta 01"
 }
 
@@ -16,7 +16,14 @@ Authorization: Bearer {{token}}
 #   "id": "uuid-da-sala",
 #   "codigoInterno": "SALA001",
 #   "unidadeId": "uuid-da-unidade",
-#   "setor": "Hematologia",
+#   "setorId": "uuid-do-setor",
+#   "setor": {
+#     "id": "uuid-do-setor",
+#     "textoAlternativa": "Hematologia",
+#     "campoFormularioId": "uuid-campo",
+#     "ordem": 0,
+#     "ativo": true
+#   },
 #   "nome": "Sala de Coleta 01",
 #   "ativo": true,
 #   "criadoEm": "2025-11-30T10:00:00.000Z"
@@ -32,7 +39,7 @@ Authorization: Bearer {{token}}
 {
   "codigoInterno": "SALA002",
   "unidadeId": "{{unidadeId}}",
-  "setor": "Bioquimica",
+  "setorId": "{{setorId}}",
   "nome": "Laboratorio Bioquimico"
 }
 
@@ -46,7 +53,7 @@ Authorization: Bearer {{token}}
 {
   "codigoInterno": "IMG-001",
   "unidadeId": "{{unidadeId}}",
-  "setor": "Imagem",
+  "setorId": "{{setorId}}",
   "nome": "Sala de Ultrassom"
 }
 
@@ -60,7 +67,7 @@ Authorization: Bearer {{token}}
 {
   "codigoInterno": "MICRO001",
   "unidadeId": "{{unidadeId}}",
-  "setor": "Microbiologia",
+  "setorId": "{{setorId}}",
   "nome": "Laboratorio de Microbiologia"
 }
 
@@ -74,7 +81,7 @@ Authorization: Bearer {{token}}
 {
   "codigoInterno": "ADM001",
   "unidadeId": "{{unidadeId}}",
-  "setor": "Administrativo",
+  "setorId": "{{setorId}}",
   "nome": "Recepcao Principal"
 }
 
@@ -88,7 +95,7 @@ Authorization: Bearer {{token}}
 {
   "codigoInterno": "SALA003",
   "unidadeId": "{{unidadeId}}",
-  "setor": "Hematologia",
+  "setorId": "{{setorId}}",
   "nome": "Sala de Coleta 03",
   "ativo": false
 }
@@ -103,7 +110,7 @@ Authorization: Bearer {{token}}
 {
   "codigoInterno": "SALA001",
   "unidadeId": "{{unidadeId}}",
-  "setor": "Hematologia",
+  "setorId": "{{setorId}}",
   "nome": "Outra Sala"
 }
 

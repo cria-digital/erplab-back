@@ -15,11 +15,13 @@ import {
   ApiResponse,
   ApiQuery,
   ApiParam,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../autenticacao/auth/guards/jwt-auth.guard';
 import { ConfiguracaoCampoService } from '../services/configuracao-campo.service';
 import { CreateConfiguracaoCampoDto } from '../dto/create-configuracao-campo.dto';
 import { UpdateConfiguracaoCampoDto } from '../dto/update-configuracao-campo.dto';
+import { BatchConfigurarCamposDto } from '../dto/batch-configurar-campos.dto';
 import {
   TipoEntidadeEnum,
   TipoFormularioEnum,
@@ -29,6 +31,7 @@ import {
 } from '../entities/configuracao-campo-formulario.entity';
 
 @ApiTags('Configurações de Campos')
+@ApiBearerAuth()
 @Controller('api/v1/configuracoes-campos')
 @UseGuards(JwtAuthGuard)
 export class ConfiguracaoCampoController {
@@ -41,6 +44,32 @@ export class ConfiguracaoCampoController {
   @ApiResponse({ status: 201, description: 'Configuração criada com sucesso' })
   create(@Body() createDto: CreateConfiguracaoCampoDto) {
     return this.configuracaoCampoService.create(createDto);
+  }
+
+  @Post('batch')
+  @ApiOperation({
+    summary: 'Configurar campos obrigatórios em lote',
+    description:
+      'Remove todas as configurações existentes para a entidade/formulário e cria as novas. Ideal para a aba de Atendimento do convênio.',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Configurações criadas com sucesso',
+  })
+  async configurarEmLote(@Body() dto: BatchConfigurarCamposDto) {
+    const result = await this.configuracaoCampoService.configurarEmMassa(
+      dto.entidadeTipo,
+      dto.entidadeId,
+      dto.tipoFormulario,
+      dto.campos,
+    );
+    return {
+      message: `Processamento concluído: ${result.criados.length} criados, ${result.erros.length} erros`,
+      data: result.criados,
+      errors: result.erros,
+      totalCriados: result.criados.length,
+      totalErros: result.erros.length,
+    };
   }
 
   @Get()

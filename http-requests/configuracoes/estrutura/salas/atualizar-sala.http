@@ -13,7 +13,12 @@ Authorization: Bearer {{token}}
 #   "id": "uuid-da-sala",
 #   "codigoInterno": "SALA001",
 #   "unidadeId": "uuid-da-unidade",
-#   "setor": "Hematologia",
+#   "setorId": "uuid-do-setor",
+#   "setor": {
+#     "id": "uuid-do-setor",
+#     "textoAlternativa": "Hematologia",
+#     ...
+#   },
 #   "nome": "Sala de Coleta 01 - Renovada",
 #   "ativo": true,
 #   "atualizadoEm": "2025-11-30T15:30:00.000Z"
@@ -21,13 +26,13 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Atualizar setor da sala
+### Atualizar setor da sala (usando setorId - UUID da alternativa)
 PATCH {{baseUrl}}/configuracoes/estrutura/salas/{{salaId}}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "setor": "Bioquimica"
+  "setorId": "{{setorId}}"
 }
 
 ###
@@ -50,7 +55,7 @@ Authorization: Bearer {{token}}
 
 {
   "nome": "Laboratorio Principal",
-  "setor": "Microbiologia"
+  "setorId": "{{setorId}}"
 }
 
 ###

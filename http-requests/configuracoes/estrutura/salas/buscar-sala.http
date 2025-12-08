@@ -8,14 +8,21 @@ Authorization: Bearer {{token}}
 #   "id": "uuid-da-sala",
 #   "codigoInterno": "SALA001",
 #   "unidadeId": "uuid-da-unidade",
-#   "setor": "Hematologia",
+#   "setorId": "uuid-do-setor",
+#   "setor": {
+#     "id": "uuid-do-setor",
+#     "textoAlternativa": "Hematologia",
+#     "campoFormularioId": "uuid-campo",
+#     "ordem": 2,
+#     "ativo": true
+#   },
 #   "nome": "Sala de Coleta 01",
 #   "ativo": true,
 #   "criadoEm": "2025-11-30T10:00:00.000Z",
 #   "atualizadoEm": "2025-11-30T10:00:00.000Z",
 #   "unidade": {
 #     "id": "uuid-da-unidade",
-#     "nome": "Unidade Central"
+#     "nomeFantasia": "Unidade Central"
 #   }
 # }
 

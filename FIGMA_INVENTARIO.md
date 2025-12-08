@@ -648,20 +648,398 @@ São condicionais e só devem aparecer quando `tipoProfissional` for:
 ## chunk_018_p341-360.pdf
 
 **Páginas**: 341-360
-**Status**: Não catalogado
+**Status**: ✅ Catalogado (08/12/2025)
 **Conteúdo**:
 
-- [ ] A ser preenchido
+### Páginas 1-3 - EMPRESAS - LABORATÓRIOS DE APOIO
+
+- Página 1: Divisor de seção "EMPRESAS - LABORATÓRIOS DE APOIO" - PRONTO PARA DESENVOLVER
+- Página 2: "CADASTRAR EMPRESAS - LABORATÓRIO DE APOIO - INÍCIO" - PRONTO PARA DESENVOLVER
+- Página 3: "CADASTRAR EMPRESAS - LABORATÓRIO DE APOIO - INÍCIO" - AGUARDANDO
+
+### Páginas 4-6 - EMPRESAS - TELEMEDICINA
+
+- Página 4: Divisor de seção "EMPRESAS - TELEMEDICINA" - PRONTO PARA DESENVOLVER
+- Página 5: "CADASTRAR EMPRESAS - TELEMEDICINA - INÍCIO" - PRONTO PARA DESENVOLVER
+- Página 6: "CADASTRAR EMPRESAS - TELEMEDICINA - INÍCIO" - PRONTO PARA DESENVOLVER
+
+### Páginas 7-8 - EMPRESAS - FORNECEDORES
+
+- Página 7: Divisor de seção "EMPRESAS - FORNECEDORES" - PRONTO PARA DESENVOLVER
+- Página 8: "CADASTRAR EMPRESAS - FORNECEDORES - INÍCIO" - PRONTO PARA DESENVOLVER
+
+### Páginas 9-10 - EMPRESAS - PRESTADORES DE SERVIÇO
+
+- Página 9: Divisor de seção "EMPRESAS - PRESTADORES DE SERVIÇO" - PRONTO PARA DESENVOLVER
+- Página 10: "CADASTRAR EMPRESAS - PRESTADORES DE SERVIÇO - INÍCIO" - PRONTO PARA DESENVOLVER
+
+### Página 11 - Cadastros Gerais - LISTAGEM UNIFICADA DE EMPRESAS
+
+- Tela principal de listagem com TABS para diferentes tipos de empresa
+- Contadores: 20 Convênios | 40 Laboratórios de apoio | 30 Telemedicina | 200 Fornecedores | 100 Prestadores de serviços
+- Filtros: Status (todos), Pesquisar
+- **ABAS (TABS)**: CONVÊNIOS | LABORATÓRIOS DE APOIO | TELEMEDICINA | FORNECEDORES | PRESTADORES DE SERVIÇO
+- Grid de listagem (aba Convênios selecionada):
+  - Colunas: Cód interno, Nome fantasia, CNPJ, E-mail comercial, Cidade/Estado, Ativo, Editar, Visualizar, Opções
+  - Exemplos: CON001 a CON010 com dados de convênios
+- Paginação: 10 de 50 registros
+- Menu lateral completo visível
+
+### Página 12 - Menu de Opções (Dropdown)
+
+- Opções: Ativar/Desativar, Excluir
+
+### Página 13 - Cadastrar Empresa (Tipo Genérico - Aba Informações Gerais)
+
+- Seletor de tipo de empresa no topo
+- **Aba única**: INFORMAÇÕES GERAIS
+- **Seções**:
+  1. **Informações básicas**:
+     - LOGO (upload de imagem)
+     - Código interno*, CNPJ*, Razão Social\*, Nome fantasia, Inscrição Municipal
+     - Inscrição Estadual, Telefone fixo*, Celular*, E-mail comercial\*, Site da empresa
+  2. **Endereço**:
+     - CEP*, Rua*, Número*, Bairro*
+     - Complemento, Estado*, Cidade*
+  3. **Responsável**:
+     - Nome do responsável*, Cargo*, Contato*, E-mail*
+  4. **Impostos**:
+     - IRRF (%), PIS (%), COFINS (%), CSLL (%), ISS (%), IBS (%), CBS (%)\*
+     - Reter ISS (NÃO/SIM), Reter IR, Reter PCC, Reter IBS, Reter CBS, Optante pelo simples nacional
+  5. **Financeiro e Pagamento**:
+     - Banco*, Agência*, Conta corrente\*
+     - Botão: NOVO BANCO
+     - Forma de pagamento\*
+- Botões: CANCELAR | FINALIZAR
+
+### Página 14 - Cadastrar Empresa CONVÊNIOS (Aba Informações Gerais)
+
+- Tipo selecionado: CONVÊNIOS
+- **ABAS**: INFORMAÇÕES GERAIS | INFORMAÇÕES ESPECÍFICAS | INTEGRAÇÃO | ATENDIMENTO | RESTRIÇÕES | PLANOS | INSTRUÇÕES
+- Mesmos campos da página 13 (informações gerais comuns)
+- Botões: CANCELAR | FINALIZAR
+
+### Página 15 - Cadastrar Empresa CONVÊNIOS (Aba Informações Específicas)
+
+- **Aba selecionada**: INFORMAÇÕES ESPECÍFICAS
+- **Seção "Informações do convênio"**:
+  - Nome do convênio*, Registro ANS*, Matrícula\*
+  - Tipo de convênio* (select), Forma de liquidação* (select), Valor do CH*, Valor do filme*
+  - Dia de vencimento*, CNES* (select), TISS (NÃO/SIM), Versão do TISS\*
+  - TISS - Código na operadora*, Código Operadora (Autorização)*, Código do prestador\*
+- **Seção "Faturamento"**:
+  - Envio* (select), Fatura até* (select), Vencimento* (select), Contrato*, Último ajuste\*
+  - Instruções para faturamento (textarea)
+- **Seção "Outras informações"**:
+  - Tabela de serviço* (select), Tabela base* (select), Tabela material\* (select)
+  - Co-Participação (NÃO/SIM), Nota Fiscal Exige na Fatura (NÃO/SIM), Contato\*
+  - Instruções (textarea), Observações gerais (textarea)
+
+### Página 16 - Cadastrar Empresa CONVÊNIOS (Aba Integração)
+
+- **Aba selecionada**: INTEGRAÇÃO
+- **Seção "Vincular integração"**:
+  - Integração\* (select dropdown)
+
+### Página 17 - Cadastrar Empresa CONVÊNIOS (Aba Restrições)
+
+- **Aba selecionada**: RESTRIÇÕES
+- **Seção "Restrições"**:
+  - Tipos de restrição com valores:
+    - PLANO → NÃO ESPECIFICADO (select)
+    - MÉDICO → NÃO ESPECIFICADO (select)
+    - ESPECIALIDADE → NÃO ESPECIFICADO (select)
+    - SETOR SOLICITANTE → UNIDADE SÃO ROQUE (select)
+    - EXAME/MATERIAL/MEDICAMENTO → Especialidade: IMUNOLOGIA, Citog: CITOMEGALOVÍRUS AVID, Unidade: UNIDADE IBIUNA
+  - Cada linha com botão de excluir (lixeira)
+  - Botão: NOVA RESTRIÇÃO
+
+### Página 18 - Cadastrar Empresa CONVÊNIOS (Aba Planos)
+
+- **Aba selecionada**: PLANOS
+- **Seção "Planos"**:
+  - Nome do plano\* (PLANO A)
+  - Tabela de preços\* (select: NÃO ESPECIFICADO)
+  - Valor CH\* (CÁLCULO PADRÃO)
+  - Valor Filme\* (CÁLCULO PADRÃO)
+  - Instruções (textarea)
+  - Botão de excluir (lixeira)
+- Botão: NOVO PLANO
+
+### Página 19 - Cadastrar Empresa CONVÊNIOS (Aba Instruções)
+
+- **Aba selecionada**: INSTRUÇÕES
+- **Seção "Histórico de instruções do convênio"**:
+  - Campos de input:
+    - Instruções (textarea)
+    - Prazo da instrução\* (campo)
+    - Botão: ADICIONAR
+  - Grid de histórico:
+    - Colunas: Data do registro, Usuário, Instrução, Prazo da instrução
+    - Exemplo: 10/02/2025 - 16:40 | Rafael Biencourt | NECESSÁRIO GUIA AUTORIZADA PARA TODOS OS PROCEDIMENTOS! | 25/02/2025 - 12:00
+
+### Página 20 - Menu de Opções (Dropdown)
+
+- Opções: Ativar/Desativar, Excluir
 
 ---
 
 ## chunk_019_p361-380.pdf
 
 **Páginas**: 361-380
-**Status**: Não catalogado
+**Status**: ✅ Catalogado (08/12/2025)
 **Conteúdo**:
 
-- [ ] A ser preenchido
+### Página 1 - Cadastrar Empresa LABORATÓRIO DE APOIO (Aba Integração)
+
+- **ABAS**: INFORMAÇÕES GERAIS | INTEGRAÇÃO | VINCULAR EXAMES
+- **Aba selecionada**: INTEGRAÇÃO
+- **Seção "Vincular integração"**:
+  - Integração\* (select dropdown)
+
+### Página 2 - Menu de Opções (Dropdown)
+
+- Opções: Ativar/Desativar, Excluir
+
+### Página 3 - Cadastrar Empresa TELEMEDICINA (Aba Integração)
+
+- **ABAS**: INFORMAÇÕES GERAIS | INTEGRAÇÃO | VINCULAR EXAMES
+- **Aba selecionada**: INTEGRAÇÃO
+- **Seção "Vincular integração"**:
+  - Integração\* (select dropdown)
+
+### Página 4 - Menu de Opções (Dropdown)
+
+- Opções: Ativar/Desativar, Excluir
+
+### Página 5 - Cadastrar Empresa FORNECEDORES (Aba Informações Específicas)
+
+- **ABAS**: INFORMAÇÕES GERAIS | INFORMAÇÕES ESPECÍFICAS
+- **Aba selecionada**: INFORMAÇÕES ESPECÍFICAS
+- **Seção "Insumos"**:
+  - Grid de insumos com:
+    - Categoria\* (select: REAGENTES E INSUMOS)
+    - Método de transporte\* (select: CORREIOS)
+    - Orçamento mínimo (R$)\* (1.000,00)
+    - Botão de excluir (lixeira)
+  - Linha vazia para novo insumo
+  - Botão: NOVO INSUMO
+
+### Página 6 - Menu de Opções (Dropdown)
+
+- Opções: Ativar/Desativar, Excluir
+
+### Página 7 - Cadastrar Empresa PRESTADORES DE SERVIÇO (Aba Informações Específicas)
+
+- **ABAS**: INFORMAÇÕES GERAIS | INFORMAÇÕES ESPECÍFICAS
+- **Aba selecionada**: INFORMAÇÕES ESPECÍFICAS
+- **Seção "Serviço prestado"** (múltiplos blocos):
+  - Bloco 1 (preenchido):
+    - Tipo de serviço\*: MANUTENÇÃO DE EQUIPAMENTOS
+    - Tipo de contrato\*: PRAZO FIXO
+    - Data de início do contrato\*: 01/01/2025
+    - Validade do contrato\*: 2 ANOS
+    - Anexar contrato (botão + arquivo anexado)
+    - Tipo de pagamento por: SERVIÇO PRESTADO / MENSALIDADE (toggle)
+    - Forma de pagamento\*: PIX
+    - Chave PIX: 999.999.999-99
+    - Profissional (multi-select): Dr. Rafael Bittencourt, Dra. Silvia Bastos Kretzer
+    - Botão: EXCLUIR BLOCO
+  - Bloco 2 (vazio para preencher):
+    - Mesmos campos vazios
+- Botão: NOVO SERVIÇO
+
+### Página 8 - INTEGRAÇÕES (Especificação de URLs)
+
+- **URLs de Integração para TISS**:
+  - URL de Elegibilidade: https://tissverificaelegibilidade.startiss.com.br/v30500/tissVerificaElegibilidade.asmx
+  - URL de autenticação: (não especificada)
+  - URL de Solicitação de Autorização: https://wsautorizador.startiss.com.br/v30500/tissSolicitacaoProcedimento.asmx
+  - URL de Cancelamento: https://wscancelarguias.startiss.com.br/v30500/tissCancelaGuia.asmx
+  - URL do Status de Autorização: https://statusautorizacao.startiss.com.br/v30500/tisssolicitacaostatusautorizacao.asmx
+  - URL do Protocolo: (não especificado)
+  - URL do Lote Anexo: (não especificado)
+  - URL de Comunicação com Beneficiário: (não especificado)
+
+### Página 9 - Cadastrar Empresa CONVÊNIOS (Aba Atendimento)
+
+- **Aba selecionada**: ATENDIMENTO
+- **Seção "Cadastro de pacientes"**:
+  - CAMPOS OPCIONAIS: CPF próprio, Acomodação, Altura, Cartão SUS, CEP, CID do paciente, Loren ipson loren
+  - CAMPOS OBRIGATÓRIOS: Bairro, Cidade, Endereço, Nome da mãe do paciente, Número de matrícula no convênio, Telefone celular
+  - Botões para mover entre listas (> <)
+  - Link: "Todos opcionais" / "Todos obrigatórios"
+- **Seção "Ordem de Serviço"**:
+  - CAMPOS OPCIONAIS: Número da guia, Guia principal, Guia operadora, Data última menstruação e gestante, CID, Local de entrega, Plano
+  - CAMPOS OBRIGATÓRIOS: Médico requisitante, Especialidade do solicitante, Data da solicitação
+- **Seção "TISS"**:
+  - CAMPOS OPCIONAIS: Doença, Regime de atendimento, Saúde ocup., Tipo de saída, Tipo de atendimento, Cobertura especial
+  - CAMPOS OBRIGATÓRIOS: NENHUMA OPÇÃO SELECIONADA
+- **Seção "Tratamento Ambulatorial"**:
+  - CAMPOS OPCIONAIS: Guia operadora, Saúde ocup., Cobertura especial, Regime de atendimento, CID
+  - CAMPOS OBRIGATÓRIOS: Número da guia
+- **Seção "Internamento"**:
+  - CAMPOS OPCIONAIS: Número da guia, Cobertura especial, Saúde ocup., Regime de atendimento, Motivo, CID
+  - CAMPOS OBRIGATÓRIOS: NENHUMA OPÇÃO SELECIONADA
+
+### Página 10 - RESTRIÇÕES (Especificação)
+
+- **Tipos de Restrição disponíveis**:
+  1. Plano: Não Especificado
+  2. Médico: Não Especificado
+  3. Especialidade: Não Especificado
+  4. Setor Solicitante: Unidade São Roque
+  5. Exame/Material/Medicamento:
+     - Especialidade: Imunologia
+     - Citog: Citomegalovírus Avid
+     - Unidade Ibiuna
+
+### Página 11 - PLANOS (Especificação)
+
+- **SUB CADASTROS (PLANOS)**:
+  - Plano: (não especificado)
+  - Tabelas: (não especificadas)
+  - Valor CH: Cálculo Padrão
+  - Valor Filme: Cálculo Padrão
+  - Instruções: (não especificado)
+
+### Página 12 - INSTRUÇÕES (Especificação)
+
+- **Histórico de Instruções do Convênio**:
+  - Registro: 10/06/2012 12:22
+  - Usuário: APINT
+  - Instrução: NECESSÁRIO GUIA AUTORIZADA PARA TODOS OS PROCEDIMENTOS
+  - Prazo: 17/06/2012 12:16
+
+### Página 13 - INFORMAÇÕES ESPECÍFICAS (Convênio - Detalhamento)
+
+- **Cadastro de Convênios - Seções e Configurações**:
+  - Convênio: INT INTERMEDCI
+  - Código Convênio: 55901
+  - Registro ANS: Via Fatura
+  - Contrato: CONVENI
+  - Liquidação: 14 Dígitos
+  - Matrícula Dígitos: Ambulatorial
+  - Tipo: Cálculo Padrão
+  - Valor CH: Cálculo Padrão
+  - Valor Filme: Dia (Fora Mês) 1
+  - Vencimento: IN3 INTERMED V 3.01 (IN3)
+  - Tabela Serviço: 926
+  - Tabela Base: BSD BRASÍNDICE (BSD)
+  - Tabela Material: 4959525500018
+  - Código Prestador: Não
+  - Co-Participação: (não especificadas)
+  - Observações gerais: (não especificadas)
+  - Instruções: (não especificado)
+  - CNES: SIM/NA
+  - TISS: 4.01.01
+  - Versão TISS: Tatiana e Adriana
+  - Contato: Sim
+  - Nota Fiscal Exige na Fatura: 4959525500018
+  - TISS Código na Operadora: 16731
+  - Código Operadora (Autorização)
+
+### Página 14 - Cadastros Gerais - LABORATÓRIOS DE APOIO (Listagem)
+
+- Menu lateral com "Laboratórios de apoio" selecionado
+- Mesma estrutura da página 11 do chunk_018, mas com aba LABORATÓRIOS DE APOIO selecionada
+- Grid de listagem:
+  - Colunas: Cód interno, Nome fantasia, CNPJ, E-mail comercial, Cidade/Estado, Ativo, Editar, Visualizar, Opções
+  - Exemplos: LAB001 a LAB010 com dados de laboratórios
+- Paginação: 10 de 50 registros
+
+### Página 15 - Cadastrar Empresa LABORATÓRIO DE APOIO (Aba Informações Gerais)
+
+- **ABAS**: INFORMAÇÕES GERAIS | INTEGRAÇÃO | VINCULAR EXAMES
+- **Aba selecionada**: INFORMAÇÕES GERAIS
+- Mesmos campos da página 13 do chunk_018 (informações gerais comuns)
+
+### Página 16 - Cadastrar Empresa LABORATÓRIO DE APOIO (Aba Vincular Exames)
+
+- **Aba selecionada**: VINCULAR EXAMES
+- **Seção "Exames"**:
+  - Botões: BAIXAR PLANILHA DE EXEMPLO | IMPORTAR DADOS
+  - Estatísticas: 0 de 0 registros | 0 de 0 vínculos
+  - Checkbox: Somente registros sem vínculo
+  - Pesquisar
+  - Botão: VINCULAR AUTOMATICAMENTE
+- Grid de vínculos:
+  - Colunas: Cód interno, Nome do exame interno, Código laboratório, Nome do exame do laboratório, Vínculo, Excluir, Editar
+  - Mensagem: "PRÉVIA DA TABELA SERÁ CARREGADA AQUI"
+
+### Página 17 - Cadastros Gerais - TELEMEDICINA (Listagem)
+
+- Menu lateral com "Telemedicina" selecionado
+- Grid de listagem:
+  - Colunas: Cód interno, Nome fantasia, CNPJ, E-mail comercial, Cidade/Estado, Ativo, Editar, Visualizar, Opções
+  - Exemplos: TEL001 a TEL010 com dados de telemedicina
+- Paginação: 10 de 50 registros
+
+### Página 18 - Cadastrar Empresa TELEMEDICINA (Aba Informações Gerais)
+
+- **ABAS**: INFORMAÇÕES GERAIS | INTEGRAÇÃO | VINCULAR EXAMES
+- **Aba selecionada**: INFORMAÇÕES GERAIS
+- Mesmos campos das páginas anteriores (informações gerais comuns)
+
+### Página 19 - Cadastrar Empresa TELEMEDICINA (Aba Vincular Exames)
+
+- **Aba selecionada**: VINCULAR EXAMES
+- Mesma estrutura da página 16 (Vincular Exames de Laboratório de Apoio)
+
+### Página 20 - INFORMAÇÕES ESPECÍFICAS (Convênio - Faturamento)
+
+- **Faturamento**:
+  - (Nenhuma instrução específica mencionada)
+- **Contrato**:
+  - Envio:
+  - Fat Até:
+  - Vencimento:
+  - Instruções para Faturamento:
+  - Data do Contrato: 00/00/0000
+  - Último Ajuste do Contrato: 00/00/0000
+
+### Resumo das Telas para Implementação
+
+#### Empresas (Listagem Unificada) ✅ JÁ IMPLEMENTADO
+
+- Tela única com TABS para todos os tipos de empresa
+- Implementado em: `src/modules/cadastros/empresas/`
+
+#### Convênios (Cadastro Completo)
+
+- **ABAS**: Informações Gerais, Informações Específicas, Integração, Atendimento, Restrições, Planos, Instruções
+- **Entidades relacionadas**: Plano, Restricao, InstrucaoConvenio
+- Implementado em: `src/modules/relacionamento/convenios/`
+
+#### Laboratórios de Apoio
+
+- **ABAS**: Informações Gerais, Integração, Vincular Exames
+- Implementado em: `src/modules/relacionamento/laboratorios/`
+
+#### Telemedicina
+
+- **ABAS**: Informações Gerais, Integração, Vincular Exames
+- Implementado em: `src/modules/relacionamento/telemedicina/`
+
+#### Fornecedores
+
+- **ABAS**: Informações Gerais, Informações Específicas (Insumos)
+- Implementado em: `src/modules/relacionamento/fornecedores/`
+
+#### Prestadores de Serviço
+
+- **ABAS**: Informações Gerais, Informações Específicas (Serviços)
+- Implementado em: `src/modules/relacionamento/prestadores-servico/`
+
+#### Campos Específicos por Tipo de Empresa
+
+| Tipo         | Abas Específicas                                                           |
+| ------------ | -------------------------------------------------------------------------- |
+| Convênio     | Info. Específicas, Integração, Atendimento, Restrições, Planos, Instruções |
+| Laboratório  | Integração, Vincular Exames                                                |
+| Telemedicina | Integração, Vincular Exames                                                |
+| Fornecedor   | Info. Específicas (Insumos)                                                |
+| Prestador    | Info. Específicas (Serviços)                                               |
 
 ---
 
@@ -1346,5 +1724,5 @@ São condicionais e só devem aparecer quando `tipoProfissional` for:
 
 ## Última atualização
 
-**Data**: 01/12/2025
-**Chunks catalogados**: 4 de 26
+**Data**: 08/12/2025
+**Chunks catalogados**: 6 de 26

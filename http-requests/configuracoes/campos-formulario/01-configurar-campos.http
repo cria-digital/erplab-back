@@ -3,6 +3,94 @@
 ### Configurar quais campos são obrigatórios por entidade
 ### ========================================
 
+### ========================================
+### CONFIGURAÇÃO EM LOTE (BATCH)
+### Ideal para a aba de Atendimento do convênio
+### ========================================
+
+### Configurar campos obrigatórios em lote - Cadastro de Pacientes
+POST {{baseUrl}}/api/v1/configuracoes-campos/batch
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "entidadeTipo": "convenio",
+  "entidadeId": "6cf271ce-0e16-4fca-bf80-48100da44667",
+  "tipoFormulario": "cadastro_paciente",
+  "campos": [
+    { "nomeCampo": "bairro", "obrigatorio": true },
+    { "nomeCampo": "cidade", "obrigatorio": true },
+    { "nomeCampo": "rua", "obrigatorio": true },
+    { "nomeCampo": "nome_mae", "obrigatorio": true },
+    { "nomeCampo": "matricula", "obrigatorio": true },
+    { "nomeCampo": "contatos", "obrigatorio": true },
+    { "nomeCampo": "cpf", "obrigatorio": false },
+    { "nomeCampo": "cep", "obrigatorio": false },
+    { "nomeCampo": "cartao_sus", "obrigatorio": false }
+  ]
+}
+
+### Expected Response
+# Status: 201 Created
+# {
+#   "message": "Processamento concluído: 9 criados, 0 erros",
+#   "data": [...],
+#   "errors": [],
+#   "totalCriados": 9,
+#   "totalErros": 0
+# }
+
+###
+
+### Configurar campos obrigatórios em lote - Ordem de Serviço
+POST {{baseUrl}}/api/v1/configuracoes-campos/batch
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "entidadeTipo": "convenio",
+  "entidadeId": "6cf271ce-0e16-4fca-bf80-48100da44667",
+  "tipoFormulario": "ordem_servico",
+  "campos": [
+    { "nomeCampo": "medico_requisitante", "obrigatorio": true },
+    { "nomeCampo": "especialidade_solicitante", "obrigatorio": true },
+    { "nomeCampo": "data_solicitacao", "obrigatorio": true },
+    { "nomeCampo": "numero_guia", "obrigatorio": false },
+    { "nomeCampo": "guia_principal", "obrigatorio": false },
+    { "nomeCampo": "guia_operadora", "obrigatorio": false },
+    { "nomeCampo": "cid", "obrigatorio": false },
+    { "nomeCampo": "local_entrega", "obrigatorio": false },
+    { "nomeCampo": "plano", "obrigatorio": false }
+  ]
+}
+
+###
+
+### Configurar campos obrigatórios em lote - TISS
+POST {{baseUrl}}/api/v1/configuracoes-campos/batch
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "entidadeTipo": "convenio",
+  "entidadeId": "6cf271ce-0e16-4fca-bf80-48100da44667",
+  "tipoFormulario": "tiss",
+  "campos": [
+    { "nomeCampo": "doenca", "obrigatorio": false },
+    { "nomeCampo": "regime_atendimento", "obrigatorio": false },
+    { "nomeCampo": "saude_ocupacional", "obrigatorio": false },
+    { "nomeCampo": "tipo_saida", "obrigatorio": false },
+    { "nomeCampo": "tipo_atendimento", "obrigatorio": false },
+    { "nomeCampo": "cobertura_especial", "obrigatorio": false }
+  ]
+}
+
+###
+
+### ========================================
+### CONFIGURAÇÃO INDIVIDUAL
+### ========================================
+
 ### Criar configuração de campo obrigatório
 POST {{baseUrl}}/api/v1/configuracoes-campos
 Content-Type: {{contentType}}

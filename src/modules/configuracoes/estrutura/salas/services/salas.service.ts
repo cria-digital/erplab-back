@@ -28,16 +28,17 @@ export class SalasService {
     limit: number = 10,
     search?: string,
     unidadeId?: string,
-    setor?: string,
+    setorId?: string,
   ): Promise<PaginatedResultDto<Sala>> {
     const queryBuilder = this.salaRepository
       .createQueryBuilder('sala')
-      .leftJoinAndSelect('sala.unidade', 'unidade');
+      .leftJoinAndSelect('sala.unidade', 'unidade')
+      .leftJoinAndSelect('sala.setor', 'setor');
 
-    // Filtro por termo de busca (nome, código interno ou setor)
+    // Filtro por termo de busca (nome, código interno ou texto do setor)
     if (search) {
       queryBuilder.andWhere(
-        '(sala.nome ILIKE :search OR sala.codigoInterno ILIKE :search OR sala.setor ILIKE :search)',
+        '(sala.nome ILIKE :search OR sala.codigoInterno ILIKE :search OR setor.textoAlternativa ILIKE :search)',
         { search: `%${search}%` },
       );
     }
@@ -47,9 +48,9 @@ export class SalasService {
       queryBuilder.andWhere('sala.unidadeId = :unidadeId', { unidadeId });
     }
 
-    // Filtro por setor
-    if (setor) {
-      queryBuilder.andWhere('sala.setor = :setor', { setor });
+    // Filtro por setor (por ID)
+    if (setorId) {
+      queryBuilder.andWhere('sala.setorId = :setorId', { setorId });
     }
 
     // Ordenação e paginação
@@ -65,7 +66,7 @@ export class SalasService {
 
   async findAll(): Promise<Sala[]> {
     return await this.salaRepository.find({
-      relations: ['unidade'],
+      relations: ['unidade', 'setor'],
       order: { nome: 'ASC' },
     });
   }
@@ -73,7 +74,7 @@ export class SalasService {
   async findAllAtivas(): Promise<Sala[]> {
     return await this.salaRepository.find({
       where: { ativo: true },
-      relations: ['unidade'],
+      relations: ['unidade', 'setor'],
       order: { nome: 'ASC' },
     });
   }
@@ -81,7 +82,7 @@ export class SalasService {
   async findOne(id: string): Promise<Sala> {
     const sala = await this.salaRepository.findOne({
       where: { id },
-      relations: ['unidade'],
+      relations: ['unidade', 'setor'],
     });
 
     if (!sala) {
@@ -94,7 +95,7 @@ export class SalasService {
   async findByCodigo(codigoInterno: string): Promise<Sala> {
     const sala = await this.salaRepository.findOne({
       where: { codigoInterno },
-      relations: ['unidade'],
+      relations: ['unidade', 'setor'],
     });
 
     if (!sala) {
@@ -109,15 +110,15 @@ export class SalasService {
   async findByUnidade(unidadeId: string): Promise<Sala[]> {
     return await this.salaRepository.find({
       where: { unidadeId },
-      relations: ['unidade'],
+      relations: ['unidade', 'setor'],
       order: { nome: 'ASC' },
     });
   }
 
-  async findBySetor(setor: string): Promise<Sala[]> {
+  async findBySetor(setorId: string): Promise<Sala[]> {
     return await this.salaRepository.find({
-      where: { setor },
-      relations: ['unidade'],
+      where: { setorId },
+      relations: ['unidade', 'setor'],
       order: { nome: 'ASC' },
     });
   }

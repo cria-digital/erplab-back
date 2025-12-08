@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import {
   ConfiguracaoCampoFormulario,
   TipoEntidadeEnum,
@@ -14,6 +14,7 @@ export class ConfiguracaoCampoService {
   constructor(
     @InjectRepository(ConfiguracaoCampoFormulario)
     private readonly configuracaoRepository: Repository<ConfiguracaoCampoFormulario>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async create(
@@ -79,26 +80,59 @@ export class ConfiguracaoCampoService {
     entidadeId: string,
     tipoFormulario: TipoFormularioEnum,
     campos: Array<{ nomeCampo: string; obrigatorio: boolean }>,
-  ): Promise<ConfiguracaoCampoFormulario[]> {
-    // Remover configurações antigas
-    await this.configuracaoRepository.delete({
-      entidadeTipo,
-      entidadeId,
-      tipoFormulario,
-    });
+  ): Promise<{
+    criados: ConfiguracaoCampoFormulario[];
+    erros: Array<{ index: number; nomeCampo: string; erro: string }>;
+  }> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
-    // Criar novas configurações
-    const configuracoes = campos.map((campo) =>
-      this.configuracaoRepository.create({
+    const criados: ConfiguracaoCampoFormulario[] = [];
+    const erros: Array<{ index: number; nomeCampo: string; erro: string }> = [];
+
+    try {
+      // Remover configurações antigas
+      await queryRunner.manager.delete(ConfiguracaoCampoFormulario, {
         entidadeTipo,
         entidadeId,
         tipoFormulario,
-        nomeCampo: campo.nomeCampo,
-        obrigatorio: campo.obrigatorio,
-      }),
-    );
+      });
 
-    return await this.configuracaoRepository.save(configuracoes);
+      // Criar novas configurações
+      for (let i = 0; i < campos.length; i++) {
+        const campo = campos[i];
+        try {
+          const configuracao = queryRunner.manager.create(
+            ConfiguracaoCampoFormulario,
+            {
+              entidadeTipo,
+              entidadeId,
+              tipoFormulario,
+              nomeCampo: campo.nomeCampo,
+              obrigatorio: campo.obrigatorio,
+            },
+          );
+          const salvo = await queryRunner.manager.save(configuracao);
+          criados.push(salvo);
+        } catch (error) {
+          erros.push({
+            index: i,
+            nomeCampo: campo.nomeCampo,
+            erro: error.message || 'Erro ao criar configuração',
+          });
+        }
+      }
+
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+
+    return { criados, erros };
   }
 
   async obterCamposObrigatorios(

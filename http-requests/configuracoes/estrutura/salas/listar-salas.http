@@ -15,7 +15,14 @@ Authorization: Bearer {{token}}
 #         "nomeFantasia": "Unidade Central",
 #         ...
 #       },
-#       "setor": "Hematologia",
+#       "setorId": "uuid-setor",
+#       "setor": {
+#         "id": "uuid-setor",
+#         "textoAlternativa": "Hematologia",
+#         "campoFormularioId": "uuid-campo",
+#         "ordem": 0,
+#         "ativo": true
+#       },
 #       "nome": "Sala de Coleta 01",
 #       "ativo": true,
 #       "criadoEm": "2025-11-30T10:00:00.000Z"
@@ -39,7 +46,7 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Buscar salas por termo (nome, codigo interno ou setor)
+### Buscar salas por termo (nome, codigo interno ou texto do setor)
 GET {{baseUrl}}/configuracoes/estrutura/salas?search=IMG
 Authorization: Bearer {{token}}
 
@@ -57,14 +64,14 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Filtrar salas por setor
-GET {{baseUrl}}/configuracoes/estrutura/salas?setor=Imagem
+### Filtrar salas por setor (usando ID do setor)
+GET {{baseUrl}}/configuracoes/estrutura/salas?setorId={{setorId}}
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar combinando todos os filtros
-GET {{baseUrl}}/configuracoes/estrutura/salas?search=IMG&unidadeId={{unidadeId}}&setor=Imagem&page=1&limit=10
+GET {{baseUrl}}/configuracoes/estrutura/salas?search=IMG&unidadeId={{unidadeId}}&setorId={{setorId}}&page=1&limit=10
 Authorization: Bearer {{token}}
 
 ###
@@ -99,26 +106,8 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Listar por setor (busca por nome do setor)
-GET {{baseUrl}}/configuracoes/estrutura/salas/setor/Hematologia
-Authorization: Bearer {{token}}
-
-###
-
-### Listar por setor - Bioquimica
-GET {{baseUrl}}/configuracoes/estrutura/salas/setor/Bioquimica
-Authorization: Bearer {{token}}
-
-###
-
-### Listar por setor - Microbiologia
-GET {{baseUrl}}/configuracoes/estrutura/salas/setor/Microbiologia
-Authorization: Bearer {{token}}
-
-###
-
-### Listar por setor - Imagem
-GET {{baseUrl}}/configuracoes/estrutura/salas/setor/Imagem
+### Listar por setor (usando ID do setor)
+GET {{baseUrl}}/configuracoes/estrutura/salas/setor/{{setorId}}
 Authorization: Bearer {{token}}
 
 ###

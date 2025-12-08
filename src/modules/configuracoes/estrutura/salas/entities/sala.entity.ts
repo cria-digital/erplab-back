@@ -9,6 +9,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { UnidadeSaude } from '../../../../cadastros/unidade-saude/entities/unidade-saude.entity';
+import { AlternativaCampoFormulario } from '../../../../infraestrutura/campos-formulario/entities/alternativa-campo-formulario.entity';
 
 /**
  * Entidade que representa uma Sala
@@ -20,6 +21,7 @@ import { UnidadeSaude } from '../../../../cadastros/unidade-saude/entities/unida
 @Index(['codigoInterno'])
 @Index(['nome'])
 @Index(['unidadeId'])
+@Index(['setorId'])
 export class Sala {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -45,12 +47,15 @@ export class Sala {
   unidade: UnidadeSaude;
 
   @Column({
-    name: 'setor',
-    type: 'varchar',
-    length: 100,
-    comment: 'Setor da sala (valor do campo de formulário)',
+    name: 'setor_id',
+    type: 'uuid',
+    comment: 'FK para alternativa de campo de formulário (setor)',
   })
-  setor: string;
+  setorId: string;
+
+  @ManyToOne(() => AlternativaCampoFormulario)
+  @JoinColumn({ name: 'setor_id' })
+  setor: AlternativaCampoFormulario;
 
   @Column({
     name: 'nome',

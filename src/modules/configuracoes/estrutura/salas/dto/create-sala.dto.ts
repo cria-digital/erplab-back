@@ -25,13 +25,11 @@ export class CreateSalaDto {
   unidadeId: string;
 
   @ApiProperty({
-    description: 'Setor da sala (valor do campo de formulário)',
-    example: 'Hematologia',
-    maxLength: 100,
+    description: 'ID do setor (FK para alternativa de campo de formulário)',
+    example: '123e4567-e89b-12d3-a456-426614174000',
   })
-  @IsString()
-  @MaxLength(100)
-  setor: string;
+  @IsUUID()
+  setorId: string;
 
   @ApiProperty({
     description: 'Nome da sala',
