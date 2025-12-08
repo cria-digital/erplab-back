@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Sala } from '../entities/sala.entity';
 import { CreateSalaDto } from '../dto/create-sala.dto';
 import { UpdateSalaDto } from '../dto/update-sala.dto';
+import { PaginatedResultDto } from '../../../../infraestrutura/common/dto/pagination.dto';
 
 @Injectable()
 export class SalasService {
@@ -20,6 +21,46 @@ export class SalasService {
     });
 
     return await this.salaRepository.save(sala);
+  }
+
+  async findAllPaginated(
+    page: number = 1,
+    limit: number = 10,
+    search?: string,
+    unidadeId?: string,
+    setor?: string,
+  ): Promise<PaginatedResultDto<Sala>> {
+    const queryBuilder = this.salaRepository
+      .createQueryBuilder('sala')
+      .leftJoinAndSelect('sala.unidade', 'unidade');
+
+    // Filtro por termo de busca (nome, código interno ou setor)
+    if (search) {
+      queryBuilder.andWhere(
+        '(sala.nome ILIKE :search OR sala.codigoInterno ILIKE :search OR sala.setor ILIKE :search)',
+        { search: `%${search}%` },
+      );
+    }
+
+    // Filtro por unidade
+    if (unidadeId) {
+      queryBuilder.andWhere('sala.unidadeId = :unidadeId', { unidadeId });
+    }
+
+    // Filtro por setor
+    if (setor) {
+      queryBuilder.andWhere('sala.setor = :setor', { setor });
+    }
+
+    // Ordenação e paginação
+    queryBuilder
+      .orderBy('sala.nome', 'ASC')
+      .skip((page - 1) * limit)
+      .take(limit);
+
+    const [data, total] = await queryBuilder.getManyAndCount();
+
+    return new PaginatedResultDto(data, total, page, limit);
   }
 
   async findAll(): Promise<Sala[]> {

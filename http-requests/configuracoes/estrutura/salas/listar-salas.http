@@ -1,20 +1,71 @@
-### Listar todas as salas
+### Listar salas com paginacao (padrao: page=1, limit=10)
 GET {{baseUrl}}/configuracoes/estrutura/salas
 Authorization: Bearer {{token}}
 
 ### Expected Response
 # Status: 200 OK
-# [
-#   {
-#     "id": "uuid-1",
-#     "codigoInterno": "SALA001",
-#     "unidadeId": "uuid-unidade",
-#     "setor": "Hematologia",
-#     "nome": "Sala de Coleta 01",
-#     "ativo": true,
-#     "criadoEm": "2025-11-30T10:00:00.000Z"
+# {
+#   "data": [
+#     {
+#       "id": "uuid-1",
+#       "codigoInterno": "SALA001",
+#       "unidadeId": "uuid-unidade",
+#       "unidade": {
+#         "id": "uuid-unidade",
+#         "nomeFantasia": "Unidade Central",
+#         ...
+#       },
+#       "setor": "Hematologia",
+#       "nome": "Sala de Coleta 01",
+#       "ativo": true,
+#       "criadoEm": "2025-11-30T10:00:00.000Z"
+#     }
+#   ],
+#   "meta": {
+#     "page": 1,
+#     "limit": 10,
+#     "total": 50,
+#     "totalPages": 5,
+#     "hasPrevPage": false,
+#     "hasNextPage": true
 #   }
-# ]
+# }
+
+###
+
+### Listar salas com paginacao customizada
+GET {{baseUrl}}/configuracoes/estrutura/salas?page=2&limit=20
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar salas por termo (nome, codigo interno ou setor)
+GET {{baseUrl}}/configuracoes/estrutura/salas?search=IMG
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar salas por termo com paginacao
+GET {{baseUrl}}/configuracoes/estrutura/salas?search=Sala&page=1&limit=10
+Authorization: Bearer {{token}}
+
+###
+
+### Filtrar salas por unidade
+GET {{baseUrl}}/configuracoes/estrutura/salas?unidadeId={{unidadeId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Filtrar salas por setor
+GET {{baseUrl}}/configuracoes/estrutura/salas?setor=Imagem
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar combinando todos os filtros
+GET {{baseUrl}}/configuracoes/estrutura/salas?search=IMG&unidadeId={{unidadeId}}&setor=Imagem&page=1&limit=10
+Authorization: Bearer {{token}}
 
 ###
 

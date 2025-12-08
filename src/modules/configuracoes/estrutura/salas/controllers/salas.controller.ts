@@ -9,6 +9,7 @@ import {
   UseGuards,
   Request,
   ParseUUIDPipe,
+  Query,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -16,6 +17,7 @@ import {
   ApiResponse,
   ApiBearerAuth,
   ApiParam,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../../autenticacao/auth/guards/jwt-auth.guard';
 import { SalasService } from '../services/salas.service';
@@ -39,11 +41,56 @@ export class SalasController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Listar todas as salas' })
-  @ApiResponse({ status: 200, description: 'Lista de salas retornada' })
+  @ApiOperation({ summary: 'Listar salas com paginação e busca' })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'Página (padrão: 1)',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Itens por página (padrão: 10)',
+  })
+  @ApiQuery({
+    name: 'search',
+    required: false,
+    type: String,
+    description: 'Buscar por nome, código interno ou setor',
+  })
+  @ApiQuery({
+    name: 'unidadeId',
+    required: false,
+    type: String,
+    description: 'Filtrar por unidade',
+  })
+  @ApiQuery({
+    name: 'setor',
+    required: false,
+    type: String,
+    description: 'Filtrar por setor',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista paginada de salas retornada',
+  })
   @ApiResponse({ status: 401, description: 'Não autorizado' })
-  async findAll() {
-    return await this.salasService.findAll();
+  async findAll(
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('search') search?: string,
+    @Query('unidadeId') unidadeId?: string,
+    @Query('setor') setor?: string,
+  ) {
+    return await this.salasService.findAllPaginated(
+      page ? parseInt(page) : 1,
+      limit ? parseInt(limit) : 10,
+      search,
+      unidadeId,
+      setor,
+    );
   }
 
   @Get('ativas')
