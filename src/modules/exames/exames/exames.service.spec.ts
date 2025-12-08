@@ -187,7 +187,7 @@ describe('ExamesService', () => {
         where: {},
         relations: [
           'tipoExameAlternativa',
-          'subgrupo',
+          'subgrupoAlternativa',
           'setor',
           'laboratorioApoio',
         ],
@@ -207,7 +207,7 @@ describe('ExamesService', () => {
         where: { nome: expect.objectContaining({ _type: 'like' }) },
         relations: [
           'tipoExameAlternativa',
-          'subgrupo',
+          'subgrupoAlternativa',
           'setor',
           'laboratorioApoio',
         ],
@@ -227,7 +227,7 @@ describe('ExamesService', () => {
         where: { status: 'ativo' },
         relations: [
           'tipoExameAlternativa',
-          'subgrupo',
+          'subgrupoAlternativa',
           'setor',
           'laboratorioApoio',
         ],
@@ -246,7 +246,7 @@ describe('ExamesService', () => {
         where: {},
         relations: [
           'tipoExameAlternativa',
-          'subgrupo',
+          'subgrupoAlternativa',
           'setor',
           'laboratorioApoio',
         ],
@@ -268,7 +268,7 @@ describe('ExamesService', () => {
         where: { id: 'exame-uuid-1' },
         relations: [
           'tipoExameAlternativa',
-          'subgrupo',
+          'subgrupoAlternativa',
           'setor',
           'laboratorioApoio',
           'unidadesQueRealizam',
@@ -296,7 +296,7 @@ describe('ExamesService', () => {
         where: { codigo_interno: 'EXM001' },
         relations: [
           'tipoExameAlternativa',
-          'subgrupo',
+          'subgrupoAlternativa',
           'setor',
           'laboratorioApoio',
         ],
@@ -389,7 +389,7 @@ describe('ExamesService', () => {
       expect(result).toEqual(mockExames);
       expect(mockRepository.find).toHaveBeenCalledWith({
         where: { tipo_exame_id: 'tipo-uuid-1', status: 'ativo' },
-        relations: ['tipoExameAlternativa', 'subgrupo', 'setor'],
+        relations: ['tipoExameAlternativa', 'subgrupoAlternativa', 'setor'],
         order: { nome: 'ASC' },
       });
     });

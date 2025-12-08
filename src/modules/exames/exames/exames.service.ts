@@ -71,7 +71,7 @@ export class ExamesService {
       where,
       relations: [
         'tipoExameAlternativa',
-        'subgrupo',
+        'subgrupoAlternativa',
         'setor',
         'laboratorioApoio',
       ],
@@ -93,7 +93,7 @@ export class ExamesService {
       where: { id },
       relations: [
         'tipoExameAlternativa',
-        'subgrupo',
+        'subgrupoAlternativa',
         'setor',
         'laboratorioApoio',
         'unidadesQueRealizam',
@@ -112,7 +112,7 @@ export class ExamesService {
       where: { codigo_interno: codigo },
       relations: [
         'tipoExameAlternativa',
-        'subgrupo',
+        'subgrupoAlternativa',
         'setor',
         'laboratorioApoio',
       ],
@@ -162,7 +162,7 @@ export class ExamesService {
   async findByTipo(tipoExameId: string): Promise<Exame[]> {
     return await this.exameRepository.find({
       where: { tipo_exame_id: tipoExameId, status: 'ativo' },
-      relations: ['tipoExameAlternativa', 'subgrupo', 'setor'],
+      relations: ['tipoExameAlternativa', 'subgrupoAlternativa', 'setor'],
       order: { nome: 'ASC' },
     });
   }
