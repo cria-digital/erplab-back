@@ -13,7 +13,6 @@ import {
 } from 'typeorm';
 import { OrdemServicoExame } from './ordem-servico-exame.entity';
 import { ResultadoExame } from './resultado-exame.entity';
-import { SetorExame } from './setor-exame.entity';
 import { LaboratorioApoio } from './laboratorio-apoio.entity';
 import { ExameLaboratorioApoio } from './exame-laboratorio-apoio.entity';
 import { AlternativaCampoFormulario } from '../../../infraestrutura/campos-formulario/entities/alternativa-campo-formulario.entity';
@@ -537,9 +536,9 @@ export class Exame {
   @JoinColumn({ name: 'subgrupo_id' })
   subgrupoAlternativa?: AlternativaCampoFormulario;
 
-  @ManyToOne(() => SetorExame, { eager: false })
+  @ManyToOne(() => AlternativaCampoFormulario, { eager: false })
   @JoinColumn({ name: 'setor_id' })
-  setor?: SetorExame;
+  setorAlternativa?: AlternativaCampoFormulario;
 
   @ManyToOne(() => LaboratorioApoio, { eager: false })
   @JoinColumn({ name: 'laboratorio_apoio_id' })

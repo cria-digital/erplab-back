@@ -8,7 +8,6 @@ import { OrdemServicoExame } from './entities/ordem-servico-exame.entity';
 import { ResultadoExame } from './entities/resultado-exame.entity';
 import { LaboratorioApoio } from './entities/laboratorio-apoio.entity';
 import { ExameLaboratorioApoio } from './entities/exame-laboratorio-apoio.entity';
-import { SetorExame } from './entities/setor-exame.entity';
 import { Empresa } from '../../cadastros/empresas/entities/empresa.entity';
 import { UnidadeSaude } from '../../cadastros/unidade-saude/entities/unidade-saude.entity';
 
@@ -34,7 +33,6 @@ import { LaboratorioApoioController } from './laboratorio-apoio.controller';
       ResultadoExame,
       LaboratorioApoio,
       ExameLaboratorioApoio,
-      SetorExame,
       Empresa,
       UnidadeSaude,
     ]),

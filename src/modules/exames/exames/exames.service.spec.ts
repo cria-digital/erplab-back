@@ -188,7 +188,7 @@ describe('ExamesService', () => {
         relations: [
           'tipoExameAlternativa',
           'subgrupoAlternativa',
-          'setor',
+          'setorAlternativa',
           'laboratorioApoio',
         ],
         skip: 0,
@@ -208,7 +208,7 @@ describe('ExamesService', () => {
         relations: [
           'tipoExameAlternativa',
           'subgrupoAlternativa',
-          'setor',
+          'setorAlternativa',
           'laboratorioApoio',
         ],
         skip: 0,
@@ -228,7 +228,7 @@ describe('ExamesService', () => {
         relations: [
           'tipoExameAlternativa',
           'subgrupoAlternativa',
-          'setor',
+          'setorAlternativa',
           'laboratorioApoio',
         ],
         skip: 0,
@@ -247,7 +247,7 @@ describe('ExamesService', () => {
         relations: [
           'tipoExameAlternativa',
           'subgrupoAlternativa',
-          'setor',
+          'setorAlternativa',
           'laboratorioApoio',
         ],
         skip: 40,
@@ -269,7 +269,7 @@ describe('ExamesService', () => {
         relations: [
           'tipoExameAlternativa',
           'subgrupoAlternativa',
-          'setor',
+          'setorAlternativa',
           'laboratorioApoio',
           'unidadesQueRealizam',
         ],
@@ -297,7 +297,7 @@ describe('ExamesService', () => {
         relations: [
           'tipoExameAlternativa',
           'subgrupoAlternativa',
-          'setor',
+          'setorAlternativa',
           'laboratorioApoio',
         ],
       });
@@ -389,7 +389,11 @@ describe('ExamesService', () => {
       expect(result).toEqual(mockExames);
       expect(mockRepository.find).toHaveBeenCalledWith({
         where: { tipo_exame_id: 'tipo-uuid-1', status: 'ativo' },
-        relations: ['tipoExameAlternativa', 'subgrupoAlternativa', 'setor'],
+        relations: [
+          'tipoExameAlternativa',
+          'subgrupoAlternativa',
+          'setorAlternativa',
+        ],
         order: { nome: 'ASC' },
       });
     });
