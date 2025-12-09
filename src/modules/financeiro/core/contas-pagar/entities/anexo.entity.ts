@@ -1,15 +1,17 @@
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
-  ManyToOne,
+  Entity,
+  Index,
   JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { ContaPagar } from './conta-pagar.entity';
 import { TipoAnexo } from '../enums/contas-pagar.enum';
 
+import { Tenant } from '../../../../tenants/entities/tenant.entity';
 @Entity('anexos_contas_pagar')
 export class Anexo {
   @PrimaryGeneratedColumn('uuid')
@@ -42,4 +44,13 @@ export class Anexo {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

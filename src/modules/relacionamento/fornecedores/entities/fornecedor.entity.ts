@@ -1,14 +1,17 @@
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
-  OneToOne,
+  Entity,
+  Index,
   JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Empresa } from '../../../cadastros/empresas/entities/empresa.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 export enum CategoriaInsumo {
   REAGENTES_INSUMOS = 'reagentes_insumos',
   EQUIPAMENTOS_MEDICOS = 'equipamentos_medicos',
@@ -191,4 +194,13 @@ export class Fornecedor {
 
   // @OneToMany(() => AvaliacaoFornecedor, (af) => af.fornecedor)
   // avaliacoes: AvaliacaoFornecedor[];
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

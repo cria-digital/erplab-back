@@ -10,6 +10,7 @@ import {
 import { Usuario } from '../../../autenticacao/usuarios/entities/usuario.entity';
 import { UnidadeSaude } from '../../../cadastros/unidade-saude/entities/unidade-saude.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 export enum TipoLog {
   ACESSO = 'ACESSO',
   ALTERACAO = 'ALTERACAO',
@@ -127,4 +128,13 @@ export class AuditoriaLog {
   })
   @JoinColumn({ name: 'unidade_saude_id' })
   unidadeSaude: UnidadeSaude;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

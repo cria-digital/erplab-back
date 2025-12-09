@@ -12,6 +12,7 @@ import {
 import { Kit } from './kit.entity';
 import { UnidadeSaude } from '../../../cadastros/unidade-saude/entities/unidade-saude.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 @Entity('kit_unidades')
 @Unique(['kit', 'unidade']) // Garante que uma unidade não seja duplicada no mesmo kit
 @Index('IDX_kit_unidade_kit', ['kit'])
@@ -52,4 +53,13 @@ export class KitUnidade {
     comment: 'Data/hora da última atualização',
   })
   updatedAt: Date;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

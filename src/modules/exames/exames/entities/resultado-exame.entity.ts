@@ -11,6 +11,7 @@ import {
 import { OrdemServicoExame } from './ordem-servico-exame.entity';
 import { Exame } from './exame.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 @Entity('resultados_exames')
 @Index(['ordem_servico_exame_id'])
 @Index(['parametro'])
@@ -369,4 +370,13 @@ export class ResultadoExame {
     });
     this.versao++;
   }
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

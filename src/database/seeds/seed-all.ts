@@ -8,6 +8,7 @@ import { CampoFormularioSeedService } from './campo-formulario-seed.service';
 import { CampoFormularioConveniosSeedService } from './campo-formulario-convenios-seed.service';
 import { EstadoSeedService } from './estado-seed.service';
 import { CidadeSeedService } from './cidade-seed.service';
+import { TenantSeedService } from './tenant-seed.service';
 
 async function bootstrap() {
   const startTime = Date.now();
@@ -60,6 +61,11 @@ async function bootstrap() {
     const cidadeSeedService = app.get(CidadeSeedService);
     console.log('8. Importando Cidades do Brasil...');
     await cidadeSeedService.seed();
+
+    // Executar seed de Tenants (Multi-tenancy)
+    const tenantSeedService = app.get(TenantSeedService);
+    console.log('9. Criando Tenant padrão...');
+    await tenantSeedService.seed();
 
     const duration = Date.now() - startTime;
     console.log('\n==============================');

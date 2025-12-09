@@ -12,6 +12,7 @@ import {
 import { Kit } from './kit.entity';
 import { Exame } from '../../exames/entities/exame.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 @Entity('kit_exames')
 @Unique(['kit', 'exame']) // Garante que um exame não seja duplicado no mesmo kit
 @Index('IDX_kit_exame_kit', ['kit'])
@@ -78,4 +79,13 @@ export class KitExame {
     comment: 'Data/hora da última atualização',
   })
   updatedAt: Date;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

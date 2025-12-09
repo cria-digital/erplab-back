@@ -1,12 +1,13 @@
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
-  OneToMany,
-  ManyToOne,
+  Entity,
+  Index,
   JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { HorarioAtendimento } from './horario-atendimento.entity';
 import { CnaeSecundario } from './cnae-secundario.entity';
@@ -14,6 +15,7 @@ import { Cnae } from '../../../infraestrutura/common/entities/cnae.entity';
 import { ContaBancariaUnidade } from '../../../financeiro/core/entities/conta-bancaria-unidade.entity';
 import { ContaBancaria } from '../../../financeiro/core/entities/conta-bancaria.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 @Entity('unidades_saude')
 export class UnidadeSaude {
   @PrimaryGeneratedColumn('uuid')
@@ -307,4 +309,13 @@ export class UnidadeSaude {
     cascade: true,
   })
   cnaeSecundarios: CnaeSecundario[];
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

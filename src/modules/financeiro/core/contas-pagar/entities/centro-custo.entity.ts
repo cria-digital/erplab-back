@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { UnidadeSaude } from '../../../../cadastros/unidade-saude/entities/unidade-saude.entity';
 
+import { Tenant } from '../../../../tenants/entities/tenant.entity';
 @Entity('centros_custo')
 @Index(['codigo'], { unique: true })
 export class CentroCusto {
@@ -40,4 +41,13 @@ export class CentroCusto {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

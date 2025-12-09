@@ -1,17 +1,19 @@
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
-  ManyToOne,
+  Entity,
+  Index,
   JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { ContaPagar } from './conta-pagar.entity';
 import { ContaContabil } from '../../entities/conta-contabil.entity';
 import { CentroCusto } from './centro-custo.entity';
 import { Profissional } from '../../../../cadastros/profissionais/entities/profissional.entity';
 
+import { Tenant } from '../../../../tenants/entities/tenant.entity';
 @Entity('composicoes_financeiras')
 export class ComposicaoFinanceira {
   @PrimaryGeneratedColumn('uuid')
@@ -61,4 +63,13 @@ export class ComposicaoFinanceira {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

@@ -1,14 +1,16 @@
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  ManyToOne,
+  Entity,
+  Index,
   JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ContaBancaria } from './conta-bancaria.entity';
 import { UnidadeSaude } from '../../../cadastros/unidade-saude/entities/unidade-saude.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 @Entity('contas_bancarias_unidades')
 export class ContaBancariaUnidade {
   @PrimaryGeneratedColumn('uuid')
@@ -35,4 +37,13 @@ export class ContaBancariaUnidade {
 
   @CreateDateColumn()
   created_at: Date;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

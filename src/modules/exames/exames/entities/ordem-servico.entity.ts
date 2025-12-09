@@ -14,6 +14,7 @@ import { UnidadeSaude } from '../../../cadastros/unidade-saude/entities/unidade-
 import { OrdemServicoExame } from './ordem-servico-exame.entity';
 import { Convenio } from '../../../relacionamento/convenios/entities/convenio.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 @Entity('ordens_servico')
 @Index(['codigo'])
 @Index(['protocolo'])
@@ -405,4 +406,13 @@ export class OrdemServico {
     });
     this.status = novoStatus as any;
   }
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

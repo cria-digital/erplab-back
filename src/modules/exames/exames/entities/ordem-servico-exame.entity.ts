@@ -14,6 +14,7 @@ import { Exame } from './exame.entity';
 import { ResultadoExame } from './resultado-exame.entity';
 import { LaboratorioApoio } from './laboratorio-apoio.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 @Entity('ordens_servico_exames')
 @Index(['ordem_servico_id', 'exame_id'], { unique: true })
 @Index(['status'])
@@ -372,4 +373,13 @@ export class OrdemServicoExame {
   canRelease(): boolean {
     return this.status === 'em_analise';
   }
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

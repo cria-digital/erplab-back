@@ -1,12 +1,13 @@
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
-  ManyToOne,
+  Entity,
+  Index,
   JoinColumn,
+  ManyToOne,
   OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Banco } from './banco.entity';
 import { GatewayPagamento } from './gateway-pagamento.entity';
@@ -14,6 +15,7 @@ import { UnidadeSaude } from '../../../cadastros/unidade-saude/entities/unidade-
 import { ContaBancariaUnidade } from './conta-bancaria-unidade.entity';
 import { Empresa } from '../../../cadastros/empresas/entities/empresa.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 export enum TipoConta {
   CORRENTE = 'corrente',
   POUPANCA = 'poupanca',
@@ -102,4 +104,13 @@ export class ContaBancaria {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

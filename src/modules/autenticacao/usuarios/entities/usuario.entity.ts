@@ -5,12 +5,16 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  ManyToOne,
+  JoinColumn,
+  Index,
   BeforeInsert,
   BeforeUpdate,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { UsuarioUnidade } from './usuario-unidade.entity';
 import { UsuarioPermissao } from './usuario-permissao.entity';
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 
 @Entity('usuarios')
 export class Usuario {
@@ -176,4 +180,13 @@ export class Usuario {
   async compareRespostaRecuperacao(resposta: string): Promise<boolean> {
     return bcrypt.compare(resposta.toLowerCase(), this.respostaRecuperacaoHash);
   }
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

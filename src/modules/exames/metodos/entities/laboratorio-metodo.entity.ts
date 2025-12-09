@@ -12,6 +12,7 @@ import {
 import { Metodo } from './metodo.entity';
 import { Laboratorio } from '../../../relacionamento/laboratorios/entities/laboratorio.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 @Entity('laboratorios_metodos')
 @Unique(['laboratorioId', 'metodoId'])
 @Index(['laboratorioId'])
@@ -88,4 +89,13 @@ export class LaboratorioMetodo {
   })
   @UpdateDateColumn()
   updatedAt: Date;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

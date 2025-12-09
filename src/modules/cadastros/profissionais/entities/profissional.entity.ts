@@ -1,14 +1,15 @@
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
-  OneToMany,
-  ManyToOne,
-  ManyToMany,
+  Entity,
+  Index,
   JoinColumn,
   JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import {
   PronomeEnum,
@@ -22,6 +23,7 @@ import { Endereco } from '../../../infraestrutura/common/entities/endereco.entit
 import { Agenda } from '../../../atendimento/agendas/entities/agenda.entity';
 import { Especialidade } from './especialidade.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 @Entity('profissionais')
 export class Profissional {
   @PrimaryGeneratedColumn('uuid')
@@ -166,4 +168,13 @@ export class Profissional {
 
   @UpdateDateColumn()
   atualizadoEm: Date;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

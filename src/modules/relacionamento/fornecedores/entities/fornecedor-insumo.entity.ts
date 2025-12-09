@@ -1,18 +1,20 @@
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
-  ManyToOne,
+  Entity,
+  Index,
   JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
   Unique,
+  UpdateDateColumn,
 } from 'typeorm';
 import {
   Fornecedor,
   CategoriaInsumo,
   MetodoTransporte,
 } from './fornecedor.entity';
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 
 export enum UnidadeMedida {
   UNIDADE = 'unidade',
@@ -216,4 +218,13 @@ export class FornecedorInsumo {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

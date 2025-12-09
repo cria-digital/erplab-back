@@ -5,9 +5,12 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  ManyToOne,
+  JoinColumn,
   Index,
 } from 'typeorm';
 import { AlternativaCampoFormulario } from './alternativa-campo-formulario.entity';
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 
 /**
  * Enum com todos os campos de formulário disponíveis no sistema
@@ -118,4 +121,13 @@ export class CampoFormulario {
     comment: 'ID do usuário que atualizou o registro',
   })
   updatedBy: string;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

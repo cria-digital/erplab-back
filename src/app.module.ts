@@ -13,6 +13,11 @@ import { UsuariosModule } from './modules/autenticacao/usuarios/usuarios.module'
 import { PerfilModule } from './modules/autenticacao/perfil/perfil.module';
 import { JwtAuthGuard } from './modules/autenticacao/auth/guards/jwt-auth.guard';
 
+// Multi-tenancy
+import { TenantsModule } from './modules/tenants/tenants.module';
+import { TenantInterceptor } from './comum/interceptors/tenant.interceptor';
+import { TenantGuard } from './comum/guards/tenant.guard';
+
 // Cadastros
 import { PacientesModule } from './modules/cadastros/pacientes/pacientes.module';
 import { ProfissionaisModule } from './modules/cadastros/profissionais/profissionais.module';
@@ -78,6 +83,9 @@ import { SeedModule } from './database/seeds/seed.module';
       useFactory: databaseConfig,
       inject: [ConfigService],
     }),
+
+    // 0. Multi-tenancy
+    TenantsModule,
 
     // 1. Autenticação e Segurança
     AuthModule,
@@ -160,7 +168,15 @@ import { SeedModule } from './database/seeds/seed.module';
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
     },
+    {
+      provide: APP_GUARD,
+      useClass: TenantGuard, // Multi-tenancy guard (executa após JwtAuthGuard)
+    },
     // Interceptors
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TenantInterceptor, // Multi-tenancy interceptor
+    },
     {
       provide: APP_INTERCEPTOR,
       useClass: PerformanceInterceptor,

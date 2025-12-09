@@ -12,6 +12,7 @@ import {
 import { UnidadeSaude } from '../../../cadastros/unidade-saude/entities/unidade-saude.entity';
 import { IntegracaoConfiguracao } from './integracao-configuracao.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 /**
  * Tipos de contexto onde a integração pode aparecer
  * Uma integração pode ter múltiplos tipos
@@ -296,4 +297,13 @@ export class Integracao {
     nullable: true,
   })
   updatedBy: string;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

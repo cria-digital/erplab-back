@@ -1,4 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  Index,
+} from 'typeorm';
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 
 @Entity('servicos_saude')
 export class ServicoSaude {
@@ -19,4 +27,13 @@ export class ServicoSaude {
 
   @Column({ type: 'boolean', default: true })
   ativo: boolean;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

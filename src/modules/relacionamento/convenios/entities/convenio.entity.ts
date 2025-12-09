@@ -1,13 +1,14 @@
 import {
-  Entity,
   Column,
-  PrimaryColumn,
   CreateDateColumn,
-  UpdateDateColumn,
-  OneToMany,
-  ManyToOne,
+  Entity,
+  Index,
   JoinColumn,
+  ManyToOne,
+  OneToMany,
   OneToOne,
+  PrimaryColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Plano } from './plano.entity';
 import { Instrucao } from './instrucao.entity';
@@ -16,6 +17,7 @@ import { Empresa } from '../../../cadastros/empresas/entities/empresa.entity';
 import { AlternativaCampoFormulario } from '../../../infraestrutura/campos-formulario/entities/alternativa-campo-formulario.entity';
 import { Integracao } from '../../../atendimento/integracoes/entities/integracao.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 @Entity('convenios')
 export class Convenio {
   @PrimaryColumn('uuid')
@@ -280,4 +282,13 @@ export class Convenio {
 
   @UpdateDateColumn({ name: 'atualizado_em' })
   atualizado_em: Date;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

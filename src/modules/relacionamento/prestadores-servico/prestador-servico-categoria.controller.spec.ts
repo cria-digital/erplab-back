@@ -44,6 +44,8 @@ describe('PrestadorServicoCategoriaController', () => {
     observacoes: 'Observações sobre o serviço',
     createdAt: new Date(),
     updatedAt: new Date(),
+    tenantId: 'tenant-uuid-1',
+    tenant: null as any,
   };
 
   const mockService = {

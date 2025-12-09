@@ -12,6 +12,7 @@ import {
 import { Exame } from '../../exames/entities/exame.entity';
 import { AlternativaCampoFormulario } from '../../../infraestrutura/campos-formulario/entities/alternativa-campo-formulario.entity';
 import { CampoMatriz } from './campo-matriz.entity';
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 
 /**
  * Entidade que representa uma Matriz de Exame
@@ -129,4 +130,13 @@ export class MatrizExame {
     comment: 'ID do usuário que atualizou o registro',
   })
   atualizadoPor: string;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { UnidadeSaude } from '../../../../cadastros/unidade-saude/entities/unidade-saude.entity';
 
+import { Tenant } from '../../../../tenants/entities/tenant.entity';
 export enum OrientacaoEtiqueta {
   RETRATO = 'retrato',
   PAISAGEM = 'paisagem',
@@ -301,4 +302,13 @@ export class EtiquetaAmostra {
     comment: 'Data da última atualização',
   })
   atualizadoEm: Date;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

@@ -1,16 +1,18 @@
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
-  ManyToOne,
+  Entity,
+  Index,
   JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
   Unique,
+  UpdateDateColumn,
 } from 'typeorm';
 import { TabelaPreco } from './tabela-preco.entity';
 import { Exame } from '../../../exames/exames/entities/exame.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 /**
  * Item da Tabela de Preços
  *
@@ -135,4 +137,13 @@ export class TabelaPrecoItem {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updated_at: Date;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

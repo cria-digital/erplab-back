@@ -116,6 +116,8 @@ describe('FornecedorService', () => {
     ativo: true,
     criadoEm: new Date(),
     atualizadoEm: new Date(),
+    tenantId: 'tenant-uuid-1',
+    tenant: null,
   };
 
   const mockFornecedor = {

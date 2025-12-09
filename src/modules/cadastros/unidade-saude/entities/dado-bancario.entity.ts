@@ -1,15 +1,17 @@
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
-  ManyToOne,
-  JoinColumn,
   CreateDateColumn,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 // import { UnidadeSaude } from './unidade-saude.entity'; // DEPRECATED
 import { Banco } from '../../../financeiro/core/entities/banco.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 @Entity('dados_bancarios')
 export class DadoBancario {
   @PrimaryGeneratedColumn('uuid')
@@ -71,6 +73,15 @@ export class DadoBancario {
   @ManyToOne(() => Banco, { eager: true })
   @JoinColumn({ name: 'banco_id' })
   banco: Banco;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }
 
 // DEPRECATED: Esta entidade será removida. Use ContaBancaria + ContaBancariaUnidade

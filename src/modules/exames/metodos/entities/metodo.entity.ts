@@ -5,9 +5,12 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  ManyToOne,
+  JoinColumn,
   Index,
 } from 'typeorm';
 import { LaboratorioMetodo } from './laboratorio-metodo.entity';
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 
 export enum StatusMetodo {
   ATIVO = 'ativo',
@@ -81,4 +84,13 @@ export class Metodo {
   })
   @UpdateDateColumn()
   updatedAt: Date;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

@@ -9,6 +9,7 @@ import {
   Index,
 } from 'typeorm';
 import { CampoFormulario } from './campo-formulario.entity';
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 
 /**
  * Entidade que representa uma Alternativa de Campo de Formulário
@@ -70,4 +71,13 @@ export class AlternativaCampoFormulario {
     comment: 'Data da última atualização',
   })
   updatedAt: Date;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }
