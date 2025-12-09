@@ -18,9 +18,13 @@ import { TenantsService } from './tenants.service';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 import { UpdateTenantDto } from './dto/update-tenant.dto';
 import { Tenant } from './entities/tenant.entity';
+import { SuperAdmin } from '../../comum/decorators/super-admin.decorator';
+import { SkipTenantCheck } from '../../comum/decorators/skip-tenant-check.decorator';
 
 @ApiTags('Tenants')
 @ApiBearerAuth()
+@SuperAdmin() // Apenas Super Admins podem acessar este controller
+@SkipTenantCheck() // Super Admins não precisam de tenant
 @Controller('tenants')
 export class TenantsController {
   constructor(private readonly tenantsService: TenantsService) {}

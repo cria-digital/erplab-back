@@ -142,6 +142,10 @@ export class Usuario {
   @Column({ type: 'boolean', default: true })
   ativo: boolean;
 
+  // Super Admin (acesso a todos os tenants e configurações globais)
+  @Column({ name: 'is_super_admin', type: 'boolean', default: false })
+  isSuperAdmin: boolean;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

@@ -17,6 +17,8 @@ import { JwtAuthGuard } from './modules/autenticacao/auth/guards/jwt-auth.guard'
 import { TenantsModule } from './modules/tenants/tenants.module';
 import { TenantInterceptor } from './comum/interceptors/tenant.interceptor';
 import { TenantGuard } from './comum/guards/tenant.guard';
+import { SuperAdminGuard } from './comum/guards/super-admin.guard';
+import { TenantSubscriber } from './comum/subscribers/tenant.subscriber';
 
 // Cadastros
 import { PacientesModule } from './modules/cadastros/pacientes/pacientes.module';
@@ -172,6 +174,10 @@ import { SeedModule } from './database/seeds/seed.module';
       provide: APP_GUARD,
       useClass: TenantGuard, // Multi-tenancy guard (executa após JwtAuthGuard)
     },
+    {
+      provide: APP_GUARD,
+      useClass: SuperAdminGuard, // Super Admin guard (executa após TenantGuard)
+    },
     // Interceptors
     {
       provide: APP_INTERCEPTOR,
@@ -183,6 +189,8 @@ import { SeedModule } from './database/seeds/seed.module';
     },
     // Services
     MetricsService,
+    // Subscribers (TypeORM)
+    TenantSubscriber,
   ],
 })
 export class AppModule {}

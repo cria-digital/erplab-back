@@ -43,6 +43,11 @@ export class TenantGuard implements CanActivate {
       return true;
     }
 
+    // Super Admins podem acessar sem tenant
+    if (user.isSuperAdmin) {
+      return true;
+    }
+
     // Verifica se o usuário tem tenant_id
     if (!user.tenantId) {
       throw new ForbiddenException(

@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource } from 'typeorm';
+import { Repository, DataSource, IsNull } from 'typeorm';
 import {
   Tenant,
   PlanoTenant,
@@ -22,43 +22,46 @@ export class TenantSeedService {
   async seed(): Promise<void> {
     this.logger.log('Iniciando seed de tenants...');
 
-    // Verifica se já existe algum tenant
-    const count = await this.tenantRepository.count();
-
-    if (count > 0) {
-      this.logger.log(`Já existem ${count} tenant(s). Pulando seed.`);
-      return;
-    }
-
-    // Cria tenant padrão
-    const tenantPadrao = this.tenantRepository.create({
-      nome: 'Tenant Padrão',
-      slug: 'tenant-padrao',
-      plano: PlanoTenant.ENTERPRISE,
-      limiteUsuarios: 100,
-      limiteUnidades: 50,
-      ativo: true,
-      configuracoes: {
-        descricao:
-          'Tenant padrão criado automaticamente para migração de dados existentes',
-        criadoAutomaticamente: true,
-        dataSetup: new Date().toISOString(),
-      },
+    // Verifica se já existe o tenant padrão
+    let tenantPadrao = await this.tenantRepository.findOne({
+      where: { slug: 'tenant-padrao' },
     });
 
-    const savedTenant = await this.tenantRepository.save(tenantPadrao);
-    this.logger.log(`Tenant padrão criado com ID: ${savedTenant.id}`);
+    if (!tenantPadrao) {
+      // Cria tenant padrão
+      tenantPadrao = this.tenantRepository.create({
+        nome: 'Tenant Padrão',
+        slug: 'tenant-padrao',
+        plano: PlanoTenant.ENTERPRISE,
+        limiteUsuarios: 100,
+        limiteUnidades: 50,
+        ativo: true,
+        configuracoes: {
+          descricao:
+            'Tenant padrão criado automaticamente para migração de dados existentes',
+          criadoAutomaticamente: true,
+          dataSetup: new Date().toISOString(),
+        },
+      });
 
-    // Associa todos os usuários existentes ao tenant padrão
-    await this.associarUsuariosAoTenant(savedTenant.id);
+      tenantPadrao = await this.tenantRepository.save(tenantPadrao);
+      this.logger.log(`Tenant padrão criado com ID: ${tenantPadrao.id}`);
+    } else {
+      this.logger.log(
+        `Tenant padrão já existe com ID: ${tenantPadrao.id}. Verificando usuários sem tenant...`,
+      );
+    }
+
+    // SEMPRE tenta associar usuários sem tenant ao tenant padrão
+    await this.associarUsuariosAoTenant(tenantPadrao.id);
 
     this.logger.log('Seed de tenants concluído.');
   }
 
   private async associarUsuariosAoTenant(tenantId: string): Promise<void> {
-    // Busca usuários sem tenant
+    // Busca usuários sem tenant usando IsNull() para comparar corretamente com NULL
     const usuariosSemTenant = await this.usuarioRepository.find({
-      where: { tenantId: null as any },
+      where: { tenantId: IsNull() },
     });
 
     if (usuariosSemTenant.length === 0) {
@@ -76,12 +79,13 @@ export class TenantSeedService {
     await queryRunner.startTransaction();
 
     try {
-      // Atualiza todos os usuários de uma vez
-      await queryRunner.manager.update(
-        Usuario,
-        { tenantId: null as any },
-        { tenantId },
-      );
+      // Atualiza todos os usuários de uma vez usando query builder para garantir IS NULL
+      await queryRunner.manager
+        .createQueryBuilder()
+        .update(Usuario)
+        .set({ tenantId })
+        .where('tenant_id IS NULL')
+        .execute();
 
       await queryRunner.commitTransaction();
       this.logger.log(

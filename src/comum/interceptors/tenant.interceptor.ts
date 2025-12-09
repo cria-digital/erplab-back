@@ -5,12 +5,13 @@ import {
   CallHandler,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
+import { tenantContext } from '../context/tenant.context';
 
 /**
  * TenantInterceptor
  *
  * Este interceptor extrai o tenant_id do usuário autenticado
- * e o injeta no objeto request para uso nos services.
+ * e o armazena no AsyncLocalStorage para uso em toda a requisição.
  *
  * O tenant_id é obtido do JWT através da JwtStrategy.
  */
@@ -20,11 +21,23 @@ export class TenantInterceptor implements NestInterceptor {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
 
-    if (user && user.tenantId) {
-      // Injeta tenant_id no request para acesso fácil
-      request.tenantId = user.tenantId;
+    const tenantId = user?.tenantId ?? null;
+    const userId = user?.id ?? null;
+
+    // Injeta no request para acesso direto via @Request()
+    if (tenantId) {
+      request.tenantId = tenantId;
     }
 
-    return next.handle();
+    // Executa o handler dentro do contexto do tenant
+    return new Observable((subscriber) => {
+      tenantContext.run({ tenantId, userId }, () => {
+        next.handle().subscribe({
+          next: (value) => subscriber.next(value),
+          error: (err) => subscriber.error(err),
+          complete: () => subscriber.complete(),
+        });
+      });
+    });
   }
 }
