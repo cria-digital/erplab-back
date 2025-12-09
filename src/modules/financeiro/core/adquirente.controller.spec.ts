@@ -2,11 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AdquirenteController } from './adquirente.controller';
 import { AdquirenteService } from './adquirente.service';
 import { JwtAuthGuard } from '../../autenticacao/auth/guards/jwt-auth.guard';
-import {
-  StatusAdquirente,
-  OpcaoParcelamento,
-  TipoCartao,
-} from './entities/adquirente.entity';
+import { StatusAdquirente, TipoCartao } from './entities/adquirente.entity';
 
 describe('AdquirenteController', () => {
   let controller: AdquirenteController;
@@ -68,11 +64,15 @@ describe('AdquirenteController', () => {
       descricao: 'Adquirente Cielo para pagamentos',
       status: StatusAdquirente.ATIVO,
       tipos_cartao_suportados: [TipoCartao.VISA, TipoCartao.MASTERCARD],
-      opcao_parcelamento: OpcaoParcelamento['12X'],
+      opcao_parcelamento_id: 'uuid-alternativa-12x',
+      opcao_parcelamento: {
+        id: 'uuid-alternativa-12x',
+        textoAlternativa: '12x',
+      },
       taxa_transacao: 1.5,
       taxa_parcelamento: 3.2,
       percentual_repasse: 95.0,
-      prazo_repasse: 30,
+      prazo_repasse: '30 dias',
       conta_associada_id: null,
       configuracao_integracao: {
         api_key: 'test_key',
@@ -87,11 +87,11 @@ describe('AdquirenteController', () => {
       nome_adquirente: 'Cielo',
       descricao: 'Adquirente Cielo para pagamentos',
       tipos_cartao_suportados: [TipoCartao.VISA, TipoCartao.MASTERCARD],
-      opcao_parcelamento: OpcaoParcelamento['12X'],
+      opcao_parcelamento_id: 'uuid-alternativa-12x',
       taxa_transacao: 1.5,
       taxa_parcelamento: 3.2,
       percentual_repasse: 95.0,
-      prazo_repasse: 30,
+      prazo_repasse: '30 dias',
       configuracao_integracao: {
         api_key: 'test_key',
         endpoint: 'https://api.cielo.com.br',

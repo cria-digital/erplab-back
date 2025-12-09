@@ -13,11 +13,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import {
-  StatusAdquirente,
-  TipoCartao,
-  OpcaoParcelamento,
-} from '../entities/adquirente.entity';
+import { StatusAdquirente, TipoCartao } from '../entities/adquirente.entity';
 
 export class UnidadeAssociadaDto {
   @ApiProperty({
@@ -49,12 +45,23 @@ export class RestricaoAdquirenteDto {
   unidade_saude_id: string;
 
   @ApiProperty({
-    description: 'Descrição da restrição',
-    example: 'Não pode parcelar acima de 6x',
+    description:
+      'ID da alternativa de restrição (de alternativas_campo_formulario)',
+    example: 'uuid',
+  })
+  @IsUUID()
+  @IsNotEmpty()
+  restricao_id: string;
+
+  @ApiProperty({
+    description:
+      'Valor ou observação adicional da restrição (ex: "R$ 50,00" para valor mínimo)',
+    example: 'R$ 50,00',
+    required: false,
   })
   @IsString()
-  @IsNotEmpty()
-  restricao: string;
+  @IsOptional()
+  valor_restricao?: string;
 }
 
 export class CreateAdquirenteDto {
@@ -125,15 +132,14 @@ export class CreateAdquirenteDto {
   tipos_cartao_suportados?: TipoCartao[];
 
   @ApiProperty({
-    description: 'Opção de parcelamento',
-    enum: OpcaoParcelamento,
-    example: OpcaoParcelamento['12X'],
-    default: OpcaoParcelamento['12X'],
+    description:
+      'ID da alternativa de parcelamento (de alternativas_campo_formulario)',
+    example: 'uuid',
     required: false,
   })
-  @IsEnum(OpcaoParcelamento)
+  @IsUUID()
   @IsOptional()
-  opcao_parcelamento?: OpcaoParcelamento;
+  opcao_parcelamento_id?: string;
 
   @ApiProperty({
     description: 'Taxa por transação (%)',

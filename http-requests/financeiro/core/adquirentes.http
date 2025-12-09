@@ -101,7 +101,8 @@ Authorization: Bearer {{token}}
 #   "descricao": "Adquirente para pagamentos digitais",
 #   "conta_bancaria_id": "uuid",
 #   "tipos_cartao_suportados": ["mastercard", "visa", "pix"],
-#   "opcao_parcelamento": "12x",
+#   "opcao_parcelamento_id": "uuid-da-alternativa",
+#   "opcao_parcelamento": { "id": "uuid", "textoAlternativa": "12x" },
 #   "taxa_transacao": 1.5,
 #   "taxa_parcelamento": 3.0,
 #   "percentual_repasse": 10.0,
@@ -129,7 +130,7 @@ Authorization: Bearer {{token}}
   "descricao": "Adquirente para pagamentos digitais",
   "conta_bancaria_id": "{{contaBancariaId}}",
   "tipos_cartao_suportados": ["mastercard", "visa", "pix"],
-  "opcao_parcelamento": "12x",
+  "opcao_parcelamento_id": "{{opcaoParcelamentoId}}",
   "taxa_transacao": 1.5,
   "taxa_parcelamento": 3.0,
   "percentual_repasse": 10.0,
@@ -145,7 +146,8 @@ Authorization: Bearer {{token}}
   "restricoes": [
     {
       "unidade_saude_id": "{{unidadeSaudeId}}",
-      "restricao": "Não pode parcelar acima de 6x"
+      "restricao_id": "{{restricaoAdquirenteId}}",
+      "valor_restricao": "6x"
     }
   ]
 }
@@ -166,7 +168,7 @@ Authorization: Bearer {{token}}
   "nome_adquirente": "Cielo",
   "conta_bancaria_id": "e9ab557a-c408-4ff3-9635-b066f5732031",
   "tipos_cartao_suportados": ["mastercard", "visa", "elo"],
-  "opcao_parcelamento": "12x",
+  "opcao_parcelamento_id": "{{opcaoParcelamentoId}}",
   "taxa_transacao": 1.2,
   "percentual_repasse": 8.0,
   "prazo_repasse": "30 dias"
@@ -212,7 +214,8 @@ Authorization: Bearer {{token}}
   "restricoes": [
     {
       "unidade_saude_id": "{{unidadeSaudeId}}",
-      "restricao": "Limite de R$ 5.000 por transação"
+      "restricao_id": "{{restricaoAdquirenteId}}",
+      "valor_restricao": "R$ 5.000"
     }
   ]
 }
@@ -276,7 +279,8 @@ Authorization: Bearer {{token}}
 
 {
   "unidade_saude_id": "{{unidadeSaudeId}}",
-  "restricao": "Não aceita parcelamento acima de 6x"
+  "restricao_id": "{{restricaoAdquirenteId}}",
+  "valor_restricao": "6x"
 }
 
 ###
@@ -290,3 +294,4 @@ Authorization: Bearer {{token}}
 ### Excluir adquirente
 DELETE {{baseUrl}}/financeiro/adquirentes/{{adquirenteId}}
 Authorization: Bearer {{token}}
+

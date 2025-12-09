@@ -83,7 +83,8 @@ export class AdquirenteService {
           this.restricaoRepository.create({
             adquirente_id: adquirenteSalvo.id,
             unidade_saude_id: r.unidade_saude_id,
-            restricao: r.restricao,
+            restricao_id: r.restricao_id,
+            valor_restricao: r.valor_restricao,
           }),
         );
         await queryRunner.manager.save(restricoesEntities);
@@ -114,13 +115,15 @@ export class AdquirenteService {
       .leftJoinAndSelect('adquirente.conta_bancaria', 'conta_bancaria')
       .leftJoinAndSelect('conta_bancaria.banco', 'banco')
       .leftJoinAndSelect('adquirente.integracao', 'integracao')
+      .leftJoinAndSelect('adquirente.opcao_parcelamento', 'opcao_parcelamento')
       .leftJoinAndSelect(
         'adquirente.unidades_associadas',
         'unidades_associadas',
       )
       .leftJoinAndSelect('unidades_associadas.unidade_saude', 'unidade_saude')
       .leftJoinAndSelect('adquirente.restricoes', 'restricoes')
-      .leftJoinAndSelect('restricoes.unidade_saude', 'restricao_unidade');
+      .leftJoinAndSelect('restricoes.unidade_saude', 'restricao_unidade')
+      .leftJoinAndSelect('restricoes.restricao', 'restricao_alternativa');
 
     // Filtro por status
     if (filtros?.status) {
@@ -163,10 +166,12 @@ export class AdquirenteService {
         'conta_bancaria',
         'conta_bancaria.banco',
         'integracao',
+        'opcao_parcelamento',
         'unidades_associadas',
         'unidades_associadas.unidade_saude',
         'restricoes',
         'restricoes.unidade_saude',
+        'restricoes.restricao',
       ],
     });
 
@@ -247,7 +252,8 @@ export class AdquirenteService {
             this.restricaoRepository.create({
               adquirente_id: id,
               unidade_saude_id: r.unidade_saude_id,
-              restricao: r.restricao,
+              restricao_id: r.restricao_id,
+              valor_restricao: r.valor_restricao,
             }),
           );
           await queryRunner.manager.save(restricoesEntities);
@@ -472,7 +478,8 @@ export class AdquirenteService {
     const restricao = this.restricaoRepository.create({
       adquirente_id: id,
       unidade_saude_id: restricaoDto.unidade_saude_id,
-      restricao: restricaoDto.restricao,
+      restricao_id: restricaoDto.restricao_id,
+      valor_restricao: restricaoDto.valor_restricao,
     });
     await this.restricaoRepository.save(restricao);
 

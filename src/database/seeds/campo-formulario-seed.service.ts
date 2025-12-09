@@ -245,6 +245,41 @@ export class CampoFormularioSeedService {
           { texto: 'ISO 15189 - Laboratórios Médicos', ordem: 10 },
         ],
       },
+      // Campos de Adquirentes
+      {
+        nomeCampo: NomeCampoFormulario.OPCAO_PARCELAMENTO,
+        descricao: 'Opções de parcelamento disponíveis para adquirentes',
+        alternativas: [
+          { texto: 'À vista', ordem: 1 },
+          { texto: '2x', ordem: 2 },
+          { texto: '3x', ordem: 3 },
+          { texto: '4x', ordem: 4 },
+          { texto: '5x', ordem: 5 },
+          { texto: '6x', ordem: 6 },
+          { texto: '7x', ordem: 7 },
+          { texto: '8x', ordem: 8 },
+          { texto: '9x', ordem: 9 },
+          { texto: '10x', ordem: 10 },
+          { texto: '11x', ordem: 11 },
+          { texto: '12x', ordem: 12 },
+        ],
+      },
+      {
+        nomeCampo: NomeCampoFormulario.RESTRICAO_ADQUIRENTE,
+        descricao: 'Tipos de restrições aplicáveis a adquirentes por unidade',
+        alternativas: [
+          { texto: 'Valor mínimo de transação', ordem: 1 },
+          { texto: 'Valor máximo de transação', ordem: 2 },
+          { texto: 'Bloqueio de parcelamento', ordem: 3 },
+          { texto: 'Bloqueio de cartão de crédito', ordem: 4 },
+          { texto: 'Bloqueio de cartão de débito', ordem: 5 },
+          { texto: 'Bloqueio de PIX', ordem: 6 },
+          { texto: 'Horário de funcionamento', ordem: 7 },
+          { texto: 'Limite diário de transações', ordem: 8 },
+          { texto: 'Limite mensal de transações', ordem: 9 },
+          { texto: 'Restrição por tipo de cartão', ordem: 10 },
+        ],
+      },
     ];
 
     let totalCamposNovos = 0;

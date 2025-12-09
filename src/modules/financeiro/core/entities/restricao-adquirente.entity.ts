@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { Adquirente } from './adquirente.entity';
 import { UnidadeSaude } from '../../../cadastros/unidade-saude/entities/unidade-saude.entity';
+import { AlternativaCampoFormulario } from '../../../infraestrutura/campos-formulario/entities/alternativa-campo-formulario.entity';
 
 @Entity('restricoes_adquirente')
 export class RestricaoAdquirente {
@@ -22,8 +23,17 @@ export class RestricaoAdquirente {
   @JoinColumn({ name: 'unidade_saude_id' })
   unidade_saude: UnidadeSaude;
 
+  // Tipo de restrição (FK para alternativas_campo_formulario)
+  @Column({ type: 'uuid', nullable: true })
+  restricao_id: string;
+
+  @ManyToOne(() => AlternativaCampoFormulario, { nullable: true })
+  @JoinColumn({ name: 'restricao_id' })
+  restricao: AlternativaCampoFormulario;
+
+  // Valor ou observação adicional da restrição (ex: "R$ 50,00" para valor mínimo)
   @Column({ type: 'text', nullable: true })
-  restricao: string;
+  valor_restricao: string;
 
   @Column({ type: 'uuid' })
   adquirente_id: string;

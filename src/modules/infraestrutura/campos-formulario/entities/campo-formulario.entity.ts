@@ -39,6 +39,10 @@ export enum NomeCampoFormulario {
   TABELA_BASE = 'tabela_base',
   TABELA_MATERIAL = 'tabela_material',
   DIA_VENCIMENTO = 'dia_vencimento',
+
+  // Campos de Adquirentes
+  OPCAO_PARCELAMENTO = 'opcao_parcelamento',
+  RESTRICAO_ADQUIRENTE = 'restricao_adquirente',
 }
 
 /**

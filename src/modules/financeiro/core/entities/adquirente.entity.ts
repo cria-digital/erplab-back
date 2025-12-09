@@ -12,6 +12,7 @@ import { ContaBancaria } from './conta-bancaria.entity';
 import { RestricaoAdquirente } from './restricao-adquirente.entity';
 import { AdquirenteUnidade } from './adquirente-unidade.entity';
 import { Integracao } from '../../../atendimento/integracoes/entities/integracao.entity';
+import { AlternativaCampoFormulario } from '../../../infraestrutura/campos-formulario/entities/alternativa-campo-formulario.entity';
 
 export enum StatusAdquirente {
   ATIVO = 'ativo',
@@ -27,21 +28,6 @@ export enum TipoCartao {
   DINERS = 'diners',
   PIX = 'pix',
   OUTRO = 'outro',
-}
-
-export enum OpcaoParcelamento {
-  AVISTA = 'avista',
-  '2X' = '2x',
-  '3X' = '3x',
-  '4X' = '4x',
-  '5X' = '5x',
-  '6X' = '6x',
-  '7X' = '7x',
-  '8X' = '8x',
-  '9X' = '9x',
-  '10X' = '10x',
-  '11X' = '11x',
-  '12X' = '12x',
 }
 
 @Entity('adquirentes')
@@ -70,13 +56,13 @@ export class Adquirente {
   @Column({ type: 'simple-array', nullable: true })
   tipos_cartao_suportados: TipoCartao[];
 
-  // Opção de parcelamento (select)
-  @Column({
-    type: 'enum',
-    enum: OpcaoParcelamento,
-    default: OpcaoParcelamento['12X'],
-  })
-  opcao_parcelamento: OpcaoParcelamento;
+  // Opção de parcelamento (FK para alternativas_campo_formulario)
+  @Column({ type: 'uuid', nullable: true })
+  opcao_parcelamento_id: string;
+
+  @ManyToOne(() => AlternativaCampoFormulario, { nullable: true })
+  @JoinColumn({ name: 'opcao_parcelamento_id' })
+  opcao_parcelamento: AlternativaCampoFormulario;
 
   // Taxa por transação (%)
   @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
