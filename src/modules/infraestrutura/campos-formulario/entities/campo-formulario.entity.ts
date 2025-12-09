@@ -43,6 +43,7 @@ export enum NomeCampoFormulario {
   // Campos de Adquirentes
   OPCAO_PARCELAMENTO = 'opcao_parcelamento',
   RESTRICAO_ADQUIRENTE = 'restricao_adquirente',
+  TIPO_CARTAO = 'tipo_cartao',
 }
 
 /**

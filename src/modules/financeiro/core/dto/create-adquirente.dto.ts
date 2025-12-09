@@ -13,7 +13,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { StatusAdquirente, TipoCartao } from '../entities/adquirente.entity';
+import { StatusAdquirente } from '../entities/adquirente.entity';
 
 export class UnidadeAssociadaDto {
   @ApiProperty({
@@ -120,16 +120,16 @@ export class CreateAdquirenteDto {
   // === INFORMAÇÕES FINANCEIRAS ===
 
   @ApiProperty({
-    description: 'Tipos de cartão suportados',
+    description:
+      'IDs das alternativas de tipos de cartão (de alternativas_campo_formulario)',
     type: [String],
-    enum: TipoCartao,
-    example: [TipoCartao.MASTERCARD, TipoCartao.VISA],
+    example: ['uuid-mastercard', 'uuid-visa'],
     required: false,
   })
   @IsArray()
-  @IsEnum(TipoCartao, { each: true })
+  @IsUUID('4', { each: true })
   @IsOptional()
-  tipos_cartao_suportados?: TipoCartao[];
+  tipos_cartao_ids?: string[];
 
   @ApiProperty({
     description:

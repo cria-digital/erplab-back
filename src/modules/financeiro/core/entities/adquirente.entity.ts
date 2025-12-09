@@ -11,23 +11,13 @@ import {
 import { ContaBancaria } from './conta-bancaria.entity';
 import { RestricaoAdquirente } from './restricao-adquirente.entity';
 import { AdquirenteUnidade } from './adquirente-unidade.entity';
+import { AdquirenteTipoCartao } from './adquirente-tipo-cartao.entity';
 import { Integracao } from '../../../atendimento/integracoes/entities/integracao.entity';
 import { AlternativaCampoFormulario } from '../../../infraestrutura/campos-formulario/entities/alternativa-campo-formulario.entity';
 
 export enum StatusAdquirente {
   ATIVO = 'ativo',
   INATIVO = 'inativo',
-}
-
-export enum TipoCartao {
-  MASTERCARD = 'mastercard',
-  VISA = 'visa',
-  ELO = 'elo',
-  AMERICAN_EXPRESS = 'american_express',
-  HIPERCARD = 'hipercard',
-  DINERS = 'diners',
-  PIX = 'pix',
-  OUTRO = 'outro',
 }
 
 @Entity('adquirentes')
@@ -52,9 +42,13 @@ export class Adquirente {
   @JoinColumn({ name: 'conta_bancaria_id' })
   conta_bancaria: ContaBancaria;
 
-  // Tipo de cartões suportados (multi-select)
-  @Column({ type: 'simple-array', nullable: true })
-  tipos_cartao_suportados: TipoCartao[];
+  // Tipos de cartão suportados (FK para alternativas_campo_formulario via tabela intermediária)
+  @OneToMany(
+    () => AdquirenteTipoCartao,
+    (tipoCartao) => tipoCartao.adquirente,
+    { cascade: true },
+  )
+  tipos_cartao: AdquirenteTipoCartao[];
 
   // Opção de parcelamento (FK para alternativas_campo_formulario)
   @Column({ type: 'uuid', nullable: true })

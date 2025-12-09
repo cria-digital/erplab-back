@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AdquirenteController } from './adquirente.controller';
 import { AdquirenteService } from './adquirente.service';
 import { JwtAuthGuard } from '../../autenticacao/auth/guards/jwt-auth.guard';
-import { StatusAdquirente, TipoCartao } from './entities/adquirente.entity';
+import { StatusAdquirente } from './entities/adquirente.entity';
 
 describe('AdquirenteController', () => {
   let controller: AdquirenteController;
@@ -63,7 +63,23 @@ describe('AdquirenteController', () => {
       nome_adquirente: 'Cielo',
       descricao: 'Adquirente Cielo para pagamentos',
       status: StatusAdquirente.ATIVO,
-      tipos_cartao_suportados: [TipoCartao.VISA, TipoCartao.MASTERCARD],
+      tipos_cartao: [
+        {
+          id: 'uuid-1',
+          tipo_cartao_id: 'uuid-visa',
+          tipo_cartao: { id: 'uuid-visa', textoAlternativa: 'Visa' },
+          ativo: true,
+        },
+        {
+          id: 'uuid-2',
+          tipo_cartao_id: 'uuid-mastercard',
+          tipo_cartao: {
+            id: 'uuid-mastercard',
+            textoAlternativa: 'Mastercard',
+          },
+          ativo: true,
+        },
+      ],
       opcao_parcelamento_id: 'uuid-alternativa-12x',
       opcao_parcelamento: {
         id: 'uuid-alternativa-12x',
@@ -86,7 +102,7 @@ describe('AdquirenteController', () => {
       codigo_interno: 'ADQ001',
       nome_adquirente: 'Cielo',
       descricao: 'Adquirente Cielo para pagamentos',
-      tipos_cartao_suportados: [TipoCartao.VISA, TipoCartao.MASTERCARD],
+      tipos_cartao_ids: ['uuid-visa', 'uuid-mastercard'],
       opcao_parcelamento_id: 'uuid-alternativa-12x',
       taxa_transacao: 1.5,
       taxa_parcelamento: 3.2,
@@ -368,27 +384,12 @@ describe('AdquirenteController', () => {
           mockAdquirentes,
         );
 
-        // Skip test se método não existe no controller
-        if (!('findByTipoCartao' in controller)) {
-          console.warn(
-            'Método findByTipoCartao não implementado no controller ainda',
-          );
-          return;
-        }
-
-        const result = await (controller as any).findByTipoCartao(
-          TipoCartao.VISA,
+        // Skip test - método foi removido após migração para campo de formulário
+        // O filtro por tipo de cartão agora é feito via relação com alternativas_campo_formulario
+        console.warn(
+          'Método findByTipoCartao removido - tipos de cartão agora são alternativas de campo de formulário',
         );
-
-        expect(result).toEqual(mockAdquirentes);
-        // Skip test se método não existe no service
-        if (!('findByTipoCartao' in service)) {
-          console.warn(
-            'Método findByTipoCartao não implementado no service ainda',
-          );
-          return;
-        }
-        expect(service.findByTipoCartao).toHaveBeenCalledWith(TipoCartao.VISA);
+        return;
       });
     });
 

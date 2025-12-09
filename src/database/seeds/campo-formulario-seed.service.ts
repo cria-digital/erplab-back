@@ -280,6 +280,23 @@ export class CampoFormularioSeedService {
           { texto: 'Restrição por tipo de cartão', ordem: 10 },
         ],
       },
+      {
+        nomeCampo: NomeCampoFormulario.TIPO_CARTAO,
+        descricao: 'Tipos de cartão suportados pelos adquirentes',
+        alternativas: [
+          { texto: 'Mastercard', ordem: 1 },
+          { texto: 'Visa', ordem: 2 },
+          { texto: 'Elo', ordem: 3 },
+          { texto: 'American Express', ordem: 4 },
+          { texto: 'Hipercard', ordem: 5 },
+          { texto: 'Diners Club', ordem: 6 },
+          { texto: 'PIX', ordem: 7 },
+          { texto: 'Débito', ordem: 8 },
+          { texto: 'Crédito', ordem: 9 },
+          { texto: 'Voucher Alimentação', ordem: 10 },
+          { texto: 'Voucher Refeição', ordem: 11 },
+        ],
+      },
     ];
 
     let totalCamposNovos = 0;

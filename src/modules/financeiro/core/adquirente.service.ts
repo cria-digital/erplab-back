@@ -9,6 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { Adquirente, StatusAdquirente } from './entities/adquirente.entity';
 import { AdquirenteUnidade } from './entities/adquirente-unidade.entity';
+import { AdquirenteTipoCartao } from './entities/adquirente-tipo-cartao.entity';
 import { RestricaoAdquirente } from './entities/restricao-adquirente.entity';
 import {
   CreateAdquirenteDto,
@@ -36,6 +37,8 @@ export class AdquirenteService {
     private readonly adquirenteUnidadeRepository: Repository<AdquirenteUnidade>,
     @InjectRepository(RestricaoAdquirente)
     private readonly restricaoRepository: Repository<RestricaoAdquirente>,
+    @InjectRepository(AdquirenteTipoCartao)
+    private readonly tipoCartaoRepository: Repository<AdquirenteTipoCartao>,
     private readonly dataSource: DataSource,
     private readonly integracoesService: IntegracoesService,
   ) {}
@@ -61,7 +64,12 @@ export class AdquirenteService {
 
     try {
       // Extrair relacionamentos do DTO
-      const { unidades_associadas, restricoes, ...adquirenteData } = createDto;
+      const {
+        unidades_associadas,
+        restricoes,
+        tipos_cartao_ids,
+        ...adquirenteData
+      } = createDto;
 
       // Criar adquirente
       const adquirente = this.repository.create(adquirenteData);
@@ -77,6 +85,18 @@ export class AdquirenteService {
           }),
         );
         await queryRunner.manager.save(vinculos);
+      }
+
+      // Criar vínculos com tipos de cartão
+      if (tipos_cartao_ids && tipos_cartao_ids.length > 0) {
+        const tiposCartao = tipos_cartao_ids.map((tipoCartaoId) =>
+          this.tipoCartaoRepository.create({
+            adquirente_id: adquirenteSalvo.id,
+            tipo_cartao_id: tipoCartaoId,
+            ativo: true,
+          }),
+        );
+        await queryRunner.manager.save(tiposCartao);
       }
 
       // Criar restrições
@@ -123,6 +143,8 @@ export class AdquirenteService {
         'unidades_associadas',
       )
       .leftJoinAndSelect('unidades_associadas.unidade_saude', 'unidade_saude')
+      .leftJoinAndSelect('adquirente.tipos_cartao', 'tipos_cartao')
+      .leftJoinAndSelect('tipos_cartao.tipo_cartao', 'tipo_cartao_alternativa')
       .leftJoinAndSelect('adquirente.restricoes', 'restricoes')
       .leftJoinAndSelect('restricoes.unidade_saude', 'restricao_unidade')
       .leftJoinAndSelect('restricoes.restricao', 'restricao_alternativa');
@@ -176,6 +198,8 @@ export class AdquirenteService {
         'opcao_parcelamento',
         'unidades_associadas',
         'unidades_associadas.unidade_saude',
+        'tipos_cartao',
+        'tipos_cartao.tipo_cartao',
         'restricoes',
         'restricoes.unidade_saude',
         'restricoes.restricao',
@@ -220,7 +244,12 @@ export class AdquirenteService {
 
     try {
       // Extrair relacionamentos do DTO
-      const { unidades_associadas, restricoes, ...adquirenteData } = updateDto;
+      const {
+        unidades_associadas,
+        restricoes,
+        tipos_cartao_ids,
+        ...adquirenteData
+      } = updateDto;
 
       // Atualizar adquirente
       Object.assign(adquirente, adquirenteData);
@@ -243,6 +272,26 @@ export class AdquirenteService {
             }),
           );
           await queryRunner.manager.save(vinculos);
+        }
+      }
+
+      // Atualizar vínculos com tipos de cartão se fornecido
+      if (tipos_cartao_ids !== undefined) {
+        // Remover vínculos antigos
+        await queryRunner.manager.delete(AdquirenteTipoCartao, {
+          adquirente_id: id,
+        });
+
+        // Criar novos vínculos
+        if (tipos_cartao_ids.length > 0) {
+          const tiposCartao = tipos_cartao_ids.map((tipoCartaoId) =>
+            this.tipoCartaoRepository.create({
+              adquirente_id: id,
+              tipo_cartao_id: tipoCartaoId,
+              ativo: true,
+            }),
+          );
+          await queryRunner.manager.save(tiposCartao);
         }
       }
 

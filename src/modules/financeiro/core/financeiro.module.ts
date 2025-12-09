@@ -8,6 +8,7 @@ import { ContaBancariaUnidade } from './entities/conta-bancaria-unidade.entity';
 import { GatewayPagamento } from './entities/gateway-pagamento.entity';
 import { Adquirente } from './entities/adquirente.entity';
 import { AdquirenteUnidade } from './entities/adquirente-unidade.entity';
+import { AdquirenteTipoCartao } from './entities/adquirente-tipo-cartao.entity';
 import { RestricaoAdquirente } from './entities/restricao-adquirente.entity';
 import { PlanoContas } from './entities/plano-contas.entity';
 import { ContaContabil } from './entities/conta-contabil.entity';
@@ -46,6 +47,7 @@ import { IntegracoesModule } from '../../atendimento/integracoes/integracoes.mod
       GatewayPagamento,
       Adquirente,
       AdquirenteUnidade,
+      AdquirenteTipoCartao,
       RestricaoAdquirente,
       PlanoContas,
       ContaContabil,
