@@ -2,7 +2,9 @@ import {
   Injectable,
   NotFoundException,
   ConflictException,
+  BadRequestException,
 } from '@nestjs/common';
+import { validate as isUUID } from 'uuid';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { Adquirente, StatusAdquirente } from './entities/adquirente.entity';
@@ -134,6 +136,11 @@ export class AdquirenteService {
 
     // Filtro por unidade
     if (filtros?.unidade) {
+      if (!isUUID(filtros.unidade)) {
+        throw new BadRequestException(
+          'O parâmetro "unidade" deve ser um UUID válido',
+        );
+      }
       queryBuilder.andWhere('unidades_associadas.unidade_saude_id = :unidade', {
         unidade: filtros.unidade,
       });

@@ -295,3 +295,4 @@ Authorization: Bearer {{token}}
 DELETE {{baseUrl}}/financeiro/adquirentes/{{adquirenteId}}
 Authorization: Bearer {{token}}
 
+
