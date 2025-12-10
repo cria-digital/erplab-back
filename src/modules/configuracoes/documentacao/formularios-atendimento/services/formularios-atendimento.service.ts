@@ -100,11 +100,12 @@ export class FormulariosAtendimentoService {
 
     if (filter.termo) {
       queryBuilder.andWhere(
-        '(formulario.nomeDocumento ILIKE :termo OR formulario.observacao ILIKE :termo OR unidade.nome ILIKE :termo)',
+        '(formulario.nome_documento ILIKE :termo OR formulario.observacao ILIKE :termo OR unidade.nome_unidade ILIKE :termo)',
         { termo: `%${filter.termo}%` },
       );
     }
 
+    // Execute query with pagination
     const [data, total] = await queryBuilder
       .orderBy('formulario.criadoEm', 'DESC')
       .skip(skip)

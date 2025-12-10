@@ -119,11 +119,12 @@ export class CabecalhosRodapesService {
 
     if (filter.termo) {
       queryBuilder.andWhere(
-        '(cabecalho.nomeArquivo ILIKE :termo OR unidade.nome ILIKE :termo)',
+        '(cabecalho.nome_arquivo ILIKE :termo OR unidade.nome_unidade ILIKE :termo)',
         { termo: `%${filter.termo}%` },
       );
     }
 
+    // Execute query with pagination
     const [data, total] = await queryBuilder
       .orderBy('cabecalho.tipo', 'ASC')
       .addOrderBy('cabecalho.criadoEm', 'DESC')
