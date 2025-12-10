@@ -96,3 +96,24 @@ Authorization: Bearer {{token}}
 # }
 
 ###
+
+### Download do arquivo
+GET {{baseUrl}}/configuracoes/documentacao/cabecalhos-rodapes/{{cabecalhoRodapeId}}/download
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# Content-Type: image/png (ou outro tipo de imagem)
+# Content-Disposition: attachment; filename="logo.png"
+
+###
+
+### Excluir cabeçalho/rodapé
+DELETE {{baseUrl}}/configuracoes/documentacao/cabecalhos-rodapes/{{cabecalhoRodapeId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 204 No Content
+# (Remove o arquivo físico e o registro do banco)
+
+###

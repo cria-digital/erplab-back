@@ -84,3 +84,27 @@ Authorization: Bearer {{token}}
 # }
 
 ###
+
+### Download do arquivo
+GET {{baseUrl}}/configuracoes/documentacao/formularios-atendimento/{{formularioId}}/download
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# Content-Type: application/pdf
+# Content-Disposition: attachment; filename="termo-consentimento.pdf"
+
+###
+
+### Excluir formulário de atendimento
+DELETE {{baseUrl}}/configuracoes/documentacao/formularios-atendimento/{{formularioId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Formulário removido com sucesso"
+# }
+# (Remove o arquivo físico e o registro do banco)
+
+###
