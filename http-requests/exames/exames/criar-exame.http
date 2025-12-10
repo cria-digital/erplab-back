@@ -4,16 +4,20 @@
 ### - amostra_enviar_id, tipo_recipiente_id, estabilidade_id, volume_minimo_id
 ### - regiao_coleta_ids (array de IDs)
 ###
-### Vínculos com outras entidades:
-### - laboratorio_apoio_id: FK para laboratório de apoio (GET /api/v1/exames/laboratorios-apoio)
-### - telemedicina_id: FK para telemedicina (GET /api/v1/relacionamento/telemedicina)
-### - unidade_destino_id: FK para unidade de saúde destino (GET /api/v1/cadastros/unidades-saude)
+### Vínculos com Unidades (Nova estrutura):
+### O campo "unidades" é um array de objetos onde cada unidade tem seu próprio destino:
+### - unidade_id: FK para unidade de saúde (GET /api/v1/cadastros/unidades-saude)
+### - destino: "interno", "apoio" ou "telemedicina"
+### - laboratorio_apoio_id: FK para laboratório de apoio (somente quando destino="apoio")
+### - telemedicina_id: FK para telemedicina (somente quando destino="telemedicina")
+###
+### Regras de destino:
+### - "interno": não pode ter laboratorio_apoio_id nem telemedicina_id
+### - "apoio": deve ter laboratorio_apoio_id, não pode ter telemedicina_id
+### - "telemedicina": deve ter telemedicina_id, não pode ter laboratorio_apoio_id
 ###
 ### formatos_laudo: Array de strings com formatos aceitos
 ###   Opções: "PDF", "XML", "HTML", "TEXTO", "FORMULARIO", "DICOM"
-###
-### tipo_realizacao: "interno", "apoio" ou "telemedicina"
-### envio_automatico: "sim" ou "nao"
 ###
 ### Para obter os IDs disponíveis: GET /api/v1/infraestrutura/campos-formulario
 ###
@@ -26,7 +30,6 @@ Authorization: Bearer {{token}}
 {
   "codigo_interno": "HEM001",
   "nome": "Hemograma Completo",
-  "categoria": "laboratorio",
   "status": "ativo"
 }
 
@@ -36,14 +39,13 @@ Authorization: Bearer {{token}}
 #   "id": "uuid",
 #   "codigo_interno": "HEM001",
 #   "nome": "Hemograma Completo",
-#   "categoria": "laboratorio",
 #   "status": "ativo",
 #   ...
 # }
 
 ###
 
-### Criar exame INTERNO simples
+### Criar exame com destino INTERNO em uma unidade
 POST {{baseUrl}}/exames/exames
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
@@ -53,21 +55,24 @@ Authorization: Bearer {{token}}
   "nome": "Glicemia de Jejum",
   "sinonimos": ["Glicose", "Açúcar no sangue"],
   "codigo_tuss": "40301630",
-  "categoria": "laboratorio",
-  "tipo_realizacao": "interno",
   "necessita_preparo": "sim",
   "preparo_geral": "Jejum de 8 a 12 horas",
   "prazo_entrega_dias": 1,
   "formato_prazo": "1 dia útil",
   "formatos_laudo": ["PDF"],
-  "status": "ativo"
+  "status": "ativo",
+  "unidades": [
+    {
+      "unidade_id": "49a36ee7-db02-4831-9c85-7cca9db5043e",
+      "destino": "interno"
+    }
+  ]
 }
 
 ###
 
-### Criar exame para LABORATÓRIO DE APOIO (com ID do lab)
+### Criar exame com destino APOIO (laboratório externo) em uma unidade
 ### Primeiro crie o laboratório em POST /api/v1/exames/laboratorios-apoio
-### e use o ID retornado aqui
 POST {{baseUrl}}/exames/exames
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
@@ -77,20 +82,85 @@ Authorization: Bearer {{token}}
   "nome": "TSH - Hormônio Tireoestimulante",
   "sinonimos": ["TSH", "Tireotrofina"],
   "codigo_tuss": "40316521",
-  "categoria": "laboratorio",
-  "tipo_realizacao": "apoio",
-  "laboratorio_apoio_id": "{{laboratorioApoioId}}",
-  "envio_automatico": "sim",
   "prazo_entrega_dias": 3,
   "formato_prazo": "3 dias úteis",
   "formatos_laudo": ["PDF", "XML"],
   "preparo_geral": "Não necessita jejum",
-  "status": "ativo"
+  "status": "ativo",
+  "unidades": [
+    {
+      "unidade_id": "{{unidadeId}}",
+      "destino": "apoio",
+      "laboratorio_apoio_id": "{{laboratorioApoioId}}"
+    }
+  ]
 }
 
 ###
 
-### Criar um novo exame - Hemograma Completo
+### Criar exame com destino TELEMEDICINA
+POST {{baseUrl}}/exames/exames
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo_interno": "ECG001",
+  "nome": "Eletrocardiograma com Laudo",
+  "sinonimos": ["ECG", "EKG"],
+  "codigo_tuss": "40101010",
+  "tipo_exame_id": "{{tipoExameImagemId}}",
+  "metodologia_id": "{{metodologiaId}}",
+  "especialidade_requerida": "sim",
+  "especialidade_id": "{{especialidadeCardiologiaId}}",
+  "necessita_preparo": "nao",
+  "prazo_entrega_dias": 1,
+  "formato_prazo": "24 horas",
+  "formatos_laudo": ["PDF"],
+  "preparo_geral": "Repouso de 10 minutos antes do exame",
+  "status": "ativo",
+  "unidades": [
+    {
+      "unidade_id": "{{unidadeId}}",
+      "destino": "telemedicina",
+      "telemedicina_id": "{{telemedicinaId}}"
+    }
+  ]
+}
+
+###
+
+### Criar exame disponível em MÚLTIPLAS unidades com destinos diferentes
+### Exemplo: mesmo exame feito internamente em uma unidade e enviado para apoio em outra
+POST {{baseUrl}}/exames/exames
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo_interno": "HBA1C",
+  "nome": "Hemoglobina Glicada A1c",
+  "sinonimos": ["HbA1c", "Hemoglobina glicosilada"],
+  "codigo_tuss": "40302040",
+  "necessita_preparo": "nao",
+  "prazo_entrega_dias": 2,
+  "formato_prazo": "2 dias úteis",
+  "formatos_laudo": ["PDF"],
+  "status": "ativo",
+  "unidades": [
+    {
+      "unidade_id": "{{unidadeCentralId}}",
+      "destino": "interno"
+    },
+    {
+      "unidade_id": "{{unidadeFilialId}}",
+      "destino": "apoio",
+      "laboratorio_apoio_id": "{{laboratorioApoioId}}"
+    }
+  ]
+}
+
+###
+
+### Criar um exame completo - Hemograma Completo
 POST {{baseUrl}}/exames/exames
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
@@ -105,7 +175,6 @@ Authorization: Bearer {{token}}
   "codigo_loinc": "58410-2",
   "codigo_sus": "0202010503",
   "tipo_exame_id": "{{tipoExameId}}",
-  "categoria": "laboratorio",
   "subgrupo_id": "{{subgrupoId}}",
   "setor_id": "{{setorId}}",
   "metodologia_id": "{{metodologiaId}}",
@@ -131,11 +200,6 @@ Authorization: Bearer {{token}}
 
   "necessita_preparo": "sim",
   "requisitos": "Jejum de 4 horas",
-  "tipo_realizacao": "interno",
-  "laboratorio_apoio_id": "{{laboratorioApoioId}}",
-  "telemedicina_id": "{{telemedicinaId}}",
-  "unidade_destino_id": "{{unidadeDestinoId}}",
-  "envio_automatico": "nao",
   "prazo_entrega_dias": 1,
   "formato_prazo": "1 dia útil",
   "tem_valores_referencia": "sim",
@@ -150,6 +214,7 @@ Authorization: Bearer {{token}}
     }
   },
   "tecnica_coleta": "Punção venosa periférica",
+  "processamento": "Centrifugar a 3000rpm por 10 minutos",
   "distribuicao": "Homogeneizar tubo, processar em até 4 horas",
   "rejeicao": "Hemólise, coágulos, volume insuficiente",
   "links_uteis": "https://www.fleury.com.br/manual-de-exames/hemograma",
@@ -166,7 +231,12 @@ Authorization: Bearer {{token}}
   "lembrete_recepcionista_agendamento": "Verificar se paciente está em jejum de 4 horas",
   "lembrete_recepcionista_os": "Exame deve ser coletado em tubo EDTA (tampa roxa)",
 
-  "unidades_ids": ["{{unidadeId}}"],
+  "unidades": [
+    {
+      "unidade_id": "{{unidadeId}}",
+      "destino": "interno"
+    }
+  ],
 
   "status": "ativo"
 }
@@ -179,6 +249,17 @@ Authorization: Bearer {{token}}
 #     "id": "uuid",
 #     "codigo_interno": "HEMOG001",
 #     "nome": "Hemograma Completo",
+#     "unidades": [
+#       {
+#         "id": "uuid",
+#         "exame_id": "uuid",
+#         "unidade_id": "uuid",
+#         "destino": "interno",
+#         "laboratorio_apoio_id": null,
+#         "telemedicina_id": null,
+#         "unidadeSaude": { ... }
+#       }
+#     ],
 #     ...
 #   }
 # }
@@ -196,12 +277,10 @@ Authorization: Bearer {{token}}
   "sinonimos": ["Raio-X Tórax", "RX Tórax"],
   "codigo_tuss": "41001010",
   "tipo_exame_id": "{{tipoExameImagemId}}",
-  "categoria": "imagem",
   "metodologia_id": "{{metodologiaRadiologiaId}}",
   "especialidade_requerida": "sim",
   "especialidade_id": "{{especialidadeRadiologiaId}}",
   "necessita_preparo": "nao",
-  "tipo_realizacao": "interno",
   "prazo_entrega_dias": 1,
   "formato_prazo": "24 horas",
   "formatos_laudo": ["PDF", "DICOM"],
@@ -209,60 +288,13 @@ Authorization: Bearer {{token}}
   "links_uteis": "https://www.fleury.com.br/manual-de-exames/raio-x-torax",
   "preparo_geral": "Retirar objetos metálicos",
   "preparo_feminino": "Informar possibilidade de gravidez",
-  "status": "ativo"
+  "status": "ativo",
+  "unidades": [
+    {
+      "unidade_id": "{{unidadeId}}",
+      "destino": "interno"
+    }
+  ]
 }
 
 ###
-
-### Criar exame enviado para Laboratório de Apoio
-POST {{baseUrl}}/exames/exames
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-  "codigo_interno": "TSH001",
-  "nome": "TSH - Hormônio Tireoestimulante",
-  "sinonimos": ["TSH", "Tireotrofina"],
-  "codigo_tuss": "40316521",
-  "tipo_exame_id": "{{tipoExameId}}",
-  "categoria": "laboratorio",
-  "metodologia_id": "{{metodologiaId}}",
-  "amostra_id": "{{amostraId}}",
-  "necessita_preparo": "nao",
-  "tipo_realizacao": "apoio",
-  "laboratorio_apoio_id": "{{laboratorioApoioId}}",
-  "envio_automatico": "sim",
-  "prazo_entrega_dias": 3,
-  "formato_prazo": "3 dias úteis",
-  "formatos_laudo": ["PDF", "XML"],
-  "preparo_geral": "Não necessita jejum",
-  "status": "ativo"
-}
-
-###
-
-### Criar exame de Telemedicina
-POST {{baseUrl}}/exames/exames
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-  "codigo_interno": "ECG001",
-  "nome": "Eletrocardiograma com Laudo",
-  "sinonimos": ["ECG", "EKG"],
-  "codigo_tuss": "40101010",
-  "tipo_exame_id": "{{tipoExameImagemId}}",
-  "categoria": "procedimento",
-  "metodologia_id": "{{metodologiaId}}",
-  "especialidade_requerida": "sim",
-  "especialidade_id": "{{especialidadeCardiologiaId}}",
-  "necessita_preparo": "nao",
-  "tipo_realizacao": "telemedicina",
-  "telemedicina_id": "{{telemedicinaId}}",
-  "envio_automatico": "sim",
-  "prazo_entrega_dias": 1,
-  "formato_prazo": "24 horas",
-  "formatos_laudo": ["PDF"],
-  "preparo_geral": "Repouso de 10 minutos antes do exame",
-  "status": "ativo"
-}

@@ -1,26 +1,55 @@
-### Listar todos os formulários de atendimento
+### Listar todos os formulários de atendimento (com paginação)
 GET {{baseUrl}}/configuracoes/documentacao/formularios-atendimento
 Authorization: Bearer {{token}}
 
 ### Expected Response
 # Status: 200 OK
-# [
-#   {
-#     "id": "uuid",
-#     "unidadeId": "uuid",
-#     "nomeDocumento": "termo-consentimento.pdf",
-#     "observacao": "Formulário de consentimento para exame",
-#     "mimeType": "application/pdf",
-#     "tamanho": 102400,
-#     "ativo": true,
-#     "criadoEm": "2025-12-01T..."
+# {
+#   "data": [
+#     {
+#       "id": "uuid",
+#       "unidadeId": "uuid",
+#       "nomeDocumento": "termo-consentimento.pdf",
+#       "observacao": "Formulário de consentimento para exame",
+#       "mimeType": "application/pdf",
+#       "tamanho": 102400,
+#       "ativo": true,
+#       "criadoEm": "2025-12-01T...",
+#       "unidade": { "id": "uuid", "nome": "São Roque" }
+#     }
+#   ],
+#   "meta": {
+#     "page": 1,
+#     "limit": 10,
+#     "total": 25,
+#     "totalPages": 3,
+#     "hasPrevPage": false,
+#     "hasNextPage": true
 #   }
-# ]
+# }
+
+###
+
+### Listar com paginação específica
+GET {{baseUrl}}/configuracoes/documentacao/formularios-atendimento?page=1&limit=20
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar por termo (nome do documento, observação ou nome da unidade)
+GET {{baseUrl}}/configuracoes/documentacao/formularios-atendimento?termo=consentimento
+Authorization: Bearer {{token}}
 
 ###
 
 ### Filtrar por unidade
 GET {{baseUrl}}/configuracoes/documentacao/formularios-atendimento?unidadeId={{unidadeId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Combinação de filtros com paginação
+GET {{baseUrl}}/configuracoes/documentacao/formularios-atendimento?unidadeId={{unidadeId}}&termo=termo&page=1&limit=10
 Authorization: Bearer {{token}}
 
 ###

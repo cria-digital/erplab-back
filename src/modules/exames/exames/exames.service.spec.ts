@@ -8,9 +8,9 @@ import {
 
 import { ExamesService } from './exames.service';
 import { Exame } from './entities/exame.entity';
+import { ExameUnidade } from './entities/exame-unidade.entity';
 import { CreateExameDto } from './dto/create-exame.dto';
 import { UpdateExameDto } from './dto/update-exame.dto';
-import { UnidadeSaude } from '../../cadastros/unidade-saude/entities/unidade-saude.entity';
 
 describe('ExamesService', () => {
   let service: ExamesService;
@@ -94,6 +94,13 @@ describe('ExamesService', () => {
     requiresPreparo: () => false,
   } as unknown as Exame;
 
+  const mockQueryBuilder = {
+    where: jest.fn().mockReturnThis(),
+    andWhere: jest.fn().mockReturnThis(),
+    orderBy: jest.fn().mockReturnThis(),
+    getMany: jest.fn(),
+  };
+
   const mockRepository = {
     create: jest.fn(),
     save: jest.fn(),
@@ -101,10 +108,14 @@ describe('ExamesService', () => {
     find: jest.fn(),
     findAndCount: jest.fn(),
     update: jest.fn(),
+    createQueryBuilder: jest.fn().mockReturnValue(mockQueryBuilder),
   };
 
-  const mockUnidadeRepository = {
+  const mockExameUnidadeRepository = {
     find: jest.fn(),
+    save: jest.fn(),
+    create: jest.fn(),
+    delete: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -116,8 +127,8 @@ describe('ExamesService', () => {
           useValue: mockRepository,
         },
         {
-          provide: getRepositoryToken(UnidadeSaude),
-          useValue: mockUnidadeRepository,
+          provide: getRepositoryToken(ExameUnidade),
+          useValue: mockExameUnidadeRepository,
         },
       ],
     }).compile();
@@ -189,7 +200,10 @@ describe('ExamesService', () => {
           'tipoExameAlternativa',
           'subgrupoAlternativa',
           'setorAlternativa',
-          'laboratorioApoio',
+          'unidades',
+          'unidades.unidadeSaude',
+          'unidades.laboratorioApoio',
+          'unidades.telemedicina',
         ],
         skip: 0,
         take: 10,
@@ -209,7 +223,10 @@ describe('ExamesService', () => {
           'tipoExameAlternativa',
           'subgrupoAlternativa',
           'setorAlternativa',
-          'laboratorioApoio',
+          'unidades',
+          'unidades.unidadeSaude',
+          'unidades.laboratorioApoio',
+          'unidades.telemedicina',
         ],
         skip: 0,
         take: 10,
@@ -229,7 +246,10 @@ describe('ExamesService', () => {
           'tipoExameAlternativa',
           'subgrupoAlternativa',
           'setorAlternativa',
-          'laboratorioApoio',
+          'unidades',
+          'unidades.unidadeSaude',
+          'unidades.laboratorioApoio',
+          'unidades.telemedicina',
         ],
         skip: 0,
         take: 10,
@@ -248,7 +268,10 @@ describe('ExamesService', () => {
           'tipoExameAlternativa',
           'subgrupoAlternativa',
           'setorAlternativa',
-          'laboratorioApoio',
+          'unidades',
+          'unidades.unidadeSaude',
+          'unidades.laboratorioApoio',
+          'unidades.telemedicina',
         ],
         skip: 40,
         take: 20,
@@ -270,8 +293,10 @@ describe('ExamesService', () => {
           'tipoExameAlternativa',
           'subgrupoAlternativa',
           'setorAlternativa',
-          'laboratorioApoio',
-          'unidadesQueRealizam',
+          'unidades',
+          'unidades.unidadeSaude',
+          'unidades.laboratorioApoio',
+          'unidades.telemedicina',
         ],
       });
     });
@@ -298,7 +323,8 @@ describe('ExamesService', () => {
           'tipoExameAlternativa',
           'subgrupoAlternativa',
           'setorAlternativa',
-          'laboratorioApoio',
+          'unidades',
+          'unidades.unidadeSaude',
         ],
       });
     });
@@ -401,16 +427,19 @@ describe('ExamesService', () => {
 
   describe('findByLaboratorioApoio', () => {
     it('deve retornar exames por laboratório de apoio', async () => {
+      const mockExameUnidades = [
+        { exame_id: 'exame-uuid-1', laboratorio_apoio_id: 'lab-uuid-1' },
+      ];
       const mockExames = [mockExame];
-      mockRepository.find.mockResolvedValue(mockExames);
+      mockExameUnidadeRepository.find.mockResolvedValue(mockExameUnidades);
+      mockQueryBuilder.getMany.mockResolvedValue(mockExames);
 
       const result = await service.findByLaboratorioApoio('lab-uuid-1');
 
       expect(result).toEqual(mockExames);
-      expect(mockRepository.find).toHaveBeenCalledWith({
-        where: { laboratorio_apoio_id: 'lab-uuid-1', status: 'ativo' },
-        relations: ['laboratorioApoio'],
-        order: { nome: 'ASC' },
+      expect(mockExameUnidadeRepository.find).toHaveBeenCalledWith({
+        where: { laboratorio_apoio_id: 'lab-uuid-1', ativo: true },
+        relations: ['exame'],
       });
     });
   });

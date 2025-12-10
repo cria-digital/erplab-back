@@ -11,6 +11,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { FormularioAtendimento } from '../entities/formulario-atendimento.entity';
 import { CreateFormularioAtendimentoDto } from '../dto/create-formulario-atendimento.dto';
 import { FilterFormularioAtendimentoDto } from '../dto/filter-formulario-atendimento.dto';
+import { PaginatedResultDto } from '../../../../infraestrutura/common/dto/pagination.dto';
 
 const ALLOWED_MIME_TYPES = ['application/pdf'];
 const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
@@ -81,17 +82,36 @@ export class FormulariosAtendimentoService {
 
   async findAll(
     filter: FilterFormularioAtendimentoDto,
-  ): Promise<FormularioAtendimento[]> {
-    const whereConditions: Record<string, unknown> = { ativo: true };
+  ): Promise<PaginatedResultDto<FormularioAtendimento>> {
+    const page = filter.page || 1;
+    const limit = filter.limit || 10;
+    const skip = (page - 1) * limit;
+
+    const queryBuilder = this.repository
+      .createQueryBuilder('formulario')
+      .leftJoinAndSelect('formulario.unidade', 'unidade')
+      .where('formulario.ativo = :ativo', { ativo: true });
 
     if (filter.unidadeId) {
-      whereConditions.unidadeId = filter.unidadeId;
+      queryBuilder.andWhere('formulario.unidadeId = :unidadeId', {
+        unidadeId: filter.unidadeId,
+      });
     }
 
-    return await this.repository.find({
-      where: whereConditions,
-      order: { criadoEm: 'DESC' },
-    });
+    if (filter.termo) {
+      queryBuilder.andWhere(
+        '(formulario.nomeDocumento ILIKE :termo OR formulario.observacao ILIKE :termo OR unidade.nome ILIKE :termo)',
+        { termo: `%${filter.termo}%` },
+      );
+    }
+
+    const [data, total] = await queryBuilder
+      .orderBy('formulario.criadoEm', 'DESC')
+      .skip(skip)
+      .take(limit)
+      .getManyAndCount();
+
+    return new PaginatedResultDto(data, total, page, limit);
   }
 
   async findOne(id: string): Promise<FormularioAtendimento> {

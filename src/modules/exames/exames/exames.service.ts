@@ -5,19 +5,19 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like, In } from 'typeorm';
+import { Repository, Like } from 'typeorm';
 import { Exame } from './entities/exame.entity';
 import { CreateExameDto } from './dto/create-exame.dto';
 import { UpdateExameDto } from './dto/update-exame.dto';
-import { UnidadeSaude } from '../../cadastros/unidade-saude/entities/unidade-saude.entity';
+import { ExameUnidade } from './entities/exame-unidade.entity';
 
 @Injectable()
 export class ExamesService {
   constructor(
     @InjectRepository(Exame)
     private readonly exameRepository: Repository<Exame>,
-    @InjectRepository(UnidadeSaude)
-    private readonly unidadeRepository: Repository<UnidadeSaude>,
+    @InjectRepository(ExameUnidade)
+    private readonly exameUnidadeRepository: Repository<ExameUnidade>,
   ) {}
 
   async create(createExameDto: CreateExameDto): Promise<Exame> {
@@ -32,20 +32,25 @@ export class ExamesService {
       );
     }
 
-    // Separa unidades_ids do resto do DTO
-    const { unidades_ids, ...exameData } = createExameDto;
+    // Separa unidades do resto do DTO
+    const { unidades, ...exameData } = createExameDto;
 
     const exame = this.exameRepository.create(exameData);
-
-    // Se foram passadas unidades, busca e associa
-    if (unidades_ids && unidades_ids.length > 0) {
-      const unidades = await this.unidadeRepository.find({
-        where: { id: In(unidades_ids) },
-      });
-      exame.unidadesQueRealizam = unidades;
-    }
-
     const savedExame = await this.exameRepository.save(exame);
+
+    // Se foram passadas unidades, cria os vínculos
+    if (unidades && unidades.length > 0) {
+      for (const unidadeDto of unidades) {
+        const exameUnidade = this.exameUnidadeRepository.create({
+          exame_id: savedExame.id,
+          unidade_id: unidadeDto.unidade_id,
+          destino: unidadeDto.destino || 'interno',
+          laboratorio_apoio_id: unidadeDto.laboratorio_apoio_id,
+          telemedicina_id: unidadeDto.telemedicina_id,
+        });
+        await this.exameUnidadeRepository.save(exameUnidade);
+      }
+    }
 
     // Retorna com as relações carregadas
     return this.findOne(savedExame.id);
@@ -73,7 +78,10 @@ export class ExamesService {
         'tipoExameAlternativa',
         'subgrupoAlternativa',
         'setorAlternativa',
-        'laboratorioApoio',
+        'unidades',
+        'unidades.unidadeSaude',
+        'unidades.laboratorioApoio',
+        'unidades.telemedicina',
       ],
       skip: (page - 1) * limit,
       take: limit,
@@ -95,8 +103,10 @@ export class ExamesService {
         'tipoExameAlternativa',
         'subgrupoAlternativa',
         'setorAlternativa',
-        'laboratorioApoio',
-        'unidadesQueRealizam',
+        'unidades',
+        'unidades.unidadeSaude',
+        'unidades.laboratorioApoio',
+        'unidades.telemedicina',
       ],
     });
 
@@ -114,7 +124,8 @@ export class ExamesService {
         'tipoExameAlternativa',
         'subgrupoAlternativa',
         'setorAlternativa',
-        'laboratorioApoio',
+        'unidades',
+        'unidades.unidadeSaude',
       ],
     });
 
@@ -172,11 +183,21 @@ export class ExamesService {
   }
 
   async findByLaboratorioApoio(laboratorioId: string): Promise<Exame[]> {
-    return await this.exameRepository.find({
-      where: { laboratorio_apoio_id: laboratorioId, status: 'ativo' },
-      relations: ['laboratorioApoio'],
-      order: { nome: 'ASC' },
+    // Busca exames que têm vínculo com o laboratório de apoio via exames_unidades
+    const exameUnidades = await this.exameUnidadeRepository.find({
+      where: { laboratorio_apoio_id: laboratorioId, ativo: true },
+      relations: ['exame'],
     });
+
+    const exameIds = [...new Set(exameUnidades.map((eu) => eu.exame_id))];
+    if (exameIds.length === 0) return [];
+
+    return await this.exameRepository
+      .createQueryBuilder('exame')
+      .where('exame.id IN (:...ids)', { ids: exameIds })
+      .andWhere('exame.status = :status', { status: 'ativo' })
+      .orderBy('exame.nome', 'ASC')
+      .getMany();
   }
 
   async searchByName(nome: string): Promise<Exame[]> {

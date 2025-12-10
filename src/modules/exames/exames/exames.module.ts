@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 // Entities
 import { Exame } from './entities/exame.entity';
+import { ExameUnidade } from './entities/exame-unidade.entity';
 import { OrdemServico } from './entities/ordem-servico.entity';
 import { OrdemServicoExame } from './entities/ordem-servico-exame.entity';
 import { ResultadoExame } from './entities/resultado-exame.entity';
@@ -16,6 +17,7 @@ import { ConveniosModule } from '../../relacionamento/convenios/convenios.module
 
 // Services
 import { ExamesService } from './exames.service';
+import { ExameUnidadeService } from './exame-unidade.service';
 import { ExameLaboratorioApoioService } from './exame-laboratorio-apoio.service';
 import { LaboratorioApoioService } from './laboratorio-apoio.service';
 
@@ -28,6 +30,7 @@ import { LaboratorioApoioController } from './laboratorio-apoio.controller';
   imports: [
     TypeOrmModule.forFeature([
       Exame,
+      ExameUnidade,
       OrdemServico,
       OrdemServicoExame,
       ResultadoExame,
@@ -45,11 +48,13 @@ import { LaboratorioApoioController } from './laboratorio-apoio.controller';
   ],
   providers: [
     ExamesService,
+    ExameUnidadeService,
     ExameLaboratorioApoioService,
     LaboratorioApoioService,
   ],
   exports: [
     ExamesService,
+    ExameUnidadeService,
     ExameLaboratorioApoioService,
     LaboratorioApoioService,
   ],

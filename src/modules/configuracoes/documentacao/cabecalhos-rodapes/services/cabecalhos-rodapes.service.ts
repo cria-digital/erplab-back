@@ -14,6 +14,7 @@ import {
 } from '../entities/cabecalho-rodape.entity';
 import { CreateCabecalhoRodapeDto } from '../dto/create-cabecalho-rodape.dto';
 import { FilterCabecalhoRodapeDto } from '../dto/filter-cabecalho-rodape.dto';
+import { PaginatedResultDto } from '../../../../infraestrutura/common/dto/pagination.dto';
 
 const ALLOWED_MIME_TYPES = [
   'image/jpeg',
@@ -94,21 +95,43 @@ export class CabecalhosRodapesService {
     return await this.repository.save(cabecalhoRodape);
   }
 
-  async findAll(filter: FilterCabecalhoRodapeDto): Promise<CabecalhoRodape[]> {
-    const whereConditions: Record<string, unknown> = { ativo: true };
+  async findAll(
+    filter: FilterCabecalhoRodapeDto,
+  ): Promise<PaginatedResultDto<CabecalhoRodape>> {
+    const page = filter.page || 1;
+    const limit = filter.limit || 10;
+    const skip = (page - 1) * limit;
+
+    const queryBuilder = this.repository
+      .createQueryBuilder('cabecalho')
+      .leftJoinAndSelect('cabecalho.unidade', 'unidade')
+      .where('cabecalho.ativo = :ativo', { ativo: true });
 
     if (filter.unidadeId) {
-      whereConditions.unidadeId = filter.unidadeId;
+      queryBuilder.andWhere('cabecalho.unidadeId = :unidadeId', {
+        unidadeId: filter.unidadeId,
+      });
     }
 
     if (filter.tipo) {
-      whereConditions.tipo = filter.tipo;
+      queryBuilder.andWhere('cabecalho.tipo = :tipo', { tipo: filter.tipo });
     }
 
-    return await this.repository.find({
-      where: whereConditions,
-      order: { tipo: 'ASC' },
-    });
+    if (filter.termo) {
+      queryBuilder.andWhere(
+        '(cabecalho.nomeArquivo ILIKE :termo OR unidade.nome ILIKE :termo)',
+        { termo: `%${filter.termo}%` },
+      );
+    }
+
+    const [data, total] = await queryBuilder
+      .orderBy('cabecalho.tipo', 'ASC')
+      .addOrderBy('cabecalho.criadoEm', 'DESC')
+      .skip(skip)
+      .take(limit)
+      .getManyAndCount();
+
+    return new PaginatedResultDto(data, total, page, limit);
   }
 
   async findOne(id: string): Promise<CabecalhoRodape> {

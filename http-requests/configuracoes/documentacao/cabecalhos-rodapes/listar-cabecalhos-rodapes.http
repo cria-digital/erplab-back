@@ -1,20 +1,42 @@
-### Listar todos os cabeçalhos e rodapés
+### Listar todos os cabeçalhos e rodapés (com paginação)
 GET {{baseUrl}}/configuracoes/documentacao/cabecalhos-rodapes
 Authorization: Bearer {{token}}
 
 ### Expected Response
 # Status: 200 OK
-# [
-#   {
-#     "id": "uuid",
-#     "unidadeId": "uuid",
-#     "tipo": "CABECALHO",
-#     "nomeArquivo": "logo.png",
-#     "mimeType": "image/png",
-#     "tamanho": 102400,
-#     "unidade": { "id": "uuid", "nome": "São Roque" }
+# {
+#   "data": [
+#     {
+#       "id": "uuid",
+#       "unidadeId": "uuid",
+#       "tipo": "CABECALHO",
+#       "nomeArquivo": "logo.png",
+#       "mimeType": "image/png",
+#       "tamanho": 102400,
+#       "unidade": { "id": "uuid", "nome": "São Roque" }
+#     }
+#   ],
+#   "meta": {
+#     "page": 1,
+#     "limit": 10,
+#     "total": 25,
+#     "totalPages": 3,
+#     "hasPrevPage": false,
+#     "hasNextPage": true
 #   }
-# ]
+# }
+
+###
+
+### Listar com paginação específica
+GET {{baseUrl}}/configuracoes/documentacao/cabecalhos-rodapes?page=1&limit=20
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar por termo (nome do arquivo ou nome da unidade)
+GET {{baseUrl}}/configuracoes/documentacao/cabecalhos-rodapes?termo=matriz
+Authorization: Bearer {{token}}
 
 ###
 
@@ -36,8 +58,8 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Filtrar por unidade e tipo
-GET {{baseUrl}}/configuracoes/documentacao/cabecalhos-rodapes?unidadeId={{unidadeId}}&tipo=CABECALHO
+### Combinação de filtros com paginação
+GET {{baseUrl}}/configuracoes/documentacao/cabecalhos-rodapes?unidadeId={{unidadeId}}&tipo=CABECALHO&termo=logo&page=1&limit=10
 Authorization: Bearer {{token}}
 
 ###
@@ -70,10 +92,7 @@ Authorization: Bearer {{token}}
 # {
 #   "total": 10,
 #   "cabecalhos": 5,
-#   "rodapes": 5,
-#   "porUnidade": [
-#     { "unidade": "São Roque", "cabecalhos": 1, "rodapes": 1 }
-#   ]
+#   "rodapes": 5
 # }
 
 ###

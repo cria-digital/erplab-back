@@ -9,7 +9,10 @@ import {
   IsArray,
   IsUUID,
   MaxLength,
+  ValidateNested,
 } from 'class-validator';
+import { Type } from 'class-transformer';
+import { CreateExameUnidadeDto } from './create-exame-unidade.dto';
 
 export class CreateExameDto {
   @ApiProperty({
@@ -322,50 +325,7 @@ export class CreateExameDto {
   @IsOptional()
   requisitos?: string;
 
-  @ApiProperty({
-    description: 'Onde o exame é realizado',
-    enum: ['interno', 'apoio', 'telemedicina'],
-    default: 'interno',
-  })
-  @IsEnum(['interno', 'apoio', 'telemedicina'])
-  @IsOptional()
-  tipo_realizacao?: string;
-
-  @ApiProperty({
-    description: 'ID do laboratório de apoio',
-    example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
-    required: false,
-  })
-  @IsString()
-  @IsOptional()
-  laboratorio_apoio_id?: string;
-
-  @ApiProperty({
-    description: 'ID da telemedicina (quando tipo_realizacao = telemedicina)',
-    example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
-    required: false,
-  })
-  @IsString()
-  @IsOptional()
-  telemedicina_id?: string;
-
-  @ApiProperty({
-    description: 'ID da unidade de saúde de destino',
-    example: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
-    required: false,
-  })
-  @IsString()
-  @IsOptional()
-  unidade_destino_id?: string;
-
-  @ApiProperty({
-    description: 'Se envia automaticamente para laboratório de apoio',
-    enum: ['nao', 'sim'],
-    default: 'nao',
-  })
-  @IsEnum(['nao', 'sim'])
-  @IsOptional()
-  envio_automatico?: string;
+  // Campos de integração movidos para unidades[]
 
   @ApiProperty({
     description: 'Prazo de entrega em dias úteis',
@@ -442,6 +402,15 @@ export class CreateExameDto {
   @IsString()
   @IsOptional()
   processamento_entrega?: string;
+
+  @ApiProperty({
+    description: 'Informações de processamento do exame',
+    example: 'Centrifugar por 10 minutos a 3000 rpm',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  processamento?: string;
 
   @ApiProperty({
     description: 'Links úteis relacionados ao exame',
@@ -582,15 +551,15 @@ export class CreateExameDto {
   status?: string;
 
   @ApiProperty({
-    description: 'IDs das unidades que realizam o exame',
-    example: ['f47ac10b-58cc-4372-a567-0e02b2c3d479'],
+    description: 'Unidades que realizam o exame com seus destinos',
+    type: [CreateExameUnidadeDto],
     required: false,
-    type: [String],
   })
   @IsArray()
-  @IsUUID('4', { each: true })
+  @ValidateNested({ each: true })
+  @Type(() => CreateExameUnidadeDto)
   @IsOptional()
-  unidades_ids?: string[];
+  unidades?: CreateExameUnidadeDto[];
 
   // empresa_id é definido automaticamente pelo sistema
 }

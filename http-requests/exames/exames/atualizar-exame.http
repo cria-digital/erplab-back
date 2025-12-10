@@ -1,74 +1,25 @@
 ###
-### ⚠️ IMPORTANTE - Atualização de Exames
+### ATUALIZAÇÃO DE EXAMES
 ###
-### Este arquivo contém exemplos de atualização de exames, incluindo:
-### - Alteração do tipo de realização (interno/apoio/telemedicina)
-### - Vinculação com laboratório de apoio
-### - Vinculação com telemedicina
+### Este arquivo contém exemplos de atualização de exames.
 ###
 ### Variáveis necessárias no http-client.env.json:
 ### - {{exameId}} - UUID do exame a ser atualizado
-### - {{laboratorioApoioId}} - UUID do laboratório de apoio (tabela laboratorios_apoio)
-### - {{telemedicinaId}} - UUID da telemedicina
-### - {{unidadeDestinoId}} - UUID da unidade de saúde destino
+###
+### IMPORTANTE: Os campos de integração (destino, laboratório de apoio, telemedicina)
+### agora são gerenciados por unidade na tabela exames_unidades.
+### Para gerenciar vínculos com unidades, use os endpoints de exame-unidade.
 ###
 
-### Atualizar exame para usar Laboratório de Apoio
-### (Quando tipo_realizacao = 'apoio', o laboratorio_apoio_id é obrigatório)
+### Atualizar campos básicos do exame
 PATCH {{baseUrl}}/exames/exames/{{exameId}}
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-  "tipo_realizacao": "apoio",
-  "laboratorio_apoio_id": "{{laboratorioApoioId}}",
-  "envio_automatico": "sim",
-  "prazo_entrega_dias": 3,
-  "formato_prazo": "3 dias úteis"
-}
-
-### Expected Response
-# Status: 200 OK
-# {
-#   "id": "uuid",
-#   "tipo_realizacao": "apoio",
-#   "laboratorio_apoio_id": "uuid",
-#   "laboratorioApoio": {
-#     "id": "uuid",
-#     "codigo": "LAB001",
-#     "nome": "Laboratório DB"
-#   },
-#   ...
-# }
-
-###
-
-### Atualizar exame para usar Telemedicina
-### (Quando tipo_realizacao = 'telemedicina', o telemedicina_id é obrigatório)
-PATCH {{baseUrl}}/exames/exames/{{exameId}}
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-  "tipo_realizacao": "telemedicina",
-  "telemedicina_id": "{{telemedicinaId}}",
-  "envio_automatico": "sim",
-  "prazo_entrega_dias": 1,
-  "formato_prazo": "24 horas"
-}
-
-###
-
-### Alterar exame para realização Interna (remover apoio/telemedicina)
-PATCH {{baseUrl}}/exames/exames/{{exameId}}
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-  "tipo_realizacao": "interno",
-  "laboratorio_apoio_id": null,
-  "telemedicina_id": null,
-  "envio_automatico": "nao"
+  "nome": "Hemograma Completo Atualizado",
+  "prazo_entrega_dias": 2,
+  "formato_prazo": "2 dias úteis"
 }
 
 ###
@@ -90,6 +41,19 @@ Authorization: Bearer {{token}}
 
 ###
 
+### Atualizar campo processamento
+PATCH {{baseUrl}}/exames/exames/{{exameId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "processamento": "Centrifugar a 3000rpm por 10 minutos, separar soro",
+  "tecnica_coleta": "Punção venosa periférica",
+  "distribuicao": "Homogeneizar tubo, processar em até 4 horas"
+}
+
+###
+
 ### Atualizar lembretes do exame
 PATCH {{baseUrl}}/exames/exames/{{exameId}}
 Content-Type: {{contentType}}
@@ -99,17 +63,6 @@ Authorization: Bearer {{token}}
   "lembrete_coletora": "Homogeneizar suavemente o tubo 8-10 vezes",
   "lembrete_recepcionista_agendamento": "Verificar jejum do paciente antes de agendar",
   "lembrete_recepcionista_os": "Exame deve ser coletado em tubo EDTA (tampa roxa)"
-}
-
-###
-
-### Atualizar unidade de destino
-PATCH {{baseUrl}}/exames/exames/{{exameId}}
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-  "unidade_destino_id": "{{unidadeDestinoId}}"
 }
 
 ###
@@ -137,37 +90,47 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Buscar exame por ID (verificar laboratorio de apoio vinculado)
+### Buscar exame por ID (verificar unidades vinculadas)
 GET {{baseUrl}}/exames/exames/{{exameId}}
 Authorization: Bearer {{token}}
 
-### Expected Response com laboratorioApoio
+### Expected Response com unidades
 # Status: 200 OK
 # {
 #   "id": "uuid",
 #   "codigo_interno": "TSH001",
 #   "nome": "TSH - Hormônio Tireoestimulante",
-#   "tipo_realizacao": "apoio",
-#   "laboratorio_apoio_id": "uuid",
-#   "laboratorioApoio": {
-#     "id": "uuid",
-#     "codigo": "LAB001",
-#     "nome": "Laboratório DB",
-#     "razao_social": "DB Diagnósticos",
-#     "cnpj": "12345678000199",
-#     "tem_integracao_api": true,
-#     "forma_envio": "api",
-#     "prazo_padrao_dias": 3,
-#     "status": "ativo"
-#   },
-#   "telemedicina_id": null,
-#   "telemedicina": null,
+#   "processamento": "Centrifugar a 3000rpm",
+#   "unidades": [
+#     {
+#       "id": "uuid",
+#       "exame_id": "uuid",
+#       "unidade_id": "uuid",
+#       "destino": "apoio",
+#       "laboratorio_apoio_id": "uuid",
+#       "telemedicina_id": null,
+#       "ativo": true,
+#       "unidadeSaude": { "id": "uuid", "nome": "Unidade Centro" },
+#       "laboratorioApoio": { "id": "uuid", "nome": "Laboratório DB" }
+#     },
+#     {
+#       "id": "uuid",
+#       "exame_id": "uuid",
+#       "unidade_id": "uuid",
+#       "destino": "interno",
+#       "laboratorio_apoio_id": null,
+#       "telemedicina_id": null,
+#       "ativo": true,
+#       "unidadeSaude": { "id": "uuid", "nome": "Unidade Matriz" }
+#     }
+#   ],
 #   ...
 # }
 
 ###
 
 ### Listar exames por laboratório de apoio
+### Retorna todos os exames que em alguma unidade têm destino=apoio com este lab
 GET {{baseUrl}}/exames/exames/laboratorio/{{laboratorioApoioId}}
 Authorization: Bearer {{token}}
 
@@ -178,7 +141,7 @@ Authorization: Bearer {{token}}
 #     "id": "uuid",
 #     "codigo_interno": "TSH001",
 #     "nome": "TSH",
-#     "laboratorioApoio": { ... }
+#     "unidades": [ ... ]
 #   },
 #   ...
 # ]
@@ -186,8 +149,57 @@ Authorization: Bearer {{token}}
 ###
 
 ### Listar laboratórios de apoio disponíveis
-### Nota: Esta é a tabela antiga laboratorios_apoio (específica para exames)
-### Para laboratórios que seguem o padrão Empresa, use /api/v1/relacionamento/laboratorios
+### Nota: Esta é a tabela laboratorios_apoio (específica para exames)
 GET {{baseUrl}}/exames/laboratorios-apoio
 Authorization: Bearer {{token}}
 
+###
+
+### ============================================================
+### GERENCIAMENTO DE VÍNCULOS EXAME-UNIDADE
+### ============================================================
+### Os vínculos entre exames e unidades (com destino) são gerenciados
+### através de endpoints específicos ou incluídos na criação/atualização do exame.
+###
+### Para criar um exame já com unidades vinculadas, use o campo "unidades"
+### no corpo do POST/PATCH. Exemplo:
+###
+### PATCH {{baseUrl}}/exames/exames/{{exameId}}
+### {
+###   "unidades": [
+###     { "unidade_id": "uuid", "destino": "interno" },
+###     { "unidade_id": "uuid", "destino": "apoio", "laboratorio_apoio_id": "uuid" }
+###   ]
+### }
+###
+### Regras de destino:
+### - "interno": não pode ter laboratorio_apoio_id nem telemedicina_id
+### - "apoio": deve ter laboratorio_apoio_id, não pode ter telemedicina_id
+### - "telemedicina": deve ter telemedicina_id, não pode ter laboratorio_apoio_id
+###
+
+### Atualizar exame adicionando/substituindo vínculos com unidades
+PATCH {{baseUrl}}/exames/exames/{{exameId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "unidades": [
+    {
+      "unidade_id": "{{unidadeCentralId}}",
+      "destino": "interno"
+    },
+    {
+      "unidade_id": "{{unidadeFilialId}}",
+      "destino": "apoio",
+      "laboratorio_apoio_id": "{{laboratorioApoioId}}"
+    },
+    {
+      "unidade_id": "{{unidadeTeleId}}",
+      "destino": "telemedicina",
+      "telemedicina_id": "{{telemedicinaId}}"
+    }
+  ]
+}
+
+###

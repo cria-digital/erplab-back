@@ -6,18 +6,14 @@ import {
   UpdateDateColumn,
   ManyToOne,
   OneToMany,
-  ManyToMany,
   JoinColumn,
-  JoinTable,
   Index,
 } from 'typeorm';
 import { OrdemServicoExame } from './ordem-servico-exame.entity';
 import { ResultadoExame } from './resultado-exame.entity';
-import { LaboratorioApoio } from './laboratorio-apoio.entity';
 import { ExameLaboratorioApoio } from './exame-laboratorio-apoio.entity';
+import { ExameUnidade } from './exame-unidade.entity';
 import { AlternativaCampoFormulario } from '../../../infraestrutura/campos-formulario/entities/alternativa-campo-formulario.entity';
-import { Telemedicina } from '../../../relacionamento/telemedicina/entities/telemedicina.entity';
-import { UnidadeSaude } from '../../../cadastros/unidade-saude/entities/unidade-saude.entity';
 import { Amostra } from '../../amostras/entities/amostra.entity';
 
 @Entity('exames')
@@ -280,40 +276,7 @@ export class Exame {
   })
   requisitos: string;
 
-  // Integração e envio
-  @Column({
-    type: 'enum',
-    enum: ['interno', 'apoio', 'telemedicina'],
-    default: 'interno',
-    comment: 'Onde o exame é realizado',
-  })
-  tipo_realizacao: string;
-
-  @Column({
-    nullable: true,
-    comment: 'ID do laboratório de apoio',
-  })
-  laboratorio_apoio_id: string;
-
-  @Column({
-    nullable: true,
-    comment: 'FK para telemedicina (quando tipo_realizacao = telemedicina)',
-  })
-  telemedicina_id: string;
-
-  @Column({
-    nullable: true,
-    comment: 'FK para unidade de saúde de destino',
-  })
-  unidade_destino_id: string;
-
-  @Column({
-    type: 'enum',
-    enum: ['nao', 'sim'],
-    default: 'nao',
-    comment: 'Se envia automaticamente para laboratório de apoio',
-  })
-  envio_automatico: string;
+  // Integração movida para tabela exames_unidades (relacionamento OneToMany)
 
   // Prazos
   @Column({
@@ -374,6 +337,13 @@ export class Exame {
     comment: 'Processamento e entrega de laudos',
   })
   processamento_entrega: string;
+
+  @Column({
+    type: 'text',
+    nullable: true,
+    comment: 'Informações de processamento do exame',
+  })
+  processamento: string;
 
   @Column({
     type: 'text',
@@ -540,9 +510,7 @@ export class Exame {
   @JoinColumn({ name: 'setor_id' })
   setorAlternativa?: AlternativaCampoFormulario;
 
-  @ManyToOne(() => LaboratorioApoio, { eager: false })
-  @JoinColumn({ name: 'laboratorio_apoio_id' })
-  laboratorioApoio?: LaboratorioApoio;
+  // laboratorioApoio removido - integração movida para exames_unidades
 
   // Relacionamentos com campos de formulário
   @ManyToOne(() => AlternativaCampoFormulario, { eager: false })
@@ -585,14 +553,7 @@ export class Exame {
 
   // formatos_laudo é JSONB (array de strings) - não tem relacionamento
 
-  // Relacionamentos de integração
-  @ManyToOne(() => Telemedicina, { eager: false })
-  @JoinColumn({ name: 'telemedicina_id' })
-  telemedicina?: Telemedicina;
-
-  @ManyToOne(() => UnidadeSaude, { eager: false })
-  @JoinColumn({ name: 'unidade_destino_id' })
-  unidadeDestino?: UnidadeSaude;
+  // Relacionamentos de integração movidos para exames_unidades
 
   @OneToMany(() => OrdemServicoExame, (osExame) => osExame.exame)
   ordensServico?: OrdemServicoExame[];
@@ -600,14 +561,9 @@ export class Exame {
   @OneToMany(() => ResultadoExame, (resultado) => resultado.exame)
   resultados?: ResultadoExame[];
 
-  // Relacionamento N:M - Unidades que realizam o exame
-  @ManyToMany(() => UnidadeSaude)
-  @JoinTable({
-    name: 'exames_unidades',
-    joinColumn: { name: 'exame_id', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'unidade_id', referencedColumnName: 'id' },
-  })
-  unidadesQueRealizam?: UnidadeSaude[];
+  // Relacionamento 1:N - Unidades que realizam o exame (com destino)
+  @OneToMany(() => ExameUnidade, (eu) => eu.exame)
+  unidades?: ExameUnidade[];
 
   // Relacionamento 1:N - Configurações específicas por laboratório de apoio
   @OneToMany(() => ExameLaboratorioApoio, (exameLab) => exameLab.exame)
@@ -636,9 +592,7 @@ export class Exame {
     return this.formato_prazo || `${this.prazo_entrega_dias} dia(s) útil(eis)`;
   }
 
-  isExterno(): boolean {
-    return this.tipo_realizacao !== 'interno';
-  }
+  // isExterno() removido - verificar via unidades[].destino
 
   requiresPreparo(): boolean {
     return this.necessita_preparo === 'sim';

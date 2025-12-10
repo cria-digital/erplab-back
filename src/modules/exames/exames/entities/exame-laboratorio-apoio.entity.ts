@@ -206,6 +206,13 @@ export class ExameLaboratorioApoio {
   })
   distribuicao: string;
 
+  @Column({
+    type: 'text',
+    nullable: true,
+    comment: 'Informações de processamento para laboratório de apoio',
+  })
+  processamento: string;
+
   // Processamento e Entrega de Laudos
   @Column({
     type: 'int',
