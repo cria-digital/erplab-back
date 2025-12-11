@@ -1,0 +1,51 @@
+### =====================================================
+### DB DIAGNÓSTICOS - CANCELAMENTOS
+### =====================================================
+
+### Cancelar exame temporariamente (CTP)
+### O exame pode ser reativado posteriormente
+POST {{baseUrl}}/integracoes/db-diagnosticos/cancelar-exame
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "numeroAtendimentoApoiado": "PED-2025-001",
+  "codigoExameDb": "HEMO",
+  "tipoCancelamento": "CTP"
+}
+
+### Cancelar exame definitivamente (CDP)
+### O exame não pode ser reativado
+POST {{baseUrl}}/integracoes/db-diagnosticos/cancelar-exame
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "numeroAtendimentoApoiado": "PED-2025-002",
+  "codigoExameDb": "GLI",
+  "tipoCancelamento": "CDP"
+}
+
+### Cancelar exame com dados adicionais do paciente
+POST {{baseUrl}}/integracoes/db-diagnosticos/cancelar-exame
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "numeroAtendimentoApoiado": "PED-2025-003",
+  "codigoExameDb": "MIC24",
+  "tipoCancelamento": "CTP",
+  "paciente": {
+    "nomePaciente": "CARLOS SOUZA TESTE",
+    "sexoPaciente": "M",
+    "dataNascimento": "1970-03-25"
+  },
+  "solicitantes": [
+    {
+      "nomeSolicitante": "Dr. Pedro Lima",
+      "codigoConselho": "CRM",
+      "ufConselho": "PR",
+      "numeroConselho": "67890"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+### =====================================================
+### DB DIAGNÓSTICOS - ETIQUETAS E RECOLETAS
+### =====================================================
+
+### Reimprimir etiquetas por número do apoiado
+POST {{baseUrl}}/integracoes/db-diagnosticos/etiquetas/reimprimir
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "numeroAtendimentoApoiado": "PED-2025-001"
+}
+
+### Reimprimir etiquetas por número do DB
+POST {{baseUrl}}/integracoes/db-diagnosticos/etiquetas/reimprimir
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "numeroAtendimentoDb": "1020208062"
+}
+
+### Consultar procedimentos pendentes (sem filtro de data)
+POST {{baseUrl}}/integracoes/db-diagnosticos/pendencias
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{}
+
+### Consultar procedimentos pendentes por período
+POST {{baseUrl}}/integracoes/db-diagnosticos/pendencias
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "dataInicio": "2025-12-01",
+  "dataFim": "2025-12-11"
+}
+
+### Gerar etiqueta para recoleta de exame pendente
+POST {{baseUrl}}/integracoes/db-diagnosticos/recoleta/etiqueta
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "numeroAtendimentoDb": "1020208062",
+  "codigoExameDb": "MIC24"
+}

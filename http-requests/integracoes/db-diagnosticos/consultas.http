@@ -1,0 +1,92 @@
+### =====================================================
+### DB DIAGNÓSTICOS - CONSULTAS DIVERSAS
+### =====================================================
+
+### Consultar status do pedido por número do apoiado
+POST {{baseUrl}}/integracoes/db-diagnosticos/status
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "numeroAtendimentoApoiado": "PED-2025-001"
+}
+
+### Consultar status do pedido por número do DB
+POST {{baseUrl}}/integracoes/db-diagnosticos/status
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "numeroAtendimentoDb": "1020208062"
+}
+
+### Consultar laudo/resultado por número do apoiado
+POST {{baseUrl}}/integracoes/db-diagnosticos/laudo
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "numeroAtendimentoApoiado": "PED-2025-001"
+}
+
+### Consultar laudo/resultado por número do DB
+POST {{baseUrl}}/integracoes/db-diagnosticos/laudo
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "numeroAtendimentoDb": "1020208062"
+}
+
+### Consultar laudos em lista (múltiplos pedidos)
+POST {{baseUrl}}/integracoes/db-diagnosticos/laudo/lista
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+[
+  "1020208062",
+  "1020208063",
+  "1020208064"
+]
+
+### Consultar laudos por período
+POST {{baseUrl}}/integracoes/db-diagnosticos/laudo/periodo
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "dataInicio": "2025-12-01",
+  "dataFim": "2025-12-11"
+}
+
+### Consultar laudo em PDF (link ou Base64)
+POST {{baseUrl}}/integracoes/db-diagnosticos/laudo/pdf
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "numeroAtendimentoDb": "1020208062"
+}
+
+### Consultar lote de resultados
+POST {{baseUrl}}/integracoes/db-diagnosticos/lote/resultados
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "numeroLote": "080616093651_12588"
+}
+
+### Relatório de requisições enviadas por período
+POST {{baseUrl}}/integracoes/db-diagnosticos/relatorio/requisicoes
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "dataInicio": "2025-12-01",
+  "dataFim": "2025-12-11"
+}
+
+### Verificar saúde da integração
+GET {{baseUrl}}/integracoes/db-diagnosticos/health
+Authorization: Bearer {{token}}

@@ -1,0 +1,140 @@
+### =====================================================
+### DB DIAGNÓSTICOS - ENVIO DE PEDIDOS
+### =====================================================
+
+### Enviar pedido simples com um exame
+POST {{baseUrl}}/integracoes/db-diagnosticos/pedido
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "numeroAtendimentoApoiado": "PED-2025-001",
+  "paciente": {
+    "nomePaciente": "MARIA SILVA TESTE",
+    "sexoPaciente": "F",
+    "dataNascimento": "1985-05-15",
+    "cpf": "12345678901"
+  },
+  "prioridade": "R",
+  "solicitantes": [
+    {
+      "nomeSolicitante": "Dr. João Santos",
+      "codigoConselho": "CRM",
+      "ufConselho": "PR",
+      "numeroConselho": "12345"
+    }
+  ],
+  "procedimentos": [
+    {
+      "codigoExameDb": "HEMO"
+    }
+  ]
+}
+
+### Enviar pedido completo com múltiplos exames
+POST {{baseUrl}}/integracoes/db-diagnosticos/pedido
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "numeroAtendimentoApoiado": "PED-2025-002",
+  "paciente": {
+    "rgPacienteApoiado": "RG123456",
+    "nomePaciente": "JOÃO PEREIRA TESTE",
+    "sexoPaciente": "M",
+    "dataNascimento": "1980-10-20",
+    "cpf": "98765432100",
+    "cartaoNacionalSaude": "123456789012345"
+  },
+  "prioridade": "U",
+  "dadosClinicos": "Paciente com suspeita de diabetes",
+  "medicamentos": "Metformina 500mg",
+  "altura": 1.75,
+  "peso": 80,
+  "questionarios": [
+    {
+      "codigoPergunta": "ValorHematócrito",
+      "resposta": "42.5"
+    }
+  ],
+  "solicitantes": [
+    {
+      "nomeSolicitante": "Dra. Ana Costa",
+      "codigoConselho": "CRM",
+      "ufConselho": "SP",
+      "numeroConselho": "54321"
+    }
+  ],
+  "procedimentos": [
+    {
+      "codigoExameDb": "GLI",
+      "descricaoExameApoiado": "Glicemia de jejum"
+    },
+    {
+      "codigoExameDb": "HB1C",
+      "descricaoExameApoiado": "Hemoglobina glicada"
+    },
+    {
+      "codigoExameDb": "CREA",
+      "descricaoExameApoiado": "Creatinina"
+    }
+  ]
+}
+
+### Enviar pedido com exame de urina 24h
+POST {{baseUrl}}/integracoes/db-diagnosticos/pedido
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "numeroAtendimentoApoiado": "PED-2025-003",
+  "paciente": {
+    "nomePaciente": "CARLOS SOUZA TESTE",
+    "sexoPaciente": "M",
+    "dataNascimento": "1970-03-25"
+  },
+  "solicitantes": [
+    {
+      "nomeSolicitante": "Dr. Pedro Lima",
+      "codigoConselho": "CRM",
+      "ufConselho": "PR",
+      "numeroConselho": "67890"
+    }
+  ],
+  "procedimentos": [
+    {
+      "codigoExameDb": "MIC24",
+      "volumeUrinario": 1500,
+      "descricaoExameApoiado": "Microalbuminúria 24h"
+    }
+  ]
+}
+
+### Enviar pedido gestante com DUM
+POST {{baseUrl}}/integracoes/db-diagnosticos/pedido
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "numeroAtendimentoApoiado": "PED-2025-004",
+  "paciente": {
+    "nomePaciente": "FERNANDA OLIVEIRA TESTE",
+    "sexoPaciente": "F",
+    "dataNascimento": "1992-07-10"
+  },
+  "dataDum": "2024-10-01",
+  "solicitantes": [
+    {
+      "nomeSolicitante": "Dra. Maria Santos",
+      "codigoConselho": "CRM",
+      "ufConselho": "SP",
+      "numeroConselho": "11111"
+    }
+  ],
+  "procedimentos": [
+    {
+      "codigoExameDb": "BHCG",
+      "descricaoExameApoiado": "Beta HCG quantitativo"
+    }
+  ]
+}

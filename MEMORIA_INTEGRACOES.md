@@ -14,9 +14,9 @@ Este documento cataloga **todas as integrações** necessárias para o sistema E
 
 | Status       | Quantidade | Descrição                             |
 | ------------ | ---------- | ------------------------------------- |
-| Implementado | 3          | Código funcional, pronto para teste   |
+| Implementado | 4          | Código funcional, pronto para teste   |
 | Parcial      | 0          | Estrutura criada, falta implementação |
-| Planejado    | 16         | Documentado, aguardando implementação |
+| Planejado    | 15         | Documentado, aguardando implementação |
 
 ---
 
@@ -93,16 +93,96 @@ src/modules/
 
 #### 1.1 DB Diagnósticos – Webservice v2
 
-| Campo          | Valor           |
-| -------------- | --------------- |
-| **Status**     | Planejado       |
-| **Protocolo**  | SOAP/Webservice |
-| **Prioridade** | Alta            |
+| Campo          | Valor              |
+| -------------- | ------------------ |
+| **Status**     | IMPLEMENTADO       |
+| **Protocolo**  | SOAP (DBSync v2.0) |
+| **Prioridade** | Alta               |
 
-**Funcionalidades:**
+**Credenciais de Homologação:**
 
-- Envio de pedidos
-- Retorno de resultados
+```
+CodigoApoiado: 12588
+CodigoSenhaIntegracao: malore62
+WSDL: https://wsmb.diagnosticosdobrasil.com.br/dbsync/wsrvProtocoloDBSync.dbsync.svc?wsdl
+```
+
+**Variáveis de Ambiente (.env):**
+
+```env
+DB_DIAGNOSTICOS_CODIGO_APOIADO=12588
+DB_DIAGNOSTICOS_SENHA=malore62
+DB_DIAGNOSTICOS_WSDL_URL=https://wsmb.diagnosticosdobrasil.com.br/dbsync/wsrvProtocoloDBSync.dbsync.svc?wsdl
+DB_DIAGNOSTICOS_TIMEOUT=60000
+```
+
+**Métodos SOAP Implementados:**
+
+| Método                                | Descrição                         | Status       |
+| ------------------------------------- | --------------------------------- | ------------ |
+| `RecebeAtendimento`                   | Enviar pedidos e gerar etiquetas  | Implementado |
+| `EnviaLaudoAtendimento`               | Consultar resultado por pedido    | Implementado |
+| `EnviaLaudoAtendimentoLista`          | Consultar resultados em lote      | Implementado |
+| `EnviaLaudoAtendimentoPorPeriodo`     | Consultar resultados por período  | Implementado |
+| `ConsultaStatusAtendimento`           | Consultar status do pedido        | Implementado |
+| `EnviaAmostras`                       | Reimprimir etiquetas              | Implementado |
+| `ListaProcedimentosPendentes`         | Listar procedimentos pendentes    | Implementado |
+| `EnviaAmostrasProcedimentosPendentes` | Gerar etiquetas para recoletas    | Implementado |
+| `EnviaLoteResultados`                 | Consultar lote de resultados      | Implementado |
+| `EnviaResultadoBase64`                | Consultar laudo PDF               | Implementado |
+| `RelatorioRequisicoesEnviadas`        | Relatório de requisições enviadas | Implementado |
+
+**Sistema de Cancelamento:**
+
+- **CTP (Cancelamento Temporário)**: Exame pode ser reativado
+- **CDP (Cancelamento Definitivo)**: Exame não pode ser reativado
+- Usa o campo `CodigoMPP` no procedimento para cancelar
+
+**Código Implementado:**
+
+```
+src/modules/integracoes/laboratorios/db-diagnosticos/
+├── db-diagnosticos.module.ts
+├── db-diagnosticos.service.ts       # Service com 11 métodos SOAP
+├── db-diagnosticos.controller.ts    # Controller REST
+├── dto/
+│   └── db-diagnosticos.dto.ts       # DTOs validados
+└── interfaces/
+    └── db-diagnosticos.interface.ts # Interfaces TypeScript
+```
+
+**Endpoints REST:**
+
+| Endpoint                                                    | Método | Descrição                        |
+| ----------------------------------------------------------- | ------ | -------------------------------- |
+| `/api/v1/integracoes/db-diagnosticos/pedido`                | POST   | Enviar pedido e gerar etiquetas  |
+| `/api/v1/integracoes/db-diagnosticos/status`                | POST   | Consultar status do pedido       |
+| `/api/v1/integracoes/db-diagnosticos/laudo`                 | POST   | Consultar resultado por pedido   |
+| `/api/v1/integracoes/db-diagnosticos/laudo/lista`           | POST   | Consultar resultados em lote     |
+| `/api/v1/integracoes/db-diagnosticos/laudo/periodo`         | POST   | Consultar resultados por período |
+| `/api/v1/integracoes/db-diagnosticos/laudo/pdf`             | POST   | Consultar laudo PDF              |
+| `/api/v1/integracoes/db-diagnosticos/etiquetas/reimprimir`  | POST   | Reimprimir etiquetas             |
+| `/api/v1/integracoes/db-diagnosticos/pendencias`            | POST   | Consultar pendências técnicas    |
+| `/api/v1/integracoes/db-diagnosticos/recoleta/etiqueta`     | POST   | Gerar etiqueta para recoleta     |
+| `/api/v1/integracoes/db-diagnosticos/lote/resultados`       | POST   | Consultar lote de resultados     |
+| `/api/v1/integracoes/db-diagnosticos/relatorio/requisicoes` | POST   | Relatório de requisições         |
+| `/api/v1/integracoes/db-diagnosticos/cancelar-exame`        | POST   | Cancelar exame (CTP/CDP)         |
+| `/api/v1/integracoes/db-diagnosticos/health`                | GET    | Verificar saúde da integração    |
+
+**HTTP Test Files:**
+
+```
+http-requests/integracoes/db-diagnosticos/
+├── pedidos.http        # Testes de envio de pedidos
+├── consultas.http      # Testes de consultas
+├── etiquetas.http      # Testes de etiquetas e recoletas
+└── cancelamentos.http  # Testes de cancelamentos
+```
+
+**Formato de Etiquetas:**
+
+- Retorna etiquetas em formato **EPL** (Eltron Programming Language)
+- Pronto para impressão em impressoras térmicas
 
 ---
 
@@ -681,7 +761,7 @@ export enum ProtocoloIntegracao {
 ### Curto Prazo (Semana 3-4)
 
 - [x] ~~Refatorar Hermes Pardini service~~ (CONCLUÍDO)
-- [ ] Criar schema DB Diagnósticos
+- [x] **DB Diagnósticos - IMPLEMENTADO (11/12/2025)**
 - [ ] Implementar WhatsApp Cloud API
 
 ### Médio Prazo (Mês 2)
@@ -765,4 +845,4 @@ src/modules/integracoes/{tipo}/{nome}/
 
 **Última atualização**: 11/12/2025
 **Autor**: Claude Code
-**Versão do documento**: 2.1
+**Versão do documento**: 2.2
