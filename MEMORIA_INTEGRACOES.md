@@ -1,613 +1,768 @@
 # Memória de Implementação - Sistema de Integrações
 
-**Data**: 25 de Novembro de 2025
-**Status**: Refatoração principal concluída, migrations pendentes
-**Build**: ✅ Passando (0 erros TypeScript)
+**Data**: 11 de Dezembro de 2025
+**Versão**: 2.0
+**Fonte**: PDF APIS.pdf do cliente + código existente
 
 ---
 
-## 🎯 Objetivo da Refatoração
+## Visão Geral
 
-Transformar o sistema de integrações de **hardcoded** (campos fixos no banco) para **schema-driven** (campos dinâmicos definidos em código).
+Este documento cataloga **todas as integrações** necessárias para o sistema ERP Lab, conforme especificado pelo cliente, e documenta o status de implementação de cada uma.
 
-### Antes (Sistema Antigo)
+### Resumo de Status
 
-```typescript
-// Tabela tinha 42 campos fixos
-integracoes {
-  nome_laboratorio,
-  url_base,
-  usuario,
-  senha,
-  token_autenticacao,
-  ... // 37+ outros campos hardcoded
-}
-```
-
-**Problemas:**
-- Impossível adicionar novos tipos de integração sem alterar tabela
-- Campos de laboratório misturados com campos de banco/gateway
-- Zero flexibilidade
-
-### Depois (Sistema Novo)
-
-```typescript
-// Tabela com apenas 15 campos genéricos
-integracoes {
-  template_slug,        // qual schema usar (ex: 'hermes-pardini')
-  codigo_identificacao, // código único da instância
-  nome_instancia,       // nome descritivo
-  tipos_contexto,       // array de contextos
-  ...
-}
-
-// Configurações em tabela key-value
-integracoes_configuracoes {
-  integracao_id,
-  chave,   // 'usuario', 'senha', 'ambiente'...
-  valor    // valores específicos de cada integração
-}
-```
-
-**Vantagens:**
-- Schemas definidos em TypeScript (src/modules/atendimento/integracoes/schemas/)
-- Adicionar nova integração = criar arquivo .schema.ts (zero migrations!)
-- Frontend busca schema via API e renderiza campos dinamicamente
-- Validações automáticas baseadas no schema
+| Status       | Quantidade | Descrição                             |
+| ------------ | ---------- | ------------------------------------- |
+| Implementado | 3          | Código funcional, pronto para teste   |
+| Parcial      | 0          | Estrutura criada, falta implementação |
+| Planejado    | 16         | Documentado, aguardando implementação |
 
 ---
 
-## 📋 Progresso Atual
+## Arquitetura Técnica
 
-### ✅ Concluído
+### Sistema Schema-Driven
 
-1. **Schemas criados**
-   - `src/modules/atendimento/integracoes/schemas/types.ts` - Interfaces simplificadas
-   - `src/modules/atendimento/integracoes/schemas/hermes-pardini.schema.ts` - Exemplo completo
-   - `src/modules/atendimento/integracoes/schemas/index.ts` - Helpers
-
-2. **Entidades refatoradas**
-   - `Integracao` - 15 campos (era 42)
-   - `IntegracaoConfiguracao` - Tabela key-value
-
-3. **DTOs refatorados**
-   - `CreateIntegracaoDto` - 7 campos simples:
-     - `templateSlug`: string
-     - `codigoIdentificacao`: string
-     - `nomeInstancia`: string
-     - `descricao?`: string
-     - `tiposContexto`: TipoIntegracao[]
-     - `configuracoes`: Record<string, any>
-     - `observacoes?`: string
-   - `UpdateIntegracaoDto` - Usa PartialType (auto-atualiza)
-
-4. **Service refatorado** (`integracoes.service.ts`)
-   - ✅ `create()` - Cria integração + configurações em transação
-   - ✅ `findAll()` - Lista com configurações
-   - ✅ `findAtivos()` - Filtra ativos
-   - ✅ `findByTipo()` - Busca por tipo (usa array tiposContexto)
-   - ✅ `findByStatus()` - Filtra por status
-   - ✅ `findByCodigo()` - Busca por código
-   - ✅ `search()` - Busca por termo
-   - ✅ `findOne()` - Busca por ID
-   - ✅ `update()` - Atualiza integração + configurações
-   - ✅ `toggleStatus()` - Alterna ativo/inativo
-   - ✅ `updateStatus()` - Muda status
-   - ✅ `remove()` - Remove (CASCADE)
-   - ✅ `getEstatisticas()` - Estatísticas
-   - ✅ `testarConexao()` - Teste básico
-   - ✅ `sincronizar()` - Sincronização básica
-   - ✅ Validações de schema (campos obrigatórios)
-   - ✅ Transações em create/update
-
-5. **Controller refatorado** (`integracoes.controller.ts`)
-   - ✅ Todos os endpoints CRUD
-   - ✅ Endpoints de schemas:
-     - `GET /atendimento/integracoes/schemas` - Lista schemas
-     - `GET /atendimento/integracoes/schemas/:slug` - Busca schema
-   - ✅ Removido endpoint `findByUnidadeSaude` (não existe mais)
-
-6. **Module atualizado** (`integracoes.module.ts`)
-   - ✅ Registra ambas as entidades
-   - ✅ Registra service e controller
-   - ✅ Exporta service para uso em outros módulos
-
-7. **Migrations criadas** (NÃO EXECUTADAS!)
-   - `1763900000000-RefactorIntegracoesTable.ts` - Refatora tabela integracoes
-   - `1763900100000-CreateIntegracoesConfiguracoesTable.ts` - Cria tabela configurações
-
-8. **Arquivos HTTP de teste criados**
-   - `1-listar-schemas.http` - Listar e filtrar schemas
-   - `2-criar-integracao.http` - Criar integrações
-   - `3-listar-integracoes.http` - Listar e buscar
-   - `4-atualizar-integracao.http` - Atualizar
-   - `5-testar-e-sincronizar.http` - Testar conexão
-   - `6-deletar-integracao.http` - Deletar
-   - `7-fluxo-completo.http` - Exemplo completo
-
-### ⏳ Pendente
-
-1. **Migrations NÃO EXECUTADAS**
-   - ⚠️ **CRÍTICO**: Executar migrations SOMENTE quando tiver certeza
-   - Migration vai deletar 30+ campos da tabela `integracoes`
-   - Migration vai criar tabela `integracoes_configuracoes`
-
-2. **Arquivos Hermes Pardini** (movidos para `.old`)
-   - `services/hermes-pardini.service.ts.old` - Precisa refatoração completa
-   - `controllers/hermes-pardini.controller.ts.old` - Precisa refatoração completa
-   - **Motivo**: Ainda usam campos antigos (usuario, senha, urlBase, etc)
-   - **Solução**: Refatorar para buscar configs da tabela key-value
-
-3. **Testes**
-   - Testar endpoints via arquivos `.http`
-   - Testar criação/atualização de integração
-   - Testar validação de campos obrigatórios
-
-4. **Outros schemas**
-   - Criar schemas para outras integrações (Santander, Orizon TISS, etc)
-   - Seguir padrão do `hermes-pardini.schema.ts`
-
----
-
-## 🔑 Conceitos-Chave do Sistema
-
-### 1. Schema vs Integração vs Configuração
+O sistema de integrações foi refatorado de **hardcoded** para **schema-driven**:
 
 ```
 SCHEMA (código TypeScript)
-└─> Define CAMPOS disponíveis
-    └─> Ex: usuario, senha, ambiente, url_wsdl, timeout
+└─> Define CAMPOS disponíveis para configuração
+    └─> Ex: usuario, senha, ambiente, url_wsdl
 
-INTEGRAÇÃO (registro no banco)
-└─> INSTÂNCIA de um schema
+INTEGRAÇÃO (registro no banco - tabela `integracoes`)
+└─> INSTÂNCIA configurada de um schema
     └─> Ex: "Hermes Pardini - Unidade Centro"
-        └─> templateSlug = 'hermes-pardini'
-        └─> codigo = 'HP-CENTRO-01'
 
-CONFIGURAÇÕES (tabela key-value)
-└─> VALORES específicos daquela instância
-    └─> { chave: 'usuario', valor: 'hp_user_centro' }
-    └─> { chave: 'senha', valor: '[ENCRYPTED]' }
-    └─> { chave: 'ambiente', valor: 'producao' }
+CONFIGURAÇÕES (tabela `integracoes_configuracoes`)
+└─> VALORES específicos (chave-valor)
+    └─> { chave: 'usuario', valor: 'hp_user' }
 ```
 
-### 2. Fluxo de Criação
+### Estrutura de Arquivos
 
-```mermaid
-Frontend                Backend                     Database
-   |                       |                            |
-   | GET /schemas          |                            |
-   |---------------------->|                            |
-   |                       | Retorna hermes-pardini.ts  |
-   |<----------------------|                            |
-   |                       |                            |
-   | Renderiza formulário  |                            |
-   | com campos do schema  |                            |
-   |                       |                            |
-   | POST /integracoes     |                            |
-   | {                     |                            |
-   |   templateSlug,       |                            |
-   |   configuracoes: {...}|                            |
-   | }                     |                            |
-   |---------------------->|                            |
-   |                       | 1. Valida schema existe    |
-   |                       | 2. Valida campos obrigatórios
-   |                       | 3. Inicia transação        |
-   |                       |                            |
-   |                       | INSERT integracoes ------->|
-   |                       |                            |
-   |                       | INSERT configuracoes ----->|
-   |                       | (múltiplos registros)      |
-   |                       |                            |
-   |                       | COMMIT transação           |
-   |                       |                            |
-   |<----------------------| Retorna integração criada  |
+```
+src/modules/
+├── atendimento/integracoes/           # Sistema genérico de integrações
+│   ├── schemas/
+│   │   ├── types.ts                   # Interfaces e enums
+│   │   ├── hermes-pardini.schema.ts   # Schema Hermes Pardini
+│   │   └── index.ts                   # Registro de schemas
+│   ├── entities/
+│   │   ├── integracao.entity.ts       # Entidade principal
+│   │   └── integracao-configuracao.entity.ts
+│   ├── dto/
+│   │   ├── create-integracao.dto.ts
+│   │   ├── update-integracao.dto.ts
+│   │   └── hermes-pardini.dto.ts
+│   ├── integracoes.service.ts
+│   ├── integracoes.controller.ts
+│   └── integracoes.module.ts
+│
+└── integracoes/                        # Implementações específicas
+    ├── soap/
+    │   ├── soap-client.service.ts      # Cliente SOAP genérico
+    │   ├── soap.module.ts
+    │   └── interfaces/
+    ├── tiss/
+    │   ├── tiss.module.ts
+    │   └── orizon/                     # Orizon TISS (IMPLEMENTADO!)
+    │       ├── orizon-tiss.service.ts
+    │       ├── orizon-tiss.controller.ts
+    │       ├── orizon-tiss.module.ts
+    │       ├── interfaces/
+    │       └── dto/
+    └── laboratorios/
+        ├── laboratorios.module.ts
+        └── hermes-pardini/             # Hermes Pardini (IMPLEMENTADO!)
+            ├── hermes-pardini.module.ts
+            ├── hermes-pardini.service.ts
+            ├── hermes-pardini.controller.ts
+            ├── interfaces/
+            │   └── hermes-pardini.interface.ts
+            └── dto/
+                └── hermes-pardini.dto.ts
 ```
 
-### 3. Tipos de Campo Suportados
+---
+
+## Inventário Completo de Integrações
+
+### 1. Laboratórios de Apoio
+
+#### 1.1 DB Diagnósticos – Webservice v2
+
+| Campo          | Valor           |
+| -------------- | --------------- |
+| **Status**     | Planejado       |
+| **Protocolo**  | SOAP/Webservice |
+| **Prioridade** | Alta            |
+
+**Funcionalidades:**
+
+- Envio de pedidos
+- Retorno de resultados
+
+---
+
+#### 1.2 Hermes Pardini – Lab-to-Lab
+
+| Campo                   | Valor        |
+| ----------------------- | ------------ |
+| **Status**              | IMPLEMENTADO |
+| **Protocolo**           | SOAP         |
+| **Prioridade**          | Alta         |
+| **LC (Código Cliente)** | 4895         |
+
+**Credenciais:**
+
+| Ambiente        | Login | Senha | URL Webservice                                                  |
+| --------------- | ----- | ----- | --------------------------------------------------------------- |
+| **Produção**    | 15665 | 5431  | https://www.hermespardini.com.br/b2b/HPWS.XMLServer.cls         |
+| **Homologação** | 12000 | 5990  | https://www.hermespardini.com.br/b2bhomologa/HPWS.XMLServer.cls |
+
+**Variáveis de Ambiente (.env):**
+
+```env
+HERMES_PARDINI_LOGIN=15665
+HERMES_PARDINI_SENHA=5431
+HERMES_PARDINI_AMBIENTE=producao
+HERMES_PARDINI_VALOR_REFERENCIA=0
+HERMES_PARDINI_PAPEL_TIMBRADO=0
+HERMES_PARDINI_VERSAO_RESULTADO=1
+HERMES_PARDINI_TIMEOUT=30000
+HERMES_PARDINI_CODIGO_CLIENTE=4895
+```
+
+**URLs de Referência:**
+
+- Documentação: http://www.hermespardini.com.br/cal/hpws_1/documentacao.html
+- Tabela de Exames: http://www.hermespardini.com.br/cal/tabexalhpV2.xml
+- Modelos de Retorno: https://www.hermespardini.com.br/cal/exames/modelos.xml
+
+**Métodos SOAP Implementados:**
+
+| Método                     | Descrição                            | Status       |
+| -------------------------- | ------------------------------------ | ------------ |
+| `incluirPedido`            | Envia novo pedido de exames          | Implementado |
+| `getResultadoPedido`       | Consulta resultados/laudos           | Implementado |
+| `cancelaAmostra`           | Cancela amostra por código de barras | Implementado |
+| `cancelaExame`             | Cancela exame específico             | Implementado |
+| `consultaPendenciaTecnica` | Lista pendências técnicas            | Implementado |
+| `consultaRastreabilidade`  | Rastreia pedido/amostra              | Implementado |
+| `consultaStatusPedido`     | Status do pedido                     | Implementado |
+| `getGrupoFracionamento`    | Grupos de fracionamento              | Implementado |
+
+**Configurações de Retorno:**
+
+| Parâmetro         | Valores | Descrição                                       |
+| ----------------- | ------- | ----------------------------------------------- |
+| `valorReferencia` | 0, 1, 2 | 0=Estruturado, 1=Bloco texto, 2=Individualizado |
+| `papelTimbrado`   | 0, 1    | 0=Laudo simples, 1=Laudo personalizado          |
+| `versaoResultado` | 1-10    | Versão do resultado (default: 1)                |
+
+**Código Implementado:**
+
+```
+src/modules/integracoes/laboratorios/hermes-pardini/
+├── hermes-pardini.module.ts
+├── hermes-pardini.service.ts      # Service com 8 métodos SOAP
+├── hermes-pardini.controller.ts   # Controller REST
+├── dto/
+│   └── hermes-pardini.dto.ts      # DTOs validados
+└── interfaces/
+    └── hermes-pardini.interface.ts # Interfaces TypeScript
+```
+
+**Endpoints REST:**
+
+| Endpoint                                              | Método | Descrição                      |
+| ----------------------------------------------------- | ------ | ------------------------------ |
+| `/api/v1/integracoes/hermes-pardini/config`           | GET    | Configuração atual (sem senha) |
+| `/api/v1/integracoes/hermes-pardini/config`           | POST   | Atualizar configuração         |
+| `/api/v1/integracoes/hermes-pardini/pedido`           | POST   | Enviar novo pedido             |
+| `/api/v1/integracoes/hermes-pardini/resultado`        | POST   | Consultar resultado            |
+| `/api/v1/integracoes/hermes-pardini/resultado-lab`    | POST   | Consultar por código do lab    |
+| `/api/v1/integracoes/hermes-pardini/cancelar-amostra` | POST   | Cancelar amostra               |
+| `/api/v1/integracoes/hermes-pardini/cancelar-exame`   | POST   | Cancelar exame                 |
+| `/api/v1/integracoes/hermes-pardini/pendencias`       | POST   | Consultar pendências           |
+| `/api/v1/integracoes/hermes-pardini/rastreabilidade`  | POST   | Rastrear pedido                |
+| `/api/v1/integracoes/hermes-pardini/status`           | POST   | Status do pedido               |
+| `/api/v1/integracoes/hermes-pardini/fracionamento`    | GET    | Grupos de fracionamento        |
+
+**Schema Existente:** `src/modules/atendimento/integracoes/schemas/hermes-pardini.schema.ts`
+
+---
+
+### 2. Telemedicina
+
+#### 2.1 RWE Clínica
+
+| Campo          | Valor                          |
+| -------------- | ------------------------------ |
+| **Status**     | Planejado                      |
+| **Protocolo**  | REST API                       |
+| **URL API**    | https://telemed.rwedev.com/api |
+| **Prioridade** | Média                          |
+
+**Funcionalidades:**
+
+- Envio de exames PDF
+- Recebimento de laudos PDF
+- Atualização de status
+
+---
+
+### 3. API OCR
+
+| Campo          | Valor     |
+| -------------- | --------- |
+| **Status**     | Planejado |
+| **Protocolo**  | REST API  |
+| **Prioridade** | Média     |
+
+**Documentos suportados:**
+
+- Boletos
+- Notas Fiscais (NFs)
+- Pedidos médicos
+- Documentos diversos
+
+---
+
+### 4. PACs (Picture Archiving and Communication System)
+
+| Campo          | Valor     |
+| -------------- | --------- |
+| **Status**     | Planejado |
+| **Protocolo**  | DICOM     |
+| **Prioridade** | Média     |
+
+**Funcionalidades:**
+
+- Armazenamento DICOM
+- Visualização web
+- Recebimento de exames
+- Envio para análise
+
+---
+
+### 5. WhatsApp – Comunicação
+
+#### 5.1 WhatsApp Cloud API (Meta Oficial)
+
+| Campo          | Valor     |
+| -------------- | --------- |
+| **Status**     | Planejado |
+| **Protocolo**  | REST API  |
+| **Prioridade** | Alta      |
+
+**Funcionalidades:**
+
+- Enviar mensagens
+- Templates aprovados
+- Arquivos PDF
+- Fila de atendimento
+- Chatbot com IA
+- Webhooks (respostas do cliente)
+
+---
+
+### 6. Adquirentes de Cartão
+
+#### 6.1 Safrapay API
+
+| Campo          | Valor     |
+| -------------- | --------- |
+| **Status**     | Planejado |
+| **Protocolo**  | REST API  |
+| **Prioridade** | Média     |
+
+**Funcionalidades:**
+
+- Transações diárias
+- Datas de repasse
+- Taxas aplicadas
+- Conciliação com extrato
+
+#### 6.2 Cielo API (Planejada)
+
+| Campo      | Valor              |
+| ---------- | ------------------ |
+| **Status** | Planejado (futuro) |
+
+#### 6.3 Rede API (Planejada)
+
+| Campo      | Valor              |
+| ---------- | ------------------ |
+| **Status** | Planejado (futuro) |
+
+---
+
+### 7. Bancos (Financeiro / Conciliação / Pagamentos)
+
+#### 7.1 Bradesco API
+
+| Campo          | Valor     |
+| -------------- | --------- |
+| **Status**     | Planejado |
+| **Protocolo**  | REST API  |
+| **Prioridade** | Alta      |
+
+**Funcionalidades:**
+
+- Boletos (gerar, registrar, consultar)
+- Pix (criar e consultar)
+- Pagamentos (boletos, tributos, TED)
+- Extrato (Open Finance)
+
+#### 7.2 Santander API
+
+| Campo          | Valor     |
+| -------------- | --------- |
+| **Status**     | Planejado |
+| **Protocolo**  | REST API  |
+| **Prioridade** | Alta      |
+
+**Funcionalidades:**
+
+- Boletos
+- Pagamentos
+- Conciliação
+- Pix
+
+#### 7.3 Safra API
+
+| Campo          | Valor     |
+| -------------- | --------- |
+| **Status**     | Planejado |
+| **Protocolo**  | REST API  |
+| **Prioridade** | Alta      |
+
+**Funcionalidades:**
+
+- Boletos
+- Pix
+- Pagamentos de contas
+- Conciliação bancária
+
+#### 7.4 ASAAS API
+
+| Campo          | Valor     |
+| -------------- | --------- |
+| **Status**     | Planejado |
+| **Protocolo**  | REST API  |
+| **Prioridade** | Alta      |
+
+**Funcionalidades:**
+
+- Boletos
+- Pix
+- Carnês
+- Notificações de pagamento
+
+#### 7.5 Open Finance (todos os bancos)
+
+| Campo          | Valor     |
+| -------------- | --------- |
+| **Status**     | Planejado |
+| **Protocolo**  | REST API  |
+| **Prioridade** | Média     |
+
+**Funcionalidades:**
+
+- Extrato bancário
+- Saldos
+- Movimentações
+
+---
+
+### 8. Prefeituras – NFS-e
+
+#### 8.1 Nuvem Fiscal
+
+| Campo          | Valor                           |
+| -------------- | ------------------------------- |
+| **Status**     | Planejado                       |
+| **Protocolo**  | REST API / SOAP                 |
+| **URL**        | https://www.nuvemfiscal.com.br/ |
+| **Prioridade** | Alta                            |
+
+**Municípios utilizados:**
+
+- São Roque
+- Ibiúna
+- Araçariguama
+- Cotia
+- Vargem Grande Paulista
+- Itapecerica da Serra
+
+**Protocolos suportados:**
+
+- ABRASF 2.02
+- GINFES
+- GCASPP
+- Síncrono
+
+**Funcionalidades:**
+
+- Geração de NFS-e
+- Cancelamento
+- Consulta de nota
+- Download do XML
+- Verificação de RPS
+
+---
+
+### 9. APIs de Convênios e TISS
+
+#### 9.1 Orizon TISS
+
+| Campo          | Valor           |
+| -------------- | --------------- |
+| **Status**     | IMPLEMENTADO    |
+| **Protocolo**  | SOAP (TISS 4.0) |
+| **Prioridade** | Crítica         |
+
+**Credenciais de Homologação:**
+
+```
+Login: Lucasws25
+Chave de transmissão: EC1yz4ia5is2Hn9Sm/BoSKW4wRJxlGS
+NOTA: A chave precisa ser convertida para HASHMD5 para comunicação.
+```
+
+**Variáveis de Ambiente (.env):**
+
+```env
+ORIZON_AMBIENTE=HOMOLOGACAO
+ORIZON_USUARIO=Lucasws25
+ORIZON_SENHA=<hash_md5_da_chave>
+ORIZON_CODIGO_PRESTADOR=<codigo_do_prestador>
+ORIZON_TIMEOUT=30000
+```
+
+**Endpoints de Homologação (já configurados no código):**
+
+| Serviço               | URL WSDL                                                                                        |
+| --------------------- | ----------------------------------------------------------------------------------------------- |
+| Cobrança (Lote Guias) | https://wsp.hom.orizonbrasil.com.br:6281/fature/tiss/v40100/tissLoteGuias?wsdl                  |
+| Status Protocolo      | https://wsp.hom.orizonbrasil.com.br:6281/fature/tiss/v40100/tissSolicitacaoStatusProtocolo?wsdl |
+| Cancela Guia/Lote     | https://wsp.hom.orizonbrasil.com.br:6281/tiss/v40100/tissCancelaGuia?wsdl                       |
+| Comprovantes PDF      | https://wsp.hom.orizonbrasil.com.br:6290/gerapdf/wsGerarProtocolo?wsdl                          |
+| Demonstrativos        | https://wsp.hom.orizonbrasil.com.br:6281/fature/tiss/v40100/tissSolicitaDemonstrativo?wsdl      |
+| Envia Recurso Glosa   | https://wsp.hom.orizonbrasil.com.br:6281/tiss/v40100/tissEnviaRecursoGlosa?wsdl                 |
+| Status Recurso        | https://wsp.hom.orizonbrasil.com.br:6281/tiss/v40100/tissSolicitaStatusRecurso?wsdl             |
+| Envio Documentos      | https://tiss-hml-documentos.orizon.com.br/Service.asmx?wsdl                                     |
+
+**Código Implementado:**
+
+```
+src/modules/integracoes/tiss/orizon/
+├── orizon-tiss.service.ts       # 535 linhas - 8 métodos SOAP
+├── orizon-tiss.controller.ts    # Controller REST
+├── orizon-tiss.module.ts
+├── interfaces/
+│   └── orizon-endpoints.interface.ts  # URLs dos webservices
+└── dto/
+    ├── lote-guias.dto.ts
+    ├── protocolo.dto.ts
+    ├── cancelamento.dto.ts
+    ├── demonstrativo.dto.ts
+    ├── recurso-glosa.dto.ts
+    └── documentos.dto.ts
+```
+
+**Métodos Implementados no Service:**
+
+| Método                       | Descrição                    | Status       |
+| ---------------------------- | ---------------------------- | ------------ |
+| `enviarLoteGuias()`          | Envia lote de guias TISS     | Implementado |
+| `consultarStatusProtocolo()` | Consulta status de protocolo | Implementado |
+| `gerarProtocoloPdf()`        | Gera comprovante PDF         | Implementado |
+| `cancelarGuia()`             | Cancela guia/lote            | Implementado |
+| `solicitarDemonstrativo()`   | Solicita demonstrativo       | Implementado |
+| `enviarRecursoGlosa()`       | Envia recurso de glosa       | Implementado |
+| `consultarStatusRecurso()`   | Consulta status de recurso   | Implementado |
+| `enviarDocumentos()`         | Envia documentos anexos      | Implementado |
+
+---
+
+#### 9.2 SAVI
+
+| Campo          | Valor           |
+| -------------- | --------------- |
+| **Status**     | Planejado       |
+| **Protocolo**  | SOAP (TISS 4.0) |
+| **Prioridade** | Alta            |
+
+**Padrões:**
+
+- TISS 4.0 (XML)
+- Envio de guias
+- Consulta de status
+- Envio de XML + PDF para plataformas
+
+---
+
+### 10. Governo / Documentos
+
+#### 10.1 Receita Federal
+
+| Campo          | Valor     |
+| -------------- | --------- |
+| **Status**     | Planejado |
+| **Protocolo**  | REST API  |
+| **Prioridade** | Média     |
+
+**Funcionalidades:**
+
+- Consulta CNPJ (oficial)
+- Consulta CPF (quando disponível via parceiros)
+
+#### 10.2 SEFAZ
+
+| Campo          | Valor     |
+| -------------- | --------- |
+| **Status**     | Planejado |
+| **Protocolo**  | REST/SOAP |
+| **Prioridade** | Média     |
+
+**Funcionalidades:**
+
+- Download e leitura de XML de NF-e
+- Manifestação do destinatário (opcional)
+
+---
+
+### 11. APIs de Cadastro / Utilidades
+
+#### 11.1 ViaCEP
+
+| Campo         | Valor                                |
+| ------------- | ------------------------------------ |
+| **Status**    | IMPLEMENTADO                         |
+| **Protocolo** | REST API                             |
+| **URL**       | https://viacep.com.br/ws/{cep}/json/ |
+
+**Endpoint no sistema:** `GET /api/v1/cep/{cep}`
+
+#### 11.2 Consulta CNPJ
+
+| Campo      | Valor     |
+| ---------- | --------- |
+| **Status** | Planejado |
+
+#### 11.3 Consulta CPF
+
+| Campo      | Valor     |
+| ---------- | --------- |
+| **Status** | Planejado |
+
+---
+
+### 12. APIs para Integrações Futuras
+
+| Integração                   | Status    | Descrição                    |
+| ---------------------------- | --------- | ---------------------------- |
+| Multiempresas/Multiunidades  | Planejado | Suporte multi-tenant         |
+| OpenAI / LLM interno         | Planejado | IA para chatbot e análises   |
+| Conexões HL7                 | Planejado | Integração hospitalar        |
+| Interfaceamento equipamentos | Planejado | Conexão com equipamentos lab |
+| Portal médico                | Planejado | Acesso para médicos          |
+| Portal do paciente           | Planejado | Acesso para pacientes        |
+
+---
+
+## Tipos de Integração (Enum)
+
+```typescript
+export enum TipoIntegracao {
+  LABORATORIO_APOIO = 'laboratorio_apoio',
+  CONVENIOS = 'convenios',
+  TELEMEDICINA = 'telemedicina',
+  BANCO = 'banco',
+  GATEWAY_PAGAMENTO = 'gateway_pagamento',
+  NFSE = 'nfse',
+  SEFAZ = 'sefaz',
+  RECEITA_FEDERAL = 'receita_federal',
+  POWER_BI = 'power_bi',
+  PABX = 'pabx',
+  CORREIOS = 'correios',
+  OCR = 'ocr',
+  ADQUIRENTES = 'adquirentes',
+  PACS = 'pacs',
+  EMAIL = 'email',
+  WHATSAPP = 'whatsapp',
+  CONCESSIONARIAS = 'concessionarias',
+  OUTROS = 'outros',
+}
+```
+
+---
+
+## Tipos de Campo para Schemas
 
 ```typescript
 export enum TipoCampo {
   STRING = 'string',
-  PASSWORD = 'password',  // Auto-criptografa!
   NUMBER = 'number',
-  BOOLEAN = 'boolean',
-  SELECT = 'select',       // Usa campo 'opcoes'
+  PASSWORD = 'password',
+  EMAIL = 'email',
   URL = 'url',
+  SELECT = 'select',
+  CHECKBOX = 'checkbox',
+  TEXTAREA = 'textarea',
+  JSON = 'json',
 }
-```
 
-### 4. Exemplo de Schema Completo
-
-```typescript
-// src/modules/atendimento/integracoes/schemas/hermes-pardini.schema.ts
-export const HERMES_PARDINI_SCHEMA: IntegracaoSchema = {
-  slug: 'hermes-pardini',
-  nome: 'Hermes Pardini',
-  descricao: 'Integração com laboratório Hermes Pardini via SOAP',
-  versao: '1.0.0',
-  tipos_contexto: [TipoIntegracao.LABORATORIO_APOIO],
-  protocolo: ProtocoloIntegracao.SOAP,
-
-  campos: [
-    {
-      chave: 'usuario',
-      label: 'Usuário',
-      tipo: TipoCampo.STRING,
-      obrigatorio: true,
-    },
-    {
-      chave: 'senha',
-      label: 'Senha',
-      tipo: TipoCampo.PASSWORD,
-      obrigatorio: true,
-      criptografar: true,  // ← Marcado para criptografia
-    },
-    {
-      chave: 'ambiente',
-      label: 'Ambiente',
-      tipo: TipoCampo.SELECT,
-      obrigatorio: true,
-      valorPadrao: 'homologacao',
-      opcoes: [
-        { valor: 'homologacao', label: 'Homologação' },
-        { valor: 'producao', label: 'Produção' },
-      ],
-    },
-    {
-      chave: 'timeout',
-      label: 'Timeout (segundos)',
-      tipo: TipoCampo.NUMBER,
-      obrigatorio: false,
-      valorPadrao: 30,
-      min: 5,
-      max: 300,
-    },
-  ],
-
-  ativo: true,
-};
+export enum ProtocoloIntegracao {
+  REST = 'REST',
+  SOAP = 'SOAP',
+  GRAPHQL = 'GRAPHQL',
+  FTP = 'FTP',
+  SFTP = 'SFTP',
+  EMAIL = 'EMAIL',
+  WEBHOOK = 'WEBHOOK',
+}
 ```
 
 ---
 
-## 🛠️ Como Continuar a Implementação
+## Matriz de Prioridades
 
-### Próximo Passo 1: Executar Migrations
+### Prioridade Crítica
 
-**⚠️ ATENÇÃO**: Migrations vão DELETAR dados antigos!
+1. Orizon TISS (implementado)
+2. SAVI TISS
 
-```bash
-# 1. Fazer backup do banco ANTES
-pg_dump -h localhost -U postgres -d erplab > backup_antes_migration.sql
+### Prioridade Alta
 
-# 2. Executar migrations
-npm run migration:run
+1. Hermes Pardini
+2. DB Diagnósticos
+3. WhatsApp Cloud API
+4. Bradesco API
+5. Santander API
+6. Safra API
+7. ASAAS API
+8. Nuvem Fiscal (NFS-e)
 
-# 3. Verificar se tabelas foram alteradas
-psql -d erplab -c "\d integracoes"
-psql -d erplab -c "\d integracoes_configuracoes"
+### Prioridade Média
 
-# 4. Se algo der errado, restaurar backup
-psql -d erplab < backup_antes_migration.sql
-```
+1. RWE Telemedicina
+2. Safrapay API
+3. API OCR
+4. PACS/DICOM
+5. Open Finance
+6. Receita Federal
+7. SEFAZ
 
-**O que as migrations fazem:**
+### Prioridade Baixa (Futuro)
 
-**Migration 1: RefactorIntegracoesTable**
-```sql
--- Remove 30+ campos antigos
-ALTER TABLE integracoes DROP COLUMN nome_laboratorio;
-ALTER TABLE integracoes DROP COLUMN url_base;
-ALTER TABLE integracoes DROP COLUMN usuario;
-... (30+ DROPs)
+1. Cielo API
+2. Rede API
+3. HL7
+4. Interfaceamento
+5. Portais (médico/paciente)
 
--- Adiciona 3 novos campos
-ALTER TABLE integracoes ADD COLUMN template_slug VARCHAR(100);
-ALTER TABLE integracoes ADD COLUMN nome_instancia VARCHAR(255);
-ALTER TABLE integracoes ADD COLUMN tipos_contexto TEXT[];
+---
 
--- Remove ENUMs antigos
-DROP TYPE tipo_integracao;
-DROP TYPE padrao_comunicacao;
-DROP TYPE formato_retorno;
-```
+## Próximos Passos
 
-**Migration 2: CreateIntegracoesConfiguracoesTable**
-```sql
-CREATE TABLE integracoes_configuracoes (
-  id UUID PRIMARY KEY,
-  integracao_id UUID REFERENCES integracoes(id) ON DELETE CASCADE,
-  chave VARCHAR(100),
-  valor TEXT,
-  created_at TIMESTAMP,
-  updated_at TIMESTAMP,
-  UNIQUE(integracao_id, chave)
-);
-```
+### Imediato (Semana 1-2)
 
-### Próximo Passo 2: Testar Endpoints
+- [ ] Configurar variáveis de ambiente Orizon
+- [ ] Testar integração Orizon em homologação
+- [ ] Criar schema para SAVI TISS
+- [ ] Implementar service SAVI TISS
+- [x] **Hermes Pardini - IMPLEMENTADO (11/12/2025)**
 
-```bash
-# 1. Usar VS Code REST Client
-# Abrir arquivo http-requests/atendimento/integracoes/7-fluxo-completo.http
-# Executar cada request passo a passo
+### Curto Prazo (Semana 3-4)
 
-# 2. Verificar resposta da API
-# Deve retornar configuracoes como array de objetos:
-# [
-#   { chave: 'usuario', valor: 'hp_user' },
-#   { chave: 'senha', valor: '[ENCRYPTED]' },
-#   ...
-# ]
-```
+- [x] ~~Refatorar Hermes Pardini service~~ (CONCLUÍDO)
+- [ ] Criar schema DB Diagnósticos
+- [ ] Implementar WhatsApp Cloud API
 
-### Próximo Passo 3: Refatorar Hermes Pardini Service
+### Médio Prazo (Mês 2)
 
-**Arquivo**: `services/hermes-pardini.service.ts.old`
+- [ ] Implementar APIs bancárias (Bradesco, Santander, Safra, ASAAS)
+- [ ] Implementar Nuvem Fiscal para NFS-e
+- [ ] Implementar RWE Telemedicina
 
-**Problema**: Tenta acessar campos que não existem mais
-```typescript
-// ❌ ERRADO (antigo)
-integracao.usuario
-integracao.senha
-integracao.urlBase
+### Longo Prazo (Mês 3+)
 
-// ✅ CERTO (novo)
-const configs = integracao.configuracoes.reduce((acc, c) => {
-  acc[c.chave] = c.valor;
-  return acc;
-}, {});
+- [ ] API OCR
+- [ ] PACS/DICOM
+- [ ] Adquirentes de cartão
+- [ ] Open Finance
+- [ ] Integrações futuras (HL7, portais, etc.)
 
-const usuario = configs.usuario;
-const senha = configs.senha;
-const urlBase = configs.url_wsdl;
-```
+---
 
-**Solução**: Helper para converter array para objeto
-```typescript
-// Adicionar no service
-private getConfigsAsObject(integracao: Integracao): Record<string, any> {
-  return integracao.configuracoes.reduce((acc, config) => {
-    acc[config.chave] = config.valor;
-    return acc;
-  }, {} as Record<string, any>);
-}
+## Como Criar uma Nova Integração
 
-// Usar nos métodos
-const configs = this.getConfigsAsObject(integracao);
-const usuario = configs.usuario;
-const senha = configs.senha;
-```
-
-### Próximo Passo 4: Criar Mais Schemas
-
-**Exemplo**: Schema para Santander API
+### 1. Criar o Schema
 
 ```typescript
-// src/modules/atendimento/integracoes/schemas/santander-api.schema.ts
-import { IntegracaoSchema, TipoCampo, TipoIntegracao, ProtocoloIntegracao } from './types';
+// src/modules/atendimento/integracoes/schemas/nova-integracao.schema.ts
+import { IntegracaoSchema, TipoCampo, ProtocoloIntegracao } from './types';
+import { TipoIntegracao } from '../entities/integracao.entity';
 
-export const SANTANDER_SCHEMA: IntegracaoSchema = {
-  slug: 'santander-api',
-  nome: 'Santander API Cobrança',
-  descricao: 'Integração com Santander para geração de boletos',
+export const NOVA_INTEGRACAO_SCHEMA: IntegracaoSchema = {
+  slug: 'nova-integracao',
+  nome: 'Nova Integração',
+  descricao: 'Descrição da integração',
   versao: '1.0.0',
-  tipos_contexto: [TipoIntegracao.BANCO],
-  protocolo: ProtocoloIntegracao.REST,
-
+  tipos_contexto: [TipoIntegracao.TIPO_ADEQUADO],
+  protocolo: ProtocoloIntegracao.REST, // ou SOAP
   campos: [
     {
-      chave: 'client_id',
-      label: 'Client ID',
-      tipo: TipoCampo.STRING,
-      obrigatorio: true,
-    },
-    {
-      chave: 'client_secret',
-      label: 'Client Secret',
+      chave: 'api_key',
+      label: 'API Key',
       tipo: TipoCampo.PASSWORD,
       obrigatorio: true,
       criptografar: true,
     },
-    {
-      chave: 'workspace',
-      label: 'Workspace',
-      tipo: TipoCampo.STRING,
-      obrigatorio: true,
-    },
-    {
-      chave: 'certificado_base64',
-      label: 'Certificado (Base64)',
-      tipo: TipoCampo.STRING,
-      obrigatorio: true,
-    },
-    {
-      chave: 'ambiente',
-      label: 'Ambiente',
-      tipo: TipoCampo.SELECT,
-      obrigatorio: true,
-      valorPadrao: 'homologacao',
-      opcoes: [
-        { valor: 'homologacao', label: 'Homologação' },
-        { valor: 'producao', label: 'Produção' },
-      ],
-    },
+    // ... mais campos
   ],
-
   ativo: true,
 };
 ```
 
-Depois registrar no `schemas/index.ts`:
+### 2. Registrar no Index
+
 ```typescript
-import { SANTANDER_SCHEMA } from './santander-api.schema';
+// src/modules/atendimento/integracoes/schemas/index.ts
+import { NOVA_INTEGRACAO_SCHEMA } from './nova-integracao.schema';
 
 export const INTEGRACOES_SCHEMAS: Record<string, IntegracaoSchema> = {
   'hermes-pardini': HERMES_PARDINI_SCHEMA,
-  'santander-api': SANTANDER_SCHEMA,  // ← Adicionar aqui
+  'nova-integracao': NOVA_INTEGRACAO_SCHEMA, // ← adicionar
 };
 ```
 
----
+### 3. Criar Service Específico (se necessário)
 
-## 📂 Estrutura de Arquivos
+Para integrações SOAP complexas como Orizon, criar módulo dedicado em:
 
 ```
-src/modules/atendimento/integracoes/
-├── schemas/
-│   ├── types.ts                     ✅ Interfaces (CampoSchema, IntegracaoSchema)
-│   ├── hermes-pardini.schema.ts     ✅ Schema exemplo
-│   ├── santander-api.schema.ts      ⏳ Criar
-│   ├── orizon-tiss.schema.ts        ⏳ Criar
-│   └── index.ts                     ✅ Registro + helpers
-│
-├── entities/
-│   ├── integracao.entity.ts         ✅ Refatorada (15 campos)
-│   └── integracao-configuracao.entity.ts ✅ Nova (key-value)
-│
-├── dto/
-│   ├── create-integracao.dto.ts     ✅ Refatorado (7 campos)
-│   └── update-integracao.dto.ts     ✅ PartialType
-│
-├── services/
-│   ├── hermes-pardini.service.ts.old ⚠️ Precisa refatoração
-│   └── (outros services futuros)
-│
-├── controllers/
-│   ├── hermes-pardini.controller.ts.old ⚠️ Precisa refatoração
-│   └── (outros controllers futuros)
-│
-├── integracoes.service.ts           ✅ Refatorado (completo)
-├── integracoes.controller.ts        ✅ Refatorado (completo)
-└── integracoes.module.ts            ✅ Atualizado
+src/modules/integracoes/{tipo}/{nome}/
 ```
 
 ---
 
-## 🔍 Debugar Problemas Comuns
+## Referências
 
-### Problema 1: "Property 'usuario' does not exist on type 'Integracao'"
-
-**Causa**: Código antigo tentando acessar campos removidos
-
-**Solução**:
-```typescript
-// ❌ ANTES
-const usuario = integracao.usuario;
-
-// ✅ DEPOIS
-const configs = integracao.configuracoes.reduce((acc, c) => {
-  acc[c.chave] = c.valor;
-  return acc;
-}, {});
-const usuario = configs.usuario;
-```
-
-### Problema 2: "Campos obrigatórios faltando"
-
-**Causa**: DTO não enviou todos os campos obrigatórios do schema
-
-**Solução**: Verificar schema e enviar todos os campos com `obrigatorio: true`
-
-```typescript
-// Exemplo: hermes-pardini tem 3 obrigatórios
-{
-  templateSlug: 'hermes-pardini',
-  codigoIdentificacao: 'HP-001',
-  nomeInstancia: 'Hermes Pardini Centro',
-  tiposContexto: ['LABORATORIO_APOIO'],
-  configuracoes: {
-    usuario: 'hp_user',     // obrigatório
-    senha: 'senha123',      // obrigatório
-    ambiente: 'producao',   // obrigatório
-    // url_wsdl é opcional
-    // timeout é opcional
-  }
-}
-```
-
-### Problema 3: Migration falha
-
-**Causa**: Banco de dados tem dados incompatíveis
-
-**Solução**:
-1. Fazer backup
-2. Limpar dados antigos se necessário
-3. Executar migration
-4. Se falhar, restaurar backup e investigar
+- **PDF do Cliente**: `/home/diego/Downloads/APIS.pdf`
+- **Email Hermes Pardini**: `/home/diego/Downloads/Gmail - Fwd_ Documentação Interface Apoio Pardini LC 4895 - INSTITUTO SAO LUCAS SR LTDA EPP.pdf`
+- **Código Orizon TISS**: `src/modules/integracoes/tiss/orizon/`
+- **Código Hermes Pardini**: `src/modules/integracoes/laboratorios/hermes-pardini/`
+- **Código Schemas**: `src/modules/atendimento/integracoes/schemas/`
+- **Service SOAP Genérico**: `src/modules/integracoes/soap/`
 
 ---
 
-## 📊 Status de Cada Arquivo
-
-| Arquivo | Status | Notas |
-|---------|--------|-------|
-| `schemas/types.ts` | ✅ Concluído | Interfaces simplificadas (5 props por campo) |
-| `schemas/hermes-pardini.schema.ts` | ✅ Concluído | Exemplo completo com 5 campos |
-| `schemas/index.ts` | ✅ Concluído | Helpers + registro |
-| `entities/integracao.entity.ts` | ✅ Concluído | 15 campos (era 42) |
-| `entities/integracao-configuracao.entity.ts` | ✅ Concluído | Tabela key-value |
-| `dto/create-integracao.dto.ts` | ✅ Concluído | 7 campos + validações |
-| `dto/update-integracao.dto.ts` | ✅ Concluído | PartialType |
-| `integracoes.service.ts` | ✅ Concluído | 15 métodos + transações |
-| `integracoes.controller.ts` | ✅ Concluído | 13 endpoints + schemas |
-| `integracoes.module.ts` | ✅ Concluído | Registros corretos |
-| `services/hermes-pardini.service.ts` | ⚠️ `.old` | Precisa refatoração |
-| `controllers/hermes-pardini.controller.ts` | ⚠️ `.old` | Precisa refatoração |
-| Migrations | ⏳ Criadas, não executadas | ⚠️ BACKUP primeiro! |
-| Arquivos HTTP | ✅ Criados (7 arquivos) | Prontos para teste |
-
----
-
-## 🎯 Critérios de Sucesso
-
-### Build
-- [x] `npm run build` - 0 erros TypeScript
-- [ ] `npm run lint` - 0 erros ESLint
-- [ ] `npm test` - Testes passando
-
-### Migrations
-- [ ] Migration executada com sucesso
-- [ ] Tabela `integracoes` com 15 campos
-- [ ] Tabela `integracoes_configuracoes` criada
-- [ ] Índices criados
-
-### Funcionalidade
-- [ ] POST /integracoes cria integração + configurações
-- [ ] GET /integracoes retorna com array de configuracoes
-- [ ] PUT /integracoes atualiza integração + configurações
-- [ ] DELETE /integracoes remove tudo (CASCADE)
-- [ ] GET /integracoes/schemas retorna schemas disponíveis
-- [ ] GET /integracoes/schemas/:slug retorna schema específico
-
----
-
-## 💡 Notas Finais
-
-1. **Sempre fazer backup** antes de executar migrations
-2. **Não commitar `.old`** - são temporários
-3. **Seguir padrão do hermes-pardini.schema.ts** para novos schemas
-4. **Validar campos obrigatórios** - service já valida automaticamente
-5. **Usar transações** - create/update já usam
-6. **CASCADE DELETE** - configurações são removidas automaticamente
-
----
-
-## 📞 Próximas Ações Recomendadas
-
-1. ✅ Executar `npm run lint` e corrigir warnings
-2. ✅ Executar migrations (com backup!)
-3. ✅ Testar fluxo completo com arquivo HTTP
-4. ✅ Refatorar Hermes Pardini service/controller
-5. ⏳ Criar schemas para outras integrações
-6. ⏳ Implementar criptografia de campos sensíveis
-7. ⏳ Adicionar testes unitários
-8. ⏳ Documentar API com Swagger
-
----
-
-**Última atualização**: 25/11/2025
-**Build status**: ✅ Passando
-**Migrations**: ⏳ Pendentes
-**Pronto para**: Executar migrations e testar
+**Última atualização**: 11/12/2025
+**Autor**: Claude Code
+**Versão do documento**: 2.1

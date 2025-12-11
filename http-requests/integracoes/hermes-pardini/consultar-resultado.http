@@ -1,0 +1,58 @@
+### =====================================================
+### HERMES PARDINI - CONSULTAR RESULTADOS
+### =====================================================
+
+### Consultar resultado por código do pedido de apoio
+POST {{baseUrl}}/api/v1/integracoes/hermes-pardini/resultado
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "anoCodPedApoio": 2025,
+  "codPedApoio": "123456"
+}
+
+### Consultar resultado com PDF
+POST {{baseUrl}}/api/v1/integracoes/hermes-pardini/resultado
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "anoCodPedApoio": 2025,
+  "codPedApoio": "123456",
+  "pdf": true,
+  "papelTimbrado": true
+}
+
+### Consultar resultado de exame específico
+POST {{baseUrl}}/api/v1/integracoes/hermes-pardini/resultado
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "anoCodPedApoio": 2025,
+  "codPedApoio": "123456",
+  "codExmApoio": "HEMO",
+  "valorReferencia": 0
+}
+
+### Consultar resultado com valor de referência em bloco texto
+POST {{baseUrl}}/api/v1/integracoes/hermes-pardini/resultado
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "anoCodPedApoio": 2025,
+  "codPedApoio": "123456",
+  "valorReferencia": 1
+}
+
+### Consultar resultado por código do laboratório
+POST {{baseUrl}}/api/v1/integracoes/hermes-pardini/resultado-lab
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoPedidoLab": "PED-2024-001",
+  "pdf": true
+}

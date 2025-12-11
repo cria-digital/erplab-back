@@ -1,0 +1,27 @@
+### =====================================================
+### HERMES PARDINI - CANCELAMENTOS
+### =====================================================
+
+### Cancelar amostra por código de barras
+POST {{baseUrl}}/api/v1/integracoes/hermes-pardini/cancelar-amostra
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "anoCodPedApoio": 2025,
+  "codPedApoio": "123456",
+  "codigoBarras": "HP123456789",
+  "motivo": "Amostra hemolisada"
+}
+
+### Cancelar exame específico
+POST {{baseUrl}}/api/v1/integracoes/hermes-pardini/cancelar-exame
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "anoCodPedApoio": 2025,
+  "codPedApoio": "123456",
+  "codigoExame": "HEMO",
+  "motivo": "Solicitação do médico"
+}

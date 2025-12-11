@@ -1,0 +1,102 @@
+### =====================================================
+### HERMES PARDINI - ENVIAR PEDIDO
+### =====================================================
+
+### Enviar pedido simples (mínimo de campos)
+POST {{baseUrl}}/api/v1/integracoes/hermes-pardini/pedido
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoPedidoLab": "PED-2024-001",
+  "dataColeta": "11/12/2025",
+  "paciente": {
+    "nome": "João da Silva",
+    "dataNascimento": "15/03/1985",
+    "sexo": "M"
+  },
+  "exames": [
+    {
+      "codigoExame": "HEMO"
+    }
+  ]
+}
+
+### Enviar pedido completo (todos os campos)
+POST {{baseUrl}}/api/v1/integracoes/hermes-pardini/pedido
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoPedidoLab": "PED-2024-002",
+  "dataColeta": "11/12/2025",
+  "horaColeta": "08:30",
+  "paciente": {
+    "nome": "Maria Santos",
+    "dataNascimento": "22/07/1990",
+    "sexo": "F",
+    "cpf": "123.456.789-00",
+    "rg": "12.345.678-9",
+    "telefone": "11999998888",
+    "email": "maria@email.com",
+    "endereco": {
+      "logradouro": "Rua das Flores",
+      "numero": "123",
+      "complemento": "Apto 45",
+      "bairro": "Centro",
+      "cidade": "São Paulo",
+      "uf": "SP",
+      "cep": "01234-567"
+    }
+  },
+  "exames": [
+    {
+      "codigoExame": "HEMO",
+      "materialCodigo": "SG",
+      "observacao": "Paciente em jejum de 12h"
+    },
+    {
+      "codigoExame": "GLI",
+      "materialCodigo": "SG"
+    },
+    {
+      "codigoExame": "CREA",
+      "materialCodigo": "SG"
+    }
+  ],
+  "medicoSolicitante": {
+    "nome": "Dr. Carlos Souza",
+    "crm": "12345",
+    "uf": "SP"
+  },
+  "convenio": {
+    "codigo": "001",
+    "plano": "PLANO BASICO",
+    "matricula": "123456789"
+  },
+  "urgente": false,
+  "observacoes": "Paciente com histórico de diabetes"
+}
+
+### Enviar pedido urgente
+POST {{baseUrl}}/api/v1/integracoes/hermes-pardini/pedido
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoPedidoLab": "PED-2024-URG-001",
+  "dataColeta": "11/12/2025",
+  "horaColeta": "07:00",
+  "paciente": {
+    "nome": "Pedro Urgente",
+    "dataNascimento": "10/05/1975",
+    "sexo": "M"
+  },
+  "exames": [
+    {
+      "codigoExame": "HEMO"
+    }
+  ],
+  "urgente": true,
+  "observacoes": "URGENTE - Paciente em UTI"
+}

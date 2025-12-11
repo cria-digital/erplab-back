@@ -1,0 +1,58 @@
+### =====================================================
+### HERMES PARDINI - CONSULTAS DIVERSAS
+### =====================================================
+
+### Consultar pendências técnicas por período
+POST {{baseUrl}}/api/v1/integracoes/hermes-pardini/pendencias
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "dataInicio": "01/12/2025",
+  "dataFim": "11/12/2025"
+}
+
+### Consultar pendências técnicas por pedido
+POST {{baseUrl}}/api/v1/integracoes/hermes-pardini/pendencias
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "anoCodPedApoio": 2025,
+  "codPedApoio": "123456"
+}
+
+### Consultar rastreabilidade do pedido
+POST {{baseUrl}}/api/v1/integracoes/hermes-pardini/rastreabilidade
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "anoCodPedApoio": 2025,
+  "codPedApoio": "123456"
+}
+
+### Consultar rastreabilidade por código de barras
+POST {{baseUrl}}/api/v1/integracoes/hermes-pardini/rastreabilidade
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "anoCodPedApoio": 2025,
+  "codPedApoio": "123456",
+  "codigoBarras": "HP123456789"
+}
+
+### Consultar status do pedido
+POST {{baseUrl}}/api/v1/integracoes/hermes-pardini/status
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "anoCodPedApoio": 2025,
+  "codPedApoio": "123456"
+}
+
+### Buscar grupos de fracionamento
+GET {{baseUrl}}/api/v1/integracoes/hermes-pardini/fracionamento
+Authorization: Bearer {{token}}

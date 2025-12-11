@@ -1,0 +1,29 @@
+### =====================================================
+### HERMES PARDINI - CONFIGURAÇÃO
+### =====================================================
+
+### Obter configuração atual (sem senha)
+GET {{baseUrl}}/api/v1/integracoes/hermes-pardini/config
+Authorization: Bearer {{token}}
+
+### Atualizar configuração (trocar para homologação)
+POST {{baseUrl}}/api/v1/integracoes/hermes-pardini/config
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "login": "12000",
+  "senha": "5990",
+  "ambiente": "homologacao"
+}
+
+### Atualizar configuração (trocar para produção)
+POST {{baseUrl}}/api/v1/integracoes/hermes-pardini/config
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "login": "15665",
+  "senha": "5431",
+  "ambiente": "producao"
+}
