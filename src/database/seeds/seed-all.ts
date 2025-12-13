@@ -9,6 +9,7 @@ import { CampoFormularioConveniosSeedService } from './campo-formulario-convenio
 import { EstadoSeedService } from './estado-seed.service';
 import { CidadeSeedService } from './cidade-seed.service';
 import { TenantSeedService } from './tenant-seed.service';
+import { IntegracaoSeedService } from './integracao-seed.service';
 
 async function bootstrap() {
   const startTime = Date.now();
@@ -66,6 +67,11 @@ async function bootstrap() {
     const tenantSeedService = app.get(TenantSeedService);
     console.log('9. Criando Tenant padrão...');
     await tenantSeedService.seed();
+
+    // Executar seed de Integrações (após tenant, pois depende dele)
+    const integracaoSeedService = app.get(IntegracaoSeedService);
+    console.log('10. Criando Integrações padrão por tenant...');
+    await integracaoSeedService.seed();
 
     const duration = Date.now() - startTime;
     console.log('\n==============================');

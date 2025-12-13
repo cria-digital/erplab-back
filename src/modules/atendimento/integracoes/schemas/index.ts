@@ -1,4 +1,5 @@
 import { HERMES_PARDINI_SCHEMA } from './hermes-pardini.schema';
+import { DB_DIAGNOSTICOS_SCHEMA } from './db-diagnosticos.schema';
 import { IntegracaoSchema, ProtocoloIntegracao } from './types';
 import { TipoIntegracao } from '../entities/integracao.entity';
 
@@ -12,6 +13,7 @@ import { TipoIntegracao } from '../entities/integracao.entity';
  */
 export const INTEGRACOES_SCHEMAS: Record<string, IntegracaoSchema> = {
   'hermes-pardini': HERMES_PARDINI_SCHEMA,
+  'db-diagnosticos': DB_DIAGNOSTICOS_SCHEMA,
   // Adicionar novos schemas aqui...
   // 'santander-api': SANTANDER_SCHEMA,
   // 'orizon-tiss': ORIZON_TISS_SCHEMA,
@@ -86,3 +88,10 @@ export function isValidSlug(slug: string): boolean {
 
 export * from './types';
 export { HERMES_PARDINI_SCHEMA } from './hermes-pardini.schema';
+export {
+  DB_DIAGNOSTICOS_SCHEMA,
+  DB_DIAGNOSTICOS_ENDPOINTS,
+  DB_DIAGNOSTICOS_METODOS,
+  parseDbDiagnosticosConfig,
+} from './db-diagnosticos.schema';
+export type { DbDiagnosticosConfigValues } from './db-diagnosticos.schema';

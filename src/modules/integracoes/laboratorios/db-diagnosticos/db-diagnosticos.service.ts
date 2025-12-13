@@ -30,18 +30,41 @@ import {
   PrioridadeDb,
   TipoCancelamentoDb,
 } from './dto/db-diagnosticos.dto';
+import { IntegracaoConfigService } from '../../../atendimento/integracoes/services/integracao-config.service';
+import {
+  parseDbDiagnosticosConfig,
+  DbDiagnosticosConfigValues,
+} from '../../../atendimento/integracoes/schemas/db-diagnosticos.schema';
+
+/**
+ * Cache de clientes SOAP por tenant
+ */
+interface TenantSoapClient {
+  client: soap.Client;
+  config: DbDiagnosticosConfigValues;
+  createdAt: Date;
+}
 
 @Injectable()
 export class DbDiagnosticosService {
   private readonly logger = new Logger(DbDiagnosticosService.name);
-  private config: DbDiagnosticosConfig;
-  private soapClientInstance: soap.Client | null = null;
+
+  /** Cache de clientes SOAP por tenant (tenantId -> client) */
+  private clientCache: Map<string, TenantSoapClient> = new Map();
+
+  /** Tempo de vida do cache em ms (30 minutos) */
+  private readonly CACHE_TTL_MS = 30 * 60 * 1000;
+
+  /** Configuração fallback (do .env) para quando não há tenant */
+  private fallbackConfig: DbDiagnosticosConfig;
 
   constructor(
     private readonly soapClient: SoapClientService,
     private readonly configService: ConfigService,
+    private readonly integracaoConfigService: IntegracaoConfigService,
   ) {
-    this.config = {
+    // Configuração fallback do .env (para desenvolvimento/testes)
+    this.fallbackConfig = {
       codigoApoiado: this.configService.get<string>(
         'DB_DIAGNOSTICOS_CODIGO_APOIADO',
         '12588',
@@ -59,23 +82,100 @@ export class DbDiagnosticosService {
   }
 
   /**
-   * Obtém ou cria o cliente SOAP
+   * Obtém configuração para um tenant específico
+   * Se tenantId não fornecido, usa config do .env (fallback)
    */
-  private async getClient(): Promise<soap.Client> {
-    if (!this.soapClientInstance) {
-      this.soapClientInstance = await this.soapClient.criarCliente({
-        wsdl: this.config.wsdlUrl,
-        timeout: this.config.timeout,
-      });
+  private async getConfigForTenant(
+    tenantId?: string,
+  ): Promise<DbDiagnosticosConfigValues> {
+    if (!tenantId) {
+      // Fallback para config do .env
+      return {
+        codigoApoiado: this.fallbackConfig.codigoApoiado,
+        senhaIntegracao: this.fallbackConfig.codigoSenhaIntegracao,
+        ambiente: 'producao',
+        wsdlUrl: this.fallbackConfig.wsdlUrl,
+        timeout: this.fallbackConfig.timeout,
+      };
     }
-    return this.soapClientInstance;
+
+    // Verifica se existe no cache e ainda é válido
+    const cached = this.clientCache.get(tenantId);
+    if (cached && Date.now() - cached.createdAt.getTime() < this.CACHE_TTL_MS) {
+      return cached.config;
+    }
+
+    // Busca configuração do banco
+    const integracaoConfig =
+      await this.integracaoConfigService.buscarConfiguracao({
+        templateSlug: 'db-diagnosticos',
+        tenantId,
+        throwIfNotFound: false,
+      });
+
+    if (!integracaoConfig) {
+      this.logger.warn(
+        `Integração db-diagnosticos não configurada para tenant ${tenantId}, usando fallback`,
+      );
+      return {
+        codigoApoiado: this.fallbackConfig.codigoApoiado,
+        senhaIntegracao: this.fallbackConfig.codigoSenhaIntegracao,
+        ambiente: 'producao',
+        wsdlUrl: this.fallbackConfig.wsdlUrl,
+        timeout: this.fallbackConfig.timeout,
+      };
+    }
+
+    // Converte configurações do formato key-value para objeto tipado
+    const configs = Object.entries(integracaoConfig.valores).map(
+      ([chave, valor]) => ({ chave, valor }),
+    );
+    return parseDbDiagnosticosConfig(configs);
+  }
+
+  /**
+   * Obtém ou cria o cliente SOAP para um tenant
+   */
+  private async getClient(tenantId?: string): Promise<{
+    client: soap.Client;
+    config: DbDiagnosticosConfigValues;
+  }> {
+    const cacheKey = tenantId || '__fallback__';
+
+    // Verifica cache
+    const cached = this.clientCache.get(cacheKey);
+    if (cached && Date.now() - cached.createdAt.getTime() < this.CACHE_TTL_MS) {
+      return { client: cached.client, config: cached.config };
+    }
+
+    // Obtém configuração
+    const config = await this.getConfigForTenant(tenantId);
+
+    // Cria cliente SOAP
+    const client = await this.soapClient.criarCliente({
+      wsdl: config.wsdlUrl,
+      timeout: config.timeout,
+    });
+
+    // Armazena no cache
+    this.clientCache.set(cacheKey, {
+      client,
+      config,
+      createdAt: new Date(),
+    });
+
+    return { client, config };
   }
 
   /**
    * Chama um método SOAP
    */
-  private async callSoapMethod<T>(metodo: string, params: any): Promise<T> {
-    const client = await this.getClient();
+  private async callSoapMethod<T>(
+    metodo: string,
+    params: any,
+    tenantId?: string,
+  ): Promise<T> {
+    const { client } = await this.getClient(tenantId);
     const response = await this.soapClient.chamarMetodo<T>(
       client,
       metodo,
@@ -95,12 +195,15 @@ export class DbDiagnosticosService {
    */
   async enviarPedido(
     dto: EnviarPedidoDbDto,
+    tenantId?: string,
   ): Promise<DbDiagnosticosResponse<DbDiagnosticosRecebeAtendimentoResult>> {
     this.logger.log(
-      `Enviando pedido: ${dto.numeroAtendimentoApoiado} com ${dto.procedimentos.length} procedimentos`,
+      `Enviando pedido: ${dto.numeroAtendimentoApoiado} com ${dto.procedimentos.length} procedimentos (tenant: ${tenantId || 'fallback'})`,
     );
 
     try {
+      const config = await this.getConfigForTenant(tenantId);
+
       const pedido: DbDiagnosticosPedido = {
         NumeroAtendimentoApoiado: dto.numeroAtendimentoApoiado,
         ListaPacienteApoiado: {
@@ -118,8 +221,8 @@ export class DbDiagnosticosService {
         DataHoraDUM: dto.dataDum,
         Altura: dto.altura,
         Peso: dto.peso,
-        UsoApoiado: dto.usoApoiado,
-        PostoColeta: dto.postoColeta,
+        UsoApoiado: dto.usoApoiado || config.usoApoiado,
+        PostoColeta: dto.postoColeta || config.postoColeta,
         ListaQuestionarios: dto.questionarios?.map((q) => ({
           CodigoPerguntaQuestionario: q.codigoPergunta,
           RespostaQuestionario: q.resposta,
@@ -143,14 +246,16 @@ export class DbDiagnosticosService {
       };
 
       const atendimento: DbDiagnosticosAtendimento = {
-        CodigoApoiado: this.config.codigoApoiado,
-        CodigoSenhaIntegracao: this.config.codigoSenhaIntegracao,
+        CodigoApoiado: config.codigoApoiado,
+        CodigoSenhaIntegracao: config.senhaIntegracao,
         Pedido: pedido,
       };
 
-      const result = await this.callSoapMethod<any>('RecebeAtendimento', {
-        atendimento,
-      });
+      const result = await this.callSoapMethod<any>(
+        'RecebeAtendimento',
+        { atendimento },
+        tenantId,
+      );
 
       const response = this.parseRecebeAtendimentoResponse(result);
       this.logger.log(
@@ -176,26 +281,29 @@ export class DbDiagnosticosService {
    */
   async consultarLaudo(
     dto: ConsultarLaudoDbDto,
+    tenantId?: string,
   ): Promise<DbDiagnosticosResponse<DbDiagnosticosLaudo>> {
     this.logger.log(
-      `Consultando laudo: apoiado=${dto.numeroAtendimentoApoiado}, db=${dto.numeroAtendimentoDb}`,
+      `Consultando laudo: apoiado=${dto.numeroAtendimentoApoiado}, db=${dto.numeroAtendimentoDb} (tenant: ${tenantId || 'fallback'})`,
     );
 
     try {
-      // WSDL espera objeto "request" com campos específicos
+      const config = await this.getConfigForTenant(tenantId);
+
       const params = {
         request: {
-          CodigoApoiado: this.config.codigoApoiado,
-          CodigoSenhaIntegracao: this.config.codigoSenhaIntegracao,
+          CodigoApoiado: config.codigoApoiado,
+          CodigoSenhaIntegracao: config.senhaIntegracao,
           NumeroAtendimentoApoiado:
             dto.numeroAtendimentoApoiado || dto.numeroAtendimentoDb,
-          Procedimento: '', // Consulta todos os procedimentos
+          Procedimento: '',
         },
       };
 
       const result = await this.callSoapMethod<any>(
         'EnviaLaudoAtendimento',
         params,
+        tenantId,
       );
 
       const laudo = this.parseLaudoResponse(result);
@@ -219,17 +327,19 @@ export class DbDiagnosticosService {
    */
   async consultarLaudoLista(
     numerosAtendimentoApoiado: string[],
+    tenantId?: string,
   ): Promise<DbDiagnosticosResponse<DbDiagnosticosLaudo[]>> {
     this.logger.log(
-      `Consultando laudos em lista: ${numerosAtendimentoApoiado.length} pedidos`,
+      `Consultando laudos em lista: ${numerosAtendimentoApoiado.length} pedidos (tenant: ${tenantId || 'fallback'})`,
     );
 
     try {
-      // WSDL espera objeto "request" com NumeroAtendimentoApoiado como array
+      const config = await this.getConfigForTenant(tenantId);
+
       const params = {
         request: {
-          CodigoApoiado: this.config.codigoApoiado,
-          CodigoSenhaIntegracao: this.config.codigoSenhaIntegracao,
+          CodigoApoiado: config.codigoApoiado,
+          CodigoSenhaIntegracao: config.senhaIntegracao,
           NumeroAtendimentoApoiado: numerosAtendimentoApoiado,
         },
       };
@@ -237,6 +347,7 @@ export class DbDiagnosticosService {
       const result = await this.callSoapMethod<any>(
         'EnviaLaudoAtendimentoLista',
         params,
+        tenantId,
       );
 
       const laudos = this.parseLaudoListaResponse(result);
@@ -260,17 +371,19 @@ export class DbDiagnosticosService {
    */
   async consultarLaudoPorPeriodo(
     dto: ConsultarLaudoPeriodoDbDto,
+    tenantId?: string,
   ): Promise<DbDiagnosticosResponse<DbDiagnosticosLaudo[]>> {
     this.logger.log(
-      `Consultando laudos por período: ${dto.dataInicio} a ${dto.dataFim}`,
+      `Consultando laudos por período: ${dto.dataInicio} a ${dto.dataFim} (tenant: ${tenantId || 'fallback'})`,
     );
 
     try {
-      // WSDL espera objeto "request" com dtInicial e dtFinal
+      const config = await this.getConfigForTenant(tenantId);
+
       const params = {
         request: {
-          CodigoApoiado: this.config.codigoApoiado,
-          CodigoSenhaIntegracao: this.config.codigoSenhaIntegracao,
+          CodigoApoiado: config.codigoApoiado,
+          CodigoSenhaIntegracao: config.senhaIntegracao,
           dtInicial: dto.dataInicio,
           dtFinal: dto.dataFim,
         },
@@ -279,6 +392,7 @@ export class DbDiagnosticosService {
       const result = await this.callSoapMethod<any>(
         'EnviaLaudoAtendimentoPorPeriodo',
         params,
+        tenantId,
       );
 
       const laudos = this.parseLaudoListaResponse(result);
@@ -304,26 +418,29 @@ export class DbDiagnosticosService {
    */
   async consultarStatus(
     dto: ConsultarStatusDbDto,
+    tenantId?: string,
   ): Promise<DbDiagnosticosResponse<DbDiagnosticosStatusAtendimento>> {
     this.logger.log(
-      `Consultando status: apoiado=${dto.numeroAtendimentoApoiado}, db=${dto.numeroAtendimentoDb}`,
+      `Consultando status: apoiado=${dto.numeroAtendimentoApoiado}, db=${dto.numeroAtendimentoDb} (tenant: ${tenantId || 'fallback'})`,
     );
 
     try {
-      // WSDL espera objeto "request" com campos específicos
+      const config = await this.getConfigForTenant(tenantId);
+
       const params = {
         request: {
-          CodigoApoiado: this.config.codigoApoiado,
-          CodigoSenhaIntegracao: this.config.codigoSenhaIntegracao,
+          CodigoApoiado: config.codigoApoiado,
+          CodigoSenhaIntegracao: config.senhaIntegracao,
           NumeroAtendimentoApoiado:
             dto.numeroAtendimentoApoiado || dto.numeroAtendimentoDb,
-          Procedimento: '', // Consulta todos os procedimentos
+          Procedimento: '',
         },
       };
 
       const result = await this.callSoapMethod<any>(
         'ConsultaStatusAtendimento',
         params,
+        tenantId,
       );
 
       const status = this.parseStatusResponse(result);
@@ -347,23 +464,29 @@ export class DbDiagnosticosService {
    */
   async reimprimirEtiquetas(
     dto: ReimprimirEtiquetasDbDto,
+    tenantId?: string,
   ): Promise<DbDiagnosticosResponse<DbDiagnosticosAmostraEtiqueta[]>> {
     this.logger.log(
-      `Reimprimindo etiquetas: apoiado=${dto.numeroAtendimentoApoiado}, db=${dto.numeroAtendimentoDb}`,
+      `Reimprimindo etiquetas: apoiado=${dto.numeroAtendimentoApoiado}, db=${dto.numeroAtendimentoDb} (tenant: ${tenantId || 'fallback'})`,
     );
 
     try {
-      // WSDL espera objeto "request"
+      const config = await this.getConfigForTenant(tenantId);
+
       const params = {
         request: {
-          CodigoApoiado: this.config.codigoApoiado,
-          CodigoSenhaIntegracao: this.config.codigoSenhaIntegracao,
+          CodigoApoiado: config.codigoApoiado,
+          CodigoSenhaIntegracao: config.senhaIntegracao,
           NumeroAtendimentoApoiado:
             dto.numeroAtendimentoApoiado || dto.numeroAtendimentoDb,
         },
       };
 
-      const result = await this.callSoapMethod<any>('EnviaAmostras', params);
+      const result = await this.callSoapMethod<any>(
+        'EnviaAmostras',
+        params,
+        tenantId,
+      );
 
       const etiquetas = this.parseEtiquetasResponse(result);
 
@@ -386,17 +509,19 @@ export class DbDiagnosticosService {
    */
   async consultarPendencias(
     dto: ConsultarPendenciasDbDto,
+    tenantId?: string,
   ): Promise<DbDiagnosticosResponse<DbDiagnosticosProcedimentoPendente[]>> {
     this.logger.log(
-      `Consultando pendências: ${dto.dataInicio || 'sem'} a ${dto.dataFim || 'sem'}`,
+      `Consultando pendências: ${dto.dataInicio || 'sem'} a ${dto.dataFim || 'sem'} (tenant: ${tenantId || 'fallback'})`,
     );
 
     try {
-      // WSDL espera objeto "request" com dtInicial e dtFinal
+      const config = await this.getConfigForTenant(tenantId);
+
       const params = {
         request: {
-          CodigoApoiado: this.config.codigoApoiado,
-          CodigoSenhaIntegracao: this.config.codigoSenhaIntegracao,
+          CodigoApoiado: config.codigoApoiado,
+          CodigoSenhaIntegracao: config.senhaIntegracao,
           dtInicial: dto.dataInicio,
           dtFinal: dto.dataFim,
         },
@@ -405,6 +530,7 @@ export class DbDiagnosticosService {
       const result = await this.callSoapMethod<any>(
         'ListaProcedimentosPendentes',
         params,
+        tenantId,
       );
 
       const pendencias = this.parsePendenciasResponse(result);
@@ -428,17 +554,19 @@ export class DbDiagnosticosService {
    */
   async gerarEtiquetaRecoleta(
     dto: GerarEtiquetaRecoletaDbDto,
+    tenantId?: string,
   ): Promise<DbDiagnosticosResponse<DbDiagnosticosAmostraEtiqueta[]>> {
     this.logger.log(
-      `Gerando etiqueta recoleta: ${dto.numeroAtendimentoDb} - ${dto.codigoExameDb}`,
+      `Gerando etiqueta recoleta: ${dto.numeroAtendimentoDb} - ${dto.codigoExameDb} (tenant: ${tenantId || 'fallback'})`,
     );
 
     try {
-      // WSDL espera objeto "request" com estrutura complexa de Amostras
+      const config = await this.getConfigForTenant(tenantId);
+
       const params = {
         request: {
-          CodigoApoiado: this.config.codigoApoiado,
-          CodigoSenhaIntegracao: this.config.codigoSenhaIntegracao,
+          CodigoApoiado: config.codigoApoiado,
+          CodigoSenhaIntegracao: config.senhaIntegracao,
           Amostras: {
             NumeroAtendimentoApoiado: dto.numeroAtendimentoApoiado,
             NumeroAtendimentoDB: dto.numeroAtendimentoDb,
@@ -456,6 +584,7 @@ export class DbDiagnosticosService {
       const result = await this.callSoapMethod<any>(
         'EnviaAmostrasProcedimentosPendentes',
         params,
+        tenantId,
       );
 
       const etiquetas = this.parseEtiquetasResponse(result);
@@ -479,15 +608,19 @@ export class DbDiagnosticosService {
    */
   async consultarLoteResultados(
     dto: ConsultarLoteResultadosDbDto,
+    tenantId?: string,
   ): Promise<DbDiagnosticosResponse<DbDiagnosticosLaudo[]>> {
-    this.logger.log(`Consultando lote de resultados: ${dto.numeroLote}`);
+    this.logger.log(
+      `Consultando lote de resultados: ${dto.numeroLote} (tenant: ${tenantId || 'fallback'})`,
+    );
 
     try {
-      // WSDL espera objeto "request" com LoteResultado
+      const config = await this.getConfigForTenant(tenantId);
+
       const params = {
         request: {
-          CodigoApoiado: this.config.codigoApoiado,
-          CodigoSenhaIntegracao: this.config.codigoSenhaIntegracao,
+          CodigoApoiado: config.codigoApoiado,
+          CodigoSenhaIntegracao: config.senhaIntegracao,
           LoteResultado: dto.numeroLote,
         },
       };
@@ -495,6 +628,7 @@ export class DbDiagnosticosService {
       const result = await this.callSoapMethod<any>(
         'EnviaLoteResultados',
         params,
+        tenantId,
       );
 
       const laudos = this.parseLaudoListaResponse(result);
@@ -520,19 +654,25 @@ export class DbDiagnosticosService {
    */
   async consultarLaudoPdf(
     dto: ConsultarLaudoPdfDbDto,
+    tenantId?: string,
   ): Promise<DbDiagnosticosResponse<DbDiagnosticosLaudoPdf>> {
-    this.logger.log(`Consultando laudo PDF: ${dto.numeroAtendimentoDb}`);
+    this.logger.log(
+      `Consultando laudo PDF: ${dto.numeroAtendimentoDb} (tenant: ${tenantId || 'fallback'})`,
+    );
 
     try {
+      const config = await this.getConfigForTenant(tenantId);
+
       const params = {
-        CodigoApoiado: this.config.codigoApoiado,
-        CodigoSenhaIntegracao: this.config.codigoSenhaIntegracao,
+        CodigoApoiado: config.codigoApoiado,
+        CodigoSenhaIntegracao: config.senhaIntegracao,
         NumeroAtendimentoDB: dto.numeroAtendimentoDb,
       };
 
       const result = await this.callSoapMethod<any>(
         'EnviaResultadoBase64',
         params,
+        tenantId,
       );
 
       const laudoPdf = this.parseLaudoPdfResponse(result);
@@ -556,17 +696,19 @@ export class DbDiagnosticosService {
    */
   async consultarRelatorioRequisicoes(
     dto: RelatorioRequisicoesDbDto,
+    tenantId?: string,
   ): Promise<DbDiagnosticosResponse<DbDiagnosticosRequisicaoEnviada[]>> {
     this.logger.log(
-      `Consultando relatório de requisições: ${dto.dataInicio} a ${dto.dataFim}`,
+      `Consultando relatório de requisições: ${dto.dataInicio} a ${dto.dataFim} (tenant: ${tenantId || 'fallback'})`,
     );
 
     try {
-      // WSDL espera objeto "request" com DataInicial e DataFinal (não DataInicio/DataFim)
+      const config = await this.getConfigForTenant(tenantId);
+
       const params = {
         request: {
-          CodigoApoiado: this.config.codigoApoiado,
-          CodigoSenhaIntegracao: this.config.codigoSenhaIntegracao,
+          CodigoApoiado: config.codigoApoiado,
+          CodigoSenhaIntegracao: config.senhaIntegracao,
           DataInicial: dto.dataInicio,
           DataFinal: dto.dataFim,
         },
@@ -575,6 +717,7 @@ export class DbDiagnosticosService {
       const result = await this.callSoapMethod<any>(
         'RelatorioRequisicoesEnviadas',
         params,
+        tenantId,
       );
 
       const requisicoes = this.parseRelatorioResponse(result);
@@ -600,12 +743,15 @@ export class DbDiagnosticosService {
    */
   async cancelarExame(
     dto: CancelarExameDbDto,
+    tenantId?: string,
   ): Promise<DbDiagnosticosResponse<DbDiagnosticosRecebeAtendimentoResult>> {
     this.logger.log(
-      `Cancelando exame: ${dto.codigoExameDb} do pedido ${dto.numeroAtendimentoApoiado}`,
+      `Cancelando exame: ${dto.codigoExameDb} do pedido ${dto.numeroAtendimentoApoiado} (tenant: ${tenantId || 'fallback'})`,
     );
 
     try {
+      const config = await this.getConfigForTenant(tenantId);
+
       const pedido: DbDiagnosticosPedido = {
         NumeroAtendimentoApoiado: dto.numeroAtendimentoApoiado,
         ListaPacienteApoiado: dto.paciente
@@ -637,14 +783,16 @@ export class DbDiagnosticosService {
       };
 
       const atendimento: DbDiagnosticosAtendimento = {
-        CodigoApoiado: this.config.codigoApoiado,
-        CodigoSenhaIntegracao: this.config.codigoSenhaIntegracao,
+        CodigoApoiado: config.codigoApoiado,
+        CodigoSenhaIntegracao: config.senhaIntegracao,
         Pedido: pedido,
       };
 
-      const result = await this.callSoapMethod<any>('RecebeAtendimento', {
-        atendimento,
-      });
+      const result = await this.callSoapMethod<any>(
+        'RecebeAtendimento',
+        { atendimento },
+        tenantId,
+      );
 
       const response = this.parseRecebeAtendimentoResponse(result);
       const tipoMsg =
@@ -869,28 +1017,32 @@ export class DbDiagnosticosService {
   /**
    * Verifica saúde da integração
    */
-  async healthCheck(): Promise<{
+  async healthCheck(tenantId?: string): Promise<{
     sucesso: boolean;
     status: string;
     endpoint: string;
     codigoApoiado: string;
+    tenantId?: string;
     detalhes?: any;
     erro?: string;
   }> {
     try {
+      const config = await this.getConfigForTenant(tenantId);
+
       // Verificar se configuração está presente
-      if (!this.config.codigoApoiado || !this.config.codigoSenhaIntegracao) {
+      if (!config.codigoApoiado || !config.senhaIntegracao) {
         return {
           sucesso: false,
           status: 'configuracao_incompleta',
-          endpoint: this.config.wsdlUrl,
-          codigoApoiado: this.config.codigoApoiado || 'não configurado',
-          erro: 'Credenciais não configuradas (DB_DIAGNOSTICOS_CODIGO_APOIADO ou DB_DIAGNOSTICOS_SENHA)',
+          endpoint: config.wsdlUrl,
+          codigoApoiado: config.codigoApoiado || 'não configurado',
+          tenantId,
+          erro: 'Credenciais não configuradas',
         };
       }
 
       // Tentar criar cliente SOAP
-      const client = await this.getClient();
+      const { client } = await this.getClient(tenantId);
 
       // Obter descrição do WSDL para verificar conexão
       const descricao = client.describe();
@@ -899,11 +1051,13 @@ export class DbDiagnosticosService {
       return {
         sucesso: true,
         status: 'conectado',
-        endpoint: this.config.wsdlUrl,
-        codigoApoiado: this.config.codigoApoiado,
+        endpoint: config.wsdlUrl,
+        codigoApoiado: config.codigoApoiado,
+        tenantId,
         detalhes: {
           servicosDisponiveis: servicos,
-          timeout: this.config.timeout,
+          timeout: config.timeout,
+          ambiente: config.ambiente,
         },
       };
     } catch (error) {
@@ -911,8 +1065,9 @@ export class DbDiagnosticosService {
       return {
         sucesso: false,
         status: 'erro_conexao',
-        endpoint: this.config.wsdlUrl,
-        codigoApoiado: this.config.codigoApoiado,
+        endpoint: this.fallbackConfig.wsdlUrl,
+        codigoApoiado: this.fallbackConfig.codigoApoiado,
+        tenantId,
         erro: error.message,
       };
     }
@@ -921,9 +1076,9 @@ export class DbDiagnosticosService {
   /**
    * Descreve o WSDL para debug
    */
-  async describeWsdl(): Promise<any> {
+  async describeWsdl(tenantId?: string): Promise<any> {
     try {
-      const client = await this.getClient();
+      const { client } = await this.getClient(tenantId);
       return client.describe();
     } catch (error) {
       this.logger.error(`Erro ao descrever WSDL: ${error.message}`);
@@ -938,16 +1093,19 @@ export class DbDiagnosticosService {
   async buscarProcedimentos(
     codigoProcedimento?: string,
     nomeProcedimento?: string,
+    tenantId?: string,
   ): Promise<DbDiagnosticosResponse<any>> {
     this.logger.log(
-      `Buscando procedimentos: codigo=${codigoProcedimento || '*'}, nome=${nomeProcedimento || '*'}`,
+      `Buscando procedimentos: codigo=${codigoProcedimento || '*'}, nome=${nomeProcedimento || '*'} (tenant: ${tenantId || 'fallback'})`,
     );
 
     try {
+      const config = await this.getConfigForTenant(tenantId);
+
       const params = {
         request: {
-          CodigoApoiado: this.config.codigoApoiado,
-          CodigoSenhaIntegracao: this.config.codigoSenhaIntegracao,
+          CodigoApoiado: config.codigoApoiado,
+          CodigoSenhaIntegracao: config.senhaIntegracao,
           CodigoProcedimento: codigoProcedimento || '',
           NomeProcedimento: nomeProcedimento || '',
         },
@@ -956,6 +1114,7 @@ export class DbDiagnosticosService {
       const result = await this.callSoapMethod<any>(
         'BuscaProcedimentos',
         params,
+        tenantId,
       );
 
       return {
@@ -968,6 +1127,19 @@ export class DbDiagnosticosService {
         sucesso: false,
         erro: error.message,
       };
+    }
+  }
+
+  /**
+   * Limpa cache de clientes SOAP (útil após atualização de credenciais)
+   */
+  clearCache(tenantId?: string): void {
+    if (tenantId) {
+      this.clientCache.delete(tenantId);
+      this.logger.log(`Cache limpo para tenant ${tenantId}`);
+    } else {
+      this.clientCache.clear();
+      this.logger.log('Cache de todos os tenants limpo');
     }
   }
 }

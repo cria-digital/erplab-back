@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
 import { Cnae } from '../../modules/infraestrutura/common/entities/cnae.entity';
 import { Banco } from '../../modules/financeiro/core/entities/banco.entity';
 import { ServicoSaude } from '../../modules/infraestrutura/common/entities/servico-saude.entity';
@@ -9,6 +10,8 @@ import { Estado } from '../../modules/infraestrutura/common/entities/estado.enti
 import { Cidade } from '../../modules/infraestrutura/common/entities/cidade.entity';
 import { Tenant } from '../../modules/tenants/entities/tenant.entity';
 import { Usuario } from '../../modules/autenticacao/usuarios/entities/usuario.entity';
+import { Integracao } from '../../modules/atendimento/integracoes/entities/integracao.entity';
+import { IntegracaoConfiguracao } from '../../modules/atendimento/integracoes/entities/integracao-configuracao.entity';
 import { CnaeSeedService } from './cnae-seed.service';
 import { CnaeSubclassesSeedService } from './cnae-subclasses-seed.service';
 import { BancoSeedService } from './banco-seed.service';
@@ -18,9 +21,11 @@ import { CampoFormularioConveniosSeedService } from './campo-formulario-convenio
 import { EstadoSeedService } from './estado-seed.service';
 import { CidadeSeedService } from './cidade-seed.service';
 import { TenantSeedService } from './tenant-seed.service';
+import { IntegracaoSeedService } from './integracao-seed.service';
 
 @Module({
   imports: [
+    ConfigModule,
     TypeOrmModule.forFeature([
       Cnae,
       Banco,
@@ -31,6 +36,8 @@ import { TenantSeedService } from './tenant-seed.service';
       Cidade,
       Tenant,
       Usuario,
+      Integracao,
+      IntegracaoConfiguracao,
     ]),
   ],
   providers: [
@@ -43,6 +50,7 @@ import { TenantSeedService } from './tenant-seed.service';
     EstadoSeedService,
     CidadeSeedService,
     TenantSeedService,
+    IntegracaoSeedService,
   ],
   exports: [
     CnaeSeedService,
@@ -54,6 +62,7 @@ import { TenantSeedService } from './tenant-seed.service';
     EstadoSeedService,
     CidadeSeedService,
     TenantSeedService,
+    IntegracaoSeedService,
   ],
 })
 export class SeedModule {}
