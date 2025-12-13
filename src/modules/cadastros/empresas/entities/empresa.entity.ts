@@ -1,14 +1,18 @@
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
   OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { TipoEmpresaEnum } from '../enums/empresas.enum';
 import { ContaBancaria } from '../../../financeiro/core/entities/conta-bancaria.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 @Entity('empresas')
 export class Empresa {
   @PrimaryGeneratedColumn('uuid')
@@ -194,4 +198,13 @@ export class Empresa {
 
   @UpdateDateColumn()
   atualizadoEm: Date;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

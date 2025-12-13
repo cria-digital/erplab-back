@@ -12,6 +12,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { UnidadeSaude } from '../../../../cadastros/unidade-saude/entities/unidade-saude.entity';
 import { Sala } from '../../salas/entities/sala.entity';
 
+import { Tenant } from '../../../../tenants/entities/tenant.entity';
 /**
  * Entidade que representa um Equipamento/Imobilizado
  *
@@ -130,4 +131,13 @@ export class Equipamento {
     comment: 'Data da última atualização',
   })
   atualizadoEm: Date;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

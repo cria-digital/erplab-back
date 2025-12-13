@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { Usuario } from '../../../autenticacao/usuarios/entities/usuario.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 export enum TipoOperacao {
   CREATE = 'CREATE',
   UPDATE = 'UPDATE',
@@ -122,4 +123,13 @@ export class LogAuditoria {
   // Auditoria
   @CreateDateColumn()
   criado_em: Date;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

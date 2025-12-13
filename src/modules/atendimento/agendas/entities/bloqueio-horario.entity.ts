@@ -1,12 +1,14 @@
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
-  ManyToOne,
+  Entity,
+  Index,
   JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Agenda } from './agenda.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 @Entity('bloqueios_horario')
 export class BloqueioHorario {
   @PrimaryGeneratedColumn('uuid')
@@ -30,4 +32,13 @@ export class BloqueioHorario {
 
   @Column({ nullable: true })
   observacao: string;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

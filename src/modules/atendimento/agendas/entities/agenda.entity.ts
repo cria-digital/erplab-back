@@ -20,6 +20,7 @@ import { BloqueioHorario } from './bloqueio-horario.entity';
 import { VinculacaoAgenda } from './vinculacao-agenda.entity';
 import { DiaSemanaEnum } from '../enums/agendas.enum';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 @Entity('agendas')
 export class Agenda {
   @PrimaryGeneratedColumn('uuid')
@@ -144,4 +145,13 @@ export class Agenda {
 
   @UpdateDateColumn({ name: 'atualizado_em' })
   atualizadoEm: Date;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

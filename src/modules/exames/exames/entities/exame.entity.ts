@@ -16,6 +16,7 @@ import { ExameUnidade } from './exame-unidade.entity';
 import { AlternativaCampoFormulario } from '../../../infraestrutura/campos-formulario/entities/alternativa-campo-formulario.entity';
 import { Amostra } from '../../amostras/entities/amostra.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 @Entity('exames')
 @Index(['codigo_interno'])
 @Index(['codigo_tuss'])
@@ -597,4 +598,13 @@ export class Exame {
   requiresPreparo(): boolean {
     return this.necessita_preparo === 'sim';
   }
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

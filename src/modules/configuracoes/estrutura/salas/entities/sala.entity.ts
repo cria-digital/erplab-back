@@ -11,6 +11,7 @@ import {
 import { UnidadeSaude } from '../../../../cadastros/unidade-saude/entities/unidade-saude.entity';
 import { AlternativaCampoFormulario } from '../../../../infraestrutura/campos-formulario/entities/alternativa-campo-formulario.entity';
 
+import { Tenant } from '../../../../tenants/entities/tenant.entity';
 /**
  * Entidade que representa uma Sala
  *
@@ -101,4 +102,13 @@ export class Sala {
     comment: 'ID do usuário que atualizou o registro',
   })
   atualizadoPor: string;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

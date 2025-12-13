@@ -1,14 +1,16 @@
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
-  ManyToOne,
+  Entity,
+  Index,
   JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Empresa } from '../../../cadastros/empresas/entities/empresa.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 @Entity('campos_personalizados_convenio')
 export class CampoPersonalizadoConvenio {
   @PrimaryGeneratedColumn('uuid')
@@ -47,4 +49,13 @@ export class CampoPersonalizadoConvenio {
 
   @UpdateDateColumn({ name: 'atualizado_em' })
   atualizadoEm: Date;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

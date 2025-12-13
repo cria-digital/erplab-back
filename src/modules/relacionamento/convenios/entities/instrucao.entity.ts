@@ -1,14 +1,16 @@
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
-  ManyToOne,
+  Entity,
+  Index,
   JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Convenio } from './convenio.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 export enum CategoriaInstrucao {
   AUTORIZACAO_PREVIA = 'autorizacao_previa',
   FATURAMENTO = 'faturamento',
@@ -135,4 +137,13 @@ export class Instrucao {
   })
   @JoinColumn({ name: 'convenio_id' })
   convenio: Convenio;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

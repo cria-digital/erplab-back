@@ -2089,6 +2089,120 @@ src/modules/configuracoes/campos-formulario/
 
 ---
 
+## 🏢 Multi-Tenancy - Implementação (Dezembro 2025)
+
+### Status: ⏳ EM PROGRESSO
+
+**Objetivo**: Implementar isolamento de dados por tenant usando coluna `tenant_id` em todas as tabelas de negócio.
+
+### Arquitetura Escolhida
+
+- **Estratégia**: Column-based multi-tenancy (coluna `tenant_id` em cada tabela)
+- **Identificação**: `tenant_id` extraído do JWT do usuário logado
+- **Isolamento**: Automático via TenantInterceptor
+
+### Componentes Implementados
+
+#### 1. Tabela e Entidade `tenants`
+
+- **Arquivo**: `src/modules/tenants/entities/tenant.entity.ts`
+- **Migration**: `1765300000000-CreateTenantsTable.ts`
+- **Campos**: id, nome, slug (unique), cnpj, plano, limite_usuarios, limite_unidades, configuracoes (jsonb), ativo
+
+#### 2. TenantInterceptor
+
+- **Arquivo**: `src/comum/interceptors/tenant.interceptor.ts`
+- Extrai `tenant_id` do usuário logado e injeta na request
+
+#### 3. TenantGuard
+
+- **Arquivo**: `src/comum/guards/tenant.guard.ts`
+- Valida se usuário possui tenant associado
+
+#### 4. Decorator @TenantId()
+
+- **Arquivo**: `src/comum/decorators/tenant.decorator.ts`
+- Facilita extração do tenant_id nos controllers
+
+#### 5. Seed de Tenant Padrão
+
+- **Arquivo**: `src/database/seeds/tenant-seed.service.ts`
+- Cria tenant padrão e associa usuários/dados existentes
+
+### Migrations Criadas
+
+1. `1765300000000-CreateTenantsTable.ts` - Cria tabela tenants
+2. `1765300001000-AddTenantIdToUsuarios.ts` - Adiciona tenant_id em usuarios
+3. `1765300002000-AddTenantIdToAllTables.ts` - Adiciona tenant_id em todas as tabelas de negócio
+
+### Entidades Atualizadas com tenant_id (84 entidades)
+
+**Padrão aplicado em cada entidade:**
+
+```typescript
+// Multi-tenancy
+@Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+@Index()
+tenantId: string;
+
+@ManyToOne(() => Tenant, { eager: false })
+@JoinColumn({ name: 'tenant_id' })
+tenant: Tenant;
+```
+
+**Tabelas COM tenant_id (tenant-específicas):**
+
+- Todas as tabelas de negócio (84 tabelas)
+- Exemplos: usuarios, pacientes, exames, convenios, laboratorios, agendas, etc.
+
+**Tabelas SEM tenant_id (compartilhadas/globais):**
+
+- `tenants` (própria tabela de tenants)
+- `cnaes` (dados do IBGE)
+- `bancos` (dados do BACEN)
+- `estados` e `cidades` (dados geográficos)
+- `modulos_sistema` e `tipos_permissao` (configurações do sistema)
+
+### Módulos Atualizados
+
+Todos os módulos importam a entidade Tenant:
+
+- autenticacao (usuarios, perfil)
+- cadastros (pacientes, profissionais, empresas, unidade-saude)
+- exames (exames, kits, matrizes, metodos, amostras)
+- relacionamento (convenios, laboratorios, telemedicina, fornecedores, prestadores)
+- atendimento (agendas, integracoes)
+- financeiro (core, contas-pagar)
+- configuracoes (campos-formulario, documentacao, estrutura)
+- infraestrutura (auditoria, campos-formulario, common)
+
+### Tabelas Específicas Adicionadas (Dezembro 2025)
+
+**Correção solicitada pelo Diego** - Tabelas que estavam como "compartilhadas" mas precisam de tenant_id:
+
+- ✅ `campos_formulario` - cada tenant pode ter suas próprias alternativas
+- ✅ `alternativas_campo_formulario` - opções específicas por tenant
+- ✅ `servicos_saude` - serviços configuráveis por tenant
+- ✅ `metodos` - métodos de exame por tenant
+- ✅ `amostras` - tipos de amostra por tenant
+- ✅ `matrizes_exames` - templates de exame por tenant
+
+### Próximos Passos Multi-Tenancy
+
+1. ⏳ **Executar migrations** no banco de desenvolvimento
+2. ⏳ **Executar seed** para criar tenant padrão
+3. ⏳ **Testar isolamento** - verificar se dados são filtrados corretamente
+4. ⏳ **Atualizar JWT** - incluir tenant_id no payload
+5. ⏳ **Refatorar services** - usar tenant_id nas queries
+
+### Validações Realizadas
+
+- ✅ Build: 0 erros TypeScript
+- ✅ Lint: 0 erros ESLint
+- ✅ Testes: 2196 passando (109 suites)
+
+---
+
 ## Próximos Passos Sugeridos
 
 ### Módulos em Implementação (Alta Prioridade)

@@ -1,18 +1,20 @@
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
-  ManyToOne,
+  Entity,
+  Index,
   JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
   Unique,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Usuario } from './usuario.entity';
 import { ModuloSistema } from './modulo-sistema.entity';
 import { TipoPermissao } from './tipo-permissao.entity';
 import { UnidadeSaude } from '../../../cadastros/unidade-saude/entities/unidade-saude.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 @Entity('usuarios_permissoes')
 @Unique(['usuarioId', 'moduloId', 'permissaoId', 'unidadeSaudeId'])
 export class UsuarioPermissao {
@@ -71,4 +73,13 @@ export class UsuarioPermissao {
   })
   @JoinColumn({ name: 'unidade_saude_id' })
   unidadeSaude: UnidadeSaude;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

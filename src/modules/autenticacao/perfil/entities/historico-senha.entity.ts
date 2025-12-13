@@ -1,13 +1,15 @@
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  ManyToOne,
+  Entity,
+  Index,
   JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Usuario } from '../../usuarios/entities/usuario.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 /**
  * Entidade para armazenar histórico de senhas do usuário
  * Necessário para validar: "Senha deve ser diferente da senha anterior"
@@ -50,4 +52,13 @@ export class HistoricoSenha {
 
   @CreateDateColumn({ name: 'data_alteracao' })
   dataAlteracao: Date;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

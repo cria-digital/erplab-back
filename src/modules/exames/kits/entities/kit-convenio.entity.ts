@@ -12,6 +12,7 @@ import {
 import { Kit } from './kit.entity';
 import { Convenio } from '../../../relacionamento/convenios/entities/convenio.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 @Entity('kit_convenios')
 @Unique(['kit', 'convenio']) // Garante que um convênio não seja duplicado no mesmo kit
 @Index('IDX_kit_convenio_kit', ['kit'])
@@ -52,4 +53,13 @@ export class KitConvenio {
     comment: 'Data/hora da última atualização',
   })
   updatedAt: Date;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

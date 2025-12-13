@@ -1,16 +1,18 @@
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
-  ManyToOne,
+  Entity,
+  Index,
   JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
   Unique,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Telemedicina } from './telemedicina.entity';
 import { Exame } from '../../../exames/exames/entities/exame.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 @Entity('telemedicina_exames')
 @Unique(['telemedicina_id', 'exame_id'])
 export class TelemedicinaExame {
@@ -65,4 +67,13 @@ export class TelemedicinaExame {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

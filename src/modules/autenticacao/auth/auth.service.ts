@@ -62,6 +62,8 @@ export class AuthService {
       sub: usuario.id,
       email: usuario.email,
       nome: usuario.nomeCompleto,
+      tenantId: usuario.tenantId,
+      isSuperAdmin: usuario.isSuperAdmin,
     };
 
     const accessToken = this.jwtService.sign(payload);
@@ -83,6 +85,8 @@ export class AuthService {
         email: usuario.email,
         permissoes: usuario.permissoes,
         foto_url: usuario.fotoUrl,
+        tenant_id: usuario.tenantId,
+        is_super_admin: usuario.isSuperAdmin,
       },
     };
   }
@@ -105,6 +109,8 @@ export class AuthService {
         sub: usuario.id,
         email: usuario.email,
         nome: usuario.nomeCompleto,
+        tenantId: usuario.tenantId,
+        isSuperAdmin: usuario.isSuperAdmin,
       };
 
       const accessToken = this.jwtService.sign(newPayload);

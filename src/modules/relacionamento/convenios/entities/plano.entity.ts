@@ -1,17 +1,19 @@
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
+  Entity,
+  Index,
+  JoinColumn,
   ManyToOne,
   OneToMany,
-  JoinColumn,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Convenio } from './convenio.entity';
 import { ProcedimentoAutorizado } from './procedimento-autorizado.entity';
 import { Restricao } from './restricao.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 export enum TipoPlano {
   AMBULATORIAL = 'ambulatorial',
   HOSPITALAR = 'hospitalar',
@@ -124,4 +126,13 @@ export class Plano {
 
   @OneToMany(() => Restricao, (restricao) => restricao.plano)
   restricoes: Restricao[];
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

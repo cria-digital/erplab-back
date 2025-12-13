@@ -1,12 +1,13 @@
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
-  ManyToOne,
+  Entity,
+  Index,
   JoinColumn,
+  ManyToOne,
   OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { ContaBancaria } from './conta-bancaria.entity';
 import { RestricaoAdquirente } from './restricao-adquirente.entity';
@@ -15,6 +16,7 @@ import { AdquirenteTipoCartao } from './adquirente-tipo-cartao.entity';
 import { Integracao } from '../../../atendimento/integracoes/entities/integracao.entity';
 import { AlternativaCampoFormulario } from '../../../infraestrutura/campos-formulario/entities/alternativa-campo-formulario.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 export enum StatusAdquirente {
   ATIVO = 'ativo',
   INATIVO = 'inativo',
@@ -121,4 +123,13 @@ export class Adquirente {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

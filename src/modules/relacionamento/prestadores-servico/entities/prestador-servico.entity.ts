@@ -1,17 +1,19 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  UpdateDateColumn,
-  OneToOne,
-  JoinColumn,
-  OneToMany,
+  Entity,
   Index,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Empresa } from '../../../cadastros/empresas/entities/empresa.entity';
 import { PrestadorServicoCategoria } from './prestador-servico-categoria.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 export enum TipoContrato {
   FIXO = 'fixo',
   POR_DEMANDA = 'por_demanda',
@@ -362,4 +364,13 @@ export class PrestadorServico {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

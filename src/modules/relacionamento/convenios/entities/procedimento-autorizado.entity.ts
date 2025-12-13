@@ -1,14 +1,16 @@
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
-  ManyToOne,
+  Entity,
+  Index,
   JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Plano } from './plano.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 @Entity('procedimentos_autorizados')
 export class ProcedimentoAutorizado {
   @PrimaryGeneratedColumn('uuid')
@@ -70,4 +72,13 @@ export class ProcedimentoAutorizado {
   })
   @JoinColumn({ name: 'plano_id' })
   plano: Plano;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

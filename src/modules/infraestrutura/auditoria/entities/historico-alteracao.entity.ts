@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { Usuario } from '../../../autenticacao/usuarios/entities/usuario.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 @Entity('historico_alteracoes')
 @Index(['tabela_origem', 'registro_id', 'criado_em'])
 @Index(['usuario_id', 'criado_em'])
@@ -76,4 +77,13 @@ export class HistoricoAlteracao {
   // Auditoria
   @CreateDateColumn()
   criado_em: Date;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

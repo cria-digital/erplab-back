@@ -1,12 +1,13 @@
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
-  OneToMany,
-  ManyToOne,
+  Entity,
+  Index,
   JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { KitExame } from './kit-exame.entity';
 import { KitUnidade } from './kit-unidade.entity';
@@ -14,6 +15,7 @@ import { KitConvenio } from './kit-convenio.entity';
 import { Empresa } from '../../../cadastros/empresas/entities/empresa.entity';
 import { Usuario } from '../../../autenticacao/usuarios/entities/usuario.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 export enum StatusKitEnum {
   ATIVO = 'ATIVO',
   INATIVO = 'INATIVO',
@@ -163,4 +165,13 @@ export class Kit {
     comment: 'Data/hora da última atualização',
   })
   updatedAt: Date;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

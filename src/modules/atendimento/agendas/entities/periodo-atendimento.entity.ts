@@ -1,12 +1,14 @@
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
-  ManyToOne,
+  Entity,
+  Index,
   JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Agenda } from './agenda.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 @Entity('periodos_atendimento')
 export class PeriodoAtendimento {
   @PrimaryGeneratedColumn('uuid')
@@ -24,4 +26,13 @@ export class PeriodoAtendimento {
 
   @Column({ name: 'horario_fim', type: 'time' })
   horarioFim: string;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

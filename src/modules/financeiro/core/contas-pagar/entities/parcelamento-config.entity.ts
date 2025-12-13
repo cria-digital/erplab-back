@@ -1,15 +1,18 @@
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
-  OneToOne,
+  Entity,
+  Index,
   JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { ContaPagar } from './conta-pagar.entity';
 import { Periodicidade } from '../enums/contas-pagar.enum';
 
+import { Tenant } from '../../../../tenants/entities/tenant.entity';
 @Entity('parcelamentos_config')
 export class ParcelamentoConfig {
   @PrimaryGeneratedColumn('uuid')
@@ -36,4 +39,13 @@ export class ParcelamentoConfig {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

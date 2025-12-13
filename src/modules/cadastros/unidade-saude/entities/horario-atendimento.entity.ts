@@ -1,14 +1,16 @@
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
-  ManyToOne,
-  JoinColumn,
   CreateDateColumn,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { UnidadeSaude } from './unidade-saude.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 export enum DiaSemana {
   SEGUNDA = 'SEGUNDA',
   TERCA = 'TERCA',
@@ -65,4 +67,13 @@ export class HorarioAtendimento {
   })
   @JoinColumn({ name: 'unidade_saude_id' })
   unidadeSaude: UnidadeSaude;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

@@ -7,6 +7,8 @@ import { CampoFormulario } from '../../modules/infraestrutura/campos-formulario/
 import { AlternativaCampoFormulario } from '../../modules/infraestrutura/campos-formulario/entities/alternativa-campo-formulario.entity';
 import { Estado } from '../../modules/infraestrutura/common/entities/estado.entity';
 import { Cidade } from '../../modules/infraestrutura/common/entities/cidade.entity';
+import { Tenant } from '../../modules/tenants/entities/tenant.entity';
+import { Usuario } from '../../modules/autenticacao/usuarios/entities/usuario.entity';
 import { CnaeSeedService } from './cnae-seed.service';
 import { CnaeSubclassesSeedService } from './cnae-subclasses-seed.service';
 import { BancoSeedService } from './banco-seed.service';
@@ -15,6 +17,7 @@ import { CampoFormularioSeedService } from './campo-formulario-seed.service';
 import { CampoFormularioConveniosSeedService } from './campo-formulario-convenios-seed.service';
 import { EstadoSeedService } from './estado-seed.service';
 import { CidadeSeedService } from './cidade-seed.service';
+import { TenantSeedService } from './tenant-seed.service';
 
 @Module({
   imports: [
@@ -26,6 +29,8 @@ import { CidadeSeedService } from './cidade-seed.service';
       AlternativaCampoFormulario,
       Estado,
       Cidade,
+      Tenant,
+      Usuario,
     ]),
   ],
   providers: [
@@ -37,6 +42,7 @@ import { CidadeSeedService } from './cidade-seed.service';
     CampoFormularioConveniosSeedService,
     EstadoSeedService,
     CidadeSeedService,
+    TenantSeedService,
   ],
   exports: [
     CnaeSeedService,
@@ -47,6 +53,7 @@ import { CidadeSeedService } from './cidade-seed.service';
     CampoFormularioConveniosSeedService,
     EstadoSeedService,
     CidadeSeedService,
+    TenantSeedService,
   ],
 })
 export class SeedModule {}

@@ -16,6 +16,7 @@ import { ImpostoRetido } from './imposto-retido.entity';
 import { Parcela } from './parcela.entity';
 import { Anexo } from './anexo.entity';
 import { ParcelamentoConfig } from './parcelamento-config.entity';
+import { Tenant } from '../../../../tenants/entities/tenant.entity';
 import {
   CredorTipo,
   TipoDocumento,
@@ -100,4 +101,13 @@ export class ContaPagar {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

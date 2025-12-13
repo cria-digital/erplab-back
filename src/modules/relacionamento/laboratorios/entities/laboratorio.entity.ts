@@ -1,16 +1,18 @@
 import {
-  Entity,
   Column,
-  PrimaryColumn,
   CreateDateColumn,
-  UpdateDateColumn,
-  OneToOne,
-  ManyToOne,
+  Entity,
+  Index,
   JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Empresa } from '../../../cadastros/empresas/entities/empresa.entity';
 import { Integracao } from '../../../atendimento/integracoes/entities/integracao.entity';
 
+import { Tenant } from '../../../tenants/entities/tenant.entity';
 @Entity('laboratorios')
 export class Laboratorio {
   @PrimaryColumn('uuid')
@@ -41,4 +43,13 @@ export class Laboratorio {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

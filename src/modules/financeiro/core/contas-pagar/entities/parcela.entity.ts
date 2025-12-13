@@ -13,6 +13,7 @@ import { ContaPagar } from './conta-pagar.entity';
 import { PagamentoParcela } from './pagamento-parcela.entity';
 import { StatusParcela } from '../enums/contas-pagar.enum';
 
+import { Tenant } from '../../../../tenants/entities/tenant.entity';
 @Entity('parcelas')
 @Index(['contaPagarId', 'numeroParcela'])
 export class Parcela {
@@ -59,4 +60,13 @@ export class Parcela {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }

@@ -1,17 +1,19 @@
 import {
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
+  Entity,
+  Index,
+  JoinColumn,
   ManyToOne,
   OneToMany,
-  JoinColumn,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { UnidadeSaude } from '../../../../cadastros/unidade-saude/entities/unidade-saude.entity';
 import { RepasseFiltro } from './repasse-filtro.entity';
 import { StatusRepasse } from '../enums/contas-pagar.enum';
 
+import { Tenant } from '../../../../tenants/entities/tenant.entity';
 @Entity('repasses')
 export class Repasse {
   @PrimaryGeneratedColumn('uuid')
@@ -44,4 +46,13 @@ export class Repasse {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
+
+  // Multi-tenancy
+  @Column({ name: 'tenant_id', type: 'uuid', nullable: true })
+  @Index()
+  tenantId: string;
+
+  @ManyToOne(() => Tenant, { eager: false })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: Tenant;
 }
