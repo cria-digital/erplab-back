@@ -441,6 +441,14 @@ export class ConsultarPendenciasDbDto {
 // ============================================
 
 export class GerarEtiquetaRecoletaDbDto {
+  @ApiPropertyOptional({
+    description: 'Número do atendimento no sistema apoiado',
+    example: 'PED-2025-001',
+  })
+  @IsOptional()
+  @IsString()
+  numeroAtendimentoApoiado?: string;
+
   @ApiProperty({
     description: 'Número do atendimento no DB Diagnósticos',
     example: '1020208062',
@@ -456,6 +464,22 @@ export class GerarEtiquetaRecoletaDbDto {
   @IsNotEmpty()
   @IsString()
   codigoExameDb: string;
+
+  @ApiPropertyOptional({
+    description: 'Sequência do exame (padrão: 1)',
+    example: 1,
+  })
+  @IsOptional()
+  @IsNumber()
+  sequenciaExameDb?: number;
+
+  @ApiPropertyOptional({
+    description: 'Status do procedimento (padrão: MPP)',
+    example: 'MPP',
+  })
+  @IsOptional()
+  @IsString()
+  status?: string;
 }
 
 // ============================================

@@ -744,11 +744,87 @@ export class HermesPardiniService {
         true,
       );
 
+      // Verificar se resposta.erro contém XML válido (biblioteca SOAP pode marcar como erro)
+      let xmlString: string | undefined;
+
       if (!resposta.sucesso) {
-        return {
-          sucesso: false,
-          erro: resposta.erro,
-        };
+        // Verificar se o "erro" é na verdade uma resposta SOAP válida com dados
+        const temTabela = resposta.erro?.includes('<TABELA>');
+        const temResult = resposta.erro?.includes(
+          'getGrupoFracionamentoResult',
+        );
+
+        if (temTabela || temResult) {
+          // Extrair o XML interno do CDATA dentro da resposta SOAP
+          const cdataMatch = resposta.erro.match(/<!\[CDATA\[([\s\S]*)\]\]>/);
+          if (cdataMatch && cdataMatch[1]) {
+            xmlString = cdataMatch[1].trim();
+          }
+        }
+
+        if (!xmlString) {
+          return {
+            sucesso: false,
+            erro: resposta.erro,
+          };
+        }
+      } else {
+        // A biblioteca SOAP já parseou o resultado
+        xmlString = resposta.dados?.getGrupoFracionamentoResult;
+      }
+
+      if (typeof xmlString === 'string' && xmlString.includes('<TABELA>')) {
+        // Extrair apenas a parte TABELA do XML
+        const tabelaStart = xmlString.indexOf('<TABELA>');
+        const tabelaEnd = xmlString.lastIndexOf('</TABELA>');
+
+        if (tabelaStart === -1 || tabelaEnd === -1) {
+          return {
+            sucesso: false,
+            erro: 'Não foi possível encontrar TABELA no XML',
+          };
+        }
+
+        // Extrair e limpar XML
+        let xmlInterno = xmlString.substring(
+          tabelaStart,
+          tabelaEnd + '</TABELA>'.length,
+        );
+        xmlInterno = xmlInterno
+          .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
+          .replace(/\r\n/g, '\n')
+          .replace(/\r/g, '\n');
+
+        try {
+          // Tentar parsing XML padrão
+          const xmlData = await this.soapClient.xmlParaObjeto(xmlInterno);
+          return {
+            sucesso: true,
+            dados: this.processarGruposFracionamento(xmlData),
+          };
+        } catch (parseError) {
+          this.logger.warn(
+            `XML parsing falhou, usando fallback via regex: ${parseError.message}`,
+          );
+
+          // Fallback: extrair dados via regex
+          try {
+            const dados = this.extrairGruposViaRegex(xmlInterno);
+            this.logger.log(
+              `Regex extraiu ${dados.length} grupos de fracionamento`,
+            );
+            return {
+              sucesso: true,
+              dados,
+            };
+          } catch (regexError) {
+            this.logger.error(`Erro no regex fallback: ${regexError.message}`);
+            return {
+              sucesso: false,
+              erro: `Falha ao processar XML: ${parseError.message}`,
+            };
+          }
+        }
       }
 
       return {
@@ -765,11 +841,165 @@ export class HermesPardiniService {
   }
 
   /**
+   * Extrai conteúdo CDATA do envelope SOAP
+   */
+  private extrairCdataDoSoap(xml: string): string {
+    // Se já começa com <?xml ou <TABELA, não há CDATA para extrair
+    if (xml.startsWith('<?xml') || xml.startsWith('<TABELA')) {
+      return xml;
+    }
+
+    // Procurar conteúdo dentro de CDATA (greedy para capturar todo o conteúdo)
+    const cdataMatch = xml.match(/<!\[CDATA\[([\s\S]*)\]\]>/);
+    if (cdataMatch && cdataMatch[1]) {
+      return cdataMatch[1].trim();
+    }
+
+    // Se não tem CDATA, procurar pela TABELA diretamente
+    const tabelaMatch = xml.match(/<TABELA[\s\S]*<\/TABELA>/);
+    if (tabelaMatch) {
+      return tabelaMatch[0];
+    }
+
+    return xml;
+  }
+
+  /**
+   * Extrai grupos de fracionamento via regex (fallback quando XML parsing falha)
+   */
+  private extrairGruposViaRegex(
+    xml: string,
+  ): HermesPardiniGrupoFracionamento[] {
+    const gruposMap = new Map<string, HermesPardiniGrupoFracionamento>();
+
+    // Regex para capturar cada bloco EXAME
+    const exameRegex = /<EXAME>([\s\S]*?)<\/EXAME>/g;
+    let exameMatch;
+
+    while ((exameMatch = exameRegex.exec(xml)) !== null) {
+      const exameContent = exameMatch[1];
+
+      // Extrair dados do exame
+      const mnexaMatch = exameContent.match(/<MNEXA>(.*?)<\/MNEXA>/);
+      const descexaMatch = exameContent.match(/<DESCEXA>(.*?)<\/DESCEXA>/);
+
+      if (!mnexaMatch) continue;
+
+      // Extrair grupos de amostra
+      const amostraRegex = /<AMOSTRA>([\s\S]*?)<\/AMOSTRA>/g;
+      let amostraMatch;
+
+      while ((amostraMatch = amostraRegex.exec(exameContent)) !== null) {
+        const amostraContent = amostraMatch[1];
+        const grupoMatch = amostraContent.match(/<GRUPO>(.*?)<\/GRUPO>/);
+
+        if (grupoMatch) {
+          const grupoId = grupoMatch[1] || 'SEM_GRUPO';
+
+          if (!gruposMap.has(grupoId)) {
+            gruposMap.set(grupoId, {
+              codigo: grupoId,
+              nome: `Grupo ${grupoId}`,
+              exames: [],
+            });
+          }
+
+          const grupo = gruposMap.get(grupoId)!;
+          grupo.exames.push({
+            codigoExame: mnexaMatch[1] || '',
+            nomeExame: descexaMatch ? descexaMatch[1] : '',
+          });
+        }
+      }
+    }
+
+    return Array.from(gruposMap.values());
+  }
+
+  /**
+   * Extrai resultado XML de resposta SOAP parseada
+   */
+  private extrairResultadoXml(dados: any): string | null {
+    if (!dados) return null;
+
+    // Hermes Pardini retorna resultado como string na propriedade 'getGrupoFracionamentoResult'
+    if (dados.getGrupoFracionamentoResult) {
+      const result = dados.getGrupoFracionamentoResult;
+      // Se for string com XML, retornar
+      if (
+        typeof result === 'string' &&
+        (result.includes('<?xml') || result.includes('<TABELA>'))
+      ) {
+        return this.extrairCdataDoSoap(result);
+      }
+      // Se for objeto com $value (CDATA parseado)
+      if (result.$value) {
+        return result.$value;
+      }
+    }
+
+    // Tentar encontrar qualquer propriedade que termina com 'Result'
+    const keys = Object.keys(dados);
+    for (const key of keys) {
+      if (key.endsWith('Result')) {
+        const result = dados[key];
+        if (typeof result === 'string' && result.includes('<TABELA>')) {
+          return this.extrairCdataDoSoap(result);
+        }
+        if (result?.$value) {
+          return result.$value;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  /**
    * Processa grupos de fracionamento
    */
   private processarGruposFracionamento(
     dados: any,
   ): HermesPardiniGrupoFracionamento[] {
+    // Verificar se veio como TABELA (formato Hermes Pardini)
+    if (dados?.TABELA?.EXAME) {
+      const exames = Array.isArray(dados.TABELA.EXAME)
+        ? dados.TABELA.EXAME
+        : [dados.TABELA.EXAME];
+
+      // Agrupar por GRUPO de amostra
+      const gruposMap = new Map<string, HermesPardiniGrupoFracionamento>();
+
+      for (const exame of exames) {
+        const amostras = exame.AMOSTRA
+          ? Array.isArray(exame.AMOSTRA)
+            ? exame.AMOSTRA
+            : [exame.AMOSTRA]
+          : [];
+
+        for (const amostra of amostras) {
+          const grupoId = amostra.GRUPO || 'SEM_GRUPO';
+
+          if (!gruposMap.has(grupoId)) {
+            gruposMap.set(grupoId, {
+              codigo: grupoId,
+              nome: `Grupo ${grupoId}`,
+              exames: [],
+            });
+          }
+
+          const grupo = gruposMap.get(grupoId)!;
+          grupo.exames.push({
+            codigoExame: exame.MNEXA || '',
+            nomeExame: exame.DESCEXA || '',
+          });
+        }
+      }
+
+      return Array.from(gruposMap.values());
+    }
+
+    // Formato antigo esperado
     if (!dados?.Grupos) return [];
 
     const lista = Array.isArray(dados.Grupos) ? dados.Grupos : [dados.Grupos];
@@ -823,5 +1053,55 @@ export class HermesPardiniService {
       sucesso: true,
       dados: { url },
     };
+  }
+
+  /**
+   * Debug - retorna estrutura bruta da resposta SOAP
+   */
+  async debugGruposFracionamento(): Promise<any> {
+    try {
+      const soapConfig = this.criarSoapConfig();
+      const client = await this.soapClient.criarCliente(soapConfig);
+
+      const parametros = {
+        login: this.config.login,
+        passwd: this.config.senha,
+      };
+
+      const resposta = await this.soapClient.chamarMetodo(
+        client,
+        HERMES_PARDINI_METODOS.GET_GRUPO_FRACIONAMENTO,
+        parametros,
+        true,
+      );
+
+      // Retornar informações de debug
+      const dadosKeys = resposta.dados ? Object.keys(resposta.dados) : [];
+      const resultadoRaw = resposta.dados?.getGrupoFracionamentoResult;
+
+      return {
+        sucesso: resposta.sucesso,
+        erro: resposta.erro,
+        dadosKeys,
+        temResultado: !!resultadoRaw,
+        tipoResultado: typeof resultadoRaw,
+        tamanhoResultado:
+          typeof resultadoRaw === 'string' ? resultadoRaw.length : null,
+        primeiros500chars:
+          typeof resultadoRaw === 'string'
+            ? resultadoRaw.substring(0, 500)
+            : null,
+        temTabela:
+          typeof resultadoRaw === 'string'
+            ? resultadoRaw.includes('<TABELA>')
+            : false,
+      };
+    } catch (erro) {
+      return {
+        sucesso: false,
+        erro: erro.message,
+        stack: erro.stack,
+      };
+    }
   }
 }

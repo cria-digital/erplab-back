@@ -26,7 +26,7 @@ import {
 
 @ApiTags('Integrações - Hermes Pardini')
 @ApiBearerAuth()
-@Controller('api/v1/integracoes/hermes-pardini')
+@Controller('integracoes/hermes-pardini')
 export class HermesPardiniController {
   constructor(private readonly hermesPardiniService: HermesPardiniService) {}
 
@@ -147,5 +147,11 @@ export class HermesPardiniController {
   @ApiResponse({ status: 200, description: 'Lista de grupos' })
   async listarGruposFracionamento() {
     return this.hermesPardiniService.buscarGruposFracionamento();
+  }
+
+  @Get('debug/grupos-fracionamento')
+  @ApiOperation({ summary: 'Debug - retorna estrutura bruta da resposta SOAP' })
+  async debugGruposFracionamento() {
+    return this.hermesPardiniService.debugGruposFracionamento();
   }
 }

@@ -111,19 +111,104 @@ export class SoapClientService {
           : undefined,
       };
     } catch (erro) {
+      // IMPORTANTE: A biblioteca SOAP pode lançar exceção mesmo com resposta válida
+      // Verificar se erro.body contém uma resposta SOAP válida com dados
+
+      // Extrair response body de diferentes locais
+      let responseBody: string | undefined;
+      if (erro?.body && typeof erro.body === 'string') {
+        responseBody = erro.body;
+      } else if (
+        erro?.response?.body &&
+        typeof erro.response.body === 'string'
+      ) {
+        responseBody = erro.response.body;
+      }
+
+      // Verificar se a resposta contém dados SOAP válidos (não é um Fault)
+      if (
+        responseBody &&
+        responseBody.includes('Response>') &&
+        !responseBody.includes('Fault>')
+      ) {
+        this.logger.debug(
+          `Método ${metodo}: Resposta SOAP válida detectada em exceção`,
+        );
+
+        // Retornar como sucesso mas com dados brutos no erro para processamento downstream
+        // O serviço específico pode extrair os dados do campo erro
+        return {
+          sucesso: false,
+          erro: responseBody,
+          codigoErro: 'SOAP_RESPONSE_IN_EXCEPTION',
+          detalhes: {
+            request:
+              typeof erro?.request === 'string' ? erro.request : undefined,
+            response: responseBody,
+          },
+        };
+      }
+
+      // Extrair mensagem de erro de diferentes formatos SOAP
+      // IMPORTANTE: Evitar referências circulares que existem em objetos HTTP
+      let mensagemErro = 'Erro desconhecido na chamada SOAP';
+      let codigoErro: string | undefined;
+
+      // Tentar extrair mensagem de diferentes formatos de erro SOAP
+      if (typeof erro === 'string') {
+        mensagemErro = erro;
+      } else if (erro?.message) {
+        mensagemErro = erro.message;
+      }
+
+      // Tentar extrair detalhes de SOAP Fault
+      try {
+        if (erro?.root?.Envelope?.Body?.Fault) {
+          const fault = erro.root.Envelope.Body.Fault;
+          mensagemErro = fault.faultstring || fault.faultcode || mensagemErro;
+          codigoErro = fault.faultcode;
+        }
+      } catch {
+        // Ignorar erros ao acessar estrutura SOAP
+      }
+
+      // Extrair código de erro se disponível
+      if (erro?.code && typeof erro.code === 'string') {
+        codigoErro = erro.code;
+      }
+
+      // Extrair dados de request/response de forma segura (apenas strings)
+      let requestData: string | undefined;
+      let responseData: string | undefined;
+
+      if (typeof erro?.request === 'string') {
+        requestData = erro.request;
+      }
+      if (typeof erro?.response === 'string') {
+        responseData = erro.response;
+      }
+
+      // Se há response body como string, tentar extrair
+      if (erro?.response?.body && typeof erro.response.body === 'string') {
+        responseData = erro.response.body;
+      }
+
       this.logger.error(
-        `Erro ao chamar método ${metodo}: ${erro.message}`,
-        erro.stack,
+        `Erro ao chamar método ${metodo}: ${mensagemErro}`,
+        erro?.stack,
       );
 
       return {
         sucesso: false,
-        erro: erro.message,
-        codigoErro: erro.code,
-        detalhes: {
-          request: erro.request,
-          response: erro.response,
-        },
+        erro: mensagemErro,
+        codigoErro,
+        detalhes:
+          requestData || responseData
+            ? {
+                request: requestData,
+                response: responseData,
+              }
+            : undefined,
       };
     }
   }
@@ -137,6 +222,9 @@ export class SoapClientService {
         explicitArray: false,
         ignoreAttrs: false,
         trim: true,
+        strict: false, // Mais tolerante com XML malformado
+        normalize: true,
+        normalizeTags: false,
       });
 
       return await parser.parseStringPromise(xml);

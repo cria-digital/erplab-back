@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
@@ -416,31 +416,54 @@ export class DbDiagnosticosController {
   @ApiOperation({
     summary: 'Verificar saúde da integração',
     description:
-      'Verifica se a integração com DB Diagnósticos está configurada',
+      'Verifica se a integração com DB Diagnósticos está configurada e conecta',
   })
   @ApiResponse({
     status: 200,
     description: 'Status da integração',
   })
-  healthCheck() {
-    return {
-      status: 'ok',
-      integracao: 'DB Diagnósticos',
-      protocolo: 'DBSync v2.0',
-      wsdl: 'https://wsmb.diagnosticosdobrasil.com.br/dbsync/wsrvProtocoloDBSync.dbsync.svc?wsdl',
-      metodos: [
-        'RecebeAtendimento',
-        'EnviaLaudoAtendimento',
-        'EnviaLaudoAtendimentoLista',
-        'EnviaLaudoAtendimentoPorPeriodo',
-        'ConsultaStatusAtendimento',
-        'EnviaAmostras',
-        'ListaProcedimentosPendentes',
-        'EnviaAmostrasProcedimentosPendentes',
-        'EnviaLoteResultados',
-        'EnviaResultadoBase64',
-        'RelatorioRequisicoesEnviadas',
-      ],
-    };
+  async healthCheck() {
+    return await this.dbDiagnosticosService.healthCheck();
+  }
+
+  @Get('wsdl/describe')
+  @ApiOperation({
+    summary: 'Descrever WSDL (Debug)',
+    description: 'Retorna a descrição completa do WSDL para debug',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Descrição do WSDL',
+  })
+  async describeWsdl() {
+    return await this.dbDiagnosticosService.describeWsdl();
+  }
+
+  @Get('procedimentos')
+  @ApiOperation({
+    summary: 'Buscar procedimentos',
+    description:
+      'Busca procedimentos disponíveis no DB Diagnósticos. Útil para validar conexão.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de procedimentos',
+  })
+  async buscarProcedimentos() {
+    // Busca exame HEMO (Hemograma) como teste
+    return await this.dbDiagnosticosService.buscarProcedimentos('HEMO');
+  }
+
+  @Get('procedimentos/:codigo')
+  @ApiOperation({
+    summary: 'Buscar procedimento por código',
+    description: 'Busca um procedimento específico pelo código',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Procedimento encontrado',
+  })
+  async buscarProcedimentoPorCodigo(@Param('codigo') codigo: string) {
+    return await this.dbDiagnosticosService.buscarProcedimentos(codigo);
   }
 }

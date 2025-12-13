@@ -77,5 +77,7 @@ export interface SoapResponse<T = any> {
     request?: string;
     response?: string;
     headers?: Record<string, any>;
+    body?: any;
+    root?: any;
   };
 }

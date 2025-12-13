@@ -182,11 +182,15 @@ export class DbDiagnosticosService {
     );
 
     try {
+      // WSDL espera objeto "request" com campos específicos
       const params = {
-        CodigoApoiado: this.config.codigoApoiado,
-        CodigoSenhaIntegracao: this.config.codigoSenhaIntegracao,
-        NumeroAtendimentoApoiado: dto.numeroAtendimentoApoiado,
-        NumeroAtendimentoDB: dto.numeroAtendimentoDb,
+        request: {
+          CodigoApoiado: this.config.codigoApoiado,
+          CodigoSenhaIntegracao: this.config.codigoSenhaIntegracao,
+          NumeroAtendimentoApoiado:
+            dto.numeroAtendimentoApoiado || dto.numeroAtendimentoDb,
+          Procedimento: '', // Consulta todos os procedimentos
+        },
       };
 
       const result = await this.callSoapMethod<any>(
@@ -214,17 +218,20 @@ export class DbDiagnosticosService {
    * Retornar resultados de lista de pedidos
    */
   async consultarLaudoLista(
-    numerosAtendimentoDb: string[],
+    numerosAtendimentoApoiado: string[],
   ): Promise<DbDiagnosticosResponse<DbDiagnosticosLaudo[]>> {
     this.logger.log(
-      `Consultando laudos em lista: ${numerosAtendimentoDb.length} pedidos`,
+      `Consultando laudos em lista: ${numerosAtendimentoApoiado.length} pedidos`,
     );
 
     try {
+      // WSDL espera objeto "request" com NumeroAtendimentoApoiado como array
       const params = {
-        CodigoApoiado: this.config.codigoApoiado,
-        CodigoSenhaIntegracao: this.config.codigoSenhaIntegracao,
-        ListaNumeroAtendimentoDB: numerosAtendimentoDb,
+        request: {
+          CodigoApoiado: this.config.codigoApoiado,
+          CodigoSenhaIntegracao: this.config.codigoSenhaIntegracao,
+          NumeroAtendimentoApoiado: numerosAtendimentoApoiado,
+        },
       };
 
       const result = await this.callSoapMethod<any>(
@@ -259,11 +266,14 @@ export class DbDiagnosticosService {
     );
 
     try {
+      // WSDL espera objeto "request" com dtInicial e dtFinal
       const params = {
-        CodigoApoiado: this.config.codigoApoiado,
-        CodigoSenhaIntegracao: this.config.codigoSenhaIntegracao,
-        DataInicio: dto.dataInicio,
-        DataFim: dto.dataFim,
+        request: {
+          CodigoApoiado: this.config.codigoApoiado,
+          CodigoSenhaIntegracao: this.config.codigoSenhaIntegracao,
+          dtInicial: dto.dataInicio,
+          dtFinal: dto.dataFim,
+        },
       };
 
       const result = await this.callSoapMethod<any>(
@@ -300,11 +310,15 @@ export class DbDiagnosticosService {
     );
 
     try {
+      // WSDL espera objeto "request" com campos específicos
       const params = {
-        CodigoApoiado: this.config.codigoApoiado,
-        CodigoSenhaIntegracao: this.config.codigoSenhaIntegracao,
-        NumeroAtendimentoApoiado: dto.numeroAtendimentoApoiado,
-        NumeroAtendimentoDB: dto.numeroAtendimentoDb,
+        request: {
+          CodigoApoiado: this.config.codigoApoiado,
+          CodigoSenhaIntegracao: this.config.codigoSenhaIntegracao,
+          NumeroAtendimentoApoiado:
+            dto.numeroAtendimentoApoiado || dto.numeroAtendimentoDb,
+          Procedimento: '', // Consulta todos os procedimentos
+        },
       };
 
       const result = await this.callSoapMethod<any>(
@@ -339,11 +353,14 @@ export class DbDiagnosticosService {
     );
 
     try {
+      // WSDL espera objeto "request"
       const params = {
-        CodigoApoiado: this.config.codigoApoiado,
-        CodigoSenhaIntegracao: this.config.codigoSenhaIntegracao,
-        NumeroAtendimentoApoiado: dto.numeroAtendimentoApoiado,
-        NumeroAtendimentoDB: dto.numeroAtendimentoDb,
+        request: {
+          CodigoApoiado: this.config.codigoApoiado,
+          CodigoSenhaIntegracao: this.config.codigoSenhaIntegracao,
+          NumeroAtendimentoApoiado:
+            dto.numeroAtendimentoApoiado || dto.numeroAtendimentoDb,
+        },
       };
 
       const result = await this.callSoapMethod<any>('EnviaAmostras', params);
@@ -375,11 +392,14 @@ export class DbDiagnosticosService {
     );
 
     try {
+      // WSDL espera objeto "request" com dtInicial e dtFinal
       const params = {
-        CodigoApoiado: this.config.codigoApoiado,
-        CodigoSenhaIntegracao: this.config.codigoSenhaIntegracao,
-        DataInicio: dto.dataInicio,
-        DataFim: dto.dataFim,
+        request: {
+          CodigoApoiado: this.config.codigoApoiado,
+          CodigoSenhaIntegracao: this.config.codigoSenhaIntegracao,
+          dtInicial: dto.dataInicio,
+          dtFinal: dto.dataFim,
+        },
       };
 
       const result = await this.callSoapMethod<any>(
@@ -414,11 +434,23 @@ export class DbDiagnosticosService {
     );
 
     try {
+      // WSDL espera objeto "request" com estrutura complexa de Amostras
       const params = {
-        CodigoApoiado: this.config.codigoApoiado,
-        CodigoSenhaIntegracao: this.config.codigoSenhaIntegracao,
-        NumeroAtendimentoDB: dto.numeroAtendimentoDb,
-        CodigoExameDB: dto.codigoExameDb,
+        request: {
+          CodigoApoiado: this.config.codigoApoiado,
+          CodigoSenhaIntegracao: this.config.codigoSenhaIntegracao,
+          Amostras: {
+            NumeroAtendimentoApoiado: dto.numeroAtendimentoApoiado,
+            NumeroAtendimentoDB: dto.numeroAtendimentoDb,
+            ListaProcedimentoMPP: [
+              {
+                CodigoExameDB: dto.codigoExameDb,
+                SequenciaExameDB: dto.sequenciaExameDb || 1,
+                Status: dto.status || 'MPP',
+              },
+            ],
+          },
+        },
       };
 
       const result = await this.callSoapMethod<any>(
@@ -451,10 +483,13 @@ export class DbDiagnosticosService {
     this.logger.log(`Consultando lote de resultados: ${dto.numeroLote}`);
 
     try {
+      // WSDL espera objeto "request" com LoteResultado
       const params = {
-        CodigoApoiado: this.config.codigoApoiado,
-        CodigoSenhaIntegracao: this.config.codigoSenhaIntegracao,
-        NumeroLote: dto.numeroLote,
+        request: {
+          CodigoApoiado: this.config.codigoApoiado,
+          CodigoSenhaIntegracao: this.config.codigoSenhaIntegracao,
+          LoteResultado: dto.numeroLote,
+        },
       };
 
       const result = await this.callSoapMethod<any>(
@@ -527,11 +562,14 @@ export class DbDiagnosticosService {
     );
 
     try {
+      // WSDL espera objeto "request" com DataInicial e DataFinal (não DataInicio/DataFim)
       const params = {
-        CodigoApoiado: this.config.codigoApoiado,
-        CodigoSenhaIntegracao: this.config.codigoSenhaIntegracao,
-        DataInicio: dto.dataInicio,
-        DataFim: dto.dataFim,
+        request: {
+          CodigoApoiado: this.config.codigoApoiado,
+          CodigoSenhaIntegracao: this.config.codigoSenhaIntegracao,
+          DataInicial: dto.dataInicio,
+          DataFinal: dto.dataFim,
+        },
       };
 
       const result = await this.callSoapMethod<any>(
@@ -826,5 +864,110 @@ export class DbDiagnosticosService {
   private parseArray(value: any): any[] {
     if (!value) return [];
     return Array.isArray(value) ? value : [value];
+  }
+
+  /**
+   * Verifica saúde da integração
+   */
+  async healthCheck(): Promise<{
+    sucesso: boolean;
+    status: string;
+    endpoint: string;
+    codigoApoiado: string;
+    detalhes?: any;
+    erro?: string;
+  }> {
+    try {
+      // Verificar se configuração está presente
+      if (!this.config.codigoApoiado || !this.config.codigoSenhaIntegracao) {
+        return {
+          sucesso: false,
+          status: 'configuracao_incompleta',
+          endpoint: this.config.wsdlUrl,
+          codigoApoiado: this.config.codigoApoiado || 'não configurado',
+          erro: 'Credenciais não configuradas (DB_DIAGNOSTICOS_CODIGO_APOIADO ou DB_DIAGNOSTICOS_SENHA)',
+        };
+      }
+
+      // Tentar criar cliente SOAP
+      const client = await this.getClient();
+
+      // Obter descrição do WSDL para verificar conexão
+      const descricao = client.describe();
+      const servicos = Object.keys(descricao);
+
+      return {
+        sucesso: true,
+        status: 'conectado',
+        endpoint: this.config.wsdlUrl,
+        codigoApoiado: this.config.codigoApoiado,
+        detalhes: {
+          servicosDisponiveis: servicos,
+          timeout: this.config.timeout,
+        },
+      };
+    } catch (error) {
+      this.logger.error(`Health check falhou: ${error.message}`);
+      return {
+        sucesso: false,
+        status: 'erro_conexao',
+        endpoint: this.config.wsdlUrl,
+        codigoApoiado: this.config.codigoApoiado,
+        erro: error.message,
+      };
+    }
+  }
+
+  /**
+   * Descreve o WSDL para debug
+   */
+  async describeWsdl(): Promise<any> {
+    try {
+      const client = await this.getClient();
+      return client.describe();
+    } catch (error) {
+      this.logger.error(`Erro ao descrever WSDL: ${error.message}`);
+      return { erro: error.message };
+    }
+  }
+
+  /**
+   * Busca procedimentos no DB Diagnósticos
+   * Útil para validar conexão e credenciais
+   */
+  async buscarProcedimentos(
+    codigoProcedimento?: string,
+    nomeProcedimento?: string,
+  ): Promise<DbDiagnosticosResponse<any>> {
+    this.logger.log(
+      `Buscando procedimentos: codigo=${codigoProcedimento || '*'}, nome=${nomeProcedimento || '*'}`,
+    );
+
+    try {
+      const params = {
+        request: {
+          CodigoApoiado: this.config.codigoApoiado,
+          CodigoSenhaIntegracao: this.config.codigoSenhaIntegracao,
+          CodigoProcedimento: codigoProcedimento || '',
+          NomeProcedimento: nomeProcedimento || '',
+        },
+      };
+
+      const result = await this.callSoapMethod<any>(
+        'BuscaProcedimentos',
+        params,
+      );
+
+      return {
+        sucesso: true,
+        dados: result,
+      };
+    } catch (error) {
+      this.logger.error(`Erro ao buscar procedimentos: ${error.message}`);
+      return {
+        sucesso: false,
+        erro: error.message,
+      };
+    }
   }
 }
