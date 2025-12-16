@@ -1,0 +1,71 @@
+### ============================================
+### Despesas do Caixa - Endpoints
+### ============================================
+
+@baseUrl = http://localhost:10016/api/v1
+@token = {{$dotenv JWT_TOKEN}}
+@caixaId = 550e8400-e29b-41d4-a716-446655440000
+@despesaId = 660e8400-e29b-41d4-a716-446655440000
+
+### --------------------------------------------
+### Criar Despesa
+### Adiciona uma nova despesa ao caixa
+### --------------------------------------------
+POST {{baseUrl}}/atendimento/caixa/despesas
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "caixaId": "{{caixaId}}",
+  "nome": "Material de escritório",
+  "valor": 50.00,
+  "tipoDespesa": "Material"
+}
+
+### --------------------------------------------
+### Criar Despesa com Comprovante
+### Adiciona despesa com caminho do comprovante
+### --------------------------------------------
+POST {{baseUrl}}/atendimento/caixa/despesas
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "caixaId": "{{caixaId}}",
+  "nome": "Manutenção equipamento",
+  "valor": 350.00,
+  "tipoDespesa": "Manutenção",
+  "comprovante": "/uploads/comprovantes/manutencao-123.pdf"
+}
+
+### --------------------------------------------
+### Listar Despesas de um Caixa
+### Retorna todas as despesas vinculadas ao caixa
+### --------------------------------------------
+GET {{baseUrl}}/atendimento/caixa/despesas/caixa/{{caixaId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+### --------------------------------------------
+### Obter Total de Despesas
+### Retorna a soma das despesas do caixa
+### --------------------------------------------
+GET {{baseUrl}}/atendimento/caixa/despesas/caixa/{{caixaId}}/total
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+### --------------------------------------------
+### Buscar Despesa por ID
+### Retorna detalhes de uma despesa específica
+### --------------------------------------------
+GET {{baseUrl}}/atendimento/caixa/despesas/{{despesaId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+### --------------------------------------------
+### Remover Despesa
+### Remove uma despesa (apenas se caixa estiver aberto)
+### --------------------------------------------
+DELETE {{baseUrl}}/atendimento/caixa/despesas/{{despesaId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json

@@ -615,6 +615,8 @@ curl -X GET http://localhost:10016/api/v1/usuarios \
 - ✅ **campos_matriz** - Campos/parâmetros das matrizes de exames
 - ✅ **amostras** - Tipos de amostras biológicas (sangue, urina, etc)
 - ✅ **servicos_saude** - Códigos de serviços de saúde LC 116/2003 (23 serviços do Item 4) - **ADICIONADO em 31/10/2025**
+- ✅ **caixas** - Controle de abertura/fechamento de caixa para recepcionistas - **ADICIONADO em 15/12/2025**
+- ✅ **senhas_atendimento** - Fila de atendimento com senhas (prioridade/geral) - **ADICIONADO em 15/12/2025**
 
 ### Migrations Executadas
 
@@ -629,6 +631,7 @@ curl -X GET http://localhost:10016/api/v1/usuarios \
 9. `CreateMatrizesExamesTable1728404000000`
 10. `CreateAmostrasTable1728405000000`
 11. `CreateServicosSaudeTable1761932669271` - **EXECUTADA em 31/10/2025**
+12. `CreateCaixaAndFilaAtendimentoTables1765820500000` - **EXECUTADA em 15/12/2025**
 
 ## Estrutura de Entidades
 
@@ -2220,6 +2223,133 @@ Todos os módulos importam a entidade Tenant:
    - ❌ Setores - Removido (conforme Figma)
    - ❌ Imobilizados - Removido (conforme Figma)
 8. ✅ **Agendas - Refatoração** - Concluído (02/12/2025)
+9. ✅ **Caixa e Fila de Atendimento** - Concluído (15/12/2025)
+
+---
+
+## Módulo de Caixa (Dezembro 2025)
+
+### Funcionalidades Implementadas
+
+Controle de abertura e fechamento de caixa para recepcionistas.
+
+#### Características Principais
+
+- **Abertura obrigatória**: Recepcionista deve abrir caixa antes de atender
+- **Saldo sugerido**: Sistema sugere valor do último fechamento
+- **Validação de data**: Não permite abrir novo caixa sem fechar o anterior
+- **Multi-tenant**: Suporte completo a multi-tenancy
+
+### Estrutura da Tabela
+
+```sql
+caixas
+├── id (uuid, PK)
+├── usuario_id (uuid, FK → usuarios.id)
+├── unidade_id (uuid, FK → unidades_saude.id)
+├── valor_abertura (decimal 10,2)
+├── valor_fechamento (decimal 10,2, nullable)
+├── data_abertura (timestamp)
+├── data_fechamento (timestamp, nullable)
+├── status (enum: aberto, fechado)
+├── observacao_fechamento (text, nullable)
+├── tenant_id (uuid, FK → tenants.id)
+├── created_at (timestamp)
+└── updated_at (timestamp)
+```
+
+### API Endpoints
+
+#### Caixa (`/api/v1/atendimento/caixa`)
+
+- `POST /abrir` - Abrir caixa para iniciar atendimentos
+- `PATCH /:id/fechar` - Fechar caixa do dia
+- `GET /aberto` - Buscar caixa aberto do usuário atual
+- `GET /verificar-permissao` - Verificar se usuário pode atender
+- `GET /saldo-sugerido` - Obter saldo sugerido para abertura
+- `GET /historico` - Listar histórico de caixas (paginado)
+- `GET /:id` - Buscar caixa por ID
+
+### Arquivos Criados
+
+- `src/modules/atendimento/caixa/entities/caixa.entity.ts`
+- `src/modules/atendimento/caixa/dto/abrir-caixa.dto.ts`
+- `src/modules/atendimento/caixa/dto/fechar-caixa.dto.ts`
+- `src/modules/atendimento/caixa/services/caixa.service.ts`
+- `src/modules/atendimento/caixa/controllers/caixa.controller.ts`
+- `src/modules/atendimento/caixa/caixa.module.ts`
+
+---
+
+## Módulo de Fila de Atendimento (Dezembro 2025)
+
+### Funcionalidades Implementadas
+
+Sistema de senhas para fila de atendimento com prioridade.
+
+#### Características Principais
+
+- **Dois tipos de senha**: PRIORIDADE (idosos, gestantes, PCD) e GERAL
+- **Identificação opcional**: Paciente pode digitar CPF no totem
+- **Tickets sequenciais**: PRIO0001, GER0001, etc (reinicia diariamente)
+- **Fluxo completo**: Aguardando → Chamado → Em Atendimento → Finalizado
+- **Estatísticas**: Tempo médio de espera e atendimento
+
+### Estrutura da Tabela
+
+```sql
+senhas_atendimento
+├── id (uuid, PK)
+├── unidade_id (uuid, FK → unidades_saude.id)
+├── ticket (varchar 10) -- Ex: PRIO0010, GER0025
+├── tipo (enum: prioridade, geral)
+├── hora_chegada (timestamp)
+├── paciente_id (uuid, nullable, FK → pacientes.id)
+├── status (enum: aguardando, chamado, em_atendimento, finalizado, desistiu)
+├── mesa (varchar 10, nullable)
+├── usuario_atendente_id (uuid, nullable, FK → usuarios.id)
+├── hora_chamada (timestamp, nullable)
+├── hora_inicio_atendimento (timestamp, nullable)
+├── hora_fim_atendimento (timestamp, nullable)
+├── tem_agendamento (boolean, default: false)
+├── agendamento_id (uuid, nullable)
+├── tenant_id (uuid, FK → tenants.id)
+└── created_at (timestamp)
+```
+
+### API Endpoints
+
+#### Fila de Atendimento (`/api/v1/atendimento/fila`)
+
+- `POST /gerar-senha` - Gerar nova senha (totem)
+- `POST /chamar` - Chamar próxima senha
+- `PATCH /:id/iniciar-atendimento` - Iniciar atendimento
+- `PATCH /:id/finalizar-atendimento` - Finalizar atendimento
+- `PATCH /:id/desistencia` - Marcar desistência
+- `GET /` - Listar fila (prioridades + geral separados)
+- `GET /proxima/:unidadeId` - Buscar próxima senha a ser chamada
+- `GET /meus-atendimentos` - Listar meus atendimentos do dia
+- `GET /estatisticas/:unidadeId` - Estatísticas da fila
+- `GET /:id` - Buscar senha por ID
+
+### Arquivos Criados
+
+- `src/modules/atendimento/fila-atendimento/entities/senha-atendimento.entity.ts`
+- `src/modules/atendimento/fila-atendimento/dto/criar-senha.dto.ts`
+- `src/modules/atendimento/fila-atendimento/dto/chamar-senha.dto.ts`
+- `src/modules/atendimento/fila-atendimento/dto/filtro-fila.dto.ts`
+- `src/modules/atendimento/fila-atendimento/services/fila-atendimento.service.ts`
+- `src/modules/atendimento/fila-atendimento/controllers/fila-atendimento.controller.ts`
+- `src/modules/atendimento/fila-atendimento/fila-atendimento.module.ts`
+
+### Migration
+
+- `1765820500000-CreateCaixaAndFilaAtendimentoTables.ts`
+- Cria tabelas `caixas` e `senhas_atendimento`
+- Cria enums para status e tipos
+- Índices otimizados para consultas frequentes
+
+---
 
 ### Tarefas Técnicas
 

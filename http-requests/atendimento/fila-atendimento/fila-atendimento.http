@@ -1,0 +1,135 @@
+### ============================================
+### Fila de Atendimento - Endpoints
+### ============================================
+
+@baseUrl = http://localhost:10016/api/v1
+@token = {{$dotenv JWT_TOKEN}}
+@unidadeId = 550e8400-e29b-41d4-a716-446655440000
+@senhaId = 660e8400-e29b-41d4-a716-446655440000
+
+### --------------------------------------------
+### Gerar Senha - Prioridade (Identificado)
+### Paciente digita CPF no totem
+### --------------------------------------------
+POST {{baseUrl}}/atendimento/fila/gerar-senha
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "unidadeId": "{{unidadeId}}",
+  "tipo": "prioridade",
+  "pacienteId": "770e8400-e29b-41d4-a716-446655440000"
+}
+
+### --------------------------------------------
+### Gerar Senha - Geral (Não Identificado)
+### Paciente apenas retira senha no totem
+### --------------------------------------------
+POST {{baseUrl}}/atendimento/fila/gerar-senha
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "unidadeId": "{{unidadeId}}",
+  "tipo": "geral"
+}
+
+### --------------------------------------------
+### Gerar Senha - Com Agendamento
+### Paciente com agendamento prévio
+### --------------------------------------------
+POST {{baseUrl}}/atendimento/fila/gerar-senha
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "unidadeId": "{{unidadeId}}",
+  "tipo": "geral",
+  "pacienteId": "770e8400-e29b-41d4-a716-446655440000",
+  "temAgendamento": true,
+  "agendamentoId": "880e8400-e29b-41d4-a716-446655440000"
+}
+
+### --------------------------------------------
+### Listar Fila de Atendimento
+### Retorna senhas separadas por prioridade/geral
+### --------------------------------------------
+GET {{baseUrl}}/atendimento/fila?unidadeId={{unidadeId}}&status=aguardando
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+### --------------------------------------------
+### Listar Fila - Filtrar por Data
+### --------------------------------------------
+GET {{baseUrl}}/atendimento/fila?unidadeId={{unidadeId}}&data=2025-12-15
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+### --------------------------------------------
+### Buscar Próxima Senha
+### Retorna a próxima senha a ser chamada
+### --------------------------------------------
+GET {{baseUrl}}/atendimento/fila/proxima/{{unidadeId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+### --------------------------------------------
+### Chamar Senha
+### Recepcionista chama a próxima senha
+### --------------------------------------------
+POST {{baseUrl}}/atendimento/fila/chamar
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "senhaId": "{{senhaId}}",
+  "mesa": "MESA 01"
+}
+
+### --------------------------------------------
+### Iniciar Atendimento
+### Marca o início do atendimento
+### --------------------------------------------
+PATCH {{baseUrl}}/atendimento/fila/{{senhaId}}/iniciar-atendimento
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+### --------------------------------------------
+### Finalizar Atendimento
+### Marca o fim do atendimento
+### --------------------------------------------
+PATCH {{baseUrl}}/atendimento/fila/{{senhaId}}/finalizar-atendimento
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+### --------------------------------------------
+### Marcar Desistência
+### Paciente desistiu de aguardar
+### --------------------------------------------
+PATCH {{baseUrl}}/atendimento/fila/{{senhaId}}/desistencia
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+### --------------------------------------------
+### Meus Atendimentos
+### Lista atendimentos do usuário logado
+### --------------------------------------------
+GET {{baseUrl}}/atendimento/fila/meus-atendimentos?page=1&limit=10
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+### --------------------------------------------
+### Estatísticas da Fila
+### Retorna estatísticas de atendimento
+### --------------------------------------------
+GET {{baseUrl}}/atendimento/fila/estatisticas/{{unidadeId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+### --------------------------------------------
+### Buscar Senha por ID
+### Retorna detalhes de uma senha específica
+### --------------------------------------------
+GET {{baseUrl}}/atendimento/fila/{{senhaId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json

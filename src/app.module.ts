@@ -44,6 +44,8 @@ import { PrestadoresServicoModule } from './modules/relacionamento/prestadores-s
 import { AtendimentoModule } from './modules/atendimento/atendimento/atendimento.module';
 import { AgendasModule } from './modules/atendimento/agendas/agendas.module';
 import { IntegracoesModule as IntegracoesAtendimentoModule } from './modules/atendimento/integracoes/integracoes.module';
+import { CaixaModule } from './modules/atendimento/caixa/caixa.module';
+import { FilaAtendimentoModule } from './modules/atendimento/fila-atendimento/fila-atendimento.module';
 
 // Integrações TISS
 import { IntegracoesModule } from './modules/integracoes/integracoes.module';
@@ -118,6 +120,8 @@ import { SeedModule } from './database/seeds/seed.module';
     AtendimentoModule,
     AgendasModule,
     IntegracoesAtendimentoModule,
+    CaixaModule,
+    FilaAtendimentoModule,
 
     // 5.1 Integrações TISS (SOAP)
     IntegracoesModule,

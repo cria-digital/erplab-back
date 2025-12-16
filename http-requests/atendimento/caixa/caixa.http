@@ -1,0 +1,80 @@
+### ============================================
+### Caixa - Endpoints
+### ============================================
+
+@baseUrl = http://localhost:10016/api/v1
+@token = {{$dotenv JWT_TOKEN}}
+
+### --------------------------------------------
+### Verificar Permissão de Atendimento
+### Retorna se o usuário pode atender e saldo sugerido
+### --------------------------------------------
+GET {{baseUrl}}/atendimento/caixa/verificar-permissao
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+### --------------------------------------------
+### Obter Saldo Sugerido para Abertura
+### Retorna o saldo do último fechamento
+### --------------------------------------------
+GET {{baseUrl}}/atendimento/caixa/saldo-sugerido
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+### --------------------------------------------
+### Buscar Caixa Aberto
+### Retorna o caixa aberto do usuário atual
+### --------------------------------------------
+GET {{baseUrl}}/atendimento/caixa/aberto
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+### --------------------------------------------
+### Abrir Caixa
+### Inicia um novo caixa para o usuário
+### --------------------------------------------
+POST {{baseUrl}}/atendimento/caixa/abrir
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "unidadeId": "550e8400-e29b-41d4-a716-446655440000",
+  "aberturaEspecie": 500.00
+}
+
+### --------------------------------------------
+### Fechar Caixa
+### Fecha o caixa com os valores do dia
+### --------------------------------------------
+# @name fecharCaixa
+PATCH {{baseUrl}}/atendimento/caixa/{{caixaId}}/fechar
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "totalEntradasEspecie": 1500.00,
+  "totalSaidasEspecie": 200.00,
+  "sangriaEspecie": 500.00,
+  "saldoProximoDia": 800.00,
+  "totalEntradasCredito": 3000.00,
+  "totalEntradasDebito": 2000.00,
+  "totalEntradasPix": 1500.00,
+  "saldoFinal": 7800.00
+}
+
+### --------------------------------------------
+### Listar Histórico de Caixas
+### Lista todos os caixas do usuário com paginação
+### --------------------------------------------
+GET {{baseUrl}}/atendimento/caixa/historico?page=1&limit=10
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+### --------------------------------------------
+### Buscar Caixa por ID
+### Retorna detalhes de um caixa específico
+### --------------------------------------------
+@caixaId = 550e8400-e29b-41d4-a716-446655440000
+GET {{baseUrl}}/atendimento/caixa/{{caixaId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
