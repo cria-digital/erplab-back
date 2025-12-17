@@ -139,9 +139,9 @@ export class Exame {
   @Column({
     type: 'int',
     nullable: true,
-    comment: 'Peso/prioridade para ordenação',
+    comment: 'Prioridade para ordenação',
   })
-  peso: number;
+  prioridade: number;
 
   // Campos boolean conforme Figma (SIM/NÃO)
   @Column({
@@ -149,58 +149,21 @@ export class Exame {
     default: false,
     comment: 'Se o exame requer peso do paciente',
   })
-  requer_peso: boolean;
+  peso: boolean;
 
   @Column({
     type: 'boolean',
     default: false,
     comment: 'Se o exame requer altura do paciente',
   })
-  requer_altura: boolean;
+  altura: boolean;
 
   @Column({
     type: 'boolean',
     default: false,
     comment: 'Se o exame requer volume específico',
   })
-  requer_volume: boolean;
-
-  // Campos numéricos mantidos para compatibilidade (podem ser removidos futuramente)
-  @Column({
-    type: 'decimal',
-    precision: 10,
-    scale: 2,
-    nullable: true,
-    comment: 'Altura mínima em cm (para alguns exames de imagem)',
-  })
-  altura_min: number;
-
-  @Column({
-    type: 'decimal',
-    precision: 10,
-    scale: 2,
-    nullable: true,
-    comment: 'Altura máxima em cm',
-  })
-  altura_max: number;
-
-  @Column({
-    type: 'decimal',
-    precision: 10,
-    scale: 2,
-    nullable: true,
-    comment: 'Volume mínimo necessário (em ml para exames laboratoriais)',
-  })
-  volume_min: number;
-
-  @Column({
-    type: 'decimal',
-    precision: 10,
-    scale: 2,
-    nullable: true,
-    comment: 'Volume ideal (em ml)',
-  })
-  volume_ideal: number;
+  volume: boolean;
 
   // Unidades de medida
   @Column({

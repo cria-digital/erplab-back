@@ -167,13 +167,13 @@ export class CreateExameDto {
   grupo_id?: string;
 
   @ApiProperty({
-    description: 'Peso/prioridade para ordenação',
+    description: 'Prioridade para ordenação',
     example: 100,
     required: false,
   })
   @IsNumber()
   @IsOptional()
-  peso?: number;
+  prioridade?: number;
 
   @ApiProperty({
     description: 'Se o exame requer peso do paciente (SIM/NÃO)',
@@ -182,7 +182,7 @@ export class CreateExameDto {
   })
   @IsBoolean()
   @IsOptional()
-  requer_peso?: boolean;
+  peso?: boolean;
 
   @ApiProperty({
     description: 'Se o exame requer altura do paciente (SIM/NÃO)',
@@ -191,7 +191,7 @@ export class CreateExameDto {
   })
   @IsBoolean()
   @IsOptional()
-  requer_altura?: boolean;
+  altura?: boolean;
 
   @ApiProperty({
     description: 'Se o exame requer volume específico (SIM/NÃO)',
@@ -200,25 +200,7 @@ export class CreateExameDto {
   })
   @IsBoolean()
   @IsOptional()
-  requer_volume?: boolean;
-
-  @ApiProperty({
-    description: 'Volume mínimo necessário (em ml)',
-    example: 2.5,
-    required: false,
-  })
-  @IsNumber()
-  @IsOptional()
-  volume_min?: number;
-
-  @ApiProperty({
-    description: 'Volume ideal (em ml)',
-    example: 5.0,
-    required: false,
-  })
-  @IsNumber()
-  @IsOptional()
-  volume_ideal?: number;
+  volume?: boolean;
 
   @ApiProperty({
     description: 'ID da alternativa do campo unidade_medida',

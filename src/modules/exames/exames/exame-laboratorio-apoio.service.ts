@@ -42,9 +42,9 @@ export class ExameLaboratorioApoioService {
       codigo_exame_apoio: dto.codigo_exame_apoio,
       metodologia_id: dto.metodologia_id,
       unidade_medida_id: dto.unidade_medida_id,
-      requer_peso: dto.requer_peso ?? false,
-      requer_altura: dto.requer_altura ?? false,
-      requer_volume: dto.requer_volume ?? false,
+      peso: dto.peso ?? false,
+      altura: dto.altura ?? false,
+      volume: dto.volume ?? false,
       amostra_id: dto.amostra_id,
       amostra_enviar_id: dto.amostra_enviar_id,
       tipo_recipiente_id: dto.tipo_recipiente_id,
@@ -114,9 +114,9 @@ export class ExameLaboratorioApoioService {
             codigo_exame_apoio: item.codigo_exame_apoio,
             metodologia_id: item.metodologia_id,
             unidade_medida_id: item.unidade_medida_id,
-            requer_peso: item.requer_peso ?? false,
-            requer_altura: item.requer_altura ?? false,
-            requer_volume: item.requer_volume ?? false,
+            peso: item.peso ?? false,
+            altura: item.altura ?? false,
+            volume: item.volume ?? false,
             amostra_id: item.amostra_id,
             amostra_enviar_id: item.amostra_enviar_id,
             tipo_recipiente_id: item.tipo_recipiente_id,
@@ -260,11 +260,9 @@ export class ExameLaboratorioApoioService {
       entity.metodologia_id = dto.metodologia_id;
     if (dto.unidade_medida_id !== undefined)
       entity.unidade_medida_id = dto.unidade_medida_id;
-    if (dto.requer_peso !== undefined) entity.requer_peso = dto.requer_peso;
-    if (dto.requer_altura !== undefined)
-      entity.requer_altura = dto.requer_altura;
-    if (dto.requer_volume !== undefined)
-      entity.requer_volume = dto.requer_volume;
+    if (dto.peso !== undefined) entity.peso = dto.peso;
+    if (dto.altura !== undefined) entity.altura = dto.altura;
+    if (dto.volume !== undefined) entity.volume = dto.volume;
     if (dto.amostra_id !== undefined) entity.amostra_id = dto.amostra_id;
     if (dto.amostra_enviar_id !== undefined)
       entity.amostra_enviar_id = dto.amostra_enviar_id;

@@ -64,7 +64,7 @@ export class CreateExameLaboratorioApoioDto {
   })
   @IsBoolean()
   @IsOptional()
-  requer_peso?: boolean;
+  peso?: boolean;
 
   @ApiProperty({
     description: 'Se o exame requer altura do paciente (SIM/NÃO)',
@@ -73,7 +73,7 @@ export class CreateExameLaboratorioApoioDto {
   })
   @IsBoolean()
   @IsOptional()
-  requer_altura?: boolean;
+  altura?: boolean;
 
   @ApiProperty({
     description: 'Se o exame requer volume específico (SIM/NÃO)',
@@ -82,7 +82,7 @@ export class CreateExameLaboratorioApoioDto {
   })
   @IsBoolean()
   @IsOptional()
-  requer_volume?: boolean;
+  volume?: boolean;
 
   @ApiProperty({
     description: 'ID da amostra biológica necessária',

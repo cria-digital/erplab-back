@@ -65,21 +65,21 @@ export class ExameLaboratorioApoio {
     default: false,
     comment: 'Se o exame requer peso do paciente',
   })
-  requer_peso: boolean;
+  peso: boolean;
 
   @Column({
     type: 'boolean',
     default: false,
     comment: 'Se o exame requer altura do paciente',
   })
-  requer_altura: boolean;
+  altura: boolean;
 
   @Column({
     type: 'boolean',
     default: false,
     comment: 'Se o exame requer volume específico',
   })
-  requer_volume: boolean;
+  volume: boolean;
 
   @Column({
     nullable: true,
