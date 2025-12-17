@@ -112,17 +112,33 @@ export class ExamesController {
     enum: ['ativo', 'inativo', 'suspenso'],
     description: 'Filtrar por status',
   })
+  @ApiQuery({
+    name: 'tipo_exame_id',
+    required: false,
+    type: String,
+    description: 'Filtrar por tipo de exame (ID da alternativa)',
+  })
+  @ApiQuery({
+    name: 'especialidade_id',
+    required: false,
+    type: String,
+    description: 'Filtrar por especialidade (ID da alternativa)',
+  })
   async findAll(
     @Query('page') page?: string,
     @Query('limit') limit?: string,
     @Query('search') search?: string,
     @Query('status') status?: string,
+    @Query('tipo_exame_id') tipoExameId?: string,
+    @Query('especialidade_id') especialidadeId?: string,
   ) {
     return await this.examesService.findAll(
       page ? parseInt(page) : 1,
       limit ? parseInt(limit) : 10,
       search,
       status,
+      tipoExameId,
+      especialidadeId,
     );
   }
 

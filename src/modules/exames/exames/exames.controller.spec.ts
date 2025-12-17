@@ -162,9 +162,14 @@ describe('ExamesController', () => {
     it('deve retornar lista paginada de exames', async () => {
       const paginatedResult = {
         data: [mockExame],
-        total: 1,
-        page: 1,
-        lastPage: 1,
+        meta: {
+          page: 1,
+          limit: 10,
+          total: 1,
+          totalPages: 1,
+          hasPrevPage: false,
+          hasNextPage: false,
+        },
       };
 
       mockExamesService.findAll.mockResolvedValue(paginatedResult);
@@ -172,37 +177,75 @@ describe('ExamesController', () => {
       const result = await controller.findAll('1', '10');
 
       expect(result).toEqual(paginatedResult);
-      expect(service.findAll).toHaveBeenCalledWith(1, 10, undefined, undefined);
+      expect(service.findAll).toHaveBeenCalledWith(
+        1,
+        10,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+      );
     });
 
     it('deve passar filtros para o service', async () => {
       const paginatedResult = {
         data: [],
-        total: 0,
-        page: 2,
-        lastPage: 0,
+        meta: {
+          page: 2,
+          limit: 5,
+          total: 0,
+          totalPages: 0,
+          hasPrevPage: true,
+          hasNextPage: false,
+        },
       };
 
       mockExamesService.findAll.mockResolvedValue(paginatedResult);
 
-      await controller.findAll('2', '5', 'Hemograma', 'ativo');
+      await controller.findAll(
+        '2',
+        '5',
+        'Hemograma',
+        'ativo',
+        'tipo-1',
+        'esp-1',
+      );
 
-      expect(service.findAll).toHaveBeenCalledWith(2, 5, 'Hemograma', 'ativo');
+      expect(service.findAll).toHaveBeenCalledWith(
+        2,
+        5,
+        'Hemograma',
+        'ativo',
+        'tipo-1',
+        'esp-1',
+      );
     });
 
     it('deve usar valores padrão quando não fornecidos', async () => {
       const paginatedResult = {
         data: [],
-        total: 0,
-        page: 1,
-        lastPage: 0,
+        meta: {
+          page: 1,
+          limit: 10,
+          total: 0,
+          totalPages: 0,
+          hasPrevPage: false,
+          hasNextPage: false,
+        },
       };
 
       mockExamesService.findAll.mockResolvedValue(paginatedResult);
 
       await controller.findAll();
 
-      expect(service.findAll).toHaveBeenCalledWith(1, 10, undefined, undefined);
+      expect(service.findAll).toHaveBeenCalledWith(
+        1,
+        10,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+      );
     });
   });
 

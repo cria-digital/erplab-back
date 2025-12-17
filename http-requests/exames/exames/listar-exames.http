@@ -6,8 +6,13 @@
 ### - {{token}} - Token JWT de autenticação
 ### - {{exameId}} - UUID do exame (para buscar por ID)
 ### - {{tipoExameId}} - UUID do tipo de exame (para filtrar)
+### - {{especialidadeId}} - UUID da especialidade (para filtrar)
 ### - {{laboratorioId}} - UUID do laboratório (para filtrar)
 ###
+
+### ============================================
+### LISTAGEM COM PAGINAÇÃO E FILTROS
+### ============================================
 
 ### Listar todos os exames com paginação
 GET {{baseUrl}}/exames/exames?page=1&limit=10
@@ -17,9 +22,14 @@ Authorization: Bearer {{token}}
 # Status: 200 OK
 # {
 #   "data": [...],
-#   "total": 50,
-#   "page": 1,
-#   "lastPage": 5
+#   "meta": {
+#     "page": 1,
+#     "limit": 10,
+#     "total": 50,
+#     "totalPages": 5,
+#     "hasPrevPage": false,
+#     "hasNextPage": true
+#   }
 # }
 
 ###
@@ -30,19 +40,63 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Filtrar exames por categoria
-GET {{baseUrl}}/exames/exames?categoria=laboratorio&status=ativo
+### Filtrar exames por status
+GET {{baseUrl}}/exames/exames?status=ativo&page=1&limit=10
 Authorization: Bearer {{token}}
 
 ###
 
-### Buscar exames por categoria específica
-GET {{baseUrl}}/exames/exames/categoria/laboratorio
+### Filtrar exames por tipo de exame
+GET {{baseUrl}}/exames/exames?tipo_exame_id={{tipoExameId}}&page=1&limit=10
 Authorization: Bearer {{token}}
 
 ###
 
-### Buscar exames por tipo
+### Filtrar exames por especialidade
+GET {{baseUrl}}/exames/exames?especialidade_id={{especialidadeId}}&page=1&limit=10
+Authorization: Bearer {{token}}
+
+###
+
+### ============================================
+### FILTROS COMBINADOS (concatenados)
+### ============================================
+
+### Filtrar por tipo de exame + status
+GET {{baseUrl}}/exames/exames?tipo_exame_id={{tipoExameId}}&status=ativo&page=1&limit=10
+Authorization: Bearer {{token}}
+
+###
+
+### Filtrar por especialidade + status
+GET {{baseUrl}}/exames/exames?especialidade_id={{especialidadeId}}&status=ativo&page=1&limit=10
+Authorization: Bearer {{token}}
+
+###
+
+### Filtrar por tipo de exame + especialidade
+GET {{baseUrl}}/exames/exames?tipo_exame_id={{tipoExameId}}&especialidade_id={{especialidadeId}}&page=1&limit=10
+Authorization: Bearer {{token}}
+
+###
+
+### Filtrar por nome + tipo de exame + status
+GET {{baseUrl}}/exames/exames?search=hemograma&tipo_exame_id={{tipoExameId}}&status=ativo&page=1&limit=10
+Authorization: Bearer {{token}}
+
+###
+
+### Filtro completo: nome + tipo + especialidade + status
+GET {{baseUrl}}/exames/exames?search=hemograma&tipo_exame_id={{tipoExameId}}&especialidade_id={{especialidadeId}}&status=ativo&page=1&limit=10
+Authorization: Bearer {{token}}
+
+###
+
+### ============================================
+### ROTAS ESPECÍFICAS
+### ============================================
+
+### Buscar exames por tipo (rota dedicada)
 GET {{baseUrl}}/exames/exames/tipo/{{tipoExameId}}
 Authorization: Bearer {{token}}
 
@@ -54,7 +108,7 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Buscar exames por nome (pesquisa)
+### Buscar exames por nome (pesquisa - rota dedicada)
 GET {{baseUrl}}/exames/exames/buscar/hemograma
 Authorization: Bearer {{token}}
 
@@ -72,8 +126,20 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Buscar exames por códigos padronizados
+### Buscar exames por códigos padronizados (TUSS)
 GET {{baseUrl}}/exames/exames/codigos?tuss=40304361
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar exames por códigos padronizados (AMB)
+GET {{baseUrl}}/exames/exames/codigos?amb=28.01.001-2
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar exames por códigos padronizados (SUS)
+GET {{baseUrl}}/exames/exames/codigos?sus=0202010503
 Authorization: Bearer {{token}}
 
 ###
@@ -83,6 +149,10 @@ GET {{baseUrl}}/exames/exames/codigo/HEMOG001
 Authorization: Bearer {{token}}
 
 ###
+
+### ============================================
+### BUSCAR POR ID
+### ============================================
 
 ### Buscar exame por ID
 GET {{baseUrl}}/exames/exames/{{exameId}}
@@ -96,8 +166,45 @@ Authorization: Bearer {{token}}
 #     "id": "uuid",
 #     "codigo_interno": "HEMOG001",
 #     "nome": "Hemograma Completo",
-#     "categoria": "laboratorio",
 #     "status": "ativo",
 #     ...
 #   }
+# }
+
+###
+
+### ============================================
+### DELETAR / DESATIVAR EXAME
+### ============================================
+
+### Desativar exame (soft delete)
+DELETE {{baseUrl}}/exames/exames/{{exameId}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Exame desativado com sucesso"
+# }
+
+###
+
+### ============================================
+### ATUALIZAÇÃO EM LOTE
+### ============================================
+
+### Atualizar status de múltiplos exames
+PATCH {{baseUrl}}/exames/exames/status/bulk
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "ids": ["uuid1", "uuid2", "uuid3"],
+  "status": "inativo"
+}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Status dos exames atualizados com sucesso"
 # }

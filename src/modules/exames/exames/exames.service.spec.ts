@@ -188,11 +188,14 @@ describe('ExamesService', () => {
 
       const result = await service.findAll(1, 10);
 
-      expect(result).toEqual({
-        data: mockExames,
-        total: 1,
+      expect(result.data).toEqual(mockExames);
+      expect(result.meta).toEqual({
         page: 1,
-        lastPage: 1,
+        limit: 10,
+        total: 1,
+        totalPages: 1,
+        hasPrevPage: false,
+        hasNextPage: false,
       });
       expect(mockRepository.findAndCount).toHaveBeenCalledWith({
         where: {},

@@ -10,6 +10,7 @@ import { Exame } from './entities/exame.entity';
 import { CreateExameDto } from './dto/create-exame.dto';
 import { UpdateExameDto } from './dto/update-exame.dto';
 import { ExameUnidade } from './entities/exame-unidade.entity';
+import { PaginatedResultDto } from '../../infraestrutura/common/dto/pagination.dto';
 
 @Injectable()
 export class ExamesService {
@@ -61,7 +62,9 @@ export class ExamesService {
     limit: number = 10,
     search?: string,
     status?: string,
-  ): Promise<{ data: Exame[]; total: number; page: number; lastPage: number }> {
+    tipoExameId?: string,
+    especialidadeId?: string,
+  ): Promise<PaginatedResultDto<Exame>> {
     const where: any = {};
 
     if (search) {
@@ -70,6 +73,14 @@ export class ExamesService {
 
     if (status) {
       where.status = status;
+    }
+
+    if (tipoExameId) {
+      where.tipo_exame_id = tipoExameId;
+    }
+
+    if (especialidadeId) {
+      where.especialidade_id = especialidadeId;
     }
 
     const [data, total] = await this.exameRepository.findAndCount({
@@ -88,12 +99,7 @@ export class ExamesService {
       order: { nome: 'ASC' },
     });
 
-    return {
-      data,
-      total,
-      page,
-      lastPage: Math.ceil(total / limit),
-    };
+    return new PaginatedResultDto(data, total, page, limit);
   }
 
   async findOne(id: string): Promise<Exame> {
