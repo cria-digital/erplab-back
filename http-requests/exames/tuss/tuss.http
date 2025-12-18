@@ -1,0 +1,115 @@
+###
+### TUSS - Terminologia Unificada da Saúde Suplementar
+### Códigos oficiais da ANS para procedimentos e eventos em saúde
+### Total de códigos: ~6000
+###
+
+### Buscar códigos TUSS por termo (autocomplete)
+### Exemplo: buscar "hemograma"
+GET {{baseUrl}}/exames/tuss/search?q=hemograma&limit=10
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# {
+#   "data": [
+#     {
+#       "id": "uuid",
+#       "codigo": "40304361",
+#       "termo": "Hemograma completo",
+#       "versao": "202511",
+#       "ativo": true
+#     }
+#   ],
+#   "total": 5
+# }
+
+###
+
+### Buscar TUSS por código exato
+GET {{baseUrl}}/exames/tuss/codigo/40304361
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# {
+#   "data": {
+#     "id": "uuid",
+#     "codigo": "40304361",
+#     "termo": "Hemograma completo",
+#     "versao": "202511",
+#     "ativo": true
+#   }
+# }
+
+###
+
+### Buscar TUSS por ID (UUID)
+GET {{baseUrl}}/exames/tuss/{{tussId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+###
+
+### Listar todos os códigos TUSS (paginado)
+### Página 1, limite 50
+GET {{baseUrl}}/exames/tuss?page=1&limit=50
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# {
+#   "data": [...],
+#   "total": 5972
+# }
+
+###
+
+### Obter estatísticas da tabela TUSS
+GET {{baseUrl}}/exames/tuss/stats
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+### Expected Response
+# {
+#   "total": 5972,
+#   "ativos": 5972
+# }
+
+###
+
+### Exemplos de busca por código numérico
+### Buscar códigos que começam com "101" (consultas)
+GET {{baseUrl}}/exames/tuss/search?q=101&limit=20
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar exames de imagem
+GET {{baseUrl}}/exames/tuss/search?q=raio&limit=20
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar exames de sangue
+GET {{baseUrl}}/exames/tuss/search?q=sangue&limit=20
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar procedimentos de ultrassom
+GET {{baseUrl}}/exames/tuss/search?q=ultrassom&limit=20
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+###
+
+### Buscar procedimentos de tomografia
+GET {{baseUrl}}/exames/tuss/search?q=tomografia&limit=20
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+###

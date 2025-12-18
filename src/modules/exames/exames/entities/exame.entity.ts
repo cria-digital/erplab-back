@@ -15,6 +15,7 @@ import { ExameLaboratorioApoio } from './exame-laboratorio-apoio.entity';
 import { ExameUnidade } from './exame-unidade.entity';
 import { AlternativaCampoFormulario } from '../../../infraestrutura/campos-formulario/entities/alternativa-campo-formulario.entity';
 import { Amostra } from '../../amostras/entities/amostra.entity';
+import { Tuss } from '../../tuss/entities/tuss.entity';
 
 import { Tenant } from '../../../tenants/entities/tenant.entity';
 @Entity('exames')
@@ -62,9 +63,22 @@ export class Exame {
     type: 'varchar',
     length: 20,
     nullable: true,
-    comment: 'Código TUSS (Terminologia Unificada da Saúde Suplementar)',
+    comment:
+      'Código TUSS (Terminologia Unificada da Saúde Suplementar) - DEPRECATED: usar tuss_id',
   })
   codigo_tuss: string;
+
+  @Column({
+    name: 'tuss_id',
+    type: 'uuid',
+    nullable: true,
+    comment: 'FK para tabela TUSS (código TUSS selecionado)',
+  })
+  tussId: string;
+
+  @ManyToOne(() => Tuss, { eager: false })
+  @JoinColumn({ name: 'tuss_id' })
+  tuss?: Tuss;
 
   @Column({
     type: 'varchar',

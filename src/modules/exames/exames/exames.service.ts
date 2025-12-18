@@ -34,9 +34,13 @@ export class ExamesService {
     }
 
     // Separa unidades do resto do DTO
-    const { unidades, ...exameData } = createExameDto;
+    const { unidades, tuss_id, ...exameData } = createExameDto;
 
-    const exame = this.exameRepository.create(exameData);
+    // Mapeia tuss_id do DTO para tussId da entidade
+    const exame = this.exameRepository.create({
+      ...exameData,
+      tussId: tuss_id,
+    });
     const savedExame = await this.exameRepository.save(exame);
 
     // Se foram passadas unidades, cria os vínculos
@@ -89,6 +93,7 @@ export class ExamesService {
         'tipoExameAlternativa',
         'subgrupoAlternativa',
         'setorAlternativa',
+        'tuss',
         'unidades',
         'unidades.unidadeSaude',
         'unidades.laboratorioApoio',
@@ -109,6 +114,7 @@ export class ExamesService {
         'tipoExameAlternativa',
         'subgrupoAlternativa',
         'setorAlternativa',
+        'tuss',
         'unidades',
         'unidades.unidadeSaude',
         'unidades.laboratorioApoio',
@@ -130,6 +136,7 @@ export class ExamesService {
         'tipoExameAlternativa',
         'subgrupoAlternativa',
         'setorAlternativa',
+        'tuss',
         'unidades',
         'unidades.unidadeSaude',
       ],

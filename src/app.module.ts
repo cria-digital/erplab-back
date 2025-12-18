@@ -32,6 +32,7 @@ import { KitsModule } from './modules/exames/kits/kits.module';
 import { MetodosModule } from './modules/exames/metodos/metodos.module';
 import { MatrizesModule } from './modules/exames/matrizes/matrizes.module';
 import { AmostrasModule } from './modules/exames/amostras/amostras.module';
+import { TussModule } from './modules/exames/tuss/tuss.module';
 
 // Relacionamento
 import { ConveniosModule } from './modules/relacionamento/convenios/convenios.module';
@@ -108,6 +109,7 @@ import { SeedModule } from './database/seeds/seed.module';
     MetodosModule,
     MatrizesModule,
     AmostrasModule,
+    TussModule,
 
     // 4. Relacionamento com Empresas
     ConveniosModule,

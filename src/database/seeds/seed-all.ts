@@ -10,6 +10,7 @@ import { EstadoSeedService } from './estado-seed.service';
 import { CidadeSeedService } from './cidade-seed.service';
 import { TenantSeedService } from './tenant-seed.service';
 import { IntegracaoSeedService } from './integracao-seed.service';
+import { TussSeedService } from './tuss-seed.service';
 
 async function bootstrap() {
   const startTime = Date.now();
@@ -72,6 +73,11 @@ async function bootstrap() {
     const integracaoSeedService = app.get(IntegracaoSeedService);
     console.log('10. Criando Integrações padrão por tenant...');
     await integracaoSeedService.seed();
+
+    // Executar seed de TUSS (Terminologia Unificada da Saúde Suplementar)
+    const tussSeedService = app.get(TussSeedService);
+    console.log('11. Importando códigos TUSS (~6000 procedimentos)...');
+    await tussSeedService.seed();
 
     const duration = Date.now() - startTime;
     console.log('\n==============================');

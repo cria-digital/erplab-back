@@ -3,6 +3,7 @@
 ### - tipo_exame_id, metodologia_id, grupo_id, especialidade_id, unidade_medida_id
 ### - amostra_enviar_id, tipo_recipiente_id, estabilidade_id, volume_minimo_id
 ### - regiao_coleta_ids (array de IDs)
+### - tuss_id: FK para tabela TUSS (autocomplete via GET /exames/tuss/search?q=)
 ###
 ### Vínculos com Unidades (Nova estrutura):
 ### O campo "unidades" é um array de objetos onde cada unidade tem seu próprio destino:
@@ -45,7 +46,8 @@ Authorization: Bearer {{token}}
 
 ###
 
-### Criar exame com destino INTERNO em uma unidade
+### Criar exame com tuss_id (RECOMENDADO)
+### Primeiro busque o código TUSS: GET /exames/tuss/search?q=glicemia
 POST {{baseUrl}}/exames/exames
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
@@ -54,7 +56,7 @@ Authorization: Bearer {{token}}
   "codigo_interno": "GLI001",
   "nome": "Glicemia de Jejum",
   "sinonimos": ["Glicose", "Açúcar no sangue"],
-  "codigo_tuss": "40301630",
+  "tuss_id": "{{tussGlicemiaId}}",
   "necessita_preparo": "sim",
   "preparo_geral": "Jejum de 8 a 12 horas",
   "prazo_entrega_dias": 1,
@@ -81,7 +83,7 @@ Authorization: Bearer {{token}}
   "codigo_interno": "TSH001",
   "nome": "TSH - Hormônio Tireoestimulante",
   "sinonimos": ["TSH", "Tireotrofina"],
-  "codigo_tuss": "40316521",
+  "tuss_id": "{{tussTshId}}",
   "prazo_entrega_dias": 3,
   "formato_prazo": "3 dias úteis",
   "formatos_laudo": ["PDF", "XML"],
@@ -107,7 +109,7 @@ Authorization: Bearer {{token}}
   "codigo_interno": "ECG001",
   "nome": "Eletrocardiograma com Laudo",
   "sinonimos": ["ECG", "EKG"],
-  "codigo_tuss": "40101010",
+  "tuss_id": "{{tussEcgId}}",
   "tipo_exame_id": "{{tipoExameImagemId}}",
   "metodologia_id": "{{metodologiaId}}",
   "especialidade_requerida": "sim",
@@ -139,7 +141,7 @@ Authorization: Bearer {{token}}
   "codigo_interno": "HBA1C",
   "nome": "Hemoglobina Glicada A1c",
   "sinonimos": ["HbA1c", "Hemoglobina glicosilada"],
-  "codigo_tuss": "40302040",
+  "tuss_id": "{{tussHba1cId}}",
   "necessita_preparo": "nao",
   "prazo_entrega_dias": 2,
   "formato_prazo": "2 dias úteis",
@@ -170,7 +172,7 @@ Authorization: Bearer {{token}}
   "nome": "Hemograma Completo",
   "sinonimos": ["Hemograma", "Contagem de células", "CBC"],
   "codigo_cbhpm": "40304361",
-  "codigo_tuss": "40304361",
+  "tuss_id": "{{tussHemogramaId}}",
   "codigo_amb": "28.01.001-2",
   "codigo_loinc": "58410-2",
   "codigo_sus": "0202010503",
@@ -273,7 +275,7 @@ Authorization: Bearer {{token}}
   "codigo_interno": "RX001",
   "nome": "Radiografia de Tórax PA e Perfil",
   "sinonimos": ["Raio-X Tórax", "RX Tórax"],
-  "codigo_tuss": "41001010",
+  "tuss_id": "{{tussRaioXToraxId}}",
   "tipo_exame_id": "{{tipoExameImagemId}}",
   "metodologia_id": "{{metodologiaRadiologiaId}}",
   "especialidade_requerida": "sim",

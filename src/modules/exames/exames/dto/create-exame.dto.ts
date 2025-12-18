@@ -59,15 +59,27 @@ export class CreateExameDto {
   codigo_cbhpm?: string;
 
   @ApiProperty({
-    description: 'Código TUSS (Terminologia Unificada da Saúde Suplementar)',
+    description:
+      'Código TUSS (Terminologia Unificada da Saúde Suplementar) - DEPRECATED: usar tuss_id',
     example: '40304361',
     required: false,
     maxLength: 20,
+    deprecated: true,
   })
   @IsString()
   @IsOptional()
   @MaxLength(20)
   codigo_tuss?: string;
+
+  @ApiProperty({
+    description:
+      'FK para tabela TUSS (usar autocomplete em GET /exames/tuss/search?q=)',
+    example: '550e8400-e29b-41d4-a716-446655440000',
+    required: false,
+  })
+  @IsUUID()
+  @IsOptional()
+  tuss_id?: string;
 
   @ApiProperty({
     description: 'Código AMB (Associação Médica Brasileira)',

@@ -12,6 +12,7 @@ import { Tenant } from '../../modules/tenants/entities/tenant.entity';
 import { Usuario } from '../../modules/autenticacao/usuarios/entities/usuario.entity';
 import { Integracao } from '../../modules/atendimento/integracoes/entities/integracao.entity';
 import { IntegracaoConfiguracao } from '../../modules/atendimento/integracoes/entities/integracao-configuracao.entity';
+import { Tuss } from '../../modules/exames/tuss/entities/tuss.entity';
 import { CnaeSeedService } from './cnae-seed.service';
 import { CnaeSubclassesSeedService } from './cnae-subclasses-seed.service';
 import { BancoSeedService } from './banco-seed.service';
@@ -22,6 +23,7 @@ import { EstadoSeedService } from './estado-seed.service';
 import { CidadeSeedService } from './cidade-seed.service';
 import { TenantSeedService } from './tenant-seed.service';
 import { IntegracaoSeedService } from './integracao-seed.service';
+import { TussSeedService } from './tuss-seed.service';
 
 @Module({
   imports: [
@@ -38,6 +40,7 @@ import { IntegracaoSeedService } from './integracao-seed.service';
       Usuario,
       Integracao,
       IntegracaoConfiguracao,
+      Tuss,
     ]),
   ],
   providers: [
@@ -51,6 +54,7 @@ import { IntegracaoSeedService } from './integracao-seed.service';
     CidadeSeedService,
     TenantSeedService,
     IntegracaoSeedService,
+    TussSeedService,
   ],
   exports: [
     CnaeSeedService,
@@ -63,6 +67,7 @@ import { IntegracaoSeedService } from './integracao-seed.service';
     CidadeSeedService,
     TenantSeedService,
     IntegracaoSeedService,
+    TussSeedService,
   ],
 })
 export class SeedModule {}
