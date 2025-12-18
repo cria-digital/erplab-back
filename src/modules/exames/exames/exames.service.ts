@@ -69,7 +69,8 @@ export class ExamesService {
     tipoExameId?: string,
     especialidadeId?: string,
   ): Promise<PaginatedResultDto<Exame>> {
-    const where: any = {};
+    // Sempre filtra excluídos por padrão
+    const where: any = { excluido: false };
 
     if (search) {
       where.nome = Like(`%${search}%`);
@@ -194,9 +195,59 @@ export class ExamesService {
     // Verifica se o exame está sendo usado em alguma ordem de serviço
     // TODO: Implementar verificação quando OrdemServicoExame estiver pronto
 
-    // Por enquanto, apenas desativa o exame ao invés de deletar
+    // Soft delete - marca como excluído
+    exame.excluido = true;
     exame.status = 'inativo';
     await this.exameRepository.save(exame);
+  }
+
+  async findAllExcluidos(
+    page: number = 1,
+    limit: number = 10,
+    search?: string,
+  ): Promise<PaginatedResultDto<Exame>> {
+    const where: any = { excluido: true };
+
+    if (search) {
+      where.nome = Like(`%${search}%`);
+    }
+
+    const [data, total] = await this.exameRepository.findAndCount({
+      where,
+      relations: [
+        'tipoExameAlternativa',
+        'subgrupoAlternativa',
+        'setorAlternativa',
+        'tuss',
+        'unidades',
+        'unidades.unidadeSaude',
+        'unidades.laboratorioApoio',
+        'unidades.telemedicina',
+      ],
+      skip: (page - 1) * limit,
+      take: limit,
+      order: { nome: 'ASC' },
+    });
+
+    return new PaginatedResultDto(data, total, page, limit);
+  }
+
+  async restore(id: string): Promise<Exame> {
+    const exame = await this.exameRepository.findOne({
+      where: { id, excluido: true },
+    });
+
+    if (!exame) {
+      throw new NotFoundException(
+        `Exame com ID ${id} não encontrado ou não está excluído`,
+      );
+    }
+
+    exame.excluido = false;
+    exame.status = 'ativo';
+    await this.exameRepository.save(exame);
+
+    return this.findOne(id);
   }
 
   async findByTipo(tipoExameId: string): Promise<Exame[]> {

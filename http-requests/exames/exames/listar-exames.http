@@ -178,7 +178,7 @@ Authorization: Bearer {{token}}
 ### ============================================
 
 ### Desativar exame (soft delete)
-DELETE {{baseUrl}}/exames/exames/{{exameId}}
+DELETE {{baseUrl}}/exames/exames/b7f47c45-2173-45e4-8fe6-92c638147fab
 Authorization: Bearer {{token}}
 
 ### Expected Response
@@ -207,4 +207,47 @@ Content-Type: application/json
 # Status: 200 OK
 # {
 #   "message": "Status dos exames atualizados com sucesso"
+# }
+
+###
+
+### ============================================
+### EXAMES EXCLUÍDOS (SOFT DELETE)
+### ============================================
+
+### Listar exames excluídos
+GET {{baseUrl}}/exames/exames/excluidos/listar?page=1&limit=10
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "data": [...],
+#   "meta": {
+#     "page": 1,
+#     "limit": 10,
+#     "total": 5,
+#     "totalPages": 1,
+#     "hasPrevPage": false,
+#     "hasNextPage": false
+#   }
+# }
+
+###
+
+### Buscar exames excluídos por nome
+GET {{baseUrl}}/exames/exames/excluidos/listar?search=hemograma&page=1&limit=10
+Authorization: Bearer {{token}}
+
+###
+
+### Restaurar exame excluído
+PATCH {{baseUrl}}/exames/exames/{{exameId}}/restaurar
+Authorization: Bearer {{token}}
+
+### Expected Response
+# Status: 200 OK
+# {
+#   "message": "Exame restaurado com sucesso",
+#   "data": { ... }
 # }

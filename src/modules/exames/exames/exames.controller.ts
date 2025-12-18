@@ -446,4 +446,72 @@ export class ExamesController {
       message: 'Status dos exames atualizados com sucesso',
     };
   }
+
+  @Get('excluidos/listar')
+  @ApiOperation({
+    summary: 'Listar exames excluídos',
+    description: 'Lista todos os exames que foram excluídos (soft delete).',
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'Número da página',
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Quantidade de itens por página',
+    example: 10,
+  })
+  @ApiQuery({
+    name: 'search',
+    required: false,
+    type: String,
+    description: 'Buscar por nome do exame',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de exames excluídos',
+  })
+  async findAllExcluidos(
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('search') search?: string,
+  ) {
+    return await this.examesService.findAllExcluidos(
+      page ? parseInt(page) : 1,
+      limit ? parseInt(limit) : 10,
+      search,
+    );
+  }
+
+  @Patch(':id/restaurar')
+  @ApiOperation({
+    summary: 'Restaurar exame excluído',
+    description: 'Restaura um exame que foi excluído (soft delete).',
+  })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'ID do exame',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Exame restaurado com sucesso',
+    type: Exame,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Exame não encontrado ou não está excluído',
+  })
+  async restore(@Param('id') id: string): Promise<ApiResponseType<Exame>> {
+    const exame = await this.examesService.restore(id);
+    return {
+      message: 'Exame restaurado com sucesso',
+      data: exame,
+    };
+  }
 }

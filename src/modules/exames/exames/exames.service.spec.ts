@@ -194,7 +194,7 @@ describe('ExamesService', () => {
         hasNextPage: false,
       });
       expect(mockRepository.findAndCount).toHaveBeenCalledWith({
-        where: {},
+        where: { excluido: false },
         relations: [
           'tipoExameAlternativa',
           'subgrupoAlternativa',
@@ -218,7 +218,10 @@ describe('ExamesService', () => {
       await service.findAll(1, 10, 'Hemograma');
 
       expect(mockRepository.findAndCount).toHaveBeenCalledWith({
-        where: { nome: expect.objectContaining({ _type: 'like' }) },
+        where: {
+          excluido: false,
+          nome: expect.objectContaining({ _type: 'like' }),
+        },
         relations: [
           'tipoExameAlternativa',
           'subgrupoAlternativa',
@@ -242,7 +245,7 @@ describe('ExamesService', () => {
       await service.findAll(1, 10, null, 'ativo');
 
       expect(mockRepository.findAndCount).toHaveBeenCalledWith({
-        where: { status: 'ativo' },
+        where: { excluido: false, status: 'ativo' },
         relations: [
           'tipoExameAlternativa',
           'subgrupoAlternativa',
@@ -265,7 +268,7 @@ describe('ExamesService', () => {
       await service.findAll(3, 20);
 
       expect(mockRepository.findAndCount).toHaveBeenCalledWith({
-        where: {},
+        where: { excluido: false },
         relations: [
           'tipoExameAlternativa',
           'subgrupoAlternativa',

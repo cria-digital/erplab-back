@@ -450,6 +450,14 @@ export class Exame {
   })
   empresa_id: string;
 
+  // Soft delete
+  @Column({
+    type: 'boolean',
+    default: false,
+    comment: 'Se o exame foi excluído (soft delete)',
+  })
+  excluido: boolean;
+
   // Campos de auditoria
   @CreateDateColumn({
     type: 'timestamp',
