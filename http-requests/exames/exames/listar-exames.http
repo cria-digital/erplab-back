@@ -5,9 +5,9 @@
 ### - {{baseUrl}} - URL base da API
 ### - {{token}} - Token JWT de autenticação
 ### - {{exameId}} - UUID do exame (para buscar por ID)
-### - {{tipoExameId}} - UUID do tipo de exame (para filtrar)
-### - {{especialidadeId}} - UUID da especialidade (para filtrar)
-### - {{laboratorioId}} - UUID do laboratório (para filtrar)
+### - {{tipo_exame_id}} - UUID do tipo de exame (para filtrar)
+### - {{especialidade_id}} - UUID da especialidade (para filtrar)
+### - {{laboratorio_id}} - UUID do laboratório (para filtrar)
 ###
 
 ### ============================================
@@ -47,13 +47,13 @@ Authorization: Bearer {{token}}
 ###
 
 ### Filtrar exames por tipo de exame
-GET {{baseUrl}}/exames/exames?tipo_exame_id={{tipoExameId}}&page=1&limit=10
+GET {{baseUrl}}/exames/exames?tipo_exame_id={{tipo_exame_id}}&page=1&limit=10
 Authorization: Bearer {{token}}
 
 ###
 
 ### Filtrar exames por especialidade
-GET {{baseUrl}}/exames/exames?especialidade_id={{especialidadeId}}&page=1&limit=10
+GET {{baseUrl}}/exames/exames?especialidade_id={{especialidade_id}}&page=1&limit=10
 Authorization: Bearer {{token}}
 
 ###
@@ -63,31 +63,31 @@ Authorization: Bearer {{token}}
 ### ============================================
 
 ### Filtrar por tipo de exame + status
-GET {{baseUrl}}/exames/exames?tipo_exame_id={{tipoExameId}}&status=ativo&page=1&limit=10
+GET {{baseUrl}}/exames/exames?tipo_exame_id={{tipo_exame_id}}&status=ativo&page=1&limit=10
 Authorization: Bearer {{token}}
 
 ###
 
 ### Filtrar por especialidade + status
-GET {{baseUrl}}/exames/exames?especialidade_id={{especialidadeId}}&status=ativo&page=1&limit=10
+GET {{baseUrl}}/exames/exames?especialidade_id={{especialidade_id}}&status=ativo&page=1&limit=10
 Authorization: Bearer {{token}}
 
 ###
 
 ### Filtrar por tipo de exame + especialidade
-GET {{baseUrl}}/exames/exames?tipo_exame_id={{tipoExameId}}&especialidade_id={{especialidadeId}}&page=1&limit=10
+GET {{baseUrl}}/exames/exames?tipo_exame_id={{tipo_exame_id}}&especialidade_id={{especialidade_id}}&page=1&limit=10
 Authorization: Bearer {{token}}
 
 ###
 
 ### Filtrar por nome + tipo de exame + status
-GET {{baseUrl}}/exames/exames?search=hemograma&tipo_exame_id={{tipoExameId}}&status=ativo&page=1&limit=10
+GET {{baseUrl}}/exames/exames?search=hemograma&tipo_exame_id={{tipo_exame_id}}&status=ativo&page=1&limit=10
 Authorization: Bearer {{token}}
 
 ###
 
 ### Filtro completo: nome + tipo + especialidade + status
-GET {{baseUrl}}/exames/exames?search=hemograma&tipo_exame_id={{tipoExameId}}&especialidade_id={{especialidadeId}}&status=ativo&page=1&limit=10
+GET {{baseUrl}}/exames/exames?search=hemograma&tipo_exame_id={{tipo_exame_id}}&especialidade_id={{especialidade_id}}&status=ativo&page=1&limit=10
 Authorization: Bearer {{token}}
 
 ###
@@ -97,13 +97,13 @@ Authorization: Bearer {{token}}
 ### ============================================
 
 ### Buscar exames por tipo (rota dedicada)
-GET {{baseUrl}}/exames/exames/tipo/{{tipoExameId}}
+GET {{baseUrl}}/exames/exames/tipo/{{tipo_exame_id}}
 Authorization: Bearer {{token}}
 
 ###
 
 ### Buscar exames por laboratório de apoio
-GET {{baseUrl}}/exames/exames/laboratorio/{{laboratorioId}}
+GET {{baseUrl}}/exames/exames/laboratorio/{{laboratorio_id}}
 Authorization: Bearer {{token}}
 
 ###
