@@ -142,7 +142,13 @@ export class ExameUnidadeService {
       this.validateDestino(mergedDto);
     }
 
-    Object.assign(entity, dto);
+    // Só atribui campos que não são undefined (evita sobrescrever com undefined)
+    Object.keys(dto).forEach((key) => {
+      if (dto[key] !== undefined) {
+        entity[key] = dto[key];
+      }
+    });
+
     return this.repository.save(entity);
   }
 
