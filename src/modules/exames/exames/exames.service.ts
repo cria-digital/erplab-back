@@ -168,8 +168,24 @@ export class ExamesService {
       }
     }
 
-    Object.assign(exame, updateExameDto);
-    return await this.exameRepository.save(exame);
+    // Separa campos que precisam de mapeamento snake_case -> camelCase
+    const { tuss_id, requisitos_anvisa_id, ...restDto } = updateExameDto;
+
+    // Aplica campos que não precisam de mapeamento
+    Object.assign(exame, restDto);
+
+    // Mapeia campos snake_case -> camelCase
+    if (tuss_id !== undefined) {
+      exame.tussId = tuss_id;
+    }
+    if (requisitos_anvisa_id !== undefined) {
+      exame.requisitosAnvisaId = requisitos_anvisa_id;
+    }
+
+    await this.exameRepository.save(exame);
+
+    // Recarrega a entidade com todas as relations
+    return await this.findOne(id);
   }
 
   async remove(id: string): Promise<void> {
