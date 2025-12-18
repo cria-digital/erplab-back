@@ -60,7 +60,14 @@ Authorization: Bearer {{token}}
 ### Expected Response
 # {
 #   "data": [...],
-#   "total": 5972
+#   "meta": {
+#     "page": 1,
+#     "limit": 50,
+#     "total": 5972,
+#     "totalPages": 120,
+#     "hasPrevPage": false,
+#     "hasNextPage": true
+#   }
 # }
 
 ###
