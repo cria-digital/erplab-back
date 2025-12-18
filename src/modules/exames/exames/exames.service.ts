@@ -173,9 +173,15 @@ export class ExamesService {
     }
 
     // Separa campos que precisam de mapeamento snake_case -> camelCase
-    const { tuss_id, requisitos_anvisa_id, ...restDto } = updateExameDto;
+    // e exclui 'unidades' para evitar sobrescrever a relação com dados incompletos
+    const {
+      tuss_id,
+      requisitos_anvisa_id,
+      unidades: _unidades,
+      ...restDto
+    } = updateExameDto;
 
-    // Aplica campos que não precisam de mapeamento
+    // Aplica campos que não precisam de mapeamento (exceto relations)
     Object.assign(exame, restDto);
 
     // Mapeia campos snake_case -> camelCase
