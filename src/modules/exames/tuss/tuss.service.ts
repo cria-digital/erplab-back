@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, ILike } from 'typeorm';
 import { Tuss } from './entities/tuss.entity';
+import { PaginatedResultDto } from '../../infraestrutura/common/dto/pagination.dto';
 
 @Injectable()
 export class TussService {
@@ -54,7 +55,7 @@ export class TussService {
   async findAll(
     page: number = 1,
     limit: number = 50,
-  ): Promise<{ data: Tuss[]; total: number }> {
+  ): Promise<PaginatedResultDto<Tuss>> {
     const [data, total] = await this.tussRepository.findAndCount({
       where: { ativo: true },
       skip: (page - 1) * limit,
@@ -62,7 +63,7 @@ export class TussService {
       order: { codigo: 'ASC' },
     });
 
-    return { data, total };
+    return new PaginatedResultDto(data, total, page, limit);
   }
 
   /**
