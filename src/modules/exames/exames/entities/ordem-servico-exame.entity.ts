@@ -12,7 +12,7 @@ import {
 import { OrdemServico } from './ordem-servico.entity';
 import { Exame } from './exame.entity';
 import { ResultadoExame } from './resultado-exame.entity';
-import { LaboratorioApoio } from './laboratorio-apoio.entity';
+import { Laboratorio } from '../../../relacionamento/laboratorios/entities/laboratorio.entity';
 
 import { Tenant } from '../../../tenants/entities/tenant.entity';
 @Entity('ordens_servico_exames')
@@ -330,9 +330,9 @@ export class OrdemServicoExame {
   @JoinColumn({ name: 'exame_id' })
   exame?: Exame;
 
-  @ManyToOne(() => LaboratorioApoio, { eager: false })
+  @ManyToOne(() => Laboratorio, { eager: false })
   @JoinColumn({ name: 'laboratorio_apoio_id' })
-  laboratorioApoio?: LaboratorioApoio;
+  laboratorioApoio?: Laboratorio;
 
   @OneToMany(() => ResultadoExame, (resultado) => resultado.ordemServicoExame)
   resultados?: ResultadoExame[];

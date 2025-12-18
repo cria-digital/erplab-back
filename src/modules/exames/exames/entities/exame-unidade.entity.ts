@@ -10,7 +10,7 @@ import {
   Unique,
 } from 'typeorm';
 import { Exame } from './exame.entity';
-import { LaboratorioApoio } from './laboratorio-apoio.entity';
+import { Laboratorio } from '../../../relacionamento/laboratorios/entities/laboratorio.entity';
 import { UnidadeSaude } from '../../../cadastros/unidade-saude/entities/unidade-saude.entity';
 import { Telemedicina } from '../../../relacionamento/telemedicina/entities/telemedicina.entity';
 
@@ -92,11 +92,11 @@ export class ExameUnidade {
   @JoinColumn({ name: 'unidade_id' })
   unidadeSaude?: UnidadeSaude;
 
-  @ManyToOne(() => LaboratorioApoio, {
+  @ManyToOne(() => Laboratorio, {
     nullable: true,
   })
   @JoinColumn({ name: 'laboratorio_apoio_id' })
-  laboratorioApoio?: LaboratorioApoio;
+  laboratorioApoio?: Laboratorio;
 
   @ManyToOne(() => Telemedicina, {
     nullable: true,

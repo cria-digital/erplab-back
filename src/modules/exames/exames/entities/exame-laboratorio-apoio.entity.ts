@@ -10,7 +10,7 @@ import {
   Unique,
 } from 'typeorm';
 import { Exame } from './exame.entity';
-import { LaboratorioApoio } from './laboratorio-apoio.entity';
+import { Laboratorio } from '../../../relacionamento/laboratorios/entities/laboratorio.entity';
 import { AlternativaCampoFormulario } from '../../../infraestrutura/campos-formulario/entities/alternativa-campo-formulario.entity';
 import { Amostra } from '../../amostras/entities/amostra.entity';
 
@@ -257,9 +257,9 @@ export class ExameLaboratorioApoio {
   @JoinColumn({ name: 'exame_id' })
   exame?: Exame;
 
-  @ManyToOne(() => LaboratorioApoio, { eager: false })
+  @ManyToOne(() => Laboratorio, { eager: false })
   @JoinColumn({ name: 'laboratorio_apoio_id' })
-  laboratorioApoio?: LaboratorioApoio;
+  laboratorioApoio?: Laboratorio;
 
   @ManyToOne(() => AlternativaCampoFormulario, { eager: false })
   @JoinColumn({ name: 'metodologia_id' })
