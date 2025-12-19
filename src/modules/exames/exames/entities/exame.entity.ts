@@ -337,7 +337,7 @@ export class Exame {
     nullable: true,
     comment: 'ID do requisito ANVISA selecionado',
   })
-  requisitosAnvisaId: string;
+  requisitos_anvisa_id: string;
 
   @ManyToOne(() => AlternativaCampoFormulario, { nullable: true })
   @JoinColumn({ name: 'requisitos_anvisa_id' })

@@ -6,6 +6,7 @@ import { databaseConfig } from './config/database.config';
 import { HealthController } from './health.controller';
 import { MetricsService } from './comum/services/metrics.service';
 import { PerformanceInterceptor } from './comum/interceptors/performance.interceptor';
+// import { SnakeCaseInterceptor } from './comum/interceptors/snake-case.interceptor'; // Disponível para uso futuro
 
 // Autenticação
 import { AuthModule } from './modules/autenticacao/auth/auth.module';
@@ -193,6 +194,11 @@ import { SeedModule } from './database/seeds/seed.module';
       provide: APP_INTERCEPTOR,
       useClass: PerformanceInterceptor,
     },
+    // SnakeCaseInterceptor disponível para uso futuro - descomentar para aplicar globalmente
+    // {
+    //   provide: APP_INTERCEPTOR,
+    //   useClass: SnakeCaseInterceptor,
+    // },
     // Services
     MetricsService,
     // Subscribers (TypeORM)

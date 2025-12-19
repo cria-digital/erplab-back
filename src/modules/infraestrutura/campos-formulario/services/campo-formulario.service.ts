@@ -48,21 +48,15 @@ export class CampoFormularioService {
   }
 
   /**
-   * Listar todos os campos SEM alternativas
+   * Listar todos os campos com suas alternativas
    */
   async findAll(): Promise<CampoFormulario[]> {
-    // Buscar todos os campos com suas alternativas
-    const campos = await this.campoRepository.find({
+    return this.campoRepository.find({
       relations: ['alternativas'],
       order: {
         nomeCampo: 'ASC',
       },
     });
-
-    // Filtrar apenas os campos que NÃO têm alternativas
-    return campos.filter(
-      (campo) => !campo.alternativas || campo.alternativas.length === 0,
-    );
   }
 
   /**

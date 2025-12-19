@@ -24,6 +24,20 @@ Authorization: Bearer {{token}}
 
 ###
 
+### Atualizar requisitos ANVISA (vínculo com alternativa de campo de formulário)
+PATCH {{baseUrl}}/exames/exames/1287c459-18cb-4b7c-9a63-2cff230a5873
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "requisitos_anvisa_id": "85d108c8-f391-424b-93e6-f33786ca7099"
+}
+
+### Para obter as alternativas disponíveis:
+### GET {{baseUrl}}/configuracoes/campos-formulario/requisitos_anvisa/alternativas
+
+###
+
 ### Atualizar campos de preparo e coleta
 PATCH {{baseUrl}}/exames/exames/{{exameId}}
 Content-Type: {{contentType}}

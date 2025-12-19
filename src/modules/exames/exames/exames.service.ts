@@ -184,7 +184,7 @@ export class ExamesService {
       exame.tussId = tuss_id;
     }
     if (requisitos_anvisa_id !== undefined) {
-      exame.requisitosAnvisaId = requisitos_anvisa_id;
+      exame.requisitos_anvisa_id = requisitos_anvisa_id;
     }
 
     await this.exameRepository.save(exame);
