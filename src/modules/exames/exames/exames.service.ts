@@ -34,14 +34,31 @@ export class ExamesService {
     }
 
     // Separa unidades do resto do DTO
-    const { unidades, tuss_id, ...exameData } = createExameDto;
+    const { unidades, tuss_id, amb_id, ...exameData } = createExameDto;
 
-    // Mapeia tuss_id do DTO para tussId da entidade
+    console.log('=== DEBUG CREATE ===');
+    console.log(
+      'requisitos_anvisa_id recebido:',
+      createExameDto.requisitos_anvisa_id,
+    );
+    console.log('exameData:', JSON.stringify(exameData, null, 2));
+
+    // Mapeia tuss_id e amb_id do DTO para tussId e ambId da entidade
     const exame = this.exameRepository.create({
       ...exameData,
       tussId: tuss_id,
+      ambId: amb_id,
     });
+
+    console.log('Exame criado:', JSON.stringify(exame, null, 2));
+
     const savedExame = await this.exameRepository.save(exame);
+
+    console.log(
+      'Exame salvo - requisitos_anvisa_id:',
+      savedExame.requisitos_anvisa_id,
+    );
+    console.log('=== FIM DEBUG ===');
 
     // Se foram passadas unidades, cria os vínculos
     if (unidades && unidades.length > 0) {
@@ -173,7 +190,7 @@ export class ExamesService {
     }
 
     // Separa campos que precisam de mapeamento e relations
-    const { tuss_id, requisitos_anvisa_id, unidades, ...restDto } =
+    const { tuss_id, amb_id, requisitos_anvisa_id, unidades, ...restDto } =
       updateExameDto;
 
     // Aplica campos que não precisam de mapeamento (exceto relations)
@@ -182,6 +199,9 @@ export class ExamesService {
     // Mapeia campos snake_case -> camelCase
     if (tuss_id !== undefined) {
       exame.tussId = tuss_id;
+    }
+    if (amb_id !== undefined) {
+      exame.ambId = amb_id;
     }
     if (requisitos_anvisa_id !== undefined) {
       exame.requisitos_anvisa_id = requisitos_anvisa_id;
@@ -320,7 +340,7 @@ export class ExamesService {
 
   async findByCodigos(
     codigoTuss?: string,
-    codigoAmb?: string,
+    ambId?: string,
     codigoSus?: string,
   ): Promise<Exame[]> {
     const where: any = { status: 'ativo' };
@@ -328,8 +348,8 @@ export class ExamesService {
     if (codigoTuss) {
       where.codigo_tuss = codigoTuss;
     }
-    if (codigoAmb) {
-      where.codigo_amb = codigoAmb;
+    if (ambId) {
+      where.ambId = ambId;
     }
     if (codigoSus) {
       where.codigo_sus = codigoSus;

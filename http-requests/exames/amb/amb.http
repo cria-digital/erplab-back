@@ -1,0 +1,49 @@
+### ===========================================
+### AMB - Tabela AMB-92 (Associação Médica Brasileira)
+### ===========================================
+
+@baseUrl = http://localhost:10016/api/v1
+@contentType = application/json
+
+### ------------------------------------------
+### 1. Listar todos os códigos AMB (paginado)
+### ------------------------------------------
+GET {{baseUrl}}/exames/amb
+Content-Type: {{contentType}}
+
+### Com paginação
+GET {{baseUrl}}/exames/amb?page=1&limit=20
+Content-Type: {{contentType}}
+
+### ------------------------------------------
+### 2. Buscar AMB por código ou descrição (autocomplete)
+### ------------------------------------------
+GET {{baseUrl}}/exames/amb/search?q=consulta
+Content-Type: {{contentType}}
+
+### Buscar por código
+GET {{baseUrl}}/exames/amb/search?q=10014
+Content-Type: {{contentType}}
+
+### Com limite
+GET {{baseUrl}}/exames/amb/search?q=cardio&limit=10
+Content-Type: {{contentType}}
+
+### ------------------------------------------
+### 3. Buscar AMB por código exato
+### ------------------------------------------
+GET {{baseUrl}}/exames/amb/codigo/10014
+Content-Type: {{contentType}}
+
+### ------------------------------------------
+### 4. Estatísticas da tabela AMB
+### ------------------------------------------
+GET {{baseUrl}}/exames/amb/stats
+Content-Type: {{contentType}}
+
+### ------------------------------------------
+### 5. Buscar AMB por ID
+### ------------------------------------------
+# Substitua pelo ID real após importação
+# GET {{baseUrl}}/exames/amb/uuid-do-registro
+# Content-Type: {{contentType}}

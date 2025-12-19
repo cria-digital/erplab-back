@@ -1,0 +1,39 @@
+###
+### TESTE - CRIAR EXAME COM REQUISITOS ANVISA
+###
+
+### Passo 1: Listar alternativas de requisitos_anvisa para pegar um ID valido
+GET {{baseUrl}}/infraestrutura/campos-formulario/nome/requisitos_anvisa
+Authorization: Bearer {{token}}
+
+###
+
+### Passo 2: Criar exame com requisitos_anvisa_id
+POST {{baseUrl}}/exames/exames
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigo_interno": "TESTE-ANVISA-001",
+  "nome": "Exame Teste com Requisitos ANVISA",
+  "requisitos_anvisa_id": "85d108c8-f391-424b-93e6-f33786ca7099",
+  "status": "ativo"
+}
+
+### Expected Response
+# requisitos_anvisa_id deve vir preenchido com o UUID enviado
+# requisitosAnvisa deve vir com os dados da alternativa
+
+###
+
+### Passo 3: Buscar exame criado para confirmar
+GET {{baseUrl}}/exames/exames/codigo/TESTE-ANVISA-001
+Authorization: Bearer {{token}}
+
+###
+
+### Passo 4: Deletar exame de teste (opcional)
+DELETE {{baseUrl}}/exames/exames/{{exameId}}
+Authorization: Bearer {{token}}
+
+###

@@ -82,15 +82,14 @@ export class CreateExameDto {
   tuss_id?: string;
 
   @ApiProperty({
-    description: 'Código AMB (Associação Médica Brasileira)',
-    example: '28.01.001-2',
+    description:
+      'FK para tabela AMB-92 (usar autocomplete em GET /exames/amb/search?q=)',
+    example: '550e8400-e29b-41d4-a716-446655440000',
     required: false,
-    maxLength: 20,
   })
-  @IsString()
+  @IsUUID()
   @IsOptional()
-  @MaxLength(20)
-  codigo_amb?: string;
+  amb_id?: string;
 
   @ApiProperty({
     description:

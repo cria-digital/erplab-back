@@ -4,6 +4,7 @@
 ### - amostra_enviar_id, tipo_recipiente_id, estabilidade_id, volume_minimo_id
 ### - regiao_coleta_ids (array de IDs)
 ### - tuss_id: FK para tabela TUSS (autocomplete via GET /exames/tuss/search?q=)
+### - amb_id: FK para tabela AMB-92 (autocomplete via GET /exames/amb/search?q=)
 ###
 ### Vínculos com Unidades (Nova estrutura):
 ### O campo "unidades" é um array de objetos onde cada unidade tem seu próprio destino:
@@ -173,7 +174,7 @@ Authorization: Bearer {{token}}
   "sinonimos": ["Hemograma", "Contagem de células", "CBC"],
   "codigo_cbhpm": "40304361",
   "tuss_id": "{{tussHemogramaId}}",
-  "codigo_amb": "28.01.001-2",
+  "amb_id": "{{ambHemogramaId}}",
   "codigo_loinc": "58410-2",
   "codigo_sus": "0202010503",
   "tipo_exame_id": "{{tipoExameId}}",

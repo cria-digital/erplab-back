@@ -34,7 +34,7 @@ describe('ExamesController', () => {
     sinonimos: ['CBC', 'Hemograma'],
     codigo_tuss: '40311010',
     codigo_cbhpm: '40304361',
-    codigo_amb: '2.02.02.03-8',
+    ambId: 'amb-uuid-1',
     codigo_loinc: '58410-2',
     codigo_sus: '0202020380',
     tipo_exame_id: 'tipo-uuid-1',

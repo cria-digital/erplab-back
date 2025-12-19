@@ -16,6 +16,7 @@ import { ExameUnidade } from './exame-unidade.entity';
 import { AlternativaCampoFormulario } from '../../../infraestrutura/campos-formulario/entities/alternativa-campo-formulario.entity';
 import { Amostra } from '../../amostras/entities/amostra.entity';
 import { Tuss } from '../../tuss/entities/tuss.entity';
+import { Amb } from '../../amb/entities/amb.entity';
 
 import { Tenant } from '../../../tenants/entities/tenant.entity';
 @Entity('exames')
@@ -81,12 +82,16 @@ export class Exame {
   tuss?: Tuss;
 
   @Column({
-    type: 'varchar',
-    length: 20,
+    name: 'amb_id',
+    type: 'uuid',
     nullable: true,
-    comment: 'Código AMB (Associação Médica Brasileira)',
+    comment: 'FK para tabela AMB-92 (código AMB selecionado)',
   })
-  codigo_amb: string;
+  ambId: string;
+
+  @ManyToOne(() => Amb, { eager: false })
+  @JoinColumn({ name: 'amb_id' })
+  amb?: Amb;
 
   @Column({
     type: 'varchar',

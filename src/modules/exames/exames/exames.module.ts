@@ -11,6 +11,7 @@ import { ExameLaboratorioApoio } from './entities/exame-laboratorio-apoio.entity
 import { Empresa } from '../../cadastros/empresas/entities/empresa.entity';
 import { UnidadeSaude } from '../../cadastros/unidade-saude/entities/unidade-saude.entity';
 import { Tuss } from '../tuss/entities/tuss.entity';
+import { Amb } from '../amb/entities/amb.entity';
 
 // Modules
 import { ConveniosModule } from '../../relacionamento/convenios/convenios.module';
@@ -36,6 +37,7 @@ import { ExameLaboratorioApoioController } from './exame-laboratorio-apoio.contr
       Empresa,
       UnidadeSaude,
       Tuss,
+      Amb,
     ]),
     ConveniosModule, // Importar módulo completo para ter acesso aos services
   ],

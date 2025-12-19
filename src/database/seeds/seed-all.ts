@@ -11,6 +11,7 @@ import { CidadeSeedService } from './cidade-seed.service';
 import { TenantSeedService } from './tenant-seed.service';
 import { IntegracaoSeedService } from './integracao-seed.service';
 import { TussSeedService } from './tuss-seed.service';
+import { AmbSeedService } from './amb-seed.service';
 
 async function bootstrap() {
   const startTime = Date.now();
@@ -78,6 +79,11 @@ async function bootstrap() {
     const tussSeedService = app.get(TussSeedService);
     console.log('11. Importando códigos TUSS (~6000 procedimentos)...');
     await tussSeedService.seed();
+
+    // Executar seed de AMB-92 (Associação Médica Brasileira)
+    const ambSeedService = app.get(AmbSeedService);
+    console.log('12. Importando códigos AMB-92 (~4000 procedimentos)...');
+    await ambSeedService.seed();
 
     const duration = Date.now() - startTime;
     console.log('\n==============================');

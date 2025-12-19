@@ -22,7 +22,7 @@ describe('ExamesService', () => {
     sinonimos: ['CBC', 'Hemograma'],
     codigo_tuss: '40311010',
     codigo_cbhpm: '40304361',
-    codigo_amb: '2.02.02.03-8',
+    ambId: 'amb-uuid-1',
     codigo_loinc: '58410-2',
     codigo_sus: '0202020380',
     tipo_exame_id: 'tipo-uuid-1',
@@ -499,11 +499,11 @@ describe('ExamesService', () => {
       const mockExames = [mockExame];
       mockRepository.find.mockResolvedValue(mockExames);
 
-      const result = await service.findByCodigos(null, '2.02.02.03-8');
+      const result = await service.findByCodigos(null, 'amb-uuid-1');
 
       expect(result).toEqual(mockExames);
       expect(mockRepository.find).toHaveBeenCalledWith({
-        where: { status: 'ativo', codigo_amb: '2.02.02.03-8' },
+        where: { status: 'ativo', ambId: 'amb-uuid-1' },
         relations: ['tipoExameAlternativa'],
       });
     });
@@ -527,7 +527,7 @@ describe('ExamesService', () => {
 
       const result = await service.findByCodigos(
         '40311010',
-        '2.02.02.03-8',
+        'amb-uuid-1',
         '0202020380',
       );
 
@@ -536,7 +536,7 @@ describe('ExamesService', () => {
         where: {
           status: 'ativo',
           codigo_tuss: '40311010',
-          codigo_amb: '2.02.02.03-8',
+          ambId: 'amb-uuid-1',
           codigo_sus: '0202020380',
         },
         relations: ['tipoExameAlternativa'],
