@@ -172,14 +172,9 @@ export class ExamesService {
       }
     }
 
-    // Separa campos que precisam de mapeamento snake_case -> camelCase
-    // e exclui 'unidades' para evitar sobrescrever a relação com dados incompletos
-    const {
-      tuss_id,
-      requisitos_anvisa_id,
-      unidades: _unidades,
-      ...restDto
-    } = updateExameDto;
+    // Separa campos que precisam de mapeamento e relations
+    const { tuss_id, requisitos_anvisa_id, unidades, ...restDto } =
+      updateExameDto;
 
     // Aplica campos que não precisam de mapeamento (exceto relations)
     Object.assign(exame, restDto);
@@ -193,6 +188,27 @@ export class ExamesService {
     }
 
     await this.exameRepository.save(exame);
+
+    // Atualiza unidades se foram passadas
+    if (unidades !== undefined) {
+      // Remove unidades existentes
+      await this.exameUnidadeRepository.delete({ exame_id: id });
+
+      // Cria novas unidades
+      if (unidades.length > 0) {
+        for (const unidadeDto of unidades) {
+          const exameUnidade = this.exameUnidadeRepository.create({
+            exame_id: id,
+            unidade_id: unidadeDto.unidade_id,
+            destino: unidadeDto.destino || 'interno',
+            laboratorio_apoio_id: unidadeDto.laboratorio_apoio_id,
+            telemedicina_id: unidadeDto.telemedicina_id,
+            ativo: unidadeDto.ativo ?? true,
+          });
+          await this.exameUnidadeRepository.save(exameUnidade);
+        }
+      }
+    }
 
     // Recarrega a entidade com todas as relations
     return await this.findOne(id);
