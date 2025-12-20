@@ -77,4 +77,12 @@ export class Amb {
     comment: 'Data de criação do registro',
   })
   criado_em: Date;
+
+  /**
+   * Campo virtual: Descrição com código entre parênteses
+   * Exemplo: "HEMOGRAMA COMPLETO (40304361)"
+   */
+  get descricaoCompleta(): string {
+    return `${this.descricao} (${this.codigo})`;
+  }
 }

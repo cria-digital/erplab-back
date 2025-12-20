@@ -15,13 +15,17 @@ export class AmbService {
    * Busca códigos AMB por código ou descrição (autocomplete)
    * @param query Termo de busca (código ou descrição)
    * @param limit Limite de resultados (padrão: 20)
+   * @returns Lista de AMB com descricaoCompleta (descrição + código)
    */
-  async search(query: string, limit: number = 20): Promise<Amb[]> {
+  async search(
+    query: string,
+    limit: number = 20,
+  ): Promise<(Amb & { descricaoCompleta: string })[]> {
     if (!query || query.length < 2) {
       return [];
     }
 
-    return this.ambRepository.find({
+    const results = await this.ambRepository.find({
       where: [
         { codigo: ILike(`%${query}%`), ativo: true },
         { descricao: ILike(`%${query}%`), ativo: true },
@@ -29,24 +33,38 @@ export class AmbService {
       take: limit,
       order: { codigo: 'ASC' },
     });
+
+    // Adiciona o campo descricaoCompleta para serialização
+    return results.map((amb) => ({
+      ...amb,
+      descricaoCompleta: amb.descricaoCompleta,
+    }));
   }
 
   /**
    * Busca um código AMB pelo código exato
    */
-  async findByCodigo(codigo: string): Promise<Amb | null> {
-    return this.ambRepository.findOne({
+  async findByCodigo(
+    codigo: string,
+  ): Promise<(Amb & { descricaoCompleta: string }) | null> {
+    const amb = await this.ambRepository.findOne({
       where: { codigo, ativo: true },
     });
+    if (!amb) return null;
+    return { ...amb, descricaoCompleta: amb.descricaoCompleta };
   }
 
   /**
    * Busca um código AMB pelo ID
    */
-  async findById(id: string): Promise<Amb | null> {
-    return this.ambRepository.findOne({
+  async findById(
+    id: string,
+  ): Promise<(Amb & { descricaoCompleta: string }) | null> {
+    const amb = await this.ambRepository.findOne({
       where: { id, ativo: true },
     });
+    if (!amb) return null;
+    return { ...amb, descricaoCompleta: amb.descricaoCompleta };
   }
 
   /**
@@ -55,7 +73,7 @@ export class AmbService {
   async findAll(
     page: number = 1,
     limit: number = 50,
-  ): Promise<PaginatedResultDto<Amb>> {
+  ): Promise<PaginatedResultDto<Amb & { descricaoCompleta: string }>> {
     const [data, total] = await this.ambRepository.findAndCount({
       where: { ativo: true },
       skip: (page - 1) * limit,
@@ -63,7 +81,13 @@ export class AmbService {
       order: { codigo: 'ASC' },
     });
 
-    return new PaginatedResultDto(data, total, page, limit);
+    // Adiciona o campo descricaoCompleta para serialização
+    const dataWithDesc = data.map((amb) => ({
+      ...amb,
+      descricaoCompleta: amb.descricaoCompleta,
+    }));
+
+    return new PaginatedResultDto(dataWithDesc, total, page, limit);
   }
 
   /**
