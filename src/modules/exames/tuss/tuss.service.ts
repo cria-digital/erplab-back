@@ -15,13 +15,17 @@ export class TussService {
    * Busca códigos TUSS por código ou termo (autocomplete)
    * @param query Termo de busca (código ou descrição)
    * @param limit Limite de resultados (padrão: 20)
+   * @returns Lista de TUSS com descricaoCompleta (termo + código)
    */
-  async search(query: string, limit: number = 20): Promise<Tuss[]> {
+  async search(
+    query: string,
+    limit: number = 20,
+  ): Promise<(Tuss & { descricaoCompleta: string })[]> {
     if (!query || query.length < 2) {
       return [];
     }
 
-    return this.tussRepository.find({
+    const results = await this.tussRepository.find({
       where: [
         { codigo: ILike(`%${query}%`), ativo: true },
         { termo: ILike(`%${query}%`), ativo: true },
@@ -29,24 +33,38 @@ export class TussService {
       take: limit,
       order: { codigo: 'ASC' },
     });
+
+    // Adiciona o campo descricaoCompleta para serialização
+    return results.map((tuss) => ({
+      ...tuss,
+      descricaoCompleta: tuss.descricaoCompleta,
+    }));
   }
 
   /**
    * Busca um código TUSS pelo código exato
    */
-  async findByCodigo(codigo: string): Promise<Tuss | null> {
-    return this.tussRepository.findOne({
+  async findByCodigo(
+    codigo: string,
+  ): Promise<(Tuss & { descricaoCompleta: string }) | null> {
+    const tuss = await this.tussRepository.findOne({
       where: { codigo, ativo: true },
     });
+    if (!tuss) return null;
+    return { ...tuss, descricaoCompleta: tuss.descricaoCompleta };
   }
 
   /**
    * Busca um código TUSS pelo ID
    */
-  async findById(id: string): Promise<Tuss | null> {
-    return this.tussRepository.findOne({
+  async findById(
+    id: string,
+  ): Promise<(Tuss & { descricaoCompleta: string }) | null> {
+    const tuss = await this.tussRepository.findOne({
       where: { id, ativo: true },
     });
+    if (!tuss) return null;
+    return { ...tuss, descricaoCompleta: tuss.descricaoCompleta };
   }
 
   /**
@@ -55,7 +73,7 @@ export class TussService {
   async findAll(
     page: number = 1,
     limit: number = 50,
-  ): Promise<PaginatedResultDto<Tuss>> {
+  ): Promise<PaginatedResultDto<Tuss & { descricaoCompleta: string }>> {
     const [data, total] = await this.tussRepository.findAndCount({
       where: { ativo: true },
       skip: (page - 1) * limit,
@@ -63,7 +81,13 @@ export class TussService {
       order: { codigo: 'ASC' },
     });
 
-    return new PaginatedResultDto(data, total, page, limit);
+    // Adiciona o campo descricaoCompleta para serialização
+    const dataWithDesc = data.map((tuss) => ({
+      ...tuss,
+      descricaoCompleta: tuss.descricaoCompleta,
+    }));
+
+    return new PaginatedResultDto(dataWithDesc, total, page, limit);
   }
 
   /**

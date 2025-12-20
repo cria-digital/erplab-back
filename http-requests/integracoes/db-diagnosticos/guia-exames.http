@@ -1,0 +1,187 @@
+### ============================================
+### DB Diagnósticos - Guia de Exames (Dados DB)
+### ============================================
+###
+### API para consulta de informações de exames:
+### - Busca de exames por nome
+### - Informações detalhadas (preparo, prazo, material)
+### - Configurações de exames
+### - Download de máscaras de laudo
+###
+### WSDL Produção: https://wsmc.diagnosticosdobrasil.com.br/dadosdb/wsrvDadosDB.DADOSDB.svc?wsdl
+### WSDL Desenvolvimento: https://desenv.diagnosticosdobrasil.com.br/MXNETD/wsrvDadosDB.DADOSDB.svc?wsdl
+###
+### ============================================
+
+@baseUrl = http://localhost:10016/api/v1
+@contentType = application/json
+
+### Obtém token de autenticação (se necessário)
+@token = {{$dotenv JWT_TOKEN}}
+
+
+### ============================================
+### DIAGNÓSTICO
+### ============================================
+
+### Health Check - Verificar conexão
+GET {{baseUrl}}/integracoes/db-diagnosticos/guia-exames/health
+Authorization: Bearer {{token}}
+
+### Descrever WSDL (Debug)
+GET {{baseUrl}}/integracoes/db-diagnosticos/guia-exames/wsdl/describe
+Authorization: Bearer {{token}}
+
+
+### ============================================
+### AUTENTICAÇÃO
+### ============================================
+
+### Gerar Token de Autenticação
+# Use as mesmas credenciais do Laudos Online
+POST {{baseUrl}}/integracoes/db-diagnosticos/guia-exames/token
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "usuario": "SEU_USUARIO",
+  "senha": "SUA_SENHA"
+}
+
+
+### ============================================
+### BUSCA DE EXAMES
+### ============================================
+
+### Buscar Exames por Nome (POST)
+# O cliente informou: "consulta no guia de exame do DB"
+POST {{baseUrl}}/integracoes/db-diagnosticos/guia-exames/buscar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "filtroNome": "TIREOESTIMULANTE",
+  "origemPadrao": ""
+}
+
+### Buscar Exames por Nome (GET)
+# Alternativa mais simples via query parameter
+GET {{baseUrl}}/integracoes/db-diagnosticos/guia-exames/buscar?nome=HEMOGRAMA
+Authorization: Bearer {{token}}
+
+### Buscar TSH
+GET {{baseUrl}}/integracoes/db-diagnosticos/guia-exames/buscar?nome=TSH
+Authorization: Bearer {{token}}
+
+### Buscar Glicose
+GET {{baseUrl}}/integracoes/db-diagnosticos/guia-exames/buscar?nome=GLICOSE
+Authorization: Bearer {{token}}
+
+
+### ============================================
+### INFORMAÇÕES DETALHADAS DO EXAME
+### ============================================
+
+### Obter Informações do Exame (POST)
+# Retorna: preparo, prazo, material, valores de referência
+POST {{baseUrl}}/integracoes/db-diagnosticos/guia-exames/informacoes
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "procedimento": "TSH"
+}
+
+### Obter Informações do Exame (GET)
+# Alternativa via query parameter
+GET {{baseUrl}}/integracoes/db-diagnosticos/guia-exames/informacoes?codigo=TSH
+Authorization: Bearer {{token}}
+
+### Informações do Hemograma
+GET {{baseUrl}}/integracoes/db-diagnosticos/guia-exames/informacoes?codigo=HEMO
+Authorization: Bearer {{token}}
+
+
+### ============================================
+### CONFIGURAÇÃO DE EXAMES
+### ============================================
+
+### Obter Configuração do Exame (POST)
+# Retorna: parâmetros, valores de referência detalhados
+POST {{baseUrl}}/integracoes/db-diagnosticos/guia-exames/config
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "procedimento": "TSH"
+}
+
+### Obter Configuração do Exame (GET)
+GET {{baseUrl}}/integracoes/db-diagnosticos/guia-exames/config?codigo=TSH
+Authorization: Bearer {{token}}
+
+
+### ============================================
+### LAUDO E MÁSCARAS
+### ============================================
+
+### Obter Versão do Laudo
+POST {{baseUrl}}/integracoes/db-diagnosticos/guia-exames/laudo/versao
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "codigoProcedimento": "TSH"
+}
+
+### Obter Faixas Etárias do Laudo
+# Use a versão retornada pelo endpoint anterior (ex: TSH1_8)
+POST {{baseUrl}}/integracoes/db-diagnosticos/guia-exames/laudo/faixa-etaria
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "laudo": "TSH1_8"
+}
+
+### Download da Máscara do Laudo (PDF em Base64)
+# Use a versão e faixa retornadas pelos endpoints anteriores
+POST {{baseUrl}}/integracoes/db-diagnosticos/guia-exames/laudo/mascara
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "laudo": "MHEMO1_8",
+  "faixaReferenciaSexo": "Padrão"
+}
+
+
+### ============================================
+### EXEMPLOS DE USO COMUM
+### ============================================
+
+### Fluxo Típico: Consultar Preparo de um Exame
+### 1. Buscar exame pelo nome
+GET {{baseUrl}}/integracoes/db-diagnosticos/guia-exames/buscar?nome=GLICEMIA
+Authorization: Bearer {{token}}
+
+### 2. Obter informações detalhadas (preparo, prazo)
+GET {{baseUrl}}/integracoes/db-diagnosticos/guia-exames/informacoes?codigo=GLIC
+Authorization: Bearer {{token}}
+
+
+### ============================================
+### NOTAS
+### ============================================
+###
+### Esta API é DIFERENTE da API de Protocolo (dbsync):
+### - Protocolo: /integracoes/db-diagnosticos/* -> Envio de pedidos, resultados
+### - Guia de Exames: /integracoes/db-diagnosticos/guia-exames/* -> Informações de exames
+###
+### Configuração no .env:
+### - DB_DIAGNOSTICOS_DADOS_USUARIO=seu_usuario
+### - DB_DIAGNOSTICOS_DADOS_SENHA=sua_senha
+### - DB_DIAGNOSTICOS_DADOS_WSDL_URL=https://wsmc.diagnosticosdobrasil.com.br/dadosdb/wsrvDadosDB.DADOSDB.svc?wsdl
+###
+### Ou configure via integração no banco de dados (template: db-diagnosticos-dados)
+###

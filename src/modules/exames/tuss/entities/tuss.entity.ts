@@ -51,4 +51,12 @@ export class Tuss {
     comment: 'Data de criação do registro',
   })
   criado_em: Date;
+
+  /**
+   * Campo virtual: Termo com código entre parênteses
+   * Exemplo: "HEMOGRAMA COMPLETO (40304361)"
+   */
+  get descricaoCompleta(): string {
+    return `${this.termo} (${this.codigo})`;
+  }
 }
