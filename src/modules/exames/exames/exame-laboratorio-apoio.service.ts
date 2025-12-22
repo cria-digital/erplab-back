@@ -9,6 +9,10 @@ import { ExameLaboratorioApoio } from './entities/exame-laboratorio-apoio.entity
 import { CreateExameLaboratorioApoioDto } from './dto/create-exame-laboratorio-apoio.dto';
 import { UpdateExameLaboratorioApoioDto } from './dto/update-exame-laboratorio-apoio.dto';
 import { BatchCreateExameLaboratorioApoioDto } from './dto/batch-create-exame-laboratorio-apoio.dto';
+import {
+  SyncExameLaboratoriosApoioDto,
+  SyncExameLaboratorioApoioItemDto,
+} from './dto/sync-exame-laboratorio-apoio.dto';
 import { PaginatedResultDto } from '../../infraestrutura/common/dto/pagination.dto';
 
 @Injectable()
@@ -325,5 +329,232 @@ export class ExameLaboratorioApoioService {
       relations: ['exame'],
       order: { criado_em: 'DESC' },
     });
+  }
+
+  /**
+   * Sincroniza fichas de laboratório de apoio de um exame
+   *
+   * Lógica:
+   * - Tem id na lista? → UPDATE
+   * - Não tem id na lista? → CREATE
+   * - Existe no banco mas NÃO está na lista? → DELETE
+   */
+  async syncBatch(dto: SyncExameLaboratoriosApoioDto): Promise<{
+    created: ExameLaboratorioApoio[];
+    updated: ExameLaboratorioApoio[];
+    deleted: string[];
+    errors: any[];
+  }> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    const created: ExameLaboratorioApoio[] = [];
+    const updated: ExameLaboratorioApoio[] = [];
+    const deleted: string[] = [];
+    const errors: any[] = [];
+
+    try {
+      // 1. Buscar todas as fichas existentes deste exame
+      const fichasExistentes = await queryRunner.manager.find(
+        ExameLaboratorioApoio,
+        { where: { exameId: dto.exame_id } },
+      );
+
+      // IDs que vieram na lista (para saber o que deletar)
+      const idsNaLista = new Set(
+        dto.items.filter((item) => item.id).map((item) => item.id),
+      );
+
+      // 2. Deletar fichas que existem no banco mas NÃO vieram na lista
+      for (const fichaExistente of fichasExistentes) {
+        if (!idsNaLista.has(fichaExistente.id)) {
+          try {
+            await queryRunner.manager.remove(fichaExistente);
+            deleted.push(fichaExistente.id);
+          } catch (error) {
+            errors.push({
+              id: fichaExistente.id,
+              operation: 'delete',
+              error: error.message,
+            });
+          }
+        }
+      }
+
+      // 3. Processar creates e updates
+      for (let i = 0; i < dto.items.length; i++) {
+        const item = dto.items[i];
+        try {
+          if (item.id) {
+            // UPDATE
+            const result = await this.syncItem(
+              queryRunner,
+              dto.exame_id,
+              item,
+              'update',
+            );
+            if (result) updated.push(result);
+          } else {
+            // CREATE
+            const result = await this.syncItem(
+              queryRunner,
+              dto.exame_id,
+              item,
+              'create',
+            );
+            if (result) created.push(result);
+          }
+        } catch (error) {
+          errors.push({
+            index: i,
+            id: item.id,
+            laboratorio_apoio_id: item.laboratorio_apoio_id,
+            operation: item.id ? 'update' : 'create',
+            error: error.message,
+          });
+        }
+      }
+
+      await queryRunner.commitTransaction();
+      return { created, updated, deleted, errors };
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  /**
+   * Helper para criar ou atualizar um item
+   */
+  private async syncItem(
+    queryRunner: any,
+    exameId: string,
+    item: SyncExameLaboratorioApoioItemDto,
+    operation: 'create' | 'update',
+  ): Promise<ExameLaboratorioApoio> {
+    if (operation === 'update' && item.id) {
+      // Busca a entidade existente
+      const entity = await queryRunner.manager.findOne(ExameLaboratorioApoio, {
+        where: { id: item.id },
+      });
+
+      if (!entity) {
+        throw new NotFoundException(`Ficha com ID ${item.id} não encontrada`);
+      }
+
+      // Se estiver mudando o laboratório, verifica duplicidade
+      if (
+        item.laboratorio_apoio_id &&
+        item.laboratorio_apoio_id !== entity.laboratorioApoioId
+      ) {
+        const existente = await queryRunner.manager.findOne(
+          ExameLaboratorioApoio,
+          {
+            where: {
+              exameId: exameId,
+              laboratorioApoioId: item.laboratorio_apoio_id,
+            },
+          },
+        );
+        if (existente && existente.id !== item.id) {
+          throw new ConflictException(
+            'Já existe configuração para este exame e laboratório',
+          );
+        }
+      }
+
+      // Atualiza os campos
+      if (item.laboratorio_apoio_id)
+        entity.laboratorioApoioId = item.laboratorio_apoio_id;
+      this.mapSyncItemToEntity(entity, item);
+      return queryRunner.manager.save(entity);
+    } else {
+      // CREATE - verifica duplicidade
+      const existente = await queryRunner.manager.findOne(
+        ExameLaboratorioApoio,
+        {
+          where: {
+            exameId: exameId,
+            laboratorioApoioId: item.laboratorio_apoio_id,
+          },
+        },
+      );
+
+      if (existente) {
+        throw new ConflictException(
+          'Já existe configuração para este exame e laboratório',
+        );
+      }
+
+      const entity = queryRunner.manager.create(ExameLaboratorioApoio, {
+        exameId: exameId,
+        laboratorioApoioId: item.laboratorio_apoio_id,
+        ativo: true,
+      });
+      this.mapSyncItemToEntity(entity, item);
+      return queryRunner.manager.save(entity);
+    }
+  }
+
+  /**
+   * Mapeia os campos do DTO para a entidade
+   */
+  private mapSyncItemToEntity(
+    entity: ExameLaboratorioApoio,
+    item: SyncExameLaboratorioApoioItemDto,
+  ): void {
+    if (item.codigo_exame_apoio !== undefined)
+      entity.codigo_exame_apoio = item.codigo_exame_apoio;
+    if (item.metodologia_id !== undefined)
+      entity.metodologia_id = item.metodologia_id;
+    if (item.unidade_medida_id !== undefined)
+      entity.unidade_medida_id = item.unidade_medida_id;
+    if (item.peso !== undefined) entity.peso = item.peso;
+    if (item.altura !== undefined) entity.altura = item.altura;
+    if (item.volume !== undefined) entity.volume = item.volume;
+    if (item.amostra_id !== undefined) entity.amostra_id = item.amostra_id;
+    if (item.amostra_enviar_id !== undefined)
+      entity.amostra_enviar_id = item.amostra_enviar_id;
+    if (item.tipo_recipiente_id !== undefined)
+      entity.tipo_recipiente_id = item.tipo_recipiente_id;
+    if (item.regioes_coleta_ids !== undefined)
+      entity.regioes_coleta_ids = item.regioes_coleta_ids;
+    if (item.volume_minimo_id !== undefined)
+      entity.volume_minimo_id = item.volume_minimo_id;
+    if (item.estabilidade_id !== undefined)
+      entity.estabilidade_id = item.estabilidade_id;
+    if (item.formularios_atendimento !== undefined)
+      entity.formularios_atendimento = item.formularios_atendimento;
+    if (item.preparo_geral !== undefined)
+      entity.preparo_geral = item.preparo_geral;
+    if (item.preparo_feminino !== undefined)
+      entity.preparo_feminino = item.preparo_feminino;
+    if (item.preparo_infantil !== undefined)
+      entity.preparo_infantil = item.preparo_infantil;
+    if (item.coleta_geral !== undefined)
+      entity.coleta_geral = item.coleta_geral;
+    if (item.coleta_feminino !== undefined)
+      entity.coleta_feminino = item.coleta_feminino;
+    if (item.coleta_infantil !== undefined)
+      entity.coleta_infantil = item.coleta_infantil;
+    if (item.tecnica_coleta !== undefined)
+      entity.tecnica_coleta = item.tecnica_coleta;
+    if (item.lembrete_coletora !== undefined)
+      entity.lembrete_coletora = item.lembrete_coletora;
+    if (item.lembrete_recepcionista_agendamento !== undefined)
+      entity.lembrete_recepcionista_agendamento =
+        item.lembrete_recepcionista_agendamento;
+    if (item.lembrete_recepcionista_os !== undefined)
+      entity.lembrete_recepcionista_os = item.lembrete_recepcionista_os;
+    if (item.distribuicao !== undefined)
+      entity.distribuicao = item.distribuicao;
+    if (item.prazo_entrega_dias !== undefined)
+      entity.prazo_entrega_dias = item.prazo_entrega_dias;
+    if (item.formatos_laudo !== undefined)
+      entity.formatos_laudo = item.formatos_laudo;
+    if (item.ativo !== undefined) entity.ativo = item.ativo;
   }
 }

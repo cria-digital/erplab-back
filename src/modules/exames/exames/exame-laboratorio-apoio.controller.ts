@@ -19,7 +19,7 @@ import {
 import { ExameLaboratorioApoioService } from './exame-laboratorio-apoio.service';
 import { CreateExameLaboratorioApoioDto } from './dto/create-exame-laboratorio-apoio.dto';
 import { UpdateExameLaboratorioApoioDto } from './dto/update-exame-laboratorio-apoio.dto';
-import { BatchCreateExameLaboratorioApoioDto } from './dto/batch-create-exame-laboratorio-apoio.dto';
+import { SyncExameLaboratoriosApoioDto } from './dto/sync-exame-laboratorio-apoio.dto';
 
 @ApiTags('Exames - Laboratórios de Apoio')
 @ApiBearerAuth()
@@ -49,20 +49,41 @@ export class ExameLaboratorioApoioController {
 
   @Post('batch')
   @ApiOperation({
-    summary: 'Criar múltiplas configurações de laboratório de apoio em lote',
+    summary: 'Sincronizar fichas de laboratório de apoio de um exame',
+    description: `
+      Endpoint para gerenciar fichas de laboratório de apoio em lote.
+
+      **Lógica:**
+      - Tem **id** no item? → UPDATE
+      - Não tem **id** no item? → CREATE
+      - Existe no banco mas NÃO está na lista? → DELETE
+
+      **exame_id**: ID do exame (obrigatório)
+      **items**: Lista completa de fichas do exame
+
+      Todas as operações são executadas em uma única transação.
+    `,
   })
   @ApiResponse({
     status: 201,
     description: 'Processamento concluído',
   })
-  async createBatch(@Body() dto: BatchCreateExameLaboratorioApoioDto) {
-    const result = await this.service.createBatch(dto);
+  async syncBatch(@Body() dto: SyncExameLaboratoriosApoioDto) {
+    const result = await this.service.syncBatch(dto);
     return {
-      message: `Processamento concluído: ${result.created.length} criados, ${result.errors.length} erros`,
-      data: result.created,
+      message: `Processamento concluído: ${result.created.length} criados, ${result.updated.length} atualizados, ${result.deleted.length} removidos, ${result.errors.length} erros`,
+      data: {
+        created: result.created,
+        updated: result.updated,
+        deleted: result.deleted,
+      },
       errors: result.errors,
-      totalCreated: result.created.length,
-      totalErrors: result.errors.length,
+      totals: {
+        created: result.created.length,
+        updated: result.updated.length,
+        deleted: result.deleted.length,
+        errors: result.errors.length,
+      },
     };
   }
 
